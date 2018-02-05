@@ -11,9 +11,9 @@ var users = require('./src/server/routes/users');
 
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, './src/server/views'));
-app.set('view engine', 'jade');
+// // view engine setup
+// app.set('views', path.join(__dirname, './'));
+// app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
