@@ -5,14 +5,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
+var index = require('./src/server/routes/index');
+var users = require('./src/server/routes/users');
 
 
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, './src/server/views'));
 app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
