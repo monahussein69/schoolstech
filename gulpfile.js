@@ -9,6 +9,16 @@ var rename = require("gulp-rename");
 var uglify = require("gulp-uglify");
 var rtlcss = require("gulp-rtlcss");
 var connect = require('gulp-connect');
+var bs = require('browser-sync').create(); // create a browser sync instance.
+
+gulp.task('browser-sync', function() {
+    bs.init({
+        server: {
+            baseDir: "./src/client/app/"
+        },
+        port : 8080 // makes a proxy for localhost:8080
+    });
+});
 
 //*** SASS compiler task
 gulp.task('sass', function () {
@@ -47,7 +57,10 @@ gulp.task('sass', function () {
 gulp.task('sass:watch', function () {
 	gulp.watch('./src/client/sass/**/*.scss', ['sass']);
 });
-
+gulp.task('watch', ['browser-sync'], function () {
+    gulp.watch('./src/client/sass/**/*.scss', ['sass']);
+    gulp.watch("./src/client/*.html").on('change', bs.reload);
+});
 //*** CSS & JS minify task
 gulp.task('minify', function () {
     // css minify 
@@ -119,14 +132,14 @@ gulp.task('prettify', function() {
    		})).
    		pipe(gulp.dest('./'));
 });
+//
+//
+// gulp.task('connect', function() {
+//     connect.server({
+//         root : './src/client/app/',
+//         port:8080
+//     });
+// });
 
-
-gulp.task('connect', function() {
-    connect.server({
-        root : './src/client/app/',
-        port:8080
-    });
-});
-
-gulp.task('default', ['prettify', 'rtlcss', 'minify', 'sass', 'sass:watch','connect']);
+gulp.task('default', ['prettify', 'rtlcss', 'minify', 'sass', 'sass:watch' , 'browser-sync' , 'watch']);
 //gulp.task('default', ['connect']);
