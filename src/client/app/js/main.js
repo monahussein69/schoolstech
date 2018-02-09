@@ -7,8 +7,17 @@ var MetronicApp = angular.module("MetronicApp", [
     "ui.router", 
     "ui.bootstrap", 
     "oc.lazyLoad",  
-    "ngSanitize"
-]); 
+    "ngSanitize",
+    "LocalStorageModule"
+]);
+
+
+MetronicApp.config(function (localStorageServiceProvider) {
+    localStorageServiceProvider
+        .setPrefix('MetronicApp')
+        .setStorageType('sessionStorage')
+        .setNotify(true, true)
+});
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
 MetronicApp.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {

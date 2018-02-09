@@ -1,15 +1,26 @@
-angular.module('MetronicApp').controller('LoginController', function($rootScope, $scope , $http) {
+angular.module('MetronicApp').controller('LoginController', function($rootScope, $scope , $http, $window , localStorageService) {
     console.log("login Controaller");
-    $scope.model = {
+    var model = {
         username : '',
         password : '',
         onLogin : onLogin,
         error : null,
 
     };
+    $scope.model = model;
 
     function onLogin(){
-        console.log("هاااااااااااااااي ");
+        model.error = null;
+        $http.post("http://localhost:3000/login",{ 'name' : $scope.model.username , 'password':$scope.model.password })
+            .then(function(response) {
+                if(response.data.success){
+                    localStorageService.set('UserObject',response.data.user);
+                    $window.location.href = '#/dashboard.html';
+                }else{
+                    model.error = "خطأ في اسم المستخدم او كلمه المرور";
+                }
+                //$scope.myWelcome = response.data;
+            });
     }
     // $scope.$on('$viewContentLoaded', function() {
     //     // initialize core components
