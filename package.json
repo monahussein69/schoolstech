@@ -6,14 +6,17 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "bcrypt": "^1.0.3",
     "body-parser": "~1.18.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.15.5",
     "jade": "~1.11.0",
     "morgan": "~1.9.0",
-    "serve-favicon": "~2.4.5",
-    "node-sass": "^4.7.2"
+    "mysql": "^2.15.0",
+    "node-sass": "^4.7.2",
+    "password-hash-and-salt": "^0.1.4",
+    "serve-favicon": "~2.4.5"
   },
   "devDependencies": {
     "gulp": "^3.9.0",
@@ -23,7 +26,7 @@
     "gulp-prettify": "^0.3.0",
     "gulp-rename": "^1.2.2",
     "gulp-rtlcss": "^0.1.4",
-    "gulp-sass": "^2.0.4",
+    "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-uglify": "^1.4.2"
   }
