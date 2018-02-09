@@ -12,7 +12,10 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/login', function(req, res, next) {
-    loginMethod.userLogin(req,res);
+    loginMethod.userLogin(req,res,function(result){
+        res.send(result);
+    });
+
 });
 
 module.exports = router;
