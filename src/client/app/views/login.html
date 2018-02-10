@@ -14,9 +14,6 @@
                 <button class="close" data-close="alert"></button>
                 <span>{{model.error}}</span>
             </div>
-
-
-
             <div class="form-group">
                 <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
                 <label class="control-label visible-ie8 visible-ie9">اسم المستخدم</label>
@@ -25,8 +22,7 @@
                 <label class="control-label visible-ie8 visible-ie9">كلمة المرور </label>
                 <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="كلمه المرور" name="password" ng-model="model.password" required/> </div>
             <div class="form-actions">
-                <button type="submit" class="btn green uppercase" ng-click="model.onLogin()" ng-disabled = "loginForm.$invalid">تسجيل الدخول</button>
-
+                <button type="submit" class="btn green uppercase" ng-click="model.onLogin()" ng-disabled="loginForm.$invalid">تسجيل الدخول</button>
                 <!--<label class="rememberme check mt-checkbox mt-checkbox-outline">-->
                 <!--&lt;!&ndash;<input type="checkbox" name="remember" value="1" />Remember&ndash;&gt;-->
                 <!--<span></span>-->

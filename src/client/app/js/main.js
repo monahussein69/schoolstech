@@ -178,6 +178,32 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             }
         })
 
+
+        // Schools
+        .state('Master.schools', {
+            url: "/schools.html",
+            templateUrl: "views/schools/manageSchools.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "SchoolsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/SchoolsController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
         // Blank Page
         .state('Master.blank', {
             url: "/blank",
