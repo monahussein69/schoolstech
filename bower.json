@@ -1,0 +1,21 @@
+{
+  "name": "schooltech",
+  "description": "",
+  "main": "",
+  "authors": [
+    "monahussein <monahussein69@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/client/app/assets/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-local-storage": "^0.7.1"
+  }
+}
