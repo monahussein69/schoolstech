@@ -72,10 +72,16 @@ initialization can be disabled and Layout.init() should be called on page load c
 ***/
 
 /* Setup Layout Part - Header */
-MetronicApp.controller('HeaderController', ['$scope', function($scope) {
+MetronicApp.controller('HeaderController', ['localStorageService','$scope', function(localStorageService,$scope) {
     $scope.$on('$includeContentLoaded', function() {
+        var userObject = localStorageService.get('UserObject');
+        console.log(userObject[0].loginName);
+        var model = {username:''};
+        $scope.model = model;
+        $scope.model.username = userObject[0].loginName;
         Layout.initHeader(); // init header
     });
+
 }]);
 
 /* Setup Layout Part - Sidebar */
