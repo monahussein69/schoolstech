@@ -173,7 +173,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
 
         // Blank Page
-        .state('blank', {
+        .state('Master.blank', {
             url: "/blank",
             templateUrl: "views/blank.html",            
             data: {pageTitle: 'Blank Page Template'},
@@ -192,7 +192,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
 
         // AngularJS plugins
-        .state('fileupload', {
+        .state('Master.fileupload', {
             url: "/file_upload.html",
             templateUrl: "views/file_upload.html",
             data: {pageTitle: 'AngularJS File Upload'},
@@ -215,7 +215,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
 
         // UI Select
-        .state('uiselect', {
+        .state('Master.uiselect', {
             url: "/ui_select.html",
             templateUrl: "views/ui_select.html",
             data: {pageTitle: 'AngularJS Ui Select'},
@@ -240,7 +240,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
 
         // UI Bootstrap
-        .state('uibootstrap', {
+        .state('Master.uibootstrap', {
             url: "/ui_bootstrap.html",
             templateUrl: "views/ui_bootstrap.html",
             data: {pageTitle: 'AngularJS UI Bootstrap'},
@@ -258,7 +258,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
 
         // Tree View
-        .state('tree', {
+        .state('Master.tree', {
             url: "/tree",
             templateUrl: "views/tree.html",
             data: {pageTitle: 'jQuery Tree View'},
@@ -281,7 +281,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })     
 
         // Form Tools
-        .state('formtools', {
+        .state('Master.formtools', {
             url: "/form-tools",
             templateUrl: "views/form_tools.html",
             data: {pageTitle: 'Form Tools'},
@@ -317,7 +317,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })        
 
         // Date & Time Pickers
-        .state('pickers', {
+        .state('Master.pickers', {
             url: "/pickers",
             templateUrl: "views/pickers.html",
             data: {pageTitle: 'Date & Time Pickers'},
@@ -350,7 +350,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
 
         // Custom Dropdowns
-        .state('dropdowns', {
+        .state('Master.dropdowns', {
             url: "/dropdowns",
             templateUrl: "views/dropdowns.html",
             data: {pageTitle: 'Custom Dropdowns'},
@@ -379,7 +379,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         }) 
 
         // Advanced Datatables
-        .state('datatablesmanaged', {
+        .state('Master.datatablesmanaged', {
             url: "/datatables/managed.html",
             templateUrl: "views/datatables/managed.html",
             data: {pageTitle: 'Advanced Datatables'},
@@ -405,7 +405,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
 
         // Ajax Datetables
-        .state('datatablesajax', {
+        .state('Master.datatablesajax', {
             url: "/datatables/ajax.html",
             templateUrl: "views/datatables/ajax.html",
             data: {pageTitle: 'Ajax Datatables'},
@@ -433,7 +433,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
 
         // User Profile
-        .state("profile", {
+        .state("Master.profile", {
             url: "/profile",
             templateUrl: "views/profile/main.html",
             data: {pageTitle: 'User Profile'},

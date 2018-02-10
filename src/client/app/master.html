@@ -1,4 +1,5 @@
-<div class=" page-sidebar-closed-hide-logo page-on-load" ng-class="{'page-content-white': settings.layout.pageContentWhite,'page-container-bg-solid': settings.layout.pageBodySolid, 'page-sidebar-closed': settings.layout.pageSidebarClosed}">
+<div ng-controller="AppController" class="page-header-fixed page-sidebar-closed-hide-logo page-on-load" ng-class="{'page-content-white': settings.layout.pageContentWhite,'page-container-bg-solid': settings.layout.pageBodySolid, 'page-sidebar-closed': settings.layout.pageSidebarClosed}">
+    <!-- BEGIN PAGE SPINNER -->
     <div ng-spinner-bar class="page-spinner-bar">
         <div class="bounce1"></div>
         <div class="bounce2"></div>
@@ -6,22 +7,22 @@
     </div>
     <!-- END PAGE SPINNER -->
     <!-- BEGIN HEADER -->
-    <div data-ng-include="'tpl/header.html'" data-ng-controller="HeaderController" class="page-header navbar navbar-fixed-top"> </div>
+    <div data-ng-include="'tpl/header.html'" data-ng-controller="HeaderController" class="page-header navbar navbar-fixed-top"></div>
     <!-- END HEADER -->
-    <div class="clearfix"> </div>
+    <div class="clearfix"></div>
     <!-- BEGIN CONTAINER -->
     <div class="page-container">
         <!-- BEGIN SIDEBAR -->
-        <div data-ng-include="'tpl/sidebar.html'" data-ng-controller="SidebarController" class="page-sidebar-wrapper"> </div>
+        <div data-ng-include="'tpl/sidebar.html'" data-ng-controller="SidebarController" class="page-sidebar-wrapper"></div>
         <!-- END SIDEBAR -->
         <!-- BEGIN CONTENT -->
         <div class="page-content-wrapper">
             <div class="page-content">
                 <!-- BEGIN STYLE CUSTOMIZER(optional) -->
-                <div data-ng-include="'tpl/theme-panel.html'" data-ng-controller="ThemePanelController" class="theme-panel hidden-xs hidden-sm"> </div>
+                <div data-ng-include="'tpl/theme-panel.html'" data-ng-controller="ThemePanelController" class="theme-panel hidden-xs hidden-sm"></div>
                 <!-- END STYLE CUSTOMIZER -->
                 <!-- BEGIN ACTUAL CONTENT -->
-                <div ui-view class="fade-in-up"> </div>
+                <div ui-view class="fade-in-up"></div>
                 <!-- END ACTUAL CONTENT -->
             </div>
         </div>
@@ -35,7 +36,7 @@
     </div>
     <!-- END CONTAINER -->
     <!-- BEGIN FOOTER -->
-    <div data-ng-include="'tpl/footer.html'" data-ng-controller="FooterController" class="page-footer"> </div>
+    <div data-ng-include="'tpl/footer.html'" data-ng-controller="FooterController" class="page-footer"></div>
     <!-- END FOOTER -->
     <!-- BEGIN QUICK NAV -->
     <nav class="quick-nav">
@@ -72,4 +73,7 @@
     </nav>
     <div class="quick-nav-overlay"></div>
     <!-- END QUICK NAV -->
+    <!-- END APP LEVEL JQUERY SCRIPTS -->
+    <!-- END JAVASCRIPTS -->
 </div>
+<!-- END BODY -->
