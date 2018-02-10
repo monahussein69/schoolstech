@@ -1,5 +1,4 @@
 angular.module('MetronicApp').controller('LoginController', function($rootScope, $scope , $http, $window , localStorageService) {
-    console.log("login Controaller");
     var model = {
         username : '',
         password : '',
@@ -9,18 +8,26 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
     };
     $scope.model = model;
 
-    function onLogin(){
+    function onLogin() {
+
         model.error = null;
-        $http.post("http://localhost:3000/login",{ 'name' : $scope.model.username , 'password':$scope.model.password })
-            .then(function(response) {
-                if(response.data.success){
-                    localStorageService.set('UserObject',response.data.user);
-                    $window.location.href = '#/dashboard.html';
-                }else{
-                    model.error = "خطأ في اسم المستخدم او كلمه المرور";
-                }
-                //$scope.myWelcome = response.data;
-            });
+        if ($scope.model.username && $scope.model.password){
+            $http.post("http://localhost:3000/login", {
+                'name': $scope.model.username,
+                'password': $scope.model.password
+            })
+                .then(function (response) {
+                    if (response.data.success) {
+                        localStorageService.set('UserObject', response.data.user);
+                        $window.location.href = '#/dashboard.html';
+                    } else {
+                        model.error = "خطأ في اسم المستخدم او كلمه المرور";
+                    }
+                    //$scope.myWelcome = response.data;
+                });
+       }else{
+            model.error = "الرجاء ادخال اسم المستخدم و كلمه المرور";
+        }
     }
     // $scope.$on('$viewContentLoaded', function() {
     //     // initialize core components
