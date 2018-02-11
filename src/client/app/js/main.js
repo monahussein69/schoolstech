@@ -204,6 +204,25 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             }
         })
 
+        .state('Master.AddEditSchool', {
+            url: "/manageSchool/:schoolId",
+            templateUrl: "views/schools/editSchool.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "ManageSchoolController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/SchoolsController.js',
+                            'js/services/SchoolFactory.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
         // Blank Page
         .state('Master.blank', {
             url: "/blank",

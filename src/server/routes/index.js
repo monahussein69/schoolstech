@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var body_parser = require('body-parser');
-var loginMethod = require('../Functions/login.js');
+var loginMethod = require('../model/login.js');
 var app = express();
 app.use(body_parser.json);
 
@@ -16,6 +16,10 @@ router.post('/login', function(req, res, next) {
         res.send(result);
     });
 
+});
+
+router.post('/saveSchoolData', function(req, res, next) {
+    res.send('test');
 });
 
 module.exports = router;
