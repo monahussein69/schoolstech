@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var body_parser = require('body-parser');
 var loginMethod = require('../model/login.js');
+var schoolMethods = require('../model/school.js');
 var app = express();
 app.use(body_parser.json);
 
@@ -19,7 +20,20 @@ router.post('/login', function(req, res, next) {
 });
 
 router.post('/saveSchoolData', function(req, res, next) {
-    res.send('test');
+    schoolMethods.saveSchool(req,res,function(result){
+        res.send(result);
+    });
 });
 
+
+router.get('/getSchool/:schoolId', function(req, res, next) {
+    schoolMethods.getSchool(req, res, function (result) {
+        res.send(result);
+    });
+});
+router.get('/deleteSchool/:schoolId', function(req, res, next) {
+        schoolMethods.deleteSchool(req,res,function(result){
+            res.send(result);
+        });
+});
 module.exports = router;

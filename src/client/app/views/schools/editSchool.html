@@ -1,5 +1,4 @@
 <div class="page-bar">
-
     <ul class="page-breadcrumb">
         <li>
             <a ui-sref="dashboard">الصفحه الرئيسيه</a>
@@ -12,13 +11,24 @@
 </div>
 <h3 class="page-title"> تعديل المدرسه</h3>
 <div>
-    <form method="post" ng-submit="model.saveSchool()">
+    <form method="post" ng-submit="model.saveSchool()" name="schoolForm" ng-model="schoolForm">
+        <div class="alert alert-success" ng-if="model.success != null">
+            <button class="close" data-close="alert"></button>
+            <span>{{model.success}}</span>
+        </div>
+        <input type="hidden" name="schoolId" ng-model="model.schoolObj.schoolId" />
         <div class="row">
             <div class="col-md-8">
                 <div class="form-group row">
-                    <label class="col-sm-2 control-label">اسم المدرسه</label>
+                    <label class="col-sm-2 control-label">
+                        <span style="color:red"> * </span> اسم المدرسه</label>
                     <div class="col-sm-6">
-                        <input type="text" name="name" class="form-control" ng-model="model.SchoolObj.name" /> </div>
+                        <input type="text" name="name" class="form-control" ng-model="model.SchoolObj.name" required/> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">المنطقه التعليميه</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="educationalRegion" class="form-control" ng-model="model.SchoolObj.educationalRegion" /> </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 control-label">جنس المدرسه</label>
@@ -80,7 +90,7 @@
                     <div class="col-sm-6">
                         <input type="text" name="governmentBuildings" class="form-control" ng-model="model.SchoolObj.governmentBuildings" /> </div>
                 </div>
-                <button class="btn btn-primary" type="submit">حفظ</button>
+                <button class="btn btn-primary" type="submit" ng-disabled="schoolForm.$invalid">حفظ</button>
                 <button class="btn btn-danger">الغاء</button>
             </div>
         </div>
