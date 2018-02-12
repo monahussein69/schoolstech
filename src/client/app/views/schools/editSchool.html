@@ -1,0 +1,88 @@
+<div class="page-bar">
+
+    <ul class="page-breadcrumb">
+        <li>
+            <a ui-sref="dashboard">الصفحه الرئيسيه</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a ui-sref="Master.ِAddEditSchool">تعديل المدرسه</a>
+        </li>
+    </ul>
+</div>
+<h3 class="page-title"> تعديل المدرسه</h3>
+<div>
+    <form method="post" ng-submit="model.saveSchool()">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">اسم المدرسه</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="name" class="form-control" ng-model="model.SchoolObj.name" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">جنس المدرسه</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="gender" class="form-control" ng-model="model.SchoolObj.gender" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">المرحله التعليميه</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="educationLevel" class="form-control" ng-model="model.SchoolObj.educationLevel" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">المكتب</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="educationalOffice" class="form-control" ng-model="model.SchoolObj.educationalOffice" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">العنوان</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="address" class="form-control" ng-model="model.SchoolObj.address" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">الهاتف</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="phone" class="form-control" ng-model="model.SchoolObj.phone" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">البريد الالكتروني</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="email" class="form-control" ng-model="model.SchoolObj.email" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">مجموع الفصول</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="totalClasses" class="form-control" ng-model="model.SchoolObj.totalClasses" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">مجموع الطلاب</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="totalStudents" class="form-control" ng-model="model.SchoolObj.totalStudents" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">عدد الطاقم الاداري و التعليمي</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="totalStaff" class="form-control" ng-model="model.SchoolObj.totalStaff" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">سنه التأسيس</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="foundationYear" class="form-control" ng-model="model.SchoolObj.foundationYear" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">عدد المباني المستأجره</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="rentedBuildings" class="form-control" ng-model="model.SchoolObj.rentedBuildings" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">عدد المباني المستأجره</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="governmentBuildings" class="form-control" ng-model="model.SchoolObj.governmentBuildings" /> </div>
+                </div>
+                <button class="btn btn-primary" type="submit">حفظ</button>
+                <button class="btn btn-danger">الغاء</button>
+            </div>
+        </div>
+    </form>
+</div>
