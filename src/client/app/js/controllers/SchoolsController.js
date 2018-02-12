@@ -1,4 +1,4 @@
-angular.module('MetronicApp').controller('SchoolsController', function($rootScope, $scope , $http, $window , localStorageService) {
+angular.module('MetronicApp').controller('SchoolsController', function($rootScope, $scope , $http, $window , localStorageService,manageSchoolService) {
     var model = {
      deleteSchool : deleteSchool
     };
@@ -6,7 +6,7 @@ angular.module('MetronicApp').controller('SchoolsController', function($rootScop
 
 
     function deleteSchool(schoolId){
-        manageSchoolService.deleteSchool(schoolId, function(response) {
+        manageSchoolService.deleteSchoolData(schoolId, function(response) {
 
             if(response.success){
                model.success = response.msg;
@@ -41,6 +41,8 @@ angular.module('MetronicApp').controller('ManageSchoolController', function($sta
 
 
     $scope.model = model;
+
+
 
 
     if($stateParams.schoolId){
