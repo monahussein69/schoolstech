@@ -41,7 +41,7 @@ angular.module('MetronicApp').controller('ManageSchoolController', function($sta
                 if(response.success) {
                     console.log('added Successfully');
                 } else {
-                    $scope.model.error = 'خطأ في حفظ البيانات , الرجاء المحاوله مره اخرى';
+                    $scope.model.error = response.msg;
                     console.log('error');
                 }
             });
