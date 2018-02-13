@@ -92,3 +92,69 @@ angular.module('MetronicApp').controller('ManageSchoolController', function($sta
     $rootScope.settings.layout.pageBodySolid = false;
     $rootScope.settings.layout.pageSidebarClosed = false;
 });
+
+
+
+
+angular.module('MetronicApp').controller('ManageSchoolAccountController', function($stateParams, $rootScope, $scope , $http, $window , localStorageService,manageSchoolAccountService) {
+
+
+    var model = {
+        SchoolObj : {},
+        saveSchoolAccount: saveSchoolAccount,
+        error:null,
+        success:null
+    };
+
+
+    $scope.model = model;
+
+
+
+
+    if($stateParams.schoolId){
+        model.SchoolAccountObj.schoolId = $stateParams.schoolId;
+        manageSchoolAccountService.getSchoolAccountData($stateParams.schoolId, function(response) {
+            model.SchoolAccountObj.accountName = response[0].accountName;
+            model.SchoolAccountObj.accountStatus = response[0].accountStatus;
+            model.SchoolAccountObj.activationDate = response[0].activationDate;
+            model.SchoolAccountObj.expirationDate = response[0].expirationDate;
+            model.SchoolAccountObj.contactPerson = response[0].contactPerson;
+            model.SchoolAccountObj.contactEmail = response[0].contactEmail;
+            model.SchoolAccountObj.contactTitle = response[0].contactTitle;
+            model.SchoolAccountObj.contactMobile = response[0].contactMobile;
+            model.SchoolAccountObj.contactPhone = response[0].contactPhone;
+            model.SchoolAccountObj.contactPostal = response[0].contactPostal;
+            model.SchoolAccountObj.rentedBuildings = response[0].rentedBuildings;
+            model.SchoolAccountObj.governmentBuildings = response[0].governmentBuildings;
+            model.SchoolAccountObj.contactMailBox = response[0].contactMailBox;
+        });
+    }
+
+    function saveSchoolAccount(){
+        if(Object.keys($scope.model.SchoolAccountObj).length){
+
+            manageSchoolService.saveSchoolAccountData($scope.model.SchoolAccountObj, function(response) {
+                if(response.success) {
+                    model.success = response.msg;
+                } else {
+                    model.error = response.msg;
+                    console.log('error');
+                }
+            });
+
+        }
+
+    }
+
+
+    $scope.$on('$viewContentLoaded', function() {
+        // initialize core components
+        // App.initAjax();
+    });
+
+    // set sidebar closed and body solid layout mode
+    $rootScope.settings.layout.pageContentWhite = true;
+    $rootScope.settings.layout.pageBodySolid = false;
+    $rootScope.settings.layout.pageSidebarClosed = false;
+});
