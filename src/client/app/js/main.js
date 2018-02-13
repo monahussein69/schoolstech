@@ -222,6 +222,27 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }]
             }
         })
+        
+         .state('Master.mangeSchoolAccount', {
+            url: "/manageSchoolAccount/:schoolId",
+            templateUrl: "views/schools/schoolAccount.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "ManageSchoolAccountController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/SchoolsController.js',
+                            'js/services/SchoolFactory.js',
+                            '../assets/global/plugins/ bootstrap-datepicker/css/bootstrap-datepicker.min.css',
+                            '../assets/global/plugins/ bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+                        ]
+                    });
+                }]
+            }
+        })
 
         // Blank Page
         .state('Master.blank', {
