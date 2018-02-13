@@ -2,7 +2,7 @@ var con = require('../routes/dbConfig.js');
 
 var schoolAccountMethods = {
     saveSchoolAccount: function(req,res,callback) {
-     var schoolAccountData = req.body.schoolData;
+     var schoolAccountData = req.body.schoolAccountData;
 
      var response = {};
      if(schoolAccountData.schoolId){
@@ -28,7 +28,7 @@ var schoolAccountMethods = {
              throw err
             if(result.affectedRows){
              response.success = true;
-			 response.msg = 'تم التعديل بنجاح'
+                response.msg = 'تم حفظ بيانات الاشتراك بنجاح';
             }else{
              response.success = false;
 			 response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
@@ -39,38 +39,35 @@ var schoolAccountMethods = {
            } 
           );
          }else{
-		  response.success = false;
-		  response.msg = 'لا يمكن العثور على المدرسه , الرجاء المحاوله مره اخري';
-		  callback(response);
+
+             con.query(" insert into SYS_School_Account  (accountName, accountStatus,activationDate,expirationDate,contactPerson, contactEmail,contactTitle ,contactMobile ,contactPhone,contactPostal,contactMailBox,schoolId) values(?,?,?,?,?,?,?,?,?,?,?,?)",
+                 [schoolAccountData.accountName ,
+                     schoolAccountData.accountStatus,
+                     schoolAccountData.activationDate ,
+                     schoolAccountData.expirationDate ,
+                     schoolAccountData.contactPerson,
+                     schoolAccountData.contactEmail,
+                     schoolAccountData.contactTitle ,
+                     schoolAccountData.contactMobile,
+                     schoolAccountData.contactPhone ,
+                     schoolAccountData.contactPostal ,
+                     schoolAccountData.contactMailBox,
+                     schoolAccountData.schoolId,
+                 ],function(err,result){
+                     if(err)
+                         throw err
+                     if(result.affectedRows){
+                         response.success = true;
+                         response.msg = 'تم حفظ بيانات الاشتراك بنجاح';
+                     }else{
+                         response.success = false;
+                         response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
+                     }
+                     callback(response);
+                 }
+             );
 		 } 
        });
-     }else{
-	 
-	   con.query(" insert into SYS_School_Account  (accountName, accountStatus,activationDate,expirationDate,contactPerson, contactEmail,contactTitle ,contactMobile ,contactPhone,contactPostal,contactMailBox) values(?,?,?,?,?,?,?,?,?,?,?)",
-          [schoolAccountData.accountName ,
-            schoolAccountData.accountStatus,
-            schoolAccountData.activationDate ,
-            schoolAccountData.expirationDate ,
-            schoolAccountData.contactPerson,
-            schoolAccountData.contactEmail,
-            schoolAccountData.contactTitle ,
-            schoolAccountData.contactMobile,
-            schoolAccountData.contactPhone ,
-            schoolAccountData.contactPostal ,
-            schoolAccountData.contactMailBox,
-           ],function(err,result){
-            if(err)
-             throw err
-            if(result.affectedRows){
-             response.success = true;
-			 response.msg = 'تم الاضافه بنجاح'
-            }else{
-             response.success = false;
-			 response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
-            } 
-			callback(response);
-           } 
-          );
      }
 
     },

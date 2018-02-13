@@ -5,11 +5,11 @@
             <i class="fa fa-circle"></i>
         </li>
         <li>
-            <a ui-sref="Master.AddEditSchool">تعديل المدرسه</a>
+            <a ui-sref="Master.AddEditSchool">بيانات المدرسه </a>
         </li>
     </ul>
 </div>
-<h3 class="page-title"> تعديل المدرسه</h3>
+<h3 class="page-title"> بيانات المدرسه </h3>
 <div>
     <form method="post" ng-submit="model.saveSchool()" name="schoolForm" ng-model="schoolForm">
         <div class="alert alert-success" ng-if="model.success != null">
@@ -25,7 +25,7 @@
             <div class="col-md-8">
                 <div class="form-group row">
                     <label class="col-sm-2 control-label">
-                        <span style="color:red"> * </span> اسم المدرسه</label>
+                        <span style="color:red;font-family: sans-serif !important;"> * </span> اسم المدرسه</label>
                     <div class="col-sm-6">
                         <input type="text" name="name" class="form-control" ng-model="model.SchoolObj.name" required/> </div>
                 </div>
@@ -62,32 +62,28 @@
                 <div class="form-group row">
                     <label class="col-sm-2 control-label">البريد الالكتروني</label>
                     <div class="col-sm-6">
-                        <input type="text" name="email" class="form-control" ng-model="model.SchoolObj.email" type="email"/>
-                         <span class="help-block" ng-show="schoolForm.email.$dirty && schoolForm.email.$invalid">الرجاء ادخال بريد الكتروني صحيح</span>    
-
-                        </div>
+                        <input type="email" name="email" class="form-control" ng-model="model.SchoolObj.email" />
+                        <span class="help-block" style="color:red" ng-show="schoolForm.email.$dirty && schoolForm.email.$invalid">الرجاء ادخال بريد الكتروني صحيح</span>
+                    </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 control-label">مجموع الفصول</label>
                     <div class="col-sm-6">
                         <input type="text" name="totalClasses" class="form-control" ng-model="model.SchoolObj.totalClasses" numbersOnly/> </div>
-                                         <span class="help-block" ng-show="schoolForm.totalClasses.$dirty && schoolForm.totalClasses.$invalid">الرجاء ادخال ارقام فقط</span>    
-
+                    <span class="help-block" style="color:red" ng-show="schoolForm.totalClasses.$dirty && schoolForm.totalClasses.$invalid">الرجاء ادخال ارقام فقط</span>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 control-label">مجموع الطلاب</label>
                     <div class="col-sm-6">
                         <input type="text" name="totalStudents" class="form-control" ng-model="model.SchoolObj.totalStudents" numbersOnly/> </div>
-                                         <span class="help-block" ng-show="schoolForm.totalStudents.$dirty && schoolForm.totalStudents.$invalid">الرجاء ادخال ارقام فقط</span>    
-
+                    <span class="help-block" style="color:red" ng-show="schoolForm.totalStudents.$dirty && schoolForm.totalStudents.$invalid">الرجاء ادخال ارقام فقط</span>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 control-label">عدد الطاقم الاداري و التعليمي</label>
                     <div class="col-sm-6">
                         <input type="text" name="totalStaff" class="form-control" ng-model="model.SchoolObj.totalStaff" numbersOnly/> </div>
-                                        <span class="help-block" ng-show="schoolForm.totalStaff.$dirty && schoolForm.totalStaff.$invalid">الرجاء ادخال ارقام فقط</span>    
-
-               </div>
+                    <span class="help-block" style="color:red" ng-show="schoolForm.totalStaff.$dirty && schoolForm.totalStaff.$invalid">الرجاء ادخال ارقام فقط</span>
+                </div>
                 <div class="form-group row">
                     <label class="col-sm-2 control-label">سنه التأسيس</label>
                     <div class="col-sm-6">
@@ -97,15 +93,13 @@
                     <label class="col-sm-2 control-label">عدد المباني المستأجره</label>
                     <div class="col-sm-6">
                         <input type="text" name="rentedBuildings" class="form-control" ng-model="model.SchoolObj.rentedBuildings" numbersOnly/> </div>
-                                        <span class="help-block" ng-show="schoolForm.rentedBuildings.$dirty && schoolForm.rentedBuildings.$invalid">الرجاء ادخال ارقام فقط</span>    
-
-               </div>
+                    <span class="help-block" style="color:red" ng-show="schoolForm.rentedBuildings.$dirty && schoolForm.rentedBuildings.$invalid">الرجاء ادخال ارقام فقط</span>
+                </div>
                 <div class="form-group row">
                     <label class="col-sm-2 control-label">عدد المباني المستأجره</label>
                     <div class="col-sm-6">
                         <input type="text" name="governmentBuildings" class="form-control" ng-model="model.SchoolObj.governmentBuildings" numbersOnly/> </div>
-                                         <span class="help-block" ng-show="schoolForm.governmentBuildings.$dirty && schoolForm.governmentBuildings.$invalid">الرجاء ادخال ارقام فقط</span>    
-
+                    <span class="help-block" style="color:red" ng-show="schoolForm.governmentBuildings.$dirty && schoolForm.governmentBuildings.$invalid">الرجاء ادخال ارقام فقط</span>
                 </div>
                 <button class="btn btn-primary" type="submit" ng-disabled="schoolForm.$invalid">حفظ</button>
                 <button class="btn btn-danger">الغاء</button>

@@ -236,8 +236,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                         files: [
                             'js/controllers/SchoolsController.js',
                             'js/services/SchoolAccountFactory.js',
-                            '../assets/global/plugins/ bootstrap-datepicker/css/bootstrap-datepicker.min.css',
-                            '../assets/global/plugins/ bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+                            '../assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css',
+                            '../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+                            '../assets/pages/scripts/components-date-time-pickers.min.js',
+                            '../assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css',
+                            '../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
+
+
                         ]
                     });
                 }]

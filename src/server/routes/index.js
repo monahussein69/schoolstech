@@ -40,19 +40,19 @@ router.get('/deleteSchool/:schoolId', function(req, res, next) {
 });
 
 router.post('/saveSchoolAccountData', function(req, res, next) {
-    schoolAccountMethods.saveSchool(req,res,function(result){
+    schoolAccountMethods.saveSchoolAccount(req,res,function(result){
         res.send(result);
     });
 });
 
 
 router.get('/getSchoolAccount/:schoolId', function(req, res, next) {
-    schoolAccountMethods.getSchool(req, res, function (result) {
+    schoolAccountMethods.getSchoolAccount(req, res, function (result) {
         res.send(result);
     });
 });
 router.get('/deleteSchoolAccount/:schoolId', function(req, res, next) {
-        schoolAccountMethods.deleteSchool(req,res,function(result){
+        schoolAccountMethods.deleteSchoolAccount(req,res,function(result){
             res.send(result);
         });
 });

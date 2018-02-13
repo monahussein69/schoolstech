@@ -100,7 +100,7 @@ angular.module('MetronicApp').controller('ManageSchoolAccountController', functi
 
 
     var model = {
-        SchoolObj : {},
+        SchoolAccountObj : {},
         saveSchoolAccount: saveSchoolAccount,
         error:null,
         success:null
@@ -115,24 +115,27 @@ angular.module('MetronicApp').controller('ManageSchoolAccountController', functi
     if($stateParams.schoolId){
         model.SchoolAccountObj.schoolId = $stateParams.schoolId;
         manageSchoolAccountService.getSchoolAccountData($stateParams.schoolId, function(response) {
-            model.SchoolAccountObj.accountName = response[0].accountName;
-            model.SchoolAccountObj.accountStatus = response[0].accountStatus;
-            model.SchoolAccountObj.activationDate = response[0].activationDate;
-            model.SchoolAccountObj.expirationDate = response[0].expirationDate;
-            model.SchoolAccountObj.contactPerson = response[0].contactPerson;
-            model.SchoolAccountObj.contactEmail = response[0].contactEmail;
-            model.SchoolAccountObj.contactTitle = response[0].contactTitle;
-            model.SchoolAccountObj.contactMobile = response[0].contactMobile;
-            model.SchoolAccountObj.contactPhone = response[0].contactPhone;
-            model.SchoolAccountObj.contactPostal = response[0].contactPostal;
-            model.SchoolAccountObj.contactMailBox = response[0].contactMailBox;
+            if (Object.keys(response).length){
+                model.SchoolAccountObj.accountName = response[0].accountName;
+                model.SchoolAccountObj.accountStatus = response[0].accountStatus;
+                model.SchoolAccountObj.activationDate = response[0].activationDate;
+                model.SchoolAccountObj.expirationDate = response[0].expirationDate;
+                model.SchoolAccountObj.contactPerson = response[0].contactPerson;
+                model.SchoolAccountObj.contactEmail = response[0].contactEmail;
+                model.SchoolAccountObj.contactTitle = response[0].contactTitle;
+                model.SchoolAccountObj.contactMobile = response[0].contactMobile;
+                model.SchoolAccountObj.contactPhone = response[0].contactPhone;
+                model.SchoolAccountObj.contactPostal = response[0].contactPostal;
+                model.SchoolAccountObj.contactMailBox = response[0].contactMailBox;
+
+            }
         });
     }
 
     function saveSchoolAccount(){
         if(Object.keys($scope.model.SchoolAccountObj).length){
 
-            manageSchoolService.saveSchoolAccountData($scope.model.SchoolAccountObj, function(response) {
+            manageSchoolAccountService.saveSchoolAccountData($scope.model.SchoolAccountObj, function(response) {
                 if(response.success) {
                     model.success = response.msg;
                 } else {
