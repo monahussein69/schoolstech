@@ -16,6 +16,10 @@
             <button class="close" data-close="alert"></button>
             <span>{{model.success}}</span>
         </div>
+        <div class="alert alert-danger" ng-if="model.error != null">
+            <button class="close" data-close="alert"></button>
+            <span>{{model.error}}</span>
+        </div>
         <input type="hidden" name="schoolId" ng-model="model.schoolObj.schoolId" />
         <div class="row">
             <div class="col-md-8">
