@@ -1,0 +1,114 @@
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a ui-sref="dashboard">الصفحه الرئيسيه</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a ui-sref="Master.ِAddEditSchool">بيانات الاشتراك</a>
+        </li>
+    </ul>
+</div>
+<h3 class="page-title">بيانات الاشتراك</h3>
+<div>
+    <form method="post" ng-submit="model.saveSchoolِAccount()" name="schoolAccountForm" ng-model="schoolAccountForm">
+        <div class="alert alert-success" ng-if="model.success != null">
+            <button class="close" data-close="alert"></button>
+            <span>{{model.success}}</span>
+        </div>
+         <div class="alert alert-danger" ng-if="model.error != null">
+            <button class="close" data-close="alert"></button>
+            <span>{{model.error}}</span>
+        </div>
+        <input type="hidden" name="schoolId" ng-model="model.SchoolAccountObj.schoolId" />
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">
+                         اسم الحساب</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="name" class="form-control" ng-model="model.SchoolAccountObj.accountName" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">حاله الحساب</label>
+                    <div class="col-sm-6">
+                     <select name="accountStatus" class="form-control" ng-model="model.SchoolAccountObj.accountStatus">
+                      <option value="مفعل"> مفعل</option>
+                      <option value="مغلق"> مغلق</option>
+                     </select>
+                    </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">تاريخ التفعيل</label>
+                    <div class="col-md-6">
+                         <div class="input-group date form_datetime form_datetime bs-datetime">
+                             <input type="text" class="form-control"  ng-model="model.SchoolAccountObj.activationDate">
+                                  <span class="input-group-addon">
+                                      <button class="btn default date-set" type="button">
+                                           <i class="fa fa-calendar"></i>
+                                      </button>
+                                  </span>
+                                </div>
+                         </div>
+                         
+                       <div class="form-group row">
+                    <label class="col-sm-2 control-label">تاريخ انتهاء التفعيل </label>
+                    <div class="col-md-6">
+                         <div class="input-group date form_datetime form_datetime bs-datetime">
+                             <input type="text" class="form-control"  ng-model="model.SchoolAccountObj.expirationDate">
+                                  <span class="input-group-addon">
+                                      <button class="btn default date-set" type="button">
+                                           <i class="fa fa-calendar"></i>
+                                      </button>
+                                  </span>
+                                </div>
+                         </div>   
+                    
+                
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">اسم مدير الحساب</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="contactPerson" class="form-control" ng-model="model.SchoolAccountObj.contactPerson" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">البريد الابكتروني</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="contactEmail" class="form-control" ng-model="model.SchoolAccountObj.contactEmail" type="email"/> 
+                        <span class="help-block" ng-show="schoolAccountForm.contactEmail.$dirty && schoolAccountForm.contactEmail.$invalid">الرجاء ادخال بريد الكتروني صحيح</span>    
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">اسم الحساب</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="contactTitle" class="form-control" ng-model="model.SchoolAccountObj.contactTitle" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">الجوال</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="contactMobile" class="form-control" ng-model="model.SchoolAccountObj.contactMobile" numbersOnly/> </div>
+                         <span class="help-block" ng-show="schoolAccountForm.contactMobile.$dirty && schoolAccountForm.contactMobile.$invalid">الرجاء ادخال رقم جوال صحيح</span>    
+               
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">الهاتف</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="contactPhone" class="form-control" ng-model="model.SchoolAccountObj.contactPhone" numbersOnly/> </div>
+                          <span class="help-block" ng-show="schoolAccountForm.contactPhone.$dirty && schoolAccountForm.contactPhone.$invalid">الرجاء ادخال رقم هاتف صحيح</span>    
+
+                       </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">البريد</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="contactPostal" class="form-control" ng-model="model.SchoolObj.contactPostal" /> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">صندوق البريد</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="contactMailBox" class="form-control" ng-model="model.SchoolObj.contactMailBox" /> </div>
+                </div>
+               
+                <button class="btn btn-primary" type="submit" ng-disabled="schoolAccountForm.$invalid">حفظ</button>
+                <button class="btn btn-danger">الغاء</button>
+            </div>
+        </div>
+    </form>
+</div>
