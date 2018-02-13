@@ -125,8 +125,6 @@ angular.module('MetronicApp').controller('ManageSchoolAccountController', functi
             model.SchoolAccountObj.contactMobile = response[0].contactMobile;
             model.SchoolAccountObj.contactPhone = response[0].contactPhone;
             model.SchoolAccountObj.contactPostal = response[0].contactPostal;
-            model.SchoolAccountObj.rentedBuildings = response[0].rentedBuildings;
-            model.SchoolAccountObj.governmentBuildings = response[0].governmentBuildings;
             model.SchoolAccountObj.contactMailBox = response[0].contactMailBox;
         });
     }
