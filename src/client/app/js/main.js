@@ -8,7 +8,8 @@ var MetronicApp = angular.module("MetronicApp", [
     "ui.bootstrap", 
     "oc.lazyLoad",  
     "ngSanitize",
-    "LocalStorageModule"
+    "LocalStorageModule",
+    "ngFileUpload"
 ]);
 
 
