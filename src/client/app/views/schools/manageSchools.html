@@ -33,7 +33,12 @@
                                     <i class="fa fa-plus"></i> جديد </a>
                             </div>
                             <div class="btn-group">
-                                <input type="file" ngf-select ng-model="file" name="file" ng-change="model.doUpload()" /> </div>
+
+                                <label for="file-upload" class="btn sbold red">
+                                    <i class="fa fa-cloud-upload"></i> استيراد بيانات المدرسه
+                                </label>
+
+                                <input type="file" ngf-select ng-model="file" name="file" ng-change="model.doUpload()" id="file-upload" style="display:none" /> </div>
                         </div>
                         <div class="col-md-6">
                             <div class="btn-group pull-right">
@@ -97,13 +102,17 @@
                                     </button>
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <a ui-sref="Master.AddEditSchool">
-                                                <i class="icon-pencil"></i>تعديل </a>
+                                            <a ui-sref="Master.AddEditSchool({schoolId:{{school.id}}})">
+                                                <i class="icon-pencil"></i>&nbsp; تعديل </a>
+                                        </li>
+                                        <li>
+                                            <a ui-sref="Master.mangeSchoolAccount({schoolId:{{school.id}}})">
+                                                <i class="fa fa-credit-card"></i> &nbsp;بيانات الاشتراك </a>
                                         </li>
                                         <li class="divider"> </li>
                                         <li>
                                             <a href="javascript:;" ng-click="model.deleteSchool(school.id)">
-                                                <i class="fa fa-trash"></i> حذف </a>
+                                                <i class="fa fa-trash"></i>&nbsp; حذف </a>
                                         </li>
                                     </ul>
                                 </div>
