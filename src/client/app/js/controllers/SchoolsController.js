@@ -1,5 +1,5 @@
 angular.module('MetronicApp').controller('SchoolsController',
-    function ($rootScope, $scope, $http, $window, localStorageService, manageSchoolService, Upload , toastr) {
+    function ($rootScope, $scope, $http, $window, localStorageService, manageSchoolService, Upload, toastr) {
         var model = {
             upload: upload,
             doUpload: doUpload,
@@ -9,14 +9,18 @@ angular.module('MetronicApp').controller('SchoolsController',
         $scope.model = model;
 
         manageSchoolService.getAllSchools().then(function (schools) {
-            console.log(schools);
             $scope.schools = schools;
+
             $scope.$apply();
         });
 
         function deleteSchool(schoolId) {
             manageSchoolService.deleteSchoolData(schoolId, function (response) {
                 if (response.success) {
+                    var index = $scope.schools.findIndex(function (school) {
+                        return school.id == schoolId
+                    });
+                    $scope.schools.splice(index, 1);
                     model.success = response.msg;
                     toastr.success(response.msg);
                 } else {
@@ -36,20 +40,24 @@ angular.module('MetronicApp').controller('SchoolsController',
                 url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
                 data: {file: file} //pass file as data, should be user ng-model
             }).then(function (resp) { //upload function returns a promise
-                if (resp.data.error_code === 0) { //validate success
-                    $window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');
+                console.log(resp);
+                if (resp.status === 200) { //validate success
+                    toastr.success("تم رفع الملف بنجاح");
                 } else {
-                    $window.alert('an error occured');
+                    toastr.error('هناك مشكلة في رفع الملف');
                 }
             }, function (resp) { //catch error
-                console.log('Error status: ' + resp.status);
-                $window.alert('Error status: ' + resp.status);
+                toastr.error('Error status: ' + resp.status);
             }, function (evt) {
-                console.log(evt);
                 var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                 console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                 model.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
 
+                manageSchoolService.getAllSchools().then(function (schools) {
+                    $scope.schools = schools;
+
+                    $scope.$apply();
+                });
             });
         };
 

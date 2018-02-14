@@ -101,9 +101,8 @@ router.post('/upload', function (req, res) {
         }
         req.body.filename = filename;
         schoolMethods.UploadExcel(req, res, function (result) {
-
             console.log("result : ", result);
-            res.send(result);
+            res.send({status: true , msg:'تم اضافة الملف بنجاح'});
         });
         // if(req.file.originalname.split('.')[req.file.originalname.split('.').length-1] === 'xlsx'){
         //     var array = xlsx.parse(__dirname + '/file_name.xlsx');
