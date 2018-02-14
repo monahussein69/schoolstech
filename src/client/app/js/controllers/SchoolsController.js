@@ -73,7 +73,7 @@ angular.module('MetronicApp').controller('SchoolsController',
     });
 
 
-angular.module('MetronicApp').controller('ManageSchoolController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageSchoolService) {
+angular.module('MetronicApp').controller('ManageSchoolController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageSchoolService,toastr) {
 
 
     var model = {
@@ -111,7 +111,9 @@ angular.module('MetronicApp').controller('ManageSchoolController', function ($st
 
             manageSchoolService.saveSchoolData($scope.model.SchoolObj, function (response) {
                 if (response.success) {
-                    model.success = response.msg;
+                    //model.success = response.msg;
+                    $window.location.href = '#/schools.html';
+                    toastr.success(response.msg);
                 } else {
                     model.error = response.msg;
                     console.log('error');
@@ -135,7 +137,7 @@ angular.module('MetronicApp').controller('ManageSchoolController', function ($st
 });
 
 
-angular.module('MetronicApp').controller('ManageSchoolAccountController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageSchoolAccountService) {
+angular.module('MetronicApp').controller('ManageSchoolAccountController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageSchoolAccountService,toastr) {
 
 
     var model = {
@@ -175,6 +177,9 @@ angular.module('MetronicApp').controller('ManageSchoolAccountController', functi
             manageSchoolAccountService.saveSchoolAccountData($scope.model.SchoolAccountObj, function (response) {
                 if (response.success) {
                     model.success = response.msg;
+                    $window.location.href = '#/schools.html';
+                    toastr.success(response.msg);
+
                 } else {
                     model.error = response.msg;
                     console.log('error');
