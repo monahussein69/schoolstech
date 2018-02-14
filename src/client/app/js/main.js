@@ -9,7 +9,8 @@ var MetronicApp = angular.module("MetronicApp", [
     "oc.lazyLoad",
     "ngSanitize",
     "LocalStorageModule",
-    "ngFileUpload"
+    "ngFileUpload",
+    'toastr'
 ]);
 
 
@@ -187,16 +188,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             data: {pageTitle: 'المدارس'},
             controller: "SchoolsController",
             resolve: {
-                "allSchools": ["manageSchoolService", '$rootScope', function (manageSchoolService) {
-                    return manageSchoolService.getAllSchools().then(
-                        function (data) {
-                            return data;
-                        },
-                        function (error) {
-                            console.error("Error:", error);
-                        }
-                    );
-                }],
                 deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'MetronicApp',
@@ -205,15 +196,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/global/plugins/datatables/datatables.min.css',
                             '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
                             '../assets/global/plugins/datatables/datatables.all.min.js',
-                            'js/services/SchoolFactory.js',
                             '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/services/SchoolFactory.js',
                             'js/controllers/SchoolsController.js'
                         ]
                     });
                 }
                     //         return QaDashboardService.allOrders(40).then(
                 ]
-
             }
         })
 

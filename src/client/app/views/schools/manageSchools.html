@@ -28,7 +28,13 @@
                 <div class="table-toolbar">
                     <div class="row">
                         <div class="col-md-6">
-                            <input type="file" ngf-select ng-model="file" name="file" ng-change="model.doUpload()" /> </div>
+                            <div class="btn-group">
+                                <a ui-sref="Master.AddEditSchool" id="sample_editable_1_new" class="btn sbold green">
+                                    <i class="fa fa-plus"></i> جديد </a>
+                            </div>
+                            <div class="btn-group">
+                                <input type="file" ngf-select ng-model="file" name="file" ng-change="model.doUpload()" /> </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="btn-group pull-right">
                                 <button class="btn green  btn-outline dropdown-toggle" data-toggle="dropdown">ادوات مساعدة
@@ -63,14 +69,15 @@
                             </th>
                             <th> المدرسة</th>
                             <th> المنطقة التعليمية</th>
-                            <th> المرحلة التعليمية </th>
+                            <th> المرحلة التعليمية</th>
                             <th> جنس المدرسة</th>
                             <th> المكتب</th>
                             <th> العنوان</th>
+                            <th> العمليات</th>
                         </tr>
                     </thead>
-                    <tbody> <pre>{{model.schools}}</pre>
-                        <tr class="odd gradeX" ng-repeat="school in model.schools">
+                    <tbody>
+                        <tr class="odd gradeX" ng-repeat="school in schools">
                             <td>
                                 <label class="mt-checkbox mt-checkbox-outline mt-checkbox-single">
                                     <input type="checkbox" class="checkboxes" value="1" />
@@ -78,11 +85,29 @@
                                 </label>
                             </td>
                             <td> {{school.name}}</td>
-                            <td> {{school.educationalRegion}} </td>
+                            <td> {{school.educationalRegion}}</td>
                             <td> {{school.educationLevel}}</td>
                             <td class="center"> {{school.gender}}</td>
-                            <td> {{school.educationalOffice}} </td>
-                            <td> {{school.address}} </td>
+                            <td> {{school.educationalOffice}}</td>
+                            <td> {{school.address}}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> العمليات
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                            <a ui-sref="Master.AddEditSchool">
+                                                <i class="icon-pencil"></i>تعديل </a>
+                                        </li>
+                                        <li class="divider"> </li>
+                                        <li>
+                                            <a href="javascript:;" ng-click="model.deleteSchool(school.id)">
+                                                <i class="icon-tag"></i> حذف </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

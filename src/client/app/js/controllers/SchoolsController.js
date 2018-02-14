@@ -1,23 +1,24 @@
 angular.module('MetronicApp').controller('SchoolsController',
-    function ($rootScope, $scope, $http, $window, localStorageService, manageSchoolService, Upload , allSchools) {
+    function ($rootScope, $scope, $http, $window, localStorageService, manageSchoolService, Upload , toastr) {
         var model = {
             upload: upload,
-            schools: allSchools,
             doUpload: doUpload,
             progress: '',
             deleteSchool: deleteSchool
         };
         $scope.model = model;
-        console.log(model.schools);
-        // manageSchoolService.getAllSchools().then(function (schools) {
-        //     console.log(schools);
-        //     model.schools = schools;
-        // });
+
+        manageSchoolService.getAllSchools().then(function (schools) {
+            console.log(schools);
+            $scope.schools = schools;
+            $scope.$apply();
+        });
 
         function deleteSchool(schoolId) {
             manageSchoolService.deleteSchoolData(schoolId, function (response) {
                 if (response.success) {
                     model.success = response.msg;
+                    toastr.success(response.msg);
                 } else {
                     model.error = response.msg;
                 }
