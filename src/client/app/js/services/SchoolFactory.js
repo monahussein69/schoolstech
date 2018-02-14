@@ -11,9 +11,18 @@ angular.module('MetronicApp').factory('manageSchoolService', function($http){
     };
 
     fac.getSchoolData = function (schoolId, callback) {
-
         $http.get("http://localhost:3000/getSchool/"+schoolId).success(function (response) {
             callback(response);
+        });
+
+    };
+
+    fac.getAllSchools = function () {
+        return new Promise(function (resolve, reject) {
+            $http.get("http://localhost:3000/getAllSchools").success(function (response) {
+                console.log(response);
+                resolve(response);
+            });
         });
 
     };
