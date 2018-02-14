@@ -12,7 +12,7 @@ var schoolMethods = {
                 if (err)
                     throw err;
                 if (Object.keys(result).length) {
-                    con.query(" update SCH_School set name = ? , gender = ?,educationalOffice=?,educationalRegion=?,educationLevel=?, address=?,totalClasses=? ,totalStudents =?,totalStaff=?,rentedBuildings=?,governmentBuildings=?,foundationYear=?,logoFile=? where id = ?",
+                    con.query(" update SCH_School set name = ? , gender = ?,educationalOffice=?,educationalRegion=?,educationLevel=?, address=?,totalClasses=? ,totalStudents =?,totalStaff=?,rentedBuildings=?,governmentBuildings=?,foundationYear=?,logoFile=?,schoolNum=? where id = ?",
                         [schoolData.name,
                             schoolData.gender,
                             schoolData.educationalOffice,
@@ -26,6 +26,7 @@ var schoolMethods = {
                             schoolData.governmentBuildings,
                             schoolData.foundationYear,
                             schoolData.logoFile,
+                            schoolData.schoolNum,
                             schoolData.schoolId,
                         ], function (err, result) {
                             if (err)
@@ -49,34 +50,49 @@ var schoolMethods = {
                 }
             });
         } else {
-
-            con.query(" insert into SCH_School  (name, gender,educationalOffice,educationalRegion,educationLevel, address,totalClasses ,totalStudents ,totalStaff,rentedBuildings,governmentBuildings,foundationYear,logoFile) values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                [schoolData.name,
-                    schoolData.gender,
-                    schoolData.educationalOffice,
-                    schoolData.educationalRegion,
-                    schoolData.educationLevel,
-                    schoolData.address,
-                    schoolData.totalClasses,
-                    schoolData.totalStudents,
-                    schoolData.totalStaff,
-                    schoolData.rentedBuildings,
-                    schoolData.governmentBuildings,
-                    schoolData.foundationYear,
-                    schoolData.logoFile
-                ], function (err, result) {
-                    if (err)
-                        throw err
-                    if (result.affectedRows) {
-                        response.success = true;
-                        response.msg = 'تم الاضافه بنجاح'
-                    } else {
+            con.query("select * from SCH_School where schoolNum = ?", [schoolData.schoolNum], function (err, result) {
+                console.log('here');
+                console.log(result);
+                if (err)
+                        throw err;
+                    if (Object.keys(result).length) {
+                        console.log('found');
                         response.success = false;
-                        response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
+                        response.msg = 'المدرسه موجوده مسبقا';
+                        callback(response);
+                    }else{
+
+                        con.query(" insert into SCH_School  (name, gender,educationalOffice,educationalRegion,educationLevel, address,totalClasses ,totalStudents ,totalStaff,rentedBuildings,governmentBuildings,foundationYear,logoFile,schoolNum) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                            [schoolData.name,
+                                schoolData.gender,
+                                schoolData.educationalOffice,
+                                schoolData.educationalRegion,
+                                schoolData.educationLevel,
+                                schoolData.address,
+                                schoolData.totalClasses,
+                                schoolData.totalStudents,
+                                schoolData.totalStaff,
+                                schoolData.rentedBuildings,
+                                schoolData.governmentBuildings,
+                                schoolData.foundationYear,
+                                schoolData.logoFile,
+                                schoolData.schoolNum
+                            ], function (err, result) {
+                                if (err)
+                                    throw err
+                                if (result.affectedRows) {
+                                    response.success = true;
+                                    response.msg = 'تم الاضافه بنجاح'
+                                } else {
+                                    response.success = false;
+                                    response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
+                                }
+                                callback(response);
+                            }
+                        );
                     }
-                    callback(response);
-                }
-            );
+            });
+
         }
 
     },
@@ -84,30 +100,41 @@ var schoolMethods = {
 
     saveSchools: function (req, res, callback) {
         var schoolsData = req.body.schoolsData;
+        console.log('in obj11');
+        console.log(schoolsData);
         var response = {};
         schoolsData.foreach(function (schoolData) {
 
-            con.query(" insert into SCH_School  (name, gender,educationalOffice,educationalRegion,educationLevel, address,totalClasses ,totalStudents ,totalStaff,rentedBuildings,governmentBuildings,foundationYear,logoFile) values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                [schoolData.name,
-                    schoolData.gender,
-                    schoolData.educationalOffice,
-                    schoolData.educationalRegion,
-                    schoolData.educationLevel,
-                    schoolData.address,
-                    schoolData.totalClasses,
-                    schoolData.totalStudents,
-                    schoolData.totalStaff,
-                    schoolData.rentedBuildings,
-                    schoolData.governmentBuildings,
-                    schoolData.foundationYear,
-                    schoolData.logoFile
-                ], function (err, result) {
+                con.query("select * from SCH_School where schoolNum = ?", [schoolData.schoolNum], function (err, result) {
                     if (err)
-                        throw err
+                        throw err;
+                    if (!Object.keys(result).length) {
+                        console.log('in obj');
+                        con.query(" insert into SCH_School  (name, gender,educationalOffice,educationalRegion,educationLevel, address,totalClasses ,totalStudents ,totalStaff,rentedBuildings,governmentBuildings,foundationYear,logoFile) values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                            [schoolData.name,
+                                schoolData.gender,
+                                schoolData.educationalOffice,
+                                schoolData.educationalRegion,
+                                schoolData.educationLevel,
+                                schoolData.address,
+                                schoolData.totalClasses,
+                                schoolData.totalStudents,
+                                schoolData.totalStaff,
+                                schoolData.rentedBuildings,
+                                schoolData.governmentBuildings,
+                                schoolData.foundationYear,
+                                schoolData.logoFile
+                            ], function (err, result) {
+                                if (err)
+                                    throw err
 
 
-                }
-            );
+                            }
+                        );
+                    }
+                });
+
+
         });
 
         response.success = true;
@@ -160,6 +187,7 @@ var schoolMethods = {
                                     educationalRegion: worksheet.getCell('U2').value,
                                     educationalOffice: worksheet.getCell('Q' + rowNumber).value,
                                     name: worksheet.getCell('V' + rowNumber).value,
+                                    schoolNum: worksheet.getCell('U' + rowNumber).value,
                                     gender: worksheet.getCell('S' + rowNumber).value,
                                     educationLevel: worksheet.getCell('R' + rowNumber).value,
                                     address: worksheet.getCell('P' + rowNumber).value,

@@ -70,6 +70,7 @@
                                 </label>
                             </th>
                             <th> المدرسة</th>
+                            <th>الرقم الاحصائي</th>
                             <th> المنطقة التعليمية</th>
                             <th> المرحلة التعليمية</th>
                             <th> جنس المدرسة</th>
@@ -87,6 +88,7 @@
                                 </label>
                             </td>
                             <td> {{school.name}}</td>
+                            <td> {{school.schoolNum}}</td>
                             <td> {{school.educationalRegion}}</td>
                             <td> {{school.educationLevel}}</td>
                             <td class="center"> {{school.gender}}</td>
@@ -108,7 +110,7 @@
                                         </li>
                                         <li class="divider"> </li>
                                         <li>
-                                            <a href="javascript:;" ng-click="model.deleteSchool(school.id)">
+                                            <a href="javascript:;" ng-confirm-click="هل تريد تأكيد حذف المدرسه ؟ " confirmed-click="model.deleteSchool(school.id)">
                                                 <i class="fa fa-trash"></i>&nbsp; حذف </a>
                                         </li>
                                     </ul>

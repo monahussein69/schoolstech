@@ -1,3 +1,20 @@
+
+angular.module('MetronicApp').directive('ngConfirmClick', [
+    function(){
+        return {
+            link: function (scope, element, attr) {
+                var msg = attr.ngConfirmClick || "Are you sure?";
+                var clickAction = attr.confirmedClick;
+                element.bind('click',function (event) {
+                    if ( window.confirm(msg) ) {
+                        scope.$eval(clickAction)
+                    }
+                });
+            }
+        };
+    }])
+
+
 angular.module('MetronicApp').controller('SchoolsController',
     function ($rootScope, $scope, $http, $window, localStorageService, manageSchoolService, Upload, toastr) {
         var model = {
@@ -91,6 +108,7 @@ angular.module('MetronicApp').controller('ManageSchoolController', function ($st
         manageSchoolService.getSchoolData($stateParams.schoolId, function (response) {
             model.SchoolObj.name = response[0].name;
             model.SchoolObj.gender = response[0].gender;
+            model.SchoolObj.schoolNum = response[0].schoolNum;
             model.SchoolObj.educationalRegion = response[0].educationalRegion;
             model.SchoolObj.educationalOffice = response[0].educationalOffice;
             model.SchoolObj.educationLevel = response[0].educationLevel;
@@ -115,7 +133,8 @@ angular.module('MetronicApp').controller('ManageSchoolController', function ($st
                     $window.location.href = '#/schools.html';
                     toastr.success(response.msg);
                 } else {
-                    model.error = response.msg;
+                    //model.error = response.msg;
+                    toastr.error(response.msg);
                     console.log('error');
                 }
             });
@@ -137,12 +156,14 @@ angular.module('MetronicApp').controller('ManageSchoolController', function ($st
 });
 
 
-angular.module('MetronicApp').controller('ManageSchoolAccountController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageSchoolAccountService,toastr) {
+angular.module('MetronicApp').controller('ManageSchoolAccountController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageSchoolAccountService, manageSchoolService,toastr) {
 
 
     var model = {
         SchoolAccountObj: {},
         saveSchoolAccount: saveSchoolAccount,
+        addActivation:addActivation,
+        addExpiration:addExpiration,
         error: null,
         success: null
     };
@@ -153,12 +174,17 @@ angular.module('MetronicApp').controller('ManageSchoolAccountController', functi
 
     if ($stateParams.schoolId) {
         model.SchoolAccountObj.schoolId = $stateParams.schoolId;
+        manageSchoolService.getSchoolData($stateParams.schoolId, function (response) {
+            model.SchoolAccountObj.accountName = response[0].name;
+        });
         manageSchoolAccountService.getSchoolAccountData($stateParams.schoolId, function (response) {
             if (Object.keys(response).length) {
-                model.SchoolAccountObj.accountName = response[0].accountName;
+                //model.SchoolAccountObj.accountName = response[0].accountName;
                 model.SchoolAccountObj.accountStatus = response[0].accountStatus;
                 model.SchoolAccountObj.activationDate = response[0].activationDate;
                 model.SchoolAccountObj.expirationDate = response[0].expirationDate;
+                model.SchoolAccountObj.expirationDuration = response[0].expirationDuration;
+                model.SchoolAccountObj.expirationType = response[0].expirationType;
                 model.SchoolAccountObj.contactPerson = response[0].contactPerson;
                 model.SchoolAccountObj.contactEmail = response[0].contactEmail;
                 model.SchoolAccountObj.contactTitle = response[0].contactTitle;
@@ -171,6 +197,31 @@ angular.module('MetronicApp').controller('ManageSchoolAccountController', functi
         });
     }
 
+    function addActivation(){
+        if($scope.model.SchoolAccountObj.accountStatus == 'مفعل') {
+            var date = new Date();
+            $scope.model.SchoolAccountObj.activationDate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+        }else{
+            $scope.model.SchoolAccountObj.activationDate = '';
+            $scope.model.SchoolAccountObj.expirationDuration = '';
+            $scope.model.SchoolAccountObj.expirationType = '';
+            $scope.model.SchoolAccountObj.expirationDate = '';
+        }
+    }
+
+    function addExpiration(){
+        if(model.SchoolAccountObj.expirationDuration && $scope.model.SchoolAccountObj.activationDate){
+            var activateDate = $scope.model.SchoolAccountObj.activationDate;
+            var type = model.SchoolAccountObj.expirationType;
+            var duration = model.SchoolAccountObj.expirationDuration;
+            var new_date = moment(activateDate).add(duration,type);
+            var day = new_date.format('DD');
+            var month = new_date.format('MM');
+            var year = new_date.format('YYYY');
+            model.SchoolAccountObj.expirationDate = year+'-'+month+'-'+day;
+        }
+    }
+
     function saveSchoolAccount() {
         if (Object.keys($scope.model.SchoolAccountObj).length) {
 
@@ -181,8 +232,9 @@ angular.module('MetronicApp').controller('ManageSchoolAccountController', functi
                     toastr.success(response.msg);
 
                 } else {
-                    model.error = response.msg;
-                    console.log('error');
+                    //model.error = response.msg;
+                    //console.log('error');
+                    toastr.error(response.msg);
                 }
             });
 

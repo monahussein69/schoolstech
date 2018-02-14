@@ -24,14 +24,15 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="form-group row">
-                    <label class="col-sm-2 control-label"> اسم الحساب</label>
+                    <label class="col-sm-2 control-label"> المدرسه</label>
                     <div class="col-sm-6">
-                        <input type="text" name="name" class="form-control" ng-model="model.SchoolAccountObj.accountName" /> </div>
+                        <input type="text" readonly="" name="name" class="form-control" ng-model="model.SchoolAccountObj.accountName" /> </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 control-label">حاله الحساب</label>
                     <div class="col-sm-6">
-                        <select name="accountStatus" class="form-control" ng-model="model.SchoolAccountObj.accountStatus">
+                        <select ng-change="model.addActivation()" name="accountStatus" class="form-control" ng-model="model.SchoolAccountObj.accountStatus">
+                            <option value=""> اختار حاله الاشتراك</option>
                             <option value="مفعل"> مفعل</option>
                             <option value="غير مفعل"> غير مفعل</option>
                         </select>
@@ -40,15 +41,33 @@
                 <div class="form-group row">
                     <label class="col-sm-2 control-label">تاريخ التفعيل</label>
                     <div class="col-md-6">
-                        <input type="text" class="form-control date-picker" ng-model="model.SchoolAccountObj.activationDate"> </div>
+                        <input type="text" readonly="" class="form-control" ng-model="model.SchoolAccountObj.activationDate" date-format="yyyy-MM-dd"> </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-2 control-label">تاريخ انتهاء التفعيل </label>
+                    <label class="col-sm-2 control-label">مده التفعيل </label>
                     <div class="col-md-6">
-                        <input type="text" class="form-control date-picker" ng-model="model.SchoolAccountObj.expirationDate"> </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" ng-model="model.SchoolAccountObj.expirationDuration" ng-change="model.addExpiration()" ng-disabled="model.SchoolAccountObj.accountStatus == 'غير مفعل'"> </div>
+                            <div class="col-md-6">
+                                <select class="form-control" ng-model="model.SchoolAccountObj.expirationType" ng-change="model.addExpiration()" ng-disabled="model.SchoolAccountObj.accountStatus == 'غير مفعل'">
+                                    <option value="">اختار</option>
+                                    <option value="day">يوم</option>
+                                    <option value="week">اسبوع</option>
+                                    <option value="month">شهر</option>
+                                    <option value="year">سنه</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-2 control-label">اسم مدير الحساب</label>
+                    <label class="col-sm-2 control-label">تاريخ انتهاء التفعيل</label>
+                    <div class="col-md-6">
+                        <input type="text" readonly="" class="form-control" ng-model="model.SchoolAccountObj.expirationDate" date-format="yyyy-MM-dd"> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label">قائد المدرسه</label>
                     <div class="col-sm-6">
                         <input type="text" name="contactPerson" class="form-control" ng-model="model.SchoolAccountObj.contactPerson" /> </div>
                 </div>

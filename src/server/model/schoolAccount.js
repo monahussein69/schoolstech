@@ -10,11 +10,13 @@ var schoolAccountMethods = {
          if(err)
           throw err;
          if (Object.keys(result).length){
-          con.query(" update SYS_School_Account set accountName = ? , accountStatus = ?,activationDate=?,expirationDate=?,contactPerson=?, contactEmail=?,contactTitle=? ,contactMobile =?,contactPhone=?,contactPostal=?,contactMailBox=? where schoolId = ?",
+          con.query(" update SYS_School_Account set accountName = ? , accountStatus = ?,activationDate=?,expirationDate=?,expirationType=?,expirationDuration=?,contactPerson=?, contactEmail=?,contactTitle=? ,contactMobile =?,contactPhone=?,contactPostal=?,contactMailBox=? where schoolId = ?",
           [ schoolAccountData.accountName ,
             schoolAccountData.accountStatus,
             schoolAccountData.activationDate ,
             schoolAccountData.expirationDate ,
+            schoolAccountData.expirationType ,
+            schoolAccountData.expirationDuration ,
             schoolAccountData.contactPerson,
             schoolAccountData.contactEmail,
             schoolAccountData.contactTitle ,
@@ -40,7 +42,7 @@ var schoolAccountMethods = {
           );
          }else{
 
-             con.query(" insert into SYS_School_Account  (accountName, accountStatus,activationDate,expirationDate,contactPerson, contactEmail,contactTitle ,contactMobile ,contactPhone,contactPostal,contactMailBox,schoolId) values(?,?,?,?,?,?,?,?,?,?,?,?)",
+             con.query(" insert into SYS_School_Account  (accountName, accountStatus,activationDate,expirationDate,contactPerson, contactEmail,contactTitle ,contactMobile ,contactPhone,contactPostal,contactMailBox,schoolId,expirationType,expirationDuration) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                  [schoolAccountData.accountName ,
                      schoolAccountData.accountStatus,
                      schoolAccountData.activationDate ,
@@ -53,6 +55,8 @@ var schoolAccountMethods = {
                      schoolAccountData.contactPostal ,
                      schoolAccountData.contactMailBox,
                      schoolAccountData.schoolId,
+                     schoolAccountData.expirationDuration,
+                     schoolAccountData.expirationType,
                  ],function(err,result){
                      if(err)
                          throw err
