@@ -3,7 +3,7 @@ angular.module('MetronicApp').controller('SchoolsController',
         var model = {
             upload: upload,
             doUpload: doUpload,
-            progress: '',
+            progress: 0,
             deleteSchool: deleteSchool
         };
         $scope.model = model;
@@ -51,7 +51,7 @@ angular.module('MetronicApp').controller('SchoolsController',
             }, function (evt) {
                 var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                 console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-                model.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
+                model.progress = progressPercentage; // capture upload progress
 
                 manageSchoolService.getAllSchools().then(function (schools) {
                     $scope.schools = schools;
