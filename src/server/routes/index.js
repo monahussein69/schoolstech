@@ -33,6 +33,17 @@ var upload = multer({
 }).single('file');
 // End Multer Configration;
 
+
+var uploadPhoto = multer({
+    storage: storage,
+    fileFilter: function (req, file, callback) { //file filter
+        if (['png', 'jpg' , 'jpeg'].indexOf(file.originalname.split('.')[file.originalname.split('.').length - 1]) === -1) {
+            return callback(new Error('Wrong extension type'));
+        }
+        callback(null, true);
+    }
+}).single('file');
+
 /* GET home page. */
 router.get('/', function (req, res, next) {
     res.send("Salim Quta");
@@ -102,11 +113,31 @@ router.post('/upload', function (req, res) {
         req.body.filename = filename;
         schoolMethods.UploadExcel(req, res, function (result) {
             console.log("result : ", result);
-            res.send({status: true , msg:'تم اضافة الملف بنجاح'});
+            res.send({status: true, msg: 'تم اضافة الملف بنجاح'});
         });
         // if(req.file.originalname.split('.')[req.file.originalname.split('.').length-1] === 'xlsx'){
         //     var array = xlsx.parse(__dirname + '/file_name.xlsx');
         // }
+    });
+});
+/** API path that will upload the files */
+router.post('/upload-photo', function (req, res) {
+    uploadPhoto(req, res, function (err) {
+        if (err) {
+            console.log('error : ', err);
+            res.json({error_code: 1, err_desc: err});
+            return;
+        }
+        /** Multer gives us file info in req.file object */
+        if (!req.file) {
+            res.json({error_code: 1, err_desc: "No file passed"});
+            return;
+        }
+        req.body.logoFile = filename;
+        schoolMethods.updatePhoto(req, res, function (result) {
+            res.send(filename);
+        });
+
     });
 });
 

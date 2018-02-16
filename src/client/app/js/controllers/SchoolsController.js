@@ -125,9 +125,10 @@ angular.module('MetronicApp').controller('ManageSchoolController', function ($st
     }
 
     function saveSchool() {
-        if (Object.keys($scope.model.SchoolObj).length) {
+        if (Object.keys(model.SchoolObj).length) {
+            console.log(model.SchoolObj);
+            manageSchoolService.saveSchoolData(model.SchoolObj, function (response) {
 
-            manageSchoolService.saveSchoolData($scope.model.SchoolObj, function (response) {
                 if (response.success) {
                     //model.success = response.msg;
                     $window.location.href = '#/schools.html';
