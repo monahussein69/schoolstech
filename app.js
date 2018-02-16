@@ -4,9 +4,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
 var index = require('./src/server/routes/index');
 var users = require('./src/server/routes/users');
+
+
+
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
@@ -24,11 +26,11 @@ var allowCrossDomain = function(req, res, next) {
 var app = express();
 
 // // view engine setup
-// app.set('views', path.join(__dirname, './'));
-// app.set('view engine', 'jade');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
+// app.engine('html', require('ejs').renderFile);
+// app.set('view engine', 'html');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

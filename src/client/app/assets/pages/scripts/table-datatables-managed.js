@@ -6,6 +6,10 @@ var TableDatatablesManaged = function () {
 
         // begin first table
         table.dataTable({
+            "bFilter": false,
+            "bLengthChange": false,
+            "bInfo" : false,
+            "bSort" : false,
 
             // Internationalisation. For more info refer to http://datatables.net/manual/i18n
             "language": {
