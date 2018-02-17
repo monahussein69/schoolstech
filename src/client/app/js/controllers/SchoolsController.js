@@ -1,20 +1,3 @@
-
-angular.module('MetronicApp').directive('ngConfirmClick', [
-    function(){
-        return {
-            link: function (scope, element, attr) {
-                var msg = attr.ngConfirmClick || "Are you sure?";
-                var clickAction = attr.confirmedClick;
-                element.bind('click',function (event) {
-                    if ( window.confirm(msg) ) {
-                        scope.$eval(clickAction)
-                    }
-                });
-            }
-        };
-    }])
-
-
 angular.module('MetronicApp').controller('SchoolsController',
     function ($rootScope, $scope, $http, $window, localStorageService, manageSchoolService, Upload, toastr) {
         var model = {
@@ -87,7 +70,21 @@ angular.module('MetronicApp').controller('SchoolsController',
         $rootScope.settings.layout.pageContentWhite = true;
         $rootScope.settings.layout.pageBodySolid = false;
         $rootScope.settings.layout.pageSidebarClosed = false;
-    });
+    }).directive('ngConfirmClick', [
+    function(){
+        return {
+            link: function (scope, element, attr) {
+                var msg = attr.ngConfirmClick || "Are you sure?";
+                var clickAction = attr.confirmedClick;
+                element.bind('click',function (event) {
+                    if ( window.confirm(msg) ) {
+                        scope.$eval(clickAction)
+                    }
+                });
+            }
+        };
+    }])
+;
 
 
 angular.module('MetronicApp').controller('ManageSchoolController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageSchoolService,toastr) {
@@ -154,6 +151,10 @@ angular.module('MetronicApp').controller('ManageSchoolController', function ($st
     $rootScope.settings.layout.pageContentWhite = true;
     $rootScope.settings.layout.pageBodySolid = false;
     $rootScope.settings.layout.pageSidebarClosed = false;
+}).filter('isValidObject', function(){
+    return function(obj){
+        return !(obj === undefined || obj === null || Object.keys(obj).length === 0);
+    }
 });
 
 

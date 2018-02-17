@@ -10,7 +10,8 @@ var MetronicApp = angular.module("MetronicApp", [
     "ngSanitize",
     "LocalStorageModule",
     "ngFileUpload",
-    'toastr'
+    'toastr',
+    'kdate'
 ]);
 
 

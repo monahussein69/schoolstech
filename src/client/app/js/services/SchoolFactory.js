@@ -7,9 +7,11 @@ angular.module('MetronicApp').factory('manageSchoolService', function ($http, Up
         $http.post("http://localhost:3000/saveSchoolData", {
             'schoolData': schoolObj
         }).success(function (response) {
-            console.log("response : " , response);
-            fac.uploadPhoto(schoolObj.logoFile , response.id);
-            // callback(response);
+            console.log("response : " , typeof schoolObj.logoFile);
+            if(typeof schoolObj.logoFile !== 'string') {
+                fac.uploadPhoto(schoolObj.logoFile, response.id);
+            }
+            callback(response);
         });
     };
 

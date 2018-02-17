@@ -12,8 +12,10 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
 Renew Support: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
 License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
 -->
-<!--[if IE 8]> <html lang="en" class="ie8 no-js" data-ng-app="MetronicApp"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9 no-js" data-ng-app="MetronicApp"> <![endif]-->
+<!--[if IE 8]>
+<html lang="en" class="ie8 no-js" data-ng-app="MetronicApp"> <![endif]-->
+<!--[if IE 9]>
+<html lang="en" class="ie9 no-js" data-ng-app="MetronicApp"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en" data-ng-app="MetronicApp" dir="rtl">
     <!--<![endif]-->
@@ -44,6 +46,7 @@ License: You must have a valid license purchased only from themeforest(the above
         <link href="../assets/layouts/layout/css/themes/darkblue-rtl.min.css" rel="stylesheet" type="text/css" id="style_color" />
         <link href="../assets/layouts/layout/css/custom-rtl.min.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/angular-toastr@2/dist/angular-toastr.css">
+        <link rel="stylesheet" type="text/css" href="../assets/global/plugins/Angular_Umm_alqura_calendar-master/css/jquery.calendars.picker.css">
         <!-- END THEME STYLES -->
         <link rel="shortcut icon" href="favicon.ico" /> </head>
     <!-- END HEAD -->
@@ -59,14 +62,14 @@ License: You must have a valid license purchased only from themeforest(the above
     <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 
     <body ng-controller="AppController">
-        <div ui-view class="fade-in-up"> </div>
+        <div ui-view class="fade-in-up"></div>
         <!-- END QUICK NAV -->
         <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
         <!-- BEGIN CORE JQUERY PLUGINS -->
         <!--[if lt IE 9]>
-	<script src="../assets/global/plugins/respond.min.js"></script>
-	<script src="../assets/global/plugins/excanvas.min.js"></script>
-	<![endif]-->
+<script src="../assets/global/plugins/respond.min.js"></script>
+<script src="../assets/global/plugins/excanvas.min.js"></script>
+<![endif]-->
         <script src="../assets/global/plugins/jquery.min.js" type="text/javascript"></script>
         <script src="../assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="../assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
@@ -99,6 +102,21 @@ License: You must have a valid license purchased only from themeforest(the above
         <!-- for no html5 browsers support -->
         <script src="../assets/bower_components/ng-file-upload/ng-file-upload.min.js"></script>
         <!-- END APP LEVEL JQUERY SCRIPTS -->
+        <script type=text/javascript src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/js/jquery.calendars.min.js"></script>
+        <script type=text/javascript src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/js/jquery.calendars-ar.js"></script>
+        <script type=text/javascript src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/js/jquery.calendars-ar-EG.js"></script>
+        <script type="text/javascript" src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/js/jquery.plugin.min.js"></script>
+        <script type="text/javascript" src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/js//jquery.calendars.picker.min.js"></script>
+        <script type="text/javascript" src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/js/jquery.calendars.picker-ar.js"></script>
+        <script type="text/javascript" src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/js/jquery.calendars.picker-ar-EG.js"></script>
+        <script type="text/javascript" src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/js/jquery.calendars.picker.lang.min.js"></script>
+        <script type="text/javascript" src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/js/jquery.calendars.ummalqura.min.js"></script>
+        <script type="text/javascript" src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/js/jquery.calendars.ummalqura-ar.js"></script>
+        <script type="text/javascript" src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/js/jquery.calendars.plus.min.js"></script>
+        <script type="text/javascript" src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/js/angular.min.js"></script>
+        <script type="application/javascript" src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/kdate/kdate.module.js"></script>
+        <script type="text/javascript" src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/kdate/kdate.filter.js"></script>
+        <script type="text/javascript" src="../assets/global/plugins/Angular_Umm_alqura_calendar-master/kdate/kdate.picker.js"></script>
         <!-- END JAVASCRIPTS -->
     </body>
     <!-- END BODY -->
