@@ -10,7 +10,8 @@ var MetronicApp = angular.module("MetronicApp", [
     "ngSanitize",
     "LocalStorageModule",
     "ngFileUpload",
-    'toastr'
+    'toastr',
+    'simditor'
 ]);
 
 
@@ -246,6 +247,36 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css',
                             '../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
                             '../assets/bower_components/moment/moment.js',
+
+
+                        ]
+                    });
+                }]
+            }
+        })
+
+
+        .state('Master.appSettings', {
+            url: "/appSettings",
+            templateUrl: "views/settings/appSettings.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "appSettingsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/SettingsController.js',
+                            'js/services/manageAppSettingsFactory.js',
+                            '../assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css',
+                            '../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+                            '../assets/pages/scripts/components-date-time-pickers.min.js',
+                            '../assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css',
+                            '../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
+
+                            '../assets/global/scripts/getDates.js',
+
 
 
                         ]
