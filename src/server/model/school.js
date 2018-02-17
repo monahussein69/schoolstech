@@ -62,7 +62,7 @@ var schoolMethods = {
                     callback(response);
                 } else {
 
-                    con.query(" insert into SCH_School  (name, gender,educationalOffice,educationalRegion,educationLevel, address,totalClasses ,totalStudents ,totalStaff,rentedBuildings,governmentBuildings,foundationYear,schoolNum) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    con.query(" insert into SCH_School  (name, gender,educationalOffice,educationalRegion,educationLevel, address,totalClasses ,totalStudents ,totalStaff,rentedBuildings,governmentBuildings,foundationYear,schoolNum) values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         [schoolData.name,
                             schoolData.gender,
                             schoolData.educationalOffice,
@@ -82,6 +82,7 @@ var schoolMethods = {
                             if (result.affectedRows) {
                                 response.success = true;
                                 response.msg = 'تم الاضافه بنجاح'
+                                response.id = result.insertId ;
                             } else {
                                 response.success = false;
                                 response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
@@ -97,7 +98,6 @@ var schoolMethods = {
     },
 
     updatePhoto: function (req, res, callback) {
-
         con.query(" update SCH_School set logoFile=? where id = ?",
             [req.body.logoFile,
                 req.body.id
@@ -158,6 +158,7 @@ var schoolMethods = {
 
         response.success = true;
         response.msg = 'تم الاضافه بنجاح';
+
         callback(response);
     },
     getSchool: function (req, res, callback) {
