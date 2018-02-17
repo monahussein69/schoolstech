@@ -3,6 +3,7 @@ var router = express.Router();
 var loginMethod = require('../model/login.js');
 var schoolMethods = require('../model/school.js');
 var schoolAccountMethods = require('../model/schoolAccount.js');
+var appSettingsMethods = require('../model/appSettings.js');
 
 var app = express();
 var multer = require('multer');
@@ -33,6 +34,19 @@ var upload = multer({
 }).single('file');
 // End Multer Configration;
 
+var uploads = multer({
+    storage: storage,
+    fileFilter: function (req, file, callback) { //file filter
+        if (['png', 'jpg' , 'jpeg'].indexOf(file.originalname.split('.')[file.originalname.split('.').length - 1]) === -1) {
+            return callback(new Error('Wrong extension type'));
+        }
+        callback(null, true);
+    }
+}).fields([{
+    name: 'ministry_logo', maxCount: 1
+}, {
+    name: 'vision_logo', maxCount: 1
+}]);
 
 var uploadPhoto = multer({
     storage: storage,
@@ -138,6 +152,42 @@ router.post('/upload-photo', function (req, res) {
             res.send(filename);
         });
 
+    });
+});
+
+router.post('/upload-app-photo', function (req, res) {
+    uploadPhoto(req, res, function (err) {
+        if (err) {
+            console.log('error : ', err);
+            res.json({error_code: 1, err_desc: err});
+            return;
+        }
+        console.log(req);
+        /** Multer gives us file info in req.file object */
+        if (!req.file) {
+            res.json({error_code: 1, err_desc: "No file passed"});
+            return;
+        }
+        req.body.ministry_logo = filename;
+        req.body.ministry_logo = filename;
+        appSettingsMethods.updatePhotos(req, res, function (result) {
+            res.send(filename);
+        });
+
+    });
+});
+
+
+router.post('/saveAppSettingsData', function (req, res, next) {
+    appSettingsMethods.saveAppSettingsData(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+
+router.get('/getAppSettings', function (req, res, next) {
+    appSettingsMethods.getappSettingsData(req, res, function (result) {
+        res.send(result);
     });
 });
 
