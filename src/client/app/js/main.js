@@ -228,7 +228,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             }
         })
 
-        .state('Master.mangeSchoolAccount', {
+        .state('Master.manageSchoolAccount', {
             url: "/manageSchoolAccount/:schoolId",
             templateUrl: "views/schools/schoolAccount.html",
             data: {pageTitle: 'المدارس'},
@@ -255,6 +255,64 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                 }]
             }
         })
+
+        .state('Master.manageEmployees', {
+            url: "/manageEmployees/:schoolId",
+            templateUrl: "views/employees/Employees.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "EmployeesController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/EmployeesController.js',
+                            'js/services/EmployeesFactory.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.AddEditSchool', {
+            url: "/manageSchool/:schoolId",
+            templateUrl: "views/schools/editSchool.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "ManageSchoolController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/SchoolsController.js',
+                            'js/services/SchoolFactory.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.AddEditEmployee', {
+            url: "/manageEmployee/:empId",
+            templateUrl: "views/employees/editEmployee.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "ManageEmployeeController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/EmployeesController.js',
+                            'js/services/EmployeesFactory.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
 
 
         .state('Master.appSettings', {
