@@ -9,7 +9,7 @@ var appSettingsMethods = {
                 if (err)
                     throw err;
                 if (Object.keys(result).length) {
-                    con.query(" update APP_DEF_Mains set country_name = ? , ministry_name = ?,start_f_year=?, end_f_year=?,academic_start_date=? ,academic_end_date =?,first_term_start_date=?,first_term_end_date=?,second_term_start_date=?,second_term_end_date=?,summer_term_start_date=?,summer_term_end_date=?, active_term=?,marketing=?",
+                    con.query(" update APP_DEF_Mains set country_name = ? , ministry_name = ?,start_f_year=?, end_f_year=?,academic_start_date=? ,academic_end_date =?,first_term_start_date=?,first_term_end_date=?,second_term_start_date=?,second_term_end_date=?,summer_term_start_date=?,summer_term_end_date=?, active_term=?,marketing=? , ministry_logo=? , vision_logo=?",
                         [AppSettingsData.country_name,
                             AppSettingsData.ministry_name,
                             AppSettingsData.start_f_year,
@@ -23,7 +23,9 @@ var appSettingsMethods = {
                             AppSettingsData.summer_term_start_date,
                             AppSettingsData.summer_term_end_date,
                             AppSettingsData.active_term,
-                            AppSettingsData.marketing
+                            AppSettingsData.marketing,
+                            AppSettingsData.ministry_logo,
+                            AppSettingsData.vision_logo
                         ], function (err, updateresult) {
                             if (err)
                                 throw err
@@ -41,7 +43,7 @@ var appSettingsMethods = {
                         }
                     );
                 } else {
-                    con.query(" insert into APP_DEF_Mains  (country_name, ministry_name,start_f_year, end_f_year ,academic_start_date ,academic_end_date,first_term_start_date,first_term_end_date,second_term_start_date,second_term_end_date,summer_term_start_date,summer_term_end_date,active_term,marketing) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    con.query(" insert into APP_DEF_Mains  (country_name, ministry_name,start_f_year, end_f_year ,academic_start_date ,academic_end_date,first_term_start_date,first_term_end_date,second_term_start_date,second_term_end_date,summer_term_start_date,summer_term_end_date,active_term,marketing , ministry_logo , vision_logo) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         [   AppSettingsData.country_name,
                             AppSettingsData.ministry_name,
                             AppSettingsData.start_f_year,
@@ -55,7 +57,9 @@ var appSettingsMethods = {
                             AppSettingsData.summer_term_start_date,
                             AppSettingsData.summer_term_end_date,
                             AppSettingsData.active_term,
-                            AppSettingsData.marketing
+                            AppSettingsData.marketing,
+                            AppSettingsData.ministry_logo,
+                            AppSettingsData.vision_logo
                         ], function (err, result) {
                             if (err)
                                 throw err
@@ -78,7 +82,7 @@ var appSettingsMethods = {
 
     },
 
-    updateVisionPhoto: function (req, res, callback) {
+    updatePhotos: function (req, res, callback) {
 
         con.query(" update APP_DEF_Mains set vision_logo =?",
             [

@@ -1,25 +1,14 @@
 angular.module('MetronicApp').factory('manageAppSettingsService', function ($http, Upload) {
 
-    var fac = {};
+    var fac = {
+
+    };
 
     fac.saveAppSettingsData = function (appSettingsObj, callback) {
         $http.post("http://localhost:3000/saveAppSettingsData", {
             'appSettingsData':appSettingsObj
         }).success(function (response) {
-            if(typeof appSettingsObj.ministry_logo !== 'string') {
-                fac.uploadMinistryPhoto(appSettingsObj.ministry_logo, response.id).then(function (data) {
-                    response.ministry_logo_file = data;
-                    //callback(response);
-                });
-            }
-            /*if(typeof appSettingsObj.vision_logo !== 'string') {
-                fac.uploadVisionPhoto(appSettingsObj.vision_logo, response.id).then(function (data) {
-                    response.vision_logo_file = data;
-                    //callback(response);
-                });
-            }*/
                 callback(response);
-
         });
     };
 
@@ -31,10 +20,7 @@ angular.module('MetronicApp').factory('manageAppSettingsService', function ($htt
 
     };
 
-
-
-
-    fac.uploadMinistryPhoto = function (files , id) {
+    fac.uploadPhoto = function (files , id) {
         return new Promise(function (resolve) {
             Upload.upload({
                 url: 'http://localhost:3000/upload-app-photo', //webAPI exposed to upload the file

@@ -195,7 +195,7 @@ var schoolMethods = {
             console.log('File Name : ', req.body.filename);
             var workbook = new Excel.Workbook();
             var data = {};
-            workbook.xlsx.readFile('./uploads/' + req.body.filename)
+            workbook.xlsx.readFile('./src/client/app/uploads/' + req.body.filename)
                 .then(function () {
                     var finalSchools = [];
                     workbook.eachSheet(function (worksheet, sheetId) {

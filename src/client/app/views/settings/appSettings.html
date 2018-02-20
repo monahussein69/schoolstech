@@ -23,53 +23,70 @@
         <div class="row">
             <div class="col-md-8">
                 <fieldset>
-                    <legend>بيانات عامه : </legend>
+                    <legend>بيانات عامه :</legend>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label"> اسم الدوله</label>
                         <div class="col-sm-6">
-                            <input type="text" name="country_name" class="form-control" ng-model="model.appSettingsObj.country_name" /> </div>
+                            <input type="text" name="country_name" class="form-control" ng-model="model.appSettingsObj.country_name" />
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label"> اسم الوزاره </label>
                         <div class="col-sm-6">
-                            <input type="text" name="ministry_name" class="form-control" ng-model="model.appSettingsObj.ministry_name" /> </div>
+                            <input type="text" name="ministry_name" class="form-control" ng-model="model.appSettingsObj.ministry_name" />
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label">شعار الوزاره</label>
                         <div class="col-sm-6">
-                            <input type="file" ngf-select ng-model="model.appSettingsObj.ministry_logo" name="ministry_logo" id="file-upload-minstry" /> </div>
+                            <input type="file" ngf-select ng-model="model.appSettingsObj.ministry_logo" name="ministry_logo" id="file-upload-minstry" ng-change="model.uploadPhoto(model.appSettingsObj.ministry_logo , 'ministry_logo')" />
+                        </div>
                         <div class="col-md-4">
-                            <img src="../../uploads/{{model.appSettingsObj.ministry_logo_file}}" style="width:100%" /> </div>
+                            <img src="../../uploads/{{model.appSettingsObj.ministry_logo}}" style="width:100%" />
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label">شعار الرؤيه</label>
                         <div class="col-sm-6">
-                            <input type="file" ngf-select ng-model="model.appSettingsObj.vision_logo" name="vision_logo" id="file-upload-vision" /> </div>
+                            <input type="file" ngf-select ng-model="model.appSettingsObj.vision_logo" name="vision_logo" id="file-upload-vision" ng-change="model.uploadPhoto(model.appSettingsObj.vision_logo , 'vision_logo')" />
+                        </div>
                         <div class="col-md-4">
-                            <img src="../../uploads/{{model.appSettingsObj.vision_logo_file}}" style="width:100%" /> </div>
+                            <img src="../../uploads/{{model.appSettingsObj.vision_logo}}" style="width:100%" /> </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label"> بدايه العام المالي </label>
                         <div class="col-sm-6">
-                            <input type="text" name="start_f_year" class="form-control date-picker" ng-model="model.appSettingsObj.start_f_year" date-format="yyyy-MM-dd" /> </div>
+                            <input type="text" name="start_f_year" calendarType="ummalqura" language="ar" date-format="MM dd, yyyy" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.start_f_year | kdate: '' : 'ar' : 'ummalqura'}}"
+                                ng-model="model.appSettingsObj.start_f_year" />
+                            <b>{{model.appSettingsObj.start_f_year | kdate: '' : 'ar' : 'Gregorian'}}</b>
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label"> نهايه العام المالي </label>
                         <div class="col-sm-6">
-                            <input type="text" name="end_f_year" class="form-control date-picker" ng-model="model.appSettingsObj.end_f_year" date-format="yyyy-MM-dd" /> </div>
+                            <input type="text" name="end_f_year" calendarType="ummalqura" language="ar" date-format="MM dd, yyyy" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.end_f_year | kdate: '' : 'ar' : 'ummalqura'}}"
+                                ng-model="model.appSettingsObj.end_f_year" date-format="yyyy-MM-dd" />
+                            <b>{{model.appSettingsObj.end_f_year | kdate: '' : 'ar' : 'Gregorian'}}</b>
+                        </div>
                     </div>
                 </fieldset>
                 <fieldset>
-                    <legend>العام الدراسي الحالي : </legend>
+                    <legend>العام الدراسي الحالي :</legend>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label">بدايه العام الدراسي الحالي </label>
                         <div class="col-sm-6">
-                            <input type="text" name="academic_start_date" class="form-control date-picker" ng-model="model.appSettingsObj.academic_start_date" /> </div>
+                            <input type="text" name="academic_start_date" calendarType="ummalqura" language="ar" date-format="yyyy/MM/dd" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.academic_start_date | kdate: '' : 'ar' : 'ummalqura'}}"
+                                ng-model="model.appSettingsObj.academic_start_date" />
+                            <b>{{model.appSettingsObj.academic_start_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label">نهايه العام الدراسي الحالي </label>
                         <div class="col-sm-6">
-                            <input type="text" name="academic_end_date" class="form-control date-picker" ng-model="model.appSettingsObj.academic_end_date" /> </div>
+                            <input type="text" name="academic_end_date" calendarType="ummalqura" language="ar" date-format="yyyy-MM-dd" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.academic_end_date | kdate: '' : 'ar' : 'ummalqura'}}"
+                                ng-model="model.appSettingsObj.academic_end_date" />
+                            <b>{{model.appSettingsObj.academic_end_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label">الفصل الدراسي الحالي </label>
@@ -84,50 +101,68 @@
                     </div>
                 </fieldset>
                 <fieldset>
-                    <legend> الفصل الدراسي الاول : </legend>
+                    <legend> الفصل الدراسي الاول :</legend>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label">بدايه الفصل الدراسي الاول </label>
                         <div class="col-sm-6">
-                            <input type="text" name="first_term_start_date" class="form-control date-picker" ng-model="model.appSettingsObj.first_term_start_date" date-format="yyyy-MM-dd" /> </div>
+                            <input type="text" name="first_term_start_date" calendarType="ummalqura" language="ar" date-format="yyyy-MM-dd" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.first_term_start_date | kdate: '' : 'ar' : 'ummalqura'}}"
+                                ng-model="model.appSettingsObj.first_term_start_date" />
+                            <b>{{model.appSettingsObj.first_term_start_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label">نهايه الفصل الدراسي الاول </label>
                         <div class="col-sm-6">
-                            <input type="text" name="first_term_end_date" class="form-control date-picker" ng-model="model.appSettingsObj.first_term_end_date" /> </div>
+                            <input type="text" name="first_term_end_date" calendarType="ummalqura" language="ar" date-format="MM dd, yyyy" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.first_term_end_date | kdate: '' : 'ar' : 'ummalqura'}}"
+                                ng-model="model.appSettingsObj.first_term_end_date" />
+                            <b>{{model.appSettingsObj.first_term_end_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
+                        </div>
                     </div>
                 </fieldset>
                 <fieldset>
-                    <legend> الفصل الدراسي الثاني : </legend>
+                    <legend> الفصل الدراسي الثاني :</legend>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label">بدايه الفصل الدراسي الثاني </label>
                         <div class="col-sm-6">
-                            <input type="text" name="second_term_start_date" class="form-control date-picker" ng-model="model.appSettingsObj.second_term_start_date" /> </div>
+                            <input type="text" name="second_term_start_date" calendarType="ummalqura" language="ar" date-format="MM dd, yyyy" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.second_term_start_date | kdate: '' : 'ar' : 'ummalqura'}}"
+                                ng-model="model.appSettingsObj.second_term_start_date" />
+                            <b>{{model.appSettingsObj.second_term_start_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label">نهايه الفصل الدراسي الثاني </label>
                         <div class="col-sm-6">
-                            <input type="text" name="second_term_end_date" class="form-control date-picker" ng-model="model.appSettingsObj.second_term_end_date" /> </div>
+                            <input type="text" name="second_term_end_date" calendarType="ummalqura" language="ar" date-format="MM dd, yyyy" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.second_term_end_date | kdate: '' : 'ar' : 'ummalqura'}}"
+                                ng-model="model.appSettingsObj.second_term_end_date" />
+                            <b>{{model.appSettingsObj.second_term_end_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
+                        </div>
                     </div>
                 </fieldset>
                 <fieldset>
-                    <legend> الفصل الدراسي الصيفي : </legend>
+                    <legend> الفصل الدراسي الصيفي :</legend>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label">بدايه الفصل الدراسي الصيفي </label>
                         <div class="col-sm-6">
-                            <input type="text" name="summer_term_start_date" class="form-control date-picker" ng-model="model.appSettingsObj.summer_term_start_date" /> </div>
+                            <input type="text" id="popupDatePicker" name="summer_term_start_date" calendarType="ummalqura" language="ar" date-format="MM dd, yyyy" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.summer_term_start_date | kdate: '' : 'ar' : 'ummalqura'}}"
+                                ng-model="model.appSettingsObj.summer_term_start_date" />
+                            <b>{{model.appSettingsObj.summer_term_start_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label">نهايه الفصل الدراسي الصيفي </label>
                         <div class="col-sm-6">
-                            <input type="text" name="summer_term_end_date" class="form-control date-picker" ng-model="model.appSettingsObj.summer_term_end_date" /> </div>
+                            <input type="text" name="summer_term_end_date" calendarType="ummalqura" language="ar" date-format="MM dd, yyyy" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.summer_term_end_date | kdate: '' : 'ar' : 'ummalqura'}}"
+                                ng-model="model.appSettingsObj.summer_term_end_date" />
+                            <b>{{model.appSettingsObj.summer_term_end_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
+                        </div>
                     </div>
                 </fieldset>
                 <fieldset>
-                    <legend> اعلانات البرنامج في الصفحه الرئيسيه : </legend>
+                    <legend> اعلانات البرنامج في الصفحه الرئيسيه :</legend>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label">الاعلان </label>
                         <div class="col-sm-10">
-                            <div class="col-sm-12"simditor ng-model="model.appSettingsObj.marketing"></div>
+                            <div class="col-sm-12" simditor ng-model="model.appSettingsObj.marketing"></div>
                         </div>
                     </div>
                 </fieldset>

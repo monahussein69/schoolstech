@@ -59,7 +59,6 @@ angular.module('MetronicApp').factory('manageSchoolService', function ($http, Up
                 // model.progress = progressPercentage; // capture upload progress
             });
         });
-
     };
 
     return fac;

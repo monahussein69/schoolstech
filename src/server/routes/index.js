@@ -42,11 +42,7 @@ var uploads = multer({
         }
         callback(null, true);
     }
-}).fields([{
-    name: 'ministry_logo', maxCount: 1
-}, {
-    name: 'vision_logo', maxCount: 1
-}]);
+});
 
 var uploadPhoto = multer({
     storage: storage,
@@ -56,7 +52,7 @@ var uploadPhoto = multer({
         }
         callback(null, true);
     }
-}).single('file');
+}).array('files' , 10);
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -162,17 +158,17 @@ router.post('/upload-app-photo', function (req, res) {
             res.json({error_code: 1, err_desc: err});
             return;
         }
-        console.log(req);
         /** Multer gives us file info in req.file object */
-        if (!req.file) {
+        if (!req.files) {
             res.json({error_code: 1, err_desc: "No file passed"});
             return;
         }
-        req.body.ministry_logo = filename;
-        req.body.ministry_logo = filename;
-        appSettingsMethods.updatePhotos(req, res, function (result) {
-            res.send(filename);
-        });
+        console.log('File Name : ',filename);
+        res.send(filename);
+        // req.body.ministry_logo = filename;
+        // appSettingsMethods.updatePhotos(req, res, function (result) {
+        //     res.send(filename);
+        // });
 
     });
 });

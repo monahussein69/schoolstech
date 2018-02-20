@@ -1,22 +1,24 @@
-angular.module('MetronicApp').controller('appSettingsController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageAppSettingsService,toastr) {
+angular.module('MetronicApp').controller('appSettingsController',
+    function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageAppSettingsService,toastr) {
 
 
     var model = {
         appSettingsObj: {},
         saveAppSettings: saveAppSettings,
-        error: null
+        error: null,
+        uploadPhoto : uploadPhoto
     };
 
 
     $scope.model = model;
-
-
     manageAppSettingsService.getappSettingsData(function (response) {
+
         if(response.success) {
+            console.log(response);
             model.appSettingsObj.country_name = response.data[0].country_name;
             model.appSettingsObj.ministry_name = response.data[0].ministry_name;
-            model.appSettingsObj.ministry_logo_file = response.data[0].ministry_logo;
-            model.appSettingsObj.vision_logo_file = response.data[0].vision_logo;
+            model.appSettingsObj.ministry_logo = response.data[0].ministry_logo;
+            model.appSettingsObj.vision_logo = response.data[0].vision_logo;
              var start_f_year_date = new Date(response.data[0].start_f_year * 1000);
             model.appSettingsObj.start_f_year =   ('0' + (start_f_year_date.getMonth() + 1)).slice(-2) + '/' +('0' + start_f_year_date.getDate()).slice(-2)+'/'+ start_f_year_date.getFullYear();
             var end_f_year_date = new Date(response.data[0].end_f_year * 1000);
@@ -42,6 +44,7 @@ angular.module('MetronicApp').controller('appSettingsController', function ($sta
             model.appSettingsObj.marketing = response.data[0].marketing;
             model.appSettingsObj.vision_logo = response.data[0].vision_logo;
             model.appSettingsObj.ministry_logo = response.data[0].ministry_logo;
+
          }
         });
 
@@ -58,6 +61,7 @@ angular.module('MetronicApp').controller('appSettingsController', function ($sta
             model.appSettingsObj.second_term_end_date = new Date(model.appSettingsObj.second_term_end_date).getTime()/1000;
             model.appSettingsObj.summer_term_start_date = new Date(model.appSettingsObj.summer_term_start_date).getTime()/1000;
             model.appSettingsObj.summer_term_end_date = new Date(model.appSettingsObj.summer_term_end_date).getTime()/1000;
+            console.log('after settings : ',model.appSettingsObj.ministry_logo);
             manageAppSettingsService.saveAppSettingsData(model.appSettingsObj, function (response) {
 
                 if (response.success) {
@@ -84,11 +88,11 @@ angular.module('MetronicApp').controller('appSettingsController', function ($sta
                     model.appSettingsObj.summer_term_end_date  =   ('0' + (summer_term_end_date_format.getMonth() + 1)).slice(-2) + '/' +('0' + summer_term_end_date_format.getDate()).slice(-2)+'/'+ summer_term_end_date_format.getFullYear();
 
                     toastr.success(response.msg);
-                    if(response.ministry_logo_file){
-                        model.appSettingsObj.ministry_logo_file =  response.ministry_logo_file;
+                    if(response.ministry_logo){
+                        model.appSettingsObj.ministry_logo =  response.ministry_logo;
                     }
-                    if(response.vision_logo_file){
-                        model.appSettingsObj.ministry_logo_file =  response.vision_logo_file;
+                    if(response.vision_logo){
+                        model.appSettingsObj.ministry_logo =  response.vision_logo;
                     }
                  console.log(response);
                 } else {
@@ -100,6 +104,14 @@ angular.module('MetronicApp').controller('appSettingsController', function ($sta
 
         }
 
+    }
+
+    function uploadPhoto(file , name) {
+        manageAppSettingsService.uploadPhoto(file).then(function (photo) {
+                model.appSettingsObj[name] = photo;
+
+           $scope.$apply();
+        });
     }
 
 
