@@ -1,4 +1,4 @@
-angular.module('MetronicApp').controller('EmployeesController',
+angular.module('MetronicApp').controller('ManageEmployeesController',
     function ($rootScope, $scope, $http, $window, localStorageService, manageEmployeeService, Upload, toastr) {
         var model = {
             upload: upload,
@@ -8,13 +8,13 @@ angular.module('MetronicApp').controller('EmployeesController',
         };
         $scope.model = model;
 
-        manageEmployeeService.getAllEmp().then(function (employees) {
-            $scope.employees = employees;
+         manageEmployeeService.getAllEmployees().then(function (employees) {
+             $scope.employees = employees;
 
-            $scope.$apply();
-        });
+             $scope.$apply();
+         });
 
-        function deleteEmp(schoolId) {
+        function deleteEmp(empId) {
             manageEmployeeService.deleteEmpData(empId, function (response) {
                 if (response.success) {
                     var index = $scope.employees.findIndex(function (employee) {
@@ -38,7 +38,9 @@ angular.module('MetronicApp').controller('EmployeesController',
         function upload(file) {
             Upload.upload({
                 url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
-                data: {file: file} //pass file as data, should be user ng-model
+                data: {
+					file: file,
+					type:'employee'} //pass file as data, should be user ng-model
             }).then(function (resp) { //upload function returns a promise
                 console.log(resp);
                 if (resp.status === 200) { //validate success
@@ -53,7 +55,7 @@ angular.module('MetronicApp').controller('EmployeesController',
                 console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                 model.progress = progressPercentage; // capture upload progress
 
-                manageEmployeeService.getAllEmp().then(function (employees) {
+                manageEmployeeService.getAllEmployees().then(function (employees) {
                     $scope.employees = employees;
 
                     $scope.$apply();
@@ -87,21 +89,56 @@ angular.module('MetronicApp').controller('EmployeesController',
 ;
 
 
-angular.module('MetronicApp').controller('ManageEmployeeController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageEmployeeService,toastr) {
+angular.module('MetronicApp').controller('ManageEmployeeController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageEmployeeService,toastr,manageJobTitleService) {
 
 
     var model = {
         empDataObj: {},
         saveEmpData: saveEmpData,
-        error: null
+        error: null,
+        job_titles : {}
     };
 
+
+    manageJobTitleService.getJobTitles(function (response) {
+        model.job_titles = response;
+    });
 
     $scope.model = model;
 
 
     if ($stateParams.empId) {
+		  model.empDataObj.id = $stateParams.empId;
         manageEmployeeService.getEmpData($stateParams.empId, function (response) {
+            model.empDataObj.identity_no =  response[0].identity_no;
+            model.empDataObj.id_date =  response[0].id_date;
+            model.empDataObj.school_id = response[0].school_id;
+            model.empDataObj.name = response[0].name;
+            model.empDataObj.jobtitle_id = response[0].jobtitle_id;
+            model.empDataObj.nationality = response[0].nationality;
+            model.empDataObj.birthdate =  response[0].birthdate;
+            model.empDataObj.birth_place = response[0].birth_place;
+            model.empDataObj.educational_level = response[0].educational_level;
+            model.empDataObj.major = response[0].major;
+            model.empDataObj.graduate_year = response[0].graduate_year;
+            model.empDataObj.job_no =response[0].job_no;
+            model.empDataObj.ministry_start_date = response[0].ministry_start_date;
+            model.empDataObj.school_start_date =  response[0].school_start_date;
+            model.empDataObj.current_position_date = response[0].current_position_date;
+            model.empDataObj.degree = response[0].degree;
+            model.empDataObj.address =  response[0].address;
+            model.empDataObj.phone1 = response[0].phone1;
+            model.empDataObj.phone2 = response[0].phone2;
+            model.empDataObj.mobile = response[0].mobile;
+            model.empDataObj.email = response[0].email;
+            model.empDataObj.postal_code = response[0].postal_code;
+            model.empDataObj.lectures_qouta = response[0].lectures_qouta;
+            model.empDataObj.kids = response[0].kids;
+            model.empDataObj.kids_under6 = response[0].kids_under6;
+            model.empDataObj.kids_under24 = response[0].kids_under24;
+            model.empDataObj.kids_over24 = response[0].kids_over24;
+            model.empDataObj.notes = response[0].notes;
+            model.empDataObj.photo_file = response[0].photo_file;
 
         });
     }
@@ -112,7 +149,7 @@ angular.module('MetronicApp').controller('ManageEmployeeController', function ($
 
                 if (response.success) {
                     //model.success = response.msg;
-                    $window.location.href = '#/employees';
+                    //$window.location.href = '#/employees';
                     toastr.success(response.msg);
                 } else {
                     //model.error = response.msg;

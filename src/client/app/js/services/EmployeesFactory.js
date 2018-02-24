@@ -3,15 +3,18 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
     var fac = {};
 
     fac.saveEmpData = function (empObj, callback) {
-        $http.post("http://localhost:3000/saveEmpData", {
-            'empObj': empObj
+        $http.post("http://localhost:3000/saveEmployeeData", {
+            'empData': empObj
         }).success(function (response) {
+			 if(typeof empObj.photo_file !== 'string') {
+                fac.uploadPhoto(empObj.photoFile, response.id);
+            }
             callback(response);
         });
     };
 
-    fac.getEmpData = function (schoolId, callback) {
-        $http.get("http://localhost:3000/getEmp/" + empId).success(function (response) {
+    fac.getEmpData = function (empId, callback) {
+        $http.get("http://localhost:3000/getEmployee/" + empId).success(function (response) {
             callback(response);
         });
     };
@@ -31,12 +34,13 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
             callback(response);
         });
     };
-
-    fac.uploadPhoto = function (file , id) {
+	
+	
+	 fac.uploadPhoto = function (file , id) {
         return new Promise(function (resolve) {
             Upload.upload({
                 url: 'http://localhost:3000/upload-photo', //webAPI exposed to upload the file
-                data: {file: file , id : id} //pass file as data, should be user ng-model
+                data: {files: file , id : id,type:'employee_photo'} //pass file as data, should be user ng-model
             }).then(function (resp) { //upload function returns a promise
                 console.log(resp);
                 if (resp.status === 200) { //validate success
@@ -55,6 +59,7 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
             });
         });
     };
+
 
     return fac;
 

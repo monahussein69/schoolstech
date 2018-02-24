@@ -38,7 +38,9 @@ angular.module('MetronicApp').controller('SchoolsController',
         function upload(file) {
             Upload.upload({
                 url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
-                data: {file: file} //pass file as data, should be user ng-model
+                data: {file: file,
+				 type:'school'
+				} //pass file as data, should be user ng-model
             }).then(function (resp) { //upload function returns a promise
                 console.log(resp);
                 if (resp.status === 200) { //validate success

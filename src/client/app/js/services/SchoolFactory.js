@@ -41,7 +41,7 @@ angular.module('MetronicApp').factory('manageSchoolService', function ($http, Up
         return new Promise(function (resolve) {
             Upload.upload({
                 url: 'http://localhost:3000/upload-photo', //webAPI exposed to upload the file
-                data: {file: file , id : id} //pass file as data, should be user ng-model
+                data: {files: file , id : id,type:'school_logo'} //pass file as data, should be user ng-model
             }).then(function (resp) { //upload function returns a promise
                 console.log(resp);
                 if (resp.status === 200) { //validate success
