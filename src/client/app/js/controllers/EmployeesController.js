@@ -1,5 +1,5 @@
 angular.module('MetronicApp').controller('ManageEmployeesController',
-    function ($rootScope, $scope, $http, $window, localStorageService, manageEmployeeService, Upload, toastr) {
+    function ($rootScope, $scope, $http,$stateParams, $window, localStorageService, manageEmployeeService, Upload, toastr) {
         var model = {
             upload: upload,
             doUpload: doUpload,
@@ -8,7 +8,9 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
         };
         $scope.model = model;
 
-         manageEmployeeService.getAllEmployees().then(function (employees) {
+        var schoolId = $stateParams.schoolId;
+
+         manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
              $scope.employees = employees;
 
              $scope.$apply();
@@ -36,11 +38,14 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
         };
 
         function upload(file) {
+            var schoolId = $stateParams.schoolId;
             Upload.upload({
                 url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
                 data: {
 					file: file,
-					type:'employee'} //pass file as data, should be user ng-model
+					type:'employee',
+                    schoolId:schoolId
+                } //pass file as data, should be user ng-model
             }).then(function (resp) { //upload function returns a promise
                 console.log(resp);
                 if (resp.status === 200) { //validate success
