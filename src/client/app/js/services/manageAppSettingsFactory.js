@@ -1,14 +1,12 @@
 angular.module('MetronicApp').factory('manageAppSettingsService', function ($http, Upload) {
 
-    var fac = {
-
-    };
+    var fac = {};
 
     fac.saveAppSettingsData = function (appSettingsObj, callback) {
         $http.post("http://localhost:3000/saveAppSettingsData", {
-            'appSettingsData':appSettingsObj
+            'appSettingsData': appSettingsObj
         }).success(function (response) {
-                callback(response);
+            callback(response);
         });
     };
 
@@ -20,11 +18,18 @@ angular.module('MetronicApp').factory('manageAppSettingsService', function ($htt
 
     };
 
-    fac.uploadPhoto = function (files , id) {
+    fac.getCalender = function (callback) {
+        $http.get("http://localhost:3000/getCalender").success(function (response) {
+            callback(response);
+        });
+
+    };
+
+    fac.uploadPhoto = function (files, id) {
         return new Promise(function (resolve) {
             Upload.upload({
                 url: 'http://localhost:3000/upload-app-photo', //webAPI exposed to upload the file
-                data: {files: files , id : id} //pass file as data, should be user ng-model
+                data: {files: files, id: id} //pass file as data, should be user ng-model
             }).then(function (resp) { //upload function returns a promise
                 console.log(resp);
                 if (resp.status === 200) { //validate success
@@ -45,11 +50,11 @@ angular.module('MetronicApp').factory('manageAppSettingsService', function ($htt
 
     };
 
-    fac.uploadVisionPhoto = function (file , id) {
+    fac.uploadVisionPhoto = function (file, id) {
         return new Promise(function (resolve) {
             Upload.upload({
                 url: 'http://localhost:3000/upload-vision-photo', //webAPI exposed to upload the file
-                data: {file: file , id : id} //pass file as data, should be user ng-model
+                data: {file: file, id: id} //pass file as data, should be user ng-model
             }).then(function (resp) { //upload function returns a promise
                 console.log(resp);
                 if (resp.status === 200) { //validate success
@@ -67,7 +72,14 @@ angular.module('MetronicApp').factory('manageAppSettingsService', function ($htt
                 // model.progress = progressPercentage; // capture upload progress
             });
         });
+    };
 
+    fac.saveCalender = function (calenderData, callback) {
+        $http.post("http://localhost:3000/saveCalender", {
+            'calenderData': calenderData
+        }).success(function (response) {
+            callback(response);
+        });
     };
 
     return fac;

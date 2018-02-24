@@ -186,5 +186,17 @@ router.get('/getAppSettings', function (req, res, next) {
         res.send(result);
     });
 });
+router.post('/saveCalender', function (req, res, next) {
+    appSettingsMethods.saveCalender(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+
+router.get('/getCalender', function (req, res, next) {
+    appSettingsMethods.getCalender(req, res, function (result) {
+        res.send(result);
+    });
+});
 
 module.exports = router;

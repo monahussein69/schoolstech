@@ -9,7 +9,7 @@
 
     angular.module('kdate')
 
-    .directive('kdatepicker', function () {
+    .directive('kdatepicker', function ($filter) {
         return {
             restrict: 'A',
             scope: '=ngModel',
@@ -25,7 +25,7 @@
                     var dateResult = null;
 
                     ngModel.$formatters.push(function (value) {
-                        return $filter('kdate')(value, dateFormat);
+                        // return $filter('kdate')(value, dateFormat);
                     });
 
                     if (ngModel.$modelValue) {

@@ -12,7 +12,7 @@ var MetronicApp = angular.module("MetronicApp", [
     "ngFileUpload",
     'toastr',
     'kdate',
-    'simditor'
+    'simditor',
 ]);
 
 
@@ -128,7 +128,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
         .state('login', {
             url: "/login.html",
             templateUrl: "views/login.html",
-            data: {pageTitle: 'Admin Dashboard Template'},
+            data: {pageTitle: 'تسجيل الدخول'},
             controller: "LoginController",
             resolve: {
                 deps: ['$ocLazyLoad', function ($ocLazyLoad) {
@@ -161,7 +161,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
         .state('Master.dashboard', {
             url: "/dashboard.html",
             templateUrl: "views/dashboard.html",
-            data: {pageTitle: 'Admin Dashboard Template'},
+            data: {pageTitle: 'التقويم المدرسي'},
             controller: "DashboardController",
             resolve: {
                 deps: ['$ocLazyLoad', function ($ocLazyLoad) {
@@ -173,7 +173,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/global/plugins/morris/morris.min.js',
                             '../assets/global/plugins/morris/raphael-min.js',
                             '../assets/global/plugins/jquery.sparkline.min.js',
-
+                            'js/services/manageAppSettingsFactory.js',
                             '../assets/pages/scripts/dashboard.min.js',
                             'js/controllers/DashboardController.js',
                         ]
