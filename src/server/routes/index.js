@@ -4,6 +4,9 @@ var loginMethod = require('../model/login.js');
 var schoolMethods = require('../model/school.js');
 var schoolAccountMethods = require('../model/schoolAccount.js');
 var appSettingsMethods = require('../model/appSettings.js');
+var employeeMethods = require('../model/employee.js');
+var jobTitleMethods = require('../model/jobTitle.js');
+var subJobTitleMethods = require('../model/subJobTitle.js');
 
 var app = express();
 var multer = require('multer');
@@ -107,6 +110,31 @@ router.get('/getAllSchools', function (req, res, next) {
     });
 });
 
+router.get('/getAllEmployees', function (req, res, next) {
+    employeeMethods.getEmployees(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+
+router.post('/saveEmployeeData', function (req, res, next) {
+    employeeMethods.saveEmployee(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+
+router.get('/getEmployee/:empId', function (req, res, next) {
+    employeeMethods.getEmployee(req, res, function (result) {
+        res.send(result);
+    });
+});
+router.get('/deleteEmployee/:empId', function (req, res, next) {
+    employeeMethods.deleteEmployee(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 /** API path that will upload the files */
 router.post('/upload', function (req, res) {
     upload(req, res, function (err) {
@@ -121,10 +149,18 @@ router.post('/upload', function (req, res) {
             return;
         }
         req.body.filename = filename;
-        schoolMethods.UploadExcel(req, res, function (result) {
+		if(req.body.type == 'school'){
+			schoolMethods.UploadExcel(req, res, function (result) {
             console.log("result : ", result);
             res.send({status: true, msg: 'تم اضافة الملف بنجاح'});
-        });
+           });
+		}else if(req.body.type == 'employee'){
+			employeeMethods.UploadExcel(req, res, function (result) {
+            console.log("result : ", result);
+            res.send({status: true, msg: 'تم اضافة الملف بنجاح'});
+           });
+		}
+       
         // if(req.file.originalname.split('.')[req.file.originalname.split('.').length-1] === 'xlsx'){
         //     var array = xlsx.parse(__dirname + '/file_name.xlsx');
         // }
@@ -139,14 +175,24 @@ router.post('/upload-photo', function (req, res) {
             return;
         }
         /** Multer gives us file info in req.file object */
-        if (!req.file) {
+        if (!req.files) {
             res.json({error_code: 1, err_desc: "No file passed"});
             return;
         }
-        req.body.logoFile = filename;
-        schoolMethods.updatePhoto(req, res, function (result) {
+		if(req.body.type == 'school_logo'){
+			req.body.logoFile = filename;
+            schoolMethods.updatePhoto(req, res, function (result) {
             res.send(filename);
-        });
+        }  );
+		}
+		
+		if(req.body.type == 'employee_photo'){
+			req.body.photoFile = filename;
+            employeeMethods.updatePhoto(req, res, function (result) {
+            res.send(filename);
+        }  );
+		}
+        
 
     });
 });
@@ -195,6 +241,34 @@ router.post('/saveCalender', function (req, res, next) {
 
 router.get('/getCalender', function (req, res, next) {
     appSettingsMethods.getCalender(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+// job title settings routes
+
+router.post('/saveJobTitle', function (req, res, next) {
+    jobTitleMethods.saveJobTitle(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+
+router.get('/getAllJobTitles', function (req, res, next) {
+    jobTitleMethods.getJobTitles(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/saveSubJobTitle', function (req, res, next) {
+    subJobTitleMethods.saveSubJobTitle(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+
+router.post('/getAllSubJobTitles', function (req, res, next) {
+    subJobTitleMethods.getSubJobTitles(req, res, function (result) {
         res.send(result);
     });
 });

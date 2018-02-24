@@ -1,0 +1,17 @@
+{
+  "name": "angular-editor",
+  "homepage": "https://github.com/wanming/angular-editor",
+  "main": [
+    "./javascripts/angular-editor.js"
+  ],
+  "dependencies": {},
+  "_release": "f736b90ac6",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "f736b90ac6e82163ef42fe94819e6cfde7973f57"
+  },
+  "_source": "https://github.com/wanming/angular-editor.git",
+  "_target": "*",
+  "_originalSource": "angular-editor"
+}

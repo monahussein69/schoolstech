@@ -228,7 +228,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             }
         })
 
-        .state('Master.mangeSchoolAccount', {
+        .state('Master.manageSchoolAccount', {
             url: "/manageSchoolAccount/:schoolId",
             templateUrl: "views/schools/schoolAccount.html",
             data: {pageTitle: 'المدارس'},
@@ -256,6 +256,51 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             }
         })
 
+        .state('Master.ManageEmployeesData', {
+            url: "/manageEmployees/:schoolId",
+            templateUrl: "views/employees/manageEmployees.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "ManageEmployeesController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/EmployeesController.js',
+                            'js/services/EmployeesFactory.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+
+        .state('Master.AddEditEmployee', {
+            url: "/manageEmployee/:empId",
+            templateUrl: "views/employees/editEmployee.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "ManageEmployeeController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/EmployeesController.js',
+                            'js/services/EmployeesFactory.js',
+                            'js/services/manageJobTitleFactory.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+
 
         .state('Master.appSettings', {
             url: "/appSettings",
@@ -268,7 +313,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                         name: 'MetronicApp',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
                         files: [
-                            'js/controllers/SettingsController.js',
+                            'js/controllers/Settings/SettingsController.js',
                             'js/services/manageAppSettingsFactory.js',
                             '../assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css',
                             '../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
@@ -280,6 +325,52 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
 
 
 
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.ManageJobTitles', {
+            url: "/manageJobTitles",
+            templateUrl: "views/settings/jobTitleSettings.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "jobTitelSettingsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/Settings/jobTitleSettingController.js',
+                            'js/services/manageJobTitleFactory.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.ManageSubJobTitles', {
+            url: "/manageSubJobTitles/:jobTitleId",
+            templateUrl: "views/settings/subJobTitlesSettings.html",
+            data: {pageTitle: 'المسميات الوظيفيه الفرعيه'},
+            controller: "subJobTitleSettingsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/Settings/subJobTitleSettingController.js',
+                            'js/services/manageSubJobTitleFactory.js',
                         ]
                     });
                 }]
