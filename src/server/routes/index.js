@@ -110,7 +110,7 @@ router.get('/getAllSchools', function (req, res, next) {
     });
 });
 
-router.get('/getAllEmployees', function (req, res, next) {
+router.get('/getAllEmployees/:schoolId', function (req, res, next) {
     employeeMethods.getEmployees(req, res, function (result) {
         res.send(result);
     });
