@@ -44,8 +44,8 @@ var schoolAccountMethods = {
             if(err)
              throw err
             if(result.affectedRows){
-                if((schoolAccountData.accountStatus ==  'مفعل')) {
-
+                if((schoolAccountData.accountStatus ==  'مفعل') && (schoolAccountData.accountStatus != AccountStatus)) {
+                    console.log('here');
                     req.body.userData = userData;
                     userMethods.saveUserData(req, res, function (result) {
                         //res.send(result);
@@ -89,7 +89,7 @@ var schoolAccountMethods = {
 
                              req.body.userData = userData;
                              userMethods.saveUserData(req, res, function (result) {
-                                 //res.send(result);
+                                 res.send(result);
                              });
                          }
                          response.success = true;
