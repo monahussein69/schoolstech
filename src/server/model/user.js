@@ -4,8 +4,8 @@ var userMethods = {
     saveUserData: function (req, res, callback) {
         var userData = req.body.userData;
         var response = {};
-        if (userData.id) {
-            con.query("select * from sys_users where id = ?", [userData.id], function (err, result) {
+        if (userData.loginName) {
+            con.query("select * from sys_users where loginName = ?", [userData.loginName], function (err, result) {
                 if (err)
                     throw err;
                 if (Object.keys(result).length) {
@@ -17,7 +17,7 @@ var userMethods = {
                             userData.password,
                             userData.groupId,
                             userData.PasswordHash,
-                            userData.id
+                            result[0].id
                         ], function (err, result) {
                             if (err)
                                 throw err
