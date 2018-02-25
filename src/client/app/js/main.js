@@ -289,7 +289,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
 
 
         .state('Master.AddEditEmployee', {
-            url: "/manageEmployee/:empId",
+            url: "/manageEmployee/:schoolId/:empId",
             templateUrl: "views/employees/editEmployee.html",
             data: {pageTitle: 'المدارس'},
             controller: "ManageEmployeeController",
