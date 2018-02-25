@@ -1,14 +1,25 @@
 angular.module('MetronicApp').controller('ManageEmployeesController',
-    function ($rootScope, $scope, $http, $window, localStorageService, manageEmployeeService, Upload, toastr) {
+    function ($rootScope, $scope, $http,$stateParams, $window, localStorageService, manageEmployeeService, Upload, toastr) {
         var model = {
             upload: upload,
             doUpload: doUpload,
             progress: 0,
-            deleteEmp: deleteEmp
+            deleteEmp: deleteEmp,
+            schoolId : 0
         };
         $scope.model = model;
 
-         manageEmployeeService.getAllEmployees().then(function (employees) {
+        var userObject = localStorageService.get('UserObject');
+        var userType = userObject[0].userType;
+        var schoolId = 0;
+        if(userType == 2){
+             schoolId = userObject[0].schoolId;
+        }else{
+             schoolId = $stateParams.schoolId;
+        }
+
+         $scope.model.schoolId = schoolId;
+         manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
              $scope.employees = employees;
 
              $scope.$apply();
@@ -36,11 +47,22 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
         };
 
         function upload(file) {
+
+            var userObject = localStorageService.get('UserObject');
+            var userType = userObject[0].userType;
+            var schoolId = 0;
+            if(userType == 2){
+                schoolId = userObject[0].schoolId;
+            }else{
+                schoolId = $stateParams.schoolId;
+            }
             Upload.upload({
                 url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
                 data: {
 					file: file,
-					type:'employee'} //pass file as data, should be user ng-model
+					type:'employee',
+                    schoolId:schoolId
+                } //pass file as data, should be user ng-model
             }).then(function (resp) { //upload function returns a promise
                 console.log(resp);
                 if (resp.status === 200) { //validate success
@@ -106,7 +128,16 @@ angular.module('MetronicApp').controller('ManageEmployeeController', function ($
 
     $scope.model = model;
 
+    var userObject = localStorageService.get('UserObject');
+    var userType = userObject[0].userType;
+    var schoolId = 0;
+    if(userType == 2){
+        schoolId = userObject[0].schoolId;
+    }else{
+        schoolId = $stateParams.schoolId;
+    }
 
+    model.empDataObj.schoolId = schoolId;
     if ($stateParams.empId) {
 		  model.empDataObj.id = $stateParams.empId;
         manageEmployeeService.getEmpData($stateParams.empId, function (response) {

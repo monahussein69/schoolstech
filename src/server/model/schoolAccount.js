@@ -1,15 +1,30 @@
 var con = require('../routes/dbConfig.js');
+var userMethods = require('../model/user.js');
+var randomstring = require("randomstring");
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 var schoolAccountMethods = {
     saveSchoolAccount: function(req,res,callback) {
      var schoolAccountData = req.body.schoolAccountData;
 
      var response = {};
+     var userPassword = randomstring.generate(7);
+     var hash = bcrypt.hashSync(userPassword, saltRounds);
+     var userData =
+            {'schoolId' :schoolAccountData.schoolId ,
+                'userType' : 2,
+                'loginName': schoolAccountData.contactEmail,
+                'password':userPassword,
+                'groupId':1,
+                'PasswordHash':hash
+            };
      if(schoolAccountData.schoolId){
        con.query("select * from SYS_School_Account where schoolId = ?",[schoolAccountData.schoolId],function(err,result){
          if(err)
           throw err;
          if (Object.keys(result).length){
+            AccountStatus = result[0].accountStatus;
           con.query(" update SYS_School_Account set accountName = ? , accountStatus = ?,activationDate=?,expirationDate=?,expirationType=?,expirationDuration=?,contactPerson=?, contactEmail=?,contactTitle=? ,contactMobile =?,contactPhone=?,contactPostal=?,contactMailBox=? where schoolId = ?",
           [ schoolAccountData.accountName ,
             schoolAccountData.accountStatus,
@@ -29,6 +44,14 @@ var schoolAccountMethods = {
             if(err)
              throw err
             if(result.affectedRows){
+                if((schoolAccountData.accountStatus ==  'مفعل') && (schoolAccountData.accountStatus != AccountStatus)) {
+                    console.log('here');
+                    req.body.userData = userData;
+                    userMethods.saveUserData(req, res, function (result) {
+                        //res.send(result);
+                    });
+                }
+
              response.success = true;
                 response.msg = 'تم حفظ بيانات الاشتراك بنجاح';
             }else{
@@ -55,12 +78,20 @@ var schoolAccountMethods = {
                      schoolAccountData.contactPostal ,
                      schoolAccountData.contactMailBox,
                      schoolAccountData.schoolId,
-                     schoolAccountData.expirationDuration,
                      schoolAccountData.expirationType,
+                     schoolAccountData.expirationDuration,
                  ],function(err,result){
                      if(err)
                          throw err
                      if(result.affectedRows){
+
+                         if((schoolAccountData.accountStatus ==  'مفعل')) {
+
+                             req.body.userData = userData;
+                             userMethods.saveUserData(req, res, function (result) {
+                                 res.send(result);
+                             });
+                         }
                          response.success = true;
                          response.msg = 'تم حفظ بيانات الاشتراك بنجاح';
                      }else{

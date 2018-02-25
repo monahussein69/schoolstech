@@ -29,7 +29,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="btn-group">
-                                <a ui-sref="Master.AddEditEmployee" id="sample_editable_1_new" class="btn sbold green">
+                                <a ui-sref="Master.AddEditEmployee({schoolId:{{model.schoolId}}})" id="sample_editable_1_new" class="btn sbold green">
                                     <i class="fa fa-plus"></i> جديد </a>
                             </div>
                             <div class="btn-group">
@@ -99,7 +99,7 @@
                                     </button>
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <a ui-sref="Master.AddEditEmployee({empId:{{employee.id}}})">
+                                            <a ui-sref="Master.AddEditEmployee({ empId:{{employee.id}} , schoolId : {{employee.school_id}} })">
                                                 <i class="icon-pencil"></i>&nbsp; تعديل </a>
                                         </li>
                                         <li class="divider"> </li>

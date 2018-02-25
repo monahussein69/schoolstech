@@ -99,16 +99,20 @@
                                     <button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> العمليات
                                         <i class="fa fa-angle-down"></i>
                                     </button>
-                                    <ul class="dropdown-menu" role="menu">
+                                    <ul class="dropdown-menu dropdown-menu-left" role="menu">
                                         <li>
                                             <a ui-sref="Master.AddEditSchool({schoolId:{{school.id}}})">
                                                 <i class="icon-pencil"></i>&nbsp; تعديل </a>
                                         </li>
                                         <li>
-                                            <a ui-sref="Master.mangeSchoolAccount({schoolId:{{school.id}}})">
+                                            <a ui-sref="Master.manageSchoolAccount({schoolId:{{school.id}}})">
                                                 <i class="fa fa-credit-card"></i> &nbsp;بيانات الاشتراك </a>
                                         </li>
                                         <li class="divider"> </li>
+                                        <li>
+                                            <a ui-sref="Master.ManageEmployeesData({schoolId:{{school.id}}})">
+                                                <i class="fa fa-credit-card"></i> &nbsp;بيانات الموظفين</a>
+                                        </li>
                                         <li>
                                             <a href="javascript:;" ng-confirm-click="هل تريد تأكيد حذف المدرسه ؟ " confirmed-click="model.deleteSchool(school.id)">
                                                 <i class="fa fa-trash"></i>&nbsp; حذف </a>

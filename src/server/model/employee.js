@@ -166,59 +166,100 @@ var employeeMethods = {
             console.log('File Name : ', req.body.filename);
             var workbook = new Excel.Workbook();
             var data = {};
+            var schoolId = req.body.schoolId;
             workbook.xlsx.readFile('./src/client/app/uploads/' + req.body.filename)
                 .then(function () {
                     var finalEmployees = [];
                     workbook.eachSheet(function (worksheet, sheetId) {
                         // var worksheet = workbook.getWorksheet();
                         var job_title = worksheet.getCell('G5').value;
+                        console.log('job_title');
+                        console.log(job_title);
                         var job_title_id = 0;
                         req.body.name = job_title;
                             jobTitleMethods.getjobTitleByName(req, res, function (result) {
+                                console.log('job_title_result');
+                                console.log(result);
                                 if (!Object.keys(result).length) {
                                     jobTitleData = {name : job_title};
                                     req.body.jobTitleData =  jobTitleData;
                                     jobTitleMethods.saveJobTitle(req, res, function (result) {
-                                        job_title_id = result.insertId;
+                                        job_title_id = result.insertId ;
+                                        worksheet.eachRow(function (row, rowNumber) {
+
+                                            if (rowNumber > 18) {
+                                                // var cellNumber = "Q"+rowNumber;
+                                                data = {
+                                                    school_id : schoolId,
+                                                    name: worksheet.getCell('AD'+ rowNumber).value,
+                                                    nationality: worksheet.getCell('AC' + rowNumber).value,
+                                                    identity_no: worksheet.getCell('AB' + rowNumber).value,
+                                                    id_date: worksheet.getCell('X' + rowNumber).value,
+                                                    educational_level: worksheet.getCell('W' + rowNumber).value,
+                                                    graduate_year: worksheet.getCell('V' + rowNumber).value,
+                                                    major: worksheet.getCell('U' + rowNumber).value,
+                                                    job_no: worksheet.getCell('T' + rowNumber).value,
+                                                    ministry_start_date: worksheet.getCell('R' + rowNumber).value,
+                                                    school_start_date: worksheet.getCell('Q' + rowNumber).value,
+                                                    current_position_date: worksheet.getCell('O' + rowNumber).value,
+                                                    degree: worksheet.getCell('M' + rowNumber).value,
+                                                    lectures_qouta: worksheet.getCell('K' + rowNumber).value,
+                                                    phone1: worksheet.getCell('I' + rowNumber).value,
+                                                    mobile: worksheet.getCell('F' + rowNumber).value,
+                                                    email: worksheet.getCell('E' + rowNumber).value,
+                                                    notes: worksheet.getCell('D' + rowNumber).value,
+                                                    jobtitle_id:job_title_id
+                                                };
+                                                req.body.empData = data;
+                                                employeeMethods.saveEmployee(req, res, function (result) {
+                                                });
+                                                finalEmployees.push(data);
+                                            }
+                                        });
+
                                     });
                                 }else{
                                     job_title_id = result[0].id ;
+                                    worksheet.eachRow(function (row, rowNumber) {
+
+                                        if (rowNumber > 18) {
+                                            // var cellNumber = "Q"+rowNumber;
+                                            data = {
+                                                school_id : schoolId,
+                                                name: worksheet.getCell('AD'+ rowNumber).value,
+                                                nationality: worksheet.getCell('AC' + rowNumber).value,
+                                                identity_no: worksheet.getCell('AB' + rowNumber).value,
+                                                id_date: worksheet.getCell('X' + rowNumber).value,
+                                                educational_level: worksheet.getCell('W' + rowNumber).value,
+                                                graduate_year: worksheet.getCell('V' + rowNumber).value,
+                                                major: worksheet.getCell('U' + rowNumber).value,
+                                                job_no: worksheet.getCell('T' + rowNumber).value,
+                                                ministry_start_date: worksheet.getCell('R' + rowNumber).value,
+                                                school_start_date: worksheet.getCell('Q' + rowNumber).value,
+                                                current_position_date: worksheet.getCell('O' + rowNumber).value,
+                                                degree: worksheet.getCell('M' + rowNumber).value,
+                                                lectures_qouta: worksheet.getCell('K' + rowNumber).value,
+                                                phone1: worksheet.getCell('I' + rowNumber).value,
+                                                mobile: worksheet.getCell('F' + rowNumber).value,
+                                                email: worksheet.getCell('E' + rowNumber).value,
+                                                notes: worksheet.getCell('D' + rowNumber).value,
+                                                jobtitle_id:job_title_id
+                                            };
+                                            req.body.empData = data;
+                                            employeeMethods.saveEmployee(req, res, function (result) {
+                                            });
+                                            finalEmployees.push(data);
+                                        }
+                                    });
+
                                 }
 
-                                worksheet.eachRow(function (row, rowNumber) {
 
-                                    if (rowNumber > 18) {
-                                        // var cellNumber = "Q"+rowNumber;
-                                        data = {
-                                            name: worksheet.getCell('AD'+ rowNumber).value,
-                                            nationality: worksheet.getCell('AC' + rowNumber).value,
-                                            identity_no: worksheet.getCell('AB' + rowNumber).value,
-                                            id_date: worksheet.getCell('X' + rowNumber).value,
-                                            educational_level: worksheet.getCell('W' + rowNumber).value,
-                                            graduate_year: worksheet.getCell('V' + rowNumber).value,
-                                            major: worksheet.getCell('U' + rowNumber).value,
-                                            job_no: worksheet.getCell('T' + rowNumber).value,
-                                            ministry_start_date: worksheet.getCell('R' + rowNumber).value,
-                                            school_start_date: worksheet.getCell('Q' + rowNumber).value,
-                                            current_position_date: worksheet.getCell('O' + rowNumber).value,
-                                            degree: worksheet.getCell('M' + rowNumber).value,
-                                            lectures_qouta: worksheet.getCell('K' + rowNumber).value,
-                                            phone1: worksheet.getCell('I' + rowNumber).value,
-                                            mobile: worksheet.getCell('F' + rowNumber).value,
-                                            email: worksheet.getCell('E' + rowNumber).value,
-                                            notes: worksheet.getCell('D' + rowNumber).value,
-                                            jobtitle_id :job_title_id
-                                        };
-                                        req.body.empData = data;
-                                        console.log('data');
-                                        console.log(data);
-                                        employeeMethods.saveEmployee(req, res, function (result) {
-                                        });
-                                        finalEmployees.push(data);
-                                    }
-                                });
 
                             });
+
+
+
 
 
                     });
@@ -231,9 +272,9 @@ var employeeMethods = {
     },
     getEmployees: function (req, res, callback) {
         var schoolId = req.params.schoolId;
-        con.query('select * from SCH_STR_Employees order by name asc', function (err, result) {
+        con.query('select * from SCH_STR_Employees where school_id = ?',[schoolId], function (err, result) {
                 if (err)
-                    throw err
+                    throw err0
 
                 callback(result);
             }
