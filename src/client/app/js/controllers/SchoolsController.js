@@ -207,7 +207,7 @@ angular.module('MetronicApp').controller('ManageSchoolAccountController', functi
             $scope.model.SchoolAccountObj.activationDate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
         }else{
             $scope.model.SchoolAccountObj.activationDate = '';
-            $scope.model.SchoolAccountObj.expirationDuration = '';
+            $scope.model.SchoolAccountObj.expirationDuration = 0;
             $scope.model.SchoolAccountObj.expirationType = '';
             $scope.model.SchoolAccountObj.expirationDate = '';
         }
