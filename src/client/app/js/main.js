@@ -89,7 +89,15 @@ MetronicApp.controller('HeaderController', ['localStorageService', '$scope', fun
 }]);
 
 /* Setup Layout Part - Sidebar */
-MetronicApp.controller('SidebarController', ['$state', '$scope', function ($state, $scope) {
+MetronicApp.controller('SidebarController', ['localStorageService','$state', '$scope', function (localStorageService,$state, $scope) {
+
+    var userObject = localStorageService.get('UserObject');
+    console.log(userObject[0].userType);
+    var model = {userType: ''};
+    $scope.model = model;
+    $scope.model.userType = userObject[0].userType;
+
+
     $scope.$on('$includeContentLoaded', function () {
         Layout.initSidebar($state); // init sidebar
     });
