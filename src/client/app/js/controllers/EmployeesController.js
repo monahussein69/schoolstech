@@ -8,7 +8,14 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
         };
         $scope.model = model;
 
-        var schoolId = $stateParams.schoolId;
+        var userObject = localStorageService.get('UserObject');
+        var userType = userObject[0].userType;
+        var schoolId = 0;
+        if(userType == 2){
+             schoolId = userObject[0].schoolId;
+        }else{
+             schoolId = $stateParams.schoolId;
+        }
 
          manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
              $scope.employees = employees;
@@ -38,7 +45,15 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
         };
 
         function upload(file) {
-            var schoolId = $stateParams.schoolId;
+
+            var userObject = localStorageService.get('UserObject');
+            var userType = userObject[0].userType;
+            var schoolId = 0;
+            if(userType == 2){
+                schoolId = userObject[0].schoolId;
+            }else{
+                schoolId = $stateParams.schoolId;
+            }
             Upload.upload({
                 url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
                 data: {
@@ -111,7 +126,16 @@ angular.module('MetronicApp').controller('ManageEmployeeController', function ($
 
     $scope.model = model;
 
+    var userObject = localStorageService.get('UserObject');
+    var userType = userObject[0].userType;
+    var schoolId = 0;
+    if(userType == 2){
+        schoolId = userObject[0].schoolId;
+    }else{
+        schoolId = $stateParams.schoolId;
+    }
 
+    model.empDataObj.schoolId = schoolId;
     if ($stateParams.empId) {
 		  model.empDataObj.id = $stateParams.empId;
         manageEmployeeService.getEmpData($stateParams.empId, function (response) {
