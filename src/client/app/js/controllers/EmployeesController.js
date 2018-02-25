@@ -4,7 +4,8 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
             upload: upload,
             doUpload: doUpload,
             progress: 0,
-            deleteEmp: deleteEmp
+            deleteEmp: deleteEmp,
+            schoolId : 0
         };
         $scope.model = model;
 
@@ -17,6 +18,7 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
              schoolId = $stateParams.schoolId;
         }
 
+         $scope.model.schoolId = schoolId;
          manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
              $scope.employees = employees;
 
