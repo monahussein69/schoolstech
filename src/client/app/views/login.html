@@ -1,13 +1,16 @@
 <div class=" login"> {{model}}
     <!-- BEGIN LOGO -->
-    <div class="logo">
-        <a href="index.html">
-            <img src="../assets/layouts/layout/img/logo.png" alt="" /> </a>
-    </div>
+
     <!-- END LOGO -->
     <!-- BEGIN LOGIN -->
     <div class="content">
         <!-- BEGIN LOGIN FORM -->
+
+        <div class="logo">
+            <a href="index.html">
+                <img src="../assets/layouts/layout/img/logo.png" alt="" /> </a>
+        </div>
+
         <form class="login-form" method="post" name="loginForm" ng-model="loginForm">
             <h3 class="form-title font-green">تسجيل الدخول</h3>
             <div class="alert alert-danger" ng-if="model.error != null">
