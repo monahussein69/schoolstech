@@ -9,16 +9,7 @@ var schoolAccountMethods = {
      var schoolAccountData = req.body.schoolAccountData;
 
      var response = {};
-     var userPassword = randomstring.generate(7);
-     var hash = bcrypt.hashSync(userPassword, saltRounds);
-     var userData =
-            {'schoolId' :schoolAccountData.schoolId ,
-                'userType' : 2,
-                'loginName': schoolAccountData.contactEmail,
-                'password':userPassword,
-                'groupId':1,
-                'PasswordHash':hash
-            };
+
      if(schoolAccountData.schoolId){
        con.query("select * from SYS_School_Account where schoolId = ?",[schoolAccountData.schoolId],function(err,result){
          if(err)
@@ -46,7 +37,18 @@ var schoolAccountMethods = {
             if(result.affectedRows){
                 if((schoolAccountData.accountStatus ==  'مفعل') && (schoolAccountData.accountStatus != AccountStatus)) {
                     console.log('here');
+                    var userPassword = randomstring.generate(7);
+                    var hash = bcrypt.hashSync(userPassword, saltRounds);
+                    var userData =
+                        {'schoolId' :schoolAccountData.schoolId ,
+                            'userType' : 2,
+                            'loginName': schoolAccountData.contactEmail,
+                            'password':userPassword,
+                            'groupId':1,
+                            'PasswordHash':hash
+                        };
                     req.body.userData = userData;
+
                     userMethods.saveUserData(req, res, function (result) {
                         //res.send(result);
                     });
@@ -86,10 +88,20 @@ var schoolAccountMethods = {
                      if(result.affectedRows){
 
                          if((schoolAccountData.accountStatus ==  'مفعل')) {
-
+                             var userPassword = randomstring.generate(7);
+                             var hash = bcrypt.hashSync(userPassword, saltRounds);
+                             var userData =
+                                 {'schoolId' :schoolAccountData.schoolId ,
+                                     'userType' : 2,
+                                     'loginName': schoolAccountData.contactEmail,
+                                     'password':userPassword,
+                                     'groupId':1,
+                                     'PasswordHash':hash
+                                 };
+                             console.log(userData);
                              req.body.userData = userData;
                              userMethods.saveUserData(req, res, function (result) {
-                                 res.send(result);
+                                 //res.send(result);
                              });
                          }
                          response.success = true;
