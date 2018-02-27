@@ -36,31 +36,28 @@ var userMethods = {
                         }
                     );
                 } else {
-                    response.success = false;
-                    response.msg = 'المسمى الوظيفي غير موجود الرجاء المحاوله مره اخرى';
+                    con.query(" insert into sys_users  (schoolId,userType,loginName,password,groupId,PasswordHash) values(?,?,?,?,?,?)",
+                        [   userData.schoolId,
+                            userData.userType,
+                            userData.loginName,
+                            userData.password,
+                            userData.groupId,
+                            userData.PasswordHash,], function (err, result) {
+                            if (err)
+                                throw err
+                            if (result.affectedRows) {
+                                response.success = true;
+                                response.msg = 'تم الحفظ بنجاح';
+                                response.insertId = result.insertId;
+                            } else {
+                                response.success = false;
+                                response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
+                            }
+                            callback(response);
+                        }
+                    );
                 }
             });
-        } else {
-            con.query(" insert into sys_users  (schoolId,userType,loginName,password,groupId,PasswordHash) values(?,?,?,?,?,?)",
-                [   userData.schoolId,
-                    userData.userType,
-                    userData.loginName,
-                    userData.password,
-                    userData.groupId,
-                    userData.PasswordHash,], function (err, result) {
-                    if (err)
-                        throw err
-                    if (result.affectedRows) {
-                        response.success = true;
-                        response.msg = 'تم الحفظ بنجاح';
-                        response.insertId = result.insertId;
-                    } else {
-                        response.success = false;
-                        response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
-                    }
-                    callback(response);
-                }
-            );
         }
 
     }
