@@ -13,6 +13,7 @@ var MetronicApp = angular.module("MetronicApp", [
     'toastr',
     'kdate',
     'simditor',
+    'mgo-angular-wizard',
 ]);
 
 
@@ -287,6 +288,29 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             }
         })
 
+
+        .state('Master.ConfigEmployees', {
+            url: "/config-employees",
+            templateUrl: "views/employees/employees-config.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "EmployeesConfigController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/EmployeesController.js',
+                            'js/services/EmployeesFactory.js',
+                        ]
+                    });
+                }]
+            }
+        })
 
         .state('Master.AddEditEmployee', {
             url: "/manageEmployee/:schoolId/:empId",

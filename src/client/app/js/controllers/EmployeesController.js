@@ -1,3 +1,38 @@
+angular.module('MetronicApp').controller('EmployeesConfigController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr) {
+
+
+    $scope.enterValidation = function(){
+        return true;
+    };
+
+    $scope.exitValidation = function(){
+        return true;
+    };
+//example using context object
+    $scope.exitValidation = function(context){
+        return context.firstName === "Jacob";
+    }
+//example using promises
+    $scope.exitValidation = function(){
+        var d = $q.defer()
+        $timeout(function(){
+            return d.resolve(true);
+        }, 2000);
+        return d.promise;
+    }
+
+    $scope.$on('$viewContentLoaded', function () {
+        // initialize core components
+        // App.initAjax();
+    });
+
+    // set sidebar closed and body solid layout mode
+    $rootScope.settings.layout.pageContentWhite = true;
+    $rootScope.settings.layout.pageBodySolid = false;
+    $rootScope.settings.layout.pageSidebarClosed = false;
+});
+
+
 angular.module('MetronicApp').controller('ManageEmployeesController',
     function ($rootScope, $scope, $http, $stateParams, $window, localStorageService, manageEmployeeService, Upload, toastr) {
         var model = {
@@ -68,8 +103,13 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
                 } //pass file as data, should be user ng-model
             }).then(function (resp) { //upload function returns a promise
                 console.log(resp);
-                if (resp.status === 200) { //validate success
+                if (resp.data.status) { //validate success
                     toastr.success("تم رفع الملف بنجاح");
+                    manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
+                        $scope.employees = employees;
+
+                        $scope.$apply();
+                    });
                 } else {
                     toastr.error('هناك مشكلة في رفع الملف');
                 }
@@ -80,11 +120,7 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
                 console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                 model.progress = progressPercentage; // capture upload progress
 
-                manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
-                    $scope.employees = employees;
 
-                    $scope.$apply();
-                });
             });
         };
 
