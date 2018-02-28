@@ -61,6 +61,19 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
     };
 
 
+	 fac.DeActivateEmployee = function (empId, callback) {
+         $http.post("http://localhost:3000/DeactivateUser",{'empId':empId,'type':'employee'}).success(function (response) {
+             callback(response);
+         });
+     };
+
+    fac.ActivateEmployee = function (empId, callback) {
+        $http.post("http://localhost:3000/ActivateUser",{'empId':empId,'type':'employee'}).success(function (response) {
+            callback(response);
+        });
+    };
+
+
     return fac;
 
 });

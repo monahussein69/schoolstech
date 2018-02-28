@@ -45,7 +45,8 @@ var schoolAccountMethods = {
                             'loginName': schoolAccountData.contactEmail,
                             'password':userPassword,
                             'groupId':1,
-                            'PasswordHash':hash
+                            'PasswordHash':hash,
+                            'is_active':1
                         };
                     req.body.userData = userData;
 
@@ -96,7 +97,8 @@ var schoolAccountMethods = {
                                      'loginName': schoolAccountData.contactEmail,
                                      'password':userPassword,
                                      'groupId':1,
-                                     'PasswordHash':hash
+                                     'PasswordHash':hash,
+                                     'is_active':1
                                  };
                              console.log(userData);
                              req.body.userData = userData;

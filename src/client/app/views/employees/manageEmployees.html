@@ -16,6 +16,10 @@
 <!-- BEGIN MAIN CONTENT -->
 <div class="row">
     <div class="col-md-12">
+
+
+
+
         <!-- BEGIN EXAMPLE TABLE PORTLET-->
         <div class="portlet light bordered">
             <div class="portlet-title">
@@ -93,14 +97,22 @@
                             <td> {{employee.mobile}}</td>
                             <td> {{employee.email}}</td>
                             <td>
-                                <div class="btn-group">
+                                <div class="btn-group dropdown">
                                     <button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> العمليات
                                         <i class="fa fa-angle-down"></i>
                                     </button>
-                                    <ul class="dropdown-menu" role="menu">
+                                    <ul class="dropdown-menu pull-right">
                                         <li>
-                                            <a ui-sref="Master.AddEditEmployee({ empId:{{employee.id}} , schoolId : {{employee.school_id}} })">
+                                            <a ui-sref="Master.AddEditEmployee({empId:'{{employee.id}}',schoolId:'{{employee.school_id}}' })">
                                                 <i class="icon-pencil"></i>&nbsp; تعديل </a>
+                                        </li>
+                                        <li ng-if="employee.is_active != 1">
+                                            <a href="javascript:;" ng-click="model.ActivateEmployee(employee.id)">
+                                                <i class="fa fa-user-plus"></i> تفعيل </a>
+                                        </li>
+                                        <li ng-if="employee.is_active == 1">
+                                            <a href="javascript:;" ng-click="model.DeActivateEmployee(employee.id)">
+                                                <i class="fa fa-user-times"></i>&nbsp; الغاء التفعيل </a>
                                         </li>
                                         <li class="divider"> </li>
                                         <li>
@@ -109,6 +121,10 @@
                                         </li>
                                     </ul>
                                 </div>
+
+
+
+
                             </td>
                         </tr>
                     </tbody>

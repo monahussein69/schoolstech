@@ -374,9 +374,9 @@ var employeeMethods = {
     },
     getEmployees: function (req, res, callback) {
         var schoolId = req.params.schoolId;
-        con.query('select * from SCH_STR_Employees where school_id = ?',[schoolId], function (err, result) {
+        con.query('select SCH_STR_Employees.*,sys_users.is_active from SCH_STR_Employees left join sys_users on SCH_STR_Employees.userId = sys_users.id where school_id = ?',[schoolId], function (err, result) {
                 if (err)
-                    throw err0
+                    throw err
 
                 callback(result);
             }

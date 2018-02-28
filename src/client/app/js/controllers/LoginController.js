@@ -1,4 +1,4 @@
-angular.module('MetronicApp').controller('LoginController', function($rootScope, $scope , $http, $window , localStorageService) {
+angular.module('MetronicApp').controller('LoginController', function($rootScope, $scope , $http, $window , localStorageService,$location) {
     var model = {
         username : '',
         password : '',
@@ -29,6 +29,9 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
             model.error = "الرجاء ادخال اسم المستخدم و كلمه المرور";
         }
     }
+
+
+
     // $scope.$on('$viewContentLoaded', function() {
     //     // initialize core components
     //     // App.initAjax();

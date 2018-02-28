@@ -95,11 +95,12 @@
                             <td> {{school.educationalOffice}}</td>
                             <td> {{school.address}}</td>
                             <td>
-                                <div class="btn-group">
+
+                                <div class="btn-group dropdown">
                                     <button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> العمليات
                                         <i class="fa fa-angle-down"></i>
                                     </button>
-                                    <ul class="dropdown-menu dropdown-menu-left" role="menu">
+                                    <ul class="dropdown-menu pull-right">
                                         <li>
                                             <a ui-sref="Master.AddEditSchool({schoolId:{{school.id}}})">
                                                 <i class="icon-pencil"></i>&nbsp; تعديل </a>

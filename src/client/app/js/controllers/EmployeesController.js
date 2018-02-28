@@ -40,7 +40,9 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
             doUpload: doUpload,
             progress: 0,
             deleteEmp: deleteEmp,
-            schoolId: 0
+            schoolId: 0,
+            ActivateEmployee:ActivateEmployee,
+            DeActivateEmployee:DeActivateEmployee
         };
         $scope.model = model;
 
@@ -53,7 +55,6 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
             schoolId = $stateParams.schoolId;
         }
 
-        console.log(schoolId);
 
         $scope.model.schoolId = schoolId;
         manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
@@ -62,6 +63,35 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
 
             $scope.$apply();
         });
+
+        function ActivateEmployee(empId){
+            manageEmployeeService.ActivateEmployee(empId, function (response) {
+                if (response.success) {
+                    var index = $scope.employees.findIndex(function (employee) {
+                        return employee.id == empId
+                    });
+                    $scope.employees[index].is_active = 1;
+                    toastr.success(response.msg);
+                } else {
+                    toastr.error(response.msg);
+                }
+            });
+        }
+
+        function DeActivateEmployee(empId){
+            manageEmployeeService.DeActivateEmployee(empId, function (response) {
+                if (response.success) {
+                    var index = $scope.employees.findIndex(function (employee) {
+                        return employee.id == empId
+                    });
+                    $scope.employees[index].is_active = 0;
+                    toastr.success(response.msg);
+                } else {
+                    toastr.error(response.msg);
+                }
+            });
+        }
+
 
         function deleteEmp(empId) {
             manageEmployeeService.deleteEmpData(empId, function (response) {
