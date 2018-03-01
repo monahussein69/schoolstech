@@ -1,4 +1,6 @@
 var con = require('../routes/dbConfig.js');
+var employeeMethods = require('../model/employee.js');
+var schoolMethods = require('../model/school.js');
 var randomstring = require("randomstring");
 var bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -11,8 +13,10 @@ var userMethods = {
             con.query("select * from sys_users where loginName = ?", [userData.loginName], function (err, result) {
                 if (err)
                     throw err;
+                console.log(result);
+                var user_id = result[0].id;
                 if (Object.keys(result).length) {
-                    con.query(" update sys_users set schoolId = ?,userType = ?,loginName = ?,password = ?,groupId=?,PasswordHash=? where id = ?",
+                    con.query(" update sys_users set schoolId = ?,userType = ?,loginName = ?,password = ?,groupId=?,PasswordHash=?,is_active = ? where id = ?",
                         [
                             userData.schoolId,
                             userData.userType,
@@ -20,14 +24,15 @@ var userMethods = {
                             userData.password,
                             userData.groupId,
                             userData.PasswordHash,
-                            result[0].id
+                            userData.is_active,
+                            user_id
                         ], function (err, result) {
                             if (err)
                                 throw err
                             if (result.affectedRows) {
                                 response.success = true;
                                 response.msg = 'تم الحفظ بنجاح';
-                                response.insertId = userData.id;
+                                response.insertId = user_id;
 
                             } else {
                                 response.success = false;
@@ -39,12 +44,13 @@ var userMethods = {
                         }
                     );
                 } else {
-                    con.query(" insert into sys_users  (schoolId,userType,loginName,password,groupId,PasswordHash) values(?,?,?,?,?,?)",
+                    con.query(" insert into sys_users  (schoolId,userType,loginName,password,groupId,PasswordHash,is_active) values(?,?,?,?,?,?,?)",
                         [   userData.schoolId,
                             userData.userType,
                             userData.loginName,
                             userData.password,
                             userData.groupId,
+                            userData.is_active,
                             userData.PasswordHash,], function (err, result) {
                             if (err)
                                 throw err
@@ -69,54 +75,47 @@ var userMethods = {
         var response = {};
         if(type == 'employee'){
             var empId = req.body.empId;
-            con.query("select * from sch_str_employees where id = ?", [empId], function (err, result) {
-                if (err)
-                    throw err;
+            req.params.empId = empId
+            employeeMethods.getEmployee(req, res, function (result) {
                 if (Object.keys(result).length) {
                     var userPassword = randomstring.generate(7);
                     var hash = bcrypt.hashSync(userPassword, saltRounds);
-                  if( result[0].userId){
-                      var user_id = result[0].userId;
-                      con.query("update sys_users set is_active = 1,password = ?,PasswordHash=? where id = ?", [userPassword,hash,user_id], function (err, result) {
-                         if(err)
-                             throw err;
-                         if(result.affectedRows){
-                             response.success = true;
-                             response.msg = 'تم تفعيل المستخدم بنجاح';
-                             callback(response);
-                         }
+                    var userData =
+                        {'schoolId' :result[0].school_id ,
+                            'userType' : 3,
+                            'loginName':result[0].mobile,
+                            'password':userPassword,
+                            'groupId':0,
+                            'PasswordHash':hash,
+                            'is_active':1,
 
-                      });
-                  }else{
-                      con.query("insert into sys_users (schoolId,userType,loginName,password,PasswordHash,is_active) values (?,3,?,?,?,1) ",
-                          [   result[0].school_id,
-                              result[0].mobile,
-                              userPassword,
-                              hash
-                          ], function (err, result) {
-                          if(err)
-                              throw err;
-                          if(result.affectedRows){
-                              response.success = true;
-                              response.msg = 'تم تفعيل المستخدم بنجاح';
-                              var userId = result.insertId;
-                              con.query("update sch_str_employees set userId = ?  where id = ? ",
-                                  [userId,empId],function(err,result){
-                                      callback(response);
-                                  });
-                          }
+                        };
+                    req.body.userData = userData;
 
+                    userMethods.saveUserData(req, res, function (result) {
+                        console.log('result');
+                        console.log(result);
+                        if(result.success){
+                            response.success = true;
+                            response.msg = 'تم تفعيل الموظف بنجاح';
+                            var userId = result.insertId;
+                            var empData = {'userId':userId,'id':empId};
+                            console.log(empData);
+                            req.body.empData= empData;
+                            console.log(empData);
+                            employeeMethods.setEmployeeUser(req, res, function (result) {});
+                            callback(response);
+                        }
+                        //res.send(result);
+                    });
 
-                      });
-                  }
                 }else{
                     response.success = false;
                     response.msg = 'الموظف غير موجود , الرجاء المحاوله مره اخرى';
                     callback(response);
                 }
-
-
             });
+
         }
 
 
@@ -130,9 +129,8 @@ var userMethods = {
 
         if(type == 'employee'){
             var empId = req.body.empId;
-            con.query("select * from sch_str_employees where id = ?", [empId], function (err, result) {
-                if (err)
-                    throw err;
+            req.params.empId = empId
+            employeeMethods.getEmployee(req, res, function (result) {
                 if (Object.keys(result).length) {
 
                     if( result[0].userId){
@@ -150,6 +148,7 @@ var userMethods = {
                     }else{
                         response.success = false;
                         response.msg = 'المستخدم غير موجود';
+                        callback(response);
                     }
                 }else{
                     response.success = false;
@@ -157,8 +156,39 @@ var userMethods = {
                     callback(response);
                 }
 
+            });
+
+        }else if(type == 'school'){
+            var schoolId = req.body.schoolId;
+            req.params.schoolId = schoolId
+            schoolMethods.getSchool(req, res, function (result) {
+                if (Object.keys(result).length) {
+
+                    if( result[0].userId){
+                        var user_id = result[0].userId;
+                        con.query("update sys_users set is_active = 0 where id = ?", [user_id], function (err, result) {
+                            if(err)
+                                throw err;
+                            if(result.affectedRows){
+                                response.success = true;
+                                response.msg = 'تم الغاء تفعيل المستخدم بنجاح';
+
+                            }
+                            callback(response);
+                        });
+                    }else{
+                        response.success = false;
+                        response.msg = 'المستخدم غير موجود';
+                        callback(response);
+                    }
+                }else{
+                    response.success = false;
+                    response.msg = 'المستخدم غير موجود , الرجاء المحاوله مره اخرى';
+                    callback(response);
+                }
 
             });
+
         }
     }
 

@@ -97,6 +97,8 @@ var schoolMethods = {
 
     },
 
+
+
     updatePhoto: function (req, res, callback) {
         con.query(" update SCH_School set logoFile=? where id = ?",
             [req.body.logoFile,
@@ -243,6 +245,44 @@ var schoolMethods = {
                 callback(result);
             }
         );
+    },
+
+    setSchoolUser : function (req, res, callback) {
+        var schoolData = req.body.schoolData;
+        var response = {};
+        if (schoolData.id) {
+            con.query("select * from SCH_School where id = ?", [schoolData.id], function (err, result) {
+                if (err)
+                    throw err;
+                if (Object.keys(result).length) {
+                    con.query('update SCH_School set userId = ? where id = ?',[
+                            schoolData.userId,
+                            schoolData.id
+                        ]
+                        , function (err, result) {
+                            if (err)
+                                throw err
+                            if (result.affectedRows) {
+                                response.success = true;
+                                response.id = schoolData.id;
+                                response.msg = 'تم التعديل بنجاح'
+                            } else {
+                                response.success = false;
+                                response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
+                            }
+
+                            callback(response);
+
+                        }
+                    );
+                } else {
+                    response.success = false;
+                    response.msg = 'لا يمكن العثور على الموظف الرجاء المحاوله مره اخرى';
+                    callback(response);
+                }
+            });
+        }
+
     },
 };
 

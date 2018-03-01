@@ -172,7 +172,43 @@ var employeeMethods = {
 
     },
 
+    setEmployeeUser : function (req, res, callback) {
+        var empData = req.body.empData;
+        var response = {};
+        if (empData.id) {
+            con.query("select * from SCH_STR_Employees where id = ?", [empData.id], function (err, result) {
+                if (err)
+                    throw err;
+                if (Object.keys(result).length) {
+                    con.query('update SCH_STR_Employees set userId = ? where id = ?',[
+                            empData.userId,
+                            empData.id
+                        ]
+                        , function (err, result) {
+                            if (err)
+                                throw err
+                            if (result.affectedRows) {
+                                response.success = true;
+                                response.id = empData.id;
+                                response.msg = 'تم التعديل بنجاح'
+                            } else {
+                                response.success = false;
+                                response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
+                            }
 
+                            callback(response);
+
+                        }
+                    );
+                } else {
+                    response.success = false;
+                    response.msg = 'لا يمكن العثور على الموظف الرجاء المحاوله مره اخرى';
+                    callback(response);
+                }
+            });
+        }
+
+    },
 
     getEmployee: function (req, res, callback) {
         var empId = req.params.empId;

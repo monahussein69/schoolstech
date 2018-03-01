@@ -77,10 +77,12 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', function ($scop
  ***/
 
 /* Setup Layout Part - Header */
-MetronicApp.controller('HeaderController', ['localStorageService', '$scope', function (localStorageService, $scope) {
+MetronicApp.controller('HeaderController', ['localStorageService', '$scope','$window', function (localStorageService, $scope,$window) {
     $scope.$on('$includeContentLoaded', function () {
         var userObject = localStorageService.get('UserObject');
-        console.log(userObject[0].loginName);
+        if (userObject == null) {
+            $window.location.href = '#/login';
+        }
         var model = {username: ''};
         $scope.model = model;
         $scope.model.username = userObject[0].loginName;
@@ -126,6 +128,13 @@ MetronicApp.controller('FooterController', ['$scope', function ($scope) {
         Layout.initFooter(); // init footer
     });
 }]);
+/*
+MetronicApp.controller('LogoutController', ['$scope','$location','$window', function ($scope,$location,$window) {
+    $window.localStorage.clear();
+    $location.path('/');
+}]);
+*/
+
 
 /* Setup Rounting For All Pages */
 MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
@@ -133,9 +142,16 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
     $urlRouterProvider.otherwise("/login.html");
 
     $stateProvider
-
+        .state('logout', {
+            url: "/logout",
+            controller: function ($scope,$location,$window,localStorageService) {
+                $window.localStorage.clear();
+                localStorageService.clearAll();
+                $location.path('/login');
+            },
+        })
         .state('login', {
-            url: "/login.html",
+            url: "/login",
             templateUrl: "views/login.html",
             data: {pageTitle: 'تسجيل الدخول'},
             controller: "LoginController",

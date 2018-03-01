@@ -1,5 +1,6 @@
 var con = require('../routes/dbConfig.js');
 var userMethods = require('../model/user.js');
+var schoolMethods = require('../model/school.js');
 var randomstring = require("randomstring");
 var bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -51,7 +52,18 @@ var schoolAccountMethods = {
                     req.body.userData = userData;
 
                     userMethods.saveUserData(req, res, function (result) {
-                        //res.send(result);
+                        if(result.success){
+                            var userId = result.insertId;
+                            var schoolData = {'userId':userId,'id':schoolAccountData.schoolId};
+                            req.body.schoolData = schoolData;
+                            console.log(schoolData);
+                            schoolMethods.setSchoolUser(req, res, function (result) {});
+                        }
+                    });
+                }else if((schoolAccountData.accountStatus ==  'غير مفعل') && (schoolAccountData.accountStatus != AccountStatus)) {
+                    req.body.type = 'school';
+                    req.body.schoolId = schoolAccountData.schoolId;
+                    userMethods.DeactivateUser(req, res, function (result) {
                     });
                 }
 
