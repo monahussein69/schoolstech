@@ -10,6 +10,9 @@ var TableDatatablesManaged = function () {
             "bLengthChange": false,
             "bInfo" : false,
             "bSort" : false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": "http://localhost:3000/getAllEmployees/10",
 
             // Internationalisation. For more info refer to http://datatables.net/manual/i18n
             "language": {

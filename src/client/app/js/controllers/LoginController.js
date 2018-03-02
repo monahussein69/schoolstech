@@ -1,4 +1,4 @@
-angular.module('MetronicApp').controller('LoginController', function($rootScope, $scope , $http, $window , localStorageService,$location) {
+angular.module('MetronicApp').controller('LoginController', function($rootScope, $scope , $http, $window , localStorageService,$location,manageSchoolService) {
     var model = {
         username : '',
         password : '',
@@ -18,6 +18,26 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
             })
                 .then(function (response) {
                     if (response.data.success) {
+                        var userObj = response.data.user;
+                        userObj[0].config_flag = false;
+                        if (userObj[0].userType == 2){
+                            var schoolId = userObj[0].schoolId;
+                        manageSchoolService.getSchoolData(schoolId, function (response) {
+                            userObj[0].schoolData = response;
+                            console.log('response[0].config_steps');
+                            console.log(response[0].config_steps);
+                            if (response[0].config_steps == 0) {
+                                userObj[0].config_flag = true;
+                                localStorageService.set('UserObject', userObj);
+                                $window.location.href = '#/manageEmployees/';
+
+                            } else if (response[0].config_steps == 1) {
+                                userObj[0].config_flag = true;
+                                localStorageService.set('UserObject', userObj);
+                                $window.location.href = '#/manageLeaders';
+                            }
+                        });
+                    }
                         localStorageService.set('UserObject', response.data.user);
                         $window.location.href = '#/dashboard.html';
                     } else {

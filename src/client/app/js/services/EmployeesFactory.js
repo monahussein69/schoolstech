@@ -28,6 +28,13 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
         });
 
     };
+    fac.getEmployeesBasedJob = function (schoolId,job_title,sub_job_title,callback) {
+
+            $http.post("http://localhost:3000/getAllEmployeesByJobTitle",{'schoolId':schoolId,'job_title':job_title,'sub_job_title':sub_job_title}).success(function (response) {
+                callback(response);
+            });
+
+    };
 
     fac.deleteEmpData = function (empId, callback) {
         $http.get("http://localhost:3000/deleteEmployee/" + empId).success(function (response) {
@@ -72,6 +79,12 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
             callback(response);
         });
     };
+
+    fac.setEmpPostions = function(agentsObj,callback){
+        $http.post("http://localhost:3000/setEmpPostions",{'agentsObj':agentsObj}).success(function (response) {
+            callback(response);
+        });
+    }
 
 
     return fac;

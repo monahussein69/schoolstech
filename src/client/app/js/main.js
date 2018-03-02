@@ -139,7 +139,7 @@ MetronicApp.controller('LogoutController', ['$scope','$location','$window', func
 /* Setup Rounting For All Pages */
 MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
     // Redirect any unmatched url
-    $urlRouterProvider.otherwise("/login.html");
+    $urlRouterProvider.otherwise("/login");
 
     $stateProvider
         .state('logout', {
@@ -224,7 +224,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
                             '../assets/global/plugins/datatables/datatables.all.min.js',
                             '../assets/pages/scripts/table-datatables-managed.min.js',
-                            'js/services/SchoolFactory.js',
                             'js/controllers/SchoolsController.js'
                         ]
                     });
@@ -246,7 +245,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                         insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
                         files: [
                             'js/controllers/SchoolsController.js',
-                            'js/services/SchoolFactory.js',
                         ]
                     });
                 }]
@@ -266,7 +264,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                         files: [
                             'js/controllers/SchoolsController.js',
                             'js/services/SchoolAccountFactory.js',
-                            'js/services/SchoolFactory.js',
                             '../assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css',
                             '../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
                             '../assets/pages/scripts/components-date-time-pickers.min.js',
@@ -304,6 +301,24 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             }
         })
 
+        .state('Master.ManageLeaders&Agents', {
+            url: "/manageLeaders",
+            templateUrl: "views/employees/leaders&agents.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "ManageLeader&AgentsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/EmployeesController.js',
+                            'js/services/EmployeesFactory.js',
+                        ]
+                    });
+                }]
+            }
+        })
 
         .state('Master.ConfigEmployees', {
             url: "/config-employees",

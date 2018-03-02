@@ -115,6 +115,29 @@ var schoolAccountMethods = {
                              console.log(userData);
                              req.body.userData = userData;
                              userMethods.saveUserData(req, res, function (result) {
+                                 if(result.success){
+
+                                     var userId = result.insertId;
+                                     req.params.schoolId = schoolAccountData.schoolId;
+                                     schoolMethods.getSchool(req, res, function (result) {
+                                         var schoolData = result[0];
+                                         schoolData.userId = userId;
+                                         schoolData.schoolId = schoolAccountData.schoolId;
+                                         req.body.schoolData = schoolData;
+                                         console.log('schoolData');
+                                         console.log(schoolData);
+                                         schoolMethods.saveSchool(req, res, function (result) {});
+
+                                     });
+
+
+                                     //callback(response);
+                                 }
+                             });
+                         }else if((schoolAccountData.accountStatus ==  'غير مفعل')) {
+                             req.body.type = 'school';
+                             req.body.schoolId = schoolAccountData.schoolId;
+                             userMethods.DeactivateUser(req, res, function (result) {
                                  //res.send(result);
                              });
                          }

@@ -11,7 +11,21 @@
         </li>
     </ul>
 </div>
-<h3 class="page-title"> ادارة الموظفين </h3>
+<div class="row" ng-show="model.config">
+    <div class="col-md-10">
+        <h3 class="page-title"> الخطوه الاولى : استيراد و تحديث بيانات الموظفين</h3>
+    </div>
+    <div class="col-md-2">
+        <h3 class="page-title">
+            <a ui-sref="Master.ManageLeaders&Agents" ng-disabled="employees.length == 0" class="btn btn-danger">
+                <h4> الخطوه التاليه
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                </h4>
+            </a>
+        </h3>
+    </div>
+</div>
+<h3 class="page-title" ng-hide="model.config"> ادارة الموظفين </h3>
 <!-- END PAGE HEADER-->
 <!-- BEGIN MAIN CONTENT -->
 <div class="row">
@@ -28,14 +42,18 @@
                 <div class="table-toolbar">
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="btn-group">
-                                <a ui-sref="Master.AddEditEmployee({schoolId:{{model.schoolId}}})" id="sample_editable_1_new" class="btn sbold green">
-                                    <i class="fa fa-plus"></i> جديد </a>
+                            <div class="row">
+                                <div class="col-md-12 mb-1">
+                                    <div class="btn-group">
+                                        <a ui-sref="Master.AddEditEmployee({schoolId:{{model.schoolId}}})" id="sample_editable_1_new" class="btn sbold green">
+                                            <i class="fa fa-plus"></i> جديد </a>
+                                    </div>
+                                    <div class="btn-group">
+                                        <label for="file-upload" class="btn sbold red">
+                                            <i class="fa fa-cloud-upload"></i> استيراد بيانات الموظفين</label>
+                                        <input type="file" ngf-select ng-model="file" name="file" ng-change="model.doUpload()" id="file-upload" style="display:none" /> </div>
+                                </div>
                             </div>
-                            <div class="btn-group">
-                                <label for="file-upload" class="btn sbold red">
-                                    <i class="fa fa-cloud-upload"></i> استيراد بيانات الموظفين</label>
-                                <input type="file" ngf-select ng-model="file" name="file" ng-change="model.doUpload()" id="file-upload" style="display:none" /> </div>
                         </div>
                         <div class="col-md-6">
                             <div class="btn-group pull-right">

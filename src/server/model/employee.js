@@ -418,6 +418,33 @@ var employeeMethods = {
             }
         );
     },
+    getEmployeesBasedJob: function (req, res, callback) {
+        var schoolId = req.body.schoolId;
+        var job_title = req.body.job_title;
+        var sub_job_title = req.body.sub_job_title;
+        if(sub_job_title) {
+            con.query('select SCH_STR_Employees.*,sys_users.is_active from SCH_STR_Employees ' +
+                'inner join job_title on SCH_STR_Employees.jobtitle_id = job_title.id ' +
+                'left join sys_users on SCH_STR_Employees.userId = sys_users.id where school_id = ? and job_title.name =? and subjobtitle_id = ?', [schoolId, job_title, sub_job_title], function (err, result) {
+                    if (err)
+                        throw err
+
+                    callback(result);
+                }
+            );
+        }else{
+            con.query('select SCH_STR_Employees.*,sys_users.is_active from SCH_STR_Employees ' +
+                'inner join job_title on SCH_STR_Employees.jobtitle_id = job_title.id ' +
+                'left join sys_users on SCH_STR_Employees.userId = sys_users.id where school_id = ? and job_title.name =?', [schoolId, job_title], function (err, result) {
+                    if (err)
+                        throw err
+
+                    callback(result);
+                }
+            );
+        }
+    },
+
 
     updatePhoto: function (req, res, callback) {
         con.query(" update SCH_STR_Employees set photo_file=? where id = ?",
@@ -436,7 +463,98 @@ var employeeMethods = {
                 callback(response);
             }
         );
+    },
+
+    setEmpPostions:function(req,res,callback){
+        var agents = req.body.agentsObj;
+        var success = 0;
+        var response = [];
+        if(agents.schoolLeader){
+            var promise1 = new Promise(function(resolve, reject) {
+            con.query("update SCH_STR_Employees set jobtitle_id =1 where id = ?",[agents.schoolLeader],function(err,result){
+                if(err)
+                    throw err;
+                if(result.affectedRows){
+                    success = 1;
+                    resolve(success);
+                }else{
+                    success = 0;
+                    reject(success);
+                }
+
+            });
+        });
+            response.push(promise1);
+        }
+
+
+        if(agents.studentAgent){
+            var promise2 = new Promise(function(resolve, reject) {
+                con.query("update SCH_STR_Employees set jobtitle_id =3,subjobtitle_id = 4 where id = ?", [agents.studentAgent], function (err, result) {
+                    if (err)
+                        throw err;
+                    if (result.affectedRows) {
+                        success = 1;
+                        resolve(success);
+                    } else {
+                        success = 0;
+                        reject(success);
+                    }
+                });
+            });
+            response.push(promise2);
+        }
+
+        if(agents.educationAgent){
+            var promise3 = new Promise(function(resolve, reject) {
+                con.query("update SCH_STR_Employees set jobtitle_id =3,subjobtitle_id = 3 where id = ?", [agents.educationAgent], function (err, result) {
+                    if (err)
+                        throw err;
+                    if (result.affectedRows) {
+                        success = 1;
+                        resolve(success);
+                    } else {
+                        success = 0;
+                        reject(success);
+                    }
+                });
+            });
+            response.push(promise3);
+        }
+
+        if(agents.schoolAgent){
+            var promise4 = new Promise(function(resolve, reject) {
+            con.query("update SCH_STR_Employees set jobtitle_id =3,subjobtitle_id = 5 where id = ?",[agents.schoolAgent],function(err,result){
+                if(err)
+                    throw err;
+                if(result.affectedRows){
+                    success = 1;
+                    resolve(success);
+                }else{
+                    success = 0;
+                    reject(success);
+                }
+            });
+        });
+            response.push(promise4);
+        }
+
+
+        Promise.all(response).then(function(finalResponse){
+            var result = {};
+            if(finalResponse.includes(1)){
+                result.msg = 'تم التعديل بنجاح';
+                result.success = true;
+            }else{
+                result.msg = 'خطأ الرجاء المحاوله مره اخرى';
+                result.success = false;
+            }
+            callback(result);
+
+        });
+
     }
+
 };
 
 

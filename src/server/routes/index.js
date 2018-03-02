@@ -117,6 +117,18 @@ router.get('/getAllEmployees/:schoolId', function (req, res, next) {
     });
 });
 
+router.post('/getAllEmployeesByJobTitle', function (req, res, next) {
+    employeeMethods.getEmployeesBasedJob(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/setEmpPostions', function (req, res, next) {
+    employeeMethods.setEmpPostions(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 
 router.post('/saveEmployeeData', function (req, res, next) {
     employeeMethods.saveEmployee(req, res, function (result) {

@@ -13,9 +13,9 @@ var userMethods = {
             con.query("select * from sys_users where loginName = ?", [userData.loginName], function (err, result) {
                 if (err)
                     throw err;
-                console.log(result);
-                var user_id = result[0].id;
+
                 if (Object.keys(result).length) {
+                    var user_id = result[0].id;
                     con.query(" update sys_users set schoolId = ?,userType = ?,loginName = ?,password = ?,groupId=?,PasswordHash=?,is_active = ? where id = ?",
                         [
                             userData.schoolId,
@@ -50,8 +50,8 @@ var userMethods = {
                             userData.loginName,
                             userData.password,
                             userData.groupId,
-                            userData.is_active,
-                            userData.PasswordHash,], function (err, result) {
+                            userData.PasswordHash,
+                            userData.is_active,], function (err, result) {
                             if (err)
                                 throw err
                             if (result.affectedRows) {
