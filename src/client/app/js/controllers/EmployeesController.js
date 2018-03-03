@@ -34,26 +34,12 @@ angular.module('MetronicApp').controller('EmployeesConfigController', function (
 
 
 angular.module('MetronicApp').controller('ManageEmployeesController',
-    function ($rootScope, $scope, $http, $stateParams, $window, localStorageService, manageEmployeeService, Upload, toastr,CommonService) {
-        var model = {
-            upload: upload,
-            doUpload: doUpload,
-            progress: 0,
-            deleteEmp: deleteEmp,
-            schoolId: 0,
-            ActivateEmployee:ActivateEmployee,
-            DeActivateEmployee:DeActivateEmployee,
-            nextStep:nextStep,
-            config:false,
-            employees : [],
-            config_step : -1,
-        };
-        $scope.model = model;
+    function (DTOptionsBuilder, DTColumnBuilder,$q,$rootScope, $scope, $http, $stateParams, $window, localStorageService, manageEmployeeService, Upload, toastr,CommonService) {
 
-
-
-        var userObject = localStorageService.get('UserObject');
-
+    var schoolId = 0;
+    var config_step = -1;
+    var config = false;
+    var userObject = localStorageService.get('UserObject');
         if(userObject){
             var userType = userObject[0].userType;
             var schoolId = 0;
@@ -61,12 +47,52 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
                 schoolId = userObject[0].schoolId;
                 current_school_data = userObject[0].schoolData;
 
-                model.config_step = current_school_data[0].config_steps
+                CommonService.currentStep(schoolId,function(result){
+                    config_step = result;
+                });
             } else {
                 schoolId = $stateParams.schoolId;
             }
-            model.config = userObject[0].config_flag;
+            config = userObject[0].config_flag;
         }
+
+    var model = {
+            upload: upload,
+            doUpload: doUpload,
+            progress: 0,
+            deleteEmp: deleteEmp,
+            schoolId: schoolId,
+            ActivateEmployee:ActivateEmployee,
+            DeActivateEmployee:DeActivateEmployee,
+            nextStep:nextStep,
+            config:config,
+            employees : [],
+            config_step : config_step,
+
+            options: DTOptionsBuilder.fromFnPromise(function () {
+                var defer = $q.defer();
+                manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
+                    defer.resolve(employees);
+                });
+
+                return defer.promise
+            }),
+            columns: [
+                DTColumnBuilder.newColumn('name').withTitle(' الاسم'),
+                DTColumnBuilder.newColumn('job_no').withTitle(' الرقم الوظيفي'),
+                DTColumnBuilder.newColumn('address').withTitle(' العنوان'),
+                DTColumnBuilder.newColumn('phone1').withTitle(' رقم الهاتف'),
+                DTColumnBuilder.newColumn('mobile').withTitle(' رقم الجوال'),
+                DTColumnBuilder.newColumn('email').withTitle(' البريد الالكتروني'),
+                DTColumnBuilder.newColumn(null).withTitle(' العمليات'),
+            ],
+            dtInstance: {},
+        };
+        $scope.model = model;
+
+
+
+
 
 
 
@@ -81,12 +107,7 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
 
 
 
-        manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
 
-            $scope.employees = employees;
-
-            $scope.$apply();
-        });
 
         function ActivateEmployee(empId){
             manageEmployeeService.ActivateEmployee(empId, function (response) {
@@ -335,7 +356,9 @@ angular.module('MetronicApp').controller('ManageLeader&AgentsController', functi
         if (userType == 2) {
             schoolId = userObject[0].schoolId;
             current_school_data = userObject[0].schoolData;
-            model.config_step = current_school_data[0].config_steps
+            CommonService.currentStep(schoolId,function(result){
+                model.config_step = result;
+            });
         } else {
             schoolId = $stateParams.schoolId;
         }
@@ -351,19 +374,19 @@ angular.module('MetronicApp').controller('ManageLeader&AgentsController', functi
             model.added = 1;
         }
     });
-    manageEmployeeService.getEmployeesBasedJob(schoolId,'وكيل',3,function (result) {
+    manageEmployeeService.getEmployeesBasedJob(schoolId,'وكيل','وكيل المدرسة للشؤون التعليمية',function (result) {
         if(result.length) {
             model.agentsObj.educationAgent = result[0].id;
             model.added = 1;
         }
     });
-    manageEmployeeService.getEmployeesBasedJob(schoolId,'وكيل',4,function (result) {
+    manageEmployeeService.getEmployeesBasedJob(schoolId,'وكيل','وكيل المدرسة للشؤون الطلاب',function (result) {
         if(result.length) {
             model.agentsObj.studentAgent = result[0].id;
             model.added = 1;
         }
     });
-    manageEmployeeService.getEmployeesBasedJob(schoolId,'وكيل',5,function (result) {
+    manageEmployeeService.getEmployeesBasedJob(schoolId,'وكيل','وكيل المدرسة للشؤون المدرسية',function (result) {
         if(result.length) {
             model.agentsObj.schoolAgent = result[0].id;
             model.added = 1;
@@ -373,7 +396,7 @@ angular.module('MetronicApp').controller('ManageLeader&AgentsController', functi
 
 
     $scope.model.schoolId = schoolId;
-    manageEmployeeService.getEmployeesBasedJob(schoolId,'قائد مدرسه',0).then(function (employees) {
+    manageEmployeeService.getEmployeesBasedJob(schoolId,'قائد مدرسة',0,function (employees) {
         $scope.employees = employees;
     });
 
@@ -389,7 +412,7 @@ angular.module('MetronicApp').controller('ManageLeader&AgentsController', functi
                 if (response.success) {
                     //model.success = response.msg;
                     //$window.location.href = '#/employees';
-                    nextStep();
+                    //nextStep();
                     toastr.success(response.msg);
                     model.added = 1;
                 } else {

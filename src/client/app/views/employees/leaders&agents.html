@@ -9,7 +9,7 @@
         </li>
     </ul>
 </div>
-<div class="row" ng-show="(model.config && model.config_step == 1) || model.config">
+<div class="row" ng-show="(model.config && model.config_step == 1)">
     <div class="col-md-10">
         <h3 class="page-title"> الخطوه الثانيه : القاده و الوكلاء</h3>
     </div>
@@ -21,7 +21,7 @@
         </h3>
     </div>
 </div>
-<h3 class="page-title" ng-hide="(model.config && model.config_step == 1) || model.config">  القاده و الوكلاء</h3>
+<h3 class="page-title" ng-hide="(model.config && model.config_step == 1)"> القاده و الوكلاء</h3>
 <div>
     <form method="post " ng-submit="model.saveLeadersData() " name="leadersForm " ng-model="leadersForm ">
         <div class="alert alert-success " ng-if="model.success !=null ">
@@ -32,11 +32,10 @@
             <button class="close " data-close="alert "></button>
             <span>{{model.error}}</span>
         </div>
-        <input type="hidden " value/>
         <div class="form-group row ">
             <label class="col-sm-2 control-label "> قائد المدرسه </label>
             <div class="col-sm-6 ">
-                <select class="form-control " ng-model="model.agentsObj.schoolLeader " ng-options="employee.id as employee.name for employee in employees ">
+                <select class="form-control " ng-model="model.agentsObj.schoolLeader" ng-options="employee.id as employee.name for employee in employees" >
                     <option value=" "> اختر قائد المدرسه </option>
                 </select>
             </div>
