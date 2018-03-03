@@ -21,6 +21,7 @@
     "ng-file-upload-shim": "^12.2.13",
     "moment": "^2.20.1",
     "simditor": "^2.3.11",
-    "angular-editor": "*"
+    "angular-editor": "*",
+    "angular-datatables": "v0.6.2"
   }
 }

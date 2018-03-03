@@ -257,3 +257,73 @@ angular.module('MetronicApp').controller('ManageSchoolAccountController', functi
     $rootScope.settings.layout.pageBodySolid = false;
     $rootScope.settings.layout.pageSidebarClosed = false;
 });
+
+angular.module('MetronicApp').controller('SchoolScheduleController',
+    function ($rootScope, $scope, $http, $window, localStorageService, manageSchoolService, Upload, toastr) {
+        var model = {
+            upload: upload,
+            doUpload: doUpload,
+            progress: 0,
+            deleteSchool: deleteSchool
+        };
+        $scope.model = model;
+
+        function deleteSchool(schoolId) {
+            manageSchoolService.deleteSchoolData(schoolId, function (response) {
+                if (response.success) {
+                    var index = $scope.schools.findIndex(function (school) {
+                        return school.id == schoolId
+                    });
+                    $scope.schools.splice(index, 1);
+                    model.success = response.msg;
+                    toastr.success(response.msg);
+                } else {
+                    model.error = response.msg;
+                }
+
+            });
+        }
+
+        function doUpload() {
+
+            model.upload($scope.file);
+        };
+
+        function upload(file) {
+            Upload.upload({
+                url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
+                data: {file: file,
+                    type:'schoolSchedule'
+                } //pass file as data, should be user ng-model
+            }).then(function (resp) { //upload function returns a promise
+                console.log(resp);
+                if (resp.status === 200) { //validate success
+                    toastr.success("تم رفع الملف بنجاح");
+                } else {
+                    toastr.error('هناك مشكلة في رفع الملف');
+                }
+            }, function (resp) { //catch error
+                toastr.error('Error status: ' + resp.status);
+            }, function (evt) {
+                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                model.progress = progressPercentage; // capture upload progress
+
+                // manageSchoolService.getAllSchools().then(function (schools) {
+                //     $scope.schools = schools;
+                //
+                //     $scope.$apply();
+                // });
+            });
+        };
+
+        $scope.$on('$viewContentLoaded', function () {
+            // initialize core components
+            // App.initAjax();
+        });
+
+        // set sidebar closed and body solid layout mode
+        $rootScope.settings.layout.pageContentWhite = true;
+        $rootScope.settings.layout.pageBodySolid = false;
+        $rootScope.settings.layout.pageSidebarClosed = false;
+    });

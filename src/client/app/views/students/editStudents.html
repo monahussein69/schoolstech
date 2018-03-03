@@ -1,0 +1,186 @@
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a ui-sref="dashboard">الصفحه الرئيسيه</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a ui-sref="Master.appSettings">بيانات الطلاب</a>
+        </li>
+    </ul>
+</div>
+<h3 class="page-title">بيانات الطلاب </h3>
+<div>
+    <form method="post" ng-submit="model.saveStudentData()" name="empForm" ng-model="empForm" enctype="multipart/form-data">
+        <div class="alert alert-success" ng-if="model.success != null">
+            <button class="close" data-close="alert"></button>
+            <span>{{model.success}}</span>
+        </div>
+        <div class="alert alert-danger" ng-if="model.error != null">
+            <button class="close" data-close="alert"></button>
+            <span>{{model.error}}</span>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <fieldset>
+                    <legend>البيانات الشخصيه :</legend>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> الاسم </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="name" class="form-control" ng-model="model.empDataObj.name" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> رقم الهويه </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="identity_no" class="form-control" ng-model="model.empDataObj.identity_no" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> تاريخ اصدار الهويه</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="id_date" class="form-control" ng-model="model.empDataObj.id_date" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> الجنسيه </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="nationality" class="form-control" ng-model="model.empDataObj.nationality" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> تاريخ الميلاد </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="birthdate" class="form-control" ng-model="model.empDataObj.birthdate" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">مكان الميلاد </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="birth_place" class="form-control" ng-model="model.empDataObj.birth_place" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">صوره شخصيه</label>
+                        <div class="col-sm-6">
+                            <input type="file" ngf-select ng-model="model.empDataObj.photoFile" name="file" id="file-upload-photo" /> </div>
+                        <div class="col-md-4">
+                            <img src="../../uploads/{{model.empDataObj.photo_file}}" style="width:100%" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">عدد الابناء </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="kids" class="form-control" ng-model="model.empDataObj.kids" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">عدد الابناء تحت سن 6 سنوات </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="kids_under6" class="form-control" ng-model="model.empDataObj.kids_under6" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">عدد الابناء تحت سن 24 سنه</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="kids_under24" class="form-control" ng-model="model.empDataObj.kids_under24" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">عدد الابناء فوق سن 24 سنه</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="kids_over24" class="form-control" ng-model="model.empDataObj.kids_over24" /> </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>البيانات الاكاديميه </legend>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">سنه التخرج</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="graduate_year" class="form-control" ng-model="model.empDataObj.graduate_year" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">الدرجة العلمية</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="degree" class="form-control" ng-model="model.empDataObj.educational_level" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">التخصص</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="major" class="form-control" ng-model="model.empDataObj.major" /> </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend> بيانات التواصل </legend>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">العنوان</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="address" class="form-control" ng-model="model.empDataObj.address" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">هاتف 1</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="phone1" class="form-control" ng-model="model.empDataObj.phone1" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">هاتف 2</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="phone2" class="form-control" ng-model="model.empDataObj.phone2" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">جوال</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="mobile" class="form-control" ng-model="model.empDataObj.mobile" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">الرقم البريدي</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="postal_code" class="form-control" ng-model="model.empDataObj.postal_code" /> </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend> بيانات الوظيفه </legend>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">المسمى الوظيفي</label>
+                        <div class="col-sm-6">
+                            <select class="form-control" ng-model="model.empDataObj.jobtitle_id" ng-options="job_title.id as job_title.name for job_title in model.job_titles">
+                                <option value=""> اختر المسمى الوظيفي </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">الرقم الوظيفي</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="job_no" class="form-control" ng-model="model.empDataObj.job_no" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">الدرجه</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="degree" class="form-control" ng-model="model.empDataObj.degree" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">تاريخ التعيين الوزاري</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="ministry_start_date" class="form-control" ng-model="model.empDataObj.ministry_start_date" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">تاريخ التعيين في المدرسه</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="school_start_date" class="form-control" ng-model="model.empDataObj.school_start_date" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">تاريخ التكليف</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="current_position_date" class="form-control" ng-model="model.empDataObj.current_position_date" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">عدد الحصص</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="lectures_qouta" class="form-control" ng-model="model.empDataObj.lectures_qouta" /> </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend> ملاحظات </legend>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">ملاحظات عامه </label>
+                        <div class="col-sm-10">
+                            <div class="col-sm-12" simditor ng-model="model.empDataObj.notes"></div>
+                        </div>
+                    </div>
+                </fieldset>
+                <button class="btn btn-primary" type="submit" ng-disabled="empForm.$invalid">حفظ</button>
+                <button class="btn btn-danger">الغاء</button>
+            </div>
+        </div>
+    </form>
+</div>

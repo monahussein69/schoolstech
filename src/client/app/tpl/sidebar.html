@@ -18,10 +18,34 @@
                 <span class="title">الرئيسية</span>
             </a>
         </li>
+        <li class="start nav-item" ng-show="model.userType == 2">
+            <a ui-sref="Master.dashboard">
+                <i class="icon-home"></i>
+                <span class="title">الشؤون الادارية </span>
+            </a>
+        </li>
+        <li class="start nav-item" ng-show="model.userType == 2">
+            <a ui-sref="Master.dashboard">
+                <i class="icon-home"></i>
+                <span class="title">الشؤون التعليمية</span>
+            </a>
+        </li>
+        <li class="start nav-item" ng-show="model.userType == 2">
+            <a ui-sref="Master.dashboard">
+                <i class="icon-home"></i>
+                <span class="title">الشؤون المدرسية</span>
+            </a>
+        </li>
+        <li class="start nav-item" ng-show="model.userType == 2">
+            <a ui-sref="Master.dashboard">
+                <i class="icon-home"></i>
+                <span class="title">شؤون الطلاب</span>
+            </a>
+        </li>
         <li class="nav-item" ng-show="model.userType == 2">
             <a href="#" class="nav-link nav-toggle">
                 <i class="icon-graduation"></i>
-                <span class="title">اداره الموظفين</span>
+                <span class="title">الاعدادات</span>
                 <span class="arrow"></span>
             </a>
             <ul class="sub-menu">
@@ -31,9 +55,13 @@
                     </a>
                 </li>
                 <li>
-                    <a ui-sref="Master.AddEditEmployee">
-                        <i class="fa fa-plus-circle"></i>
-                        <span class="title">اضافه موظف</span>
+                    <a ui-sref="Master.students">
+                        <i class="fa fa-list"></i> اداره و عرض الطلاب</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="Master.schoolSchedule">
+                        <i class="fa fa-list"></i> الجدول المدرسي</span>
                     </a>
                 </li>
             </ul>

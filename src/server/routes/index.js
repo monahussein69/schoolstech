@@ -7,6 +7,7 @@ var appSettingsMethods = require('../model/appSettings.js');
 var employeeMethods = require('../model/employee.js');
 var jobTitleMethods = require('../model/jobTitle.js');
 var subJobTitleMethods = require('../model/subJobTitle.js');
+var studentsMethods = require('../model/students');
 var userMethods = require('../model/user.js');
 
 var app = express();
@@ -79,6 +80,11 @@ router.post('/saveSchoolData', function (req, res, next) {
 
 router.get('/getSchool/:schoolId', function (req, res, next) {
     schoolMethods.getSchool(req, res, function (result) {
+        res.send(result);
+    });
+});
+router.get('/getAllStudents', function (req, res, next) {
+    studentsMethods.getAllStudents(req, res, function (result) {
         res.send(result);
     });
 });
@@ -172,8 +178,18 @@ router.post('/upload', function (req, res) {
             console.log("result : ", result);
             res.send({status: true, msg: 'تم اضافة الملف بنجاح'});
            });
+		}else if(req.body.type == 'student'){
+			studentsMethods.UploadExcel(req, res, function (result) {
+            console.log("result : ", result);
+            res.send({status: true, msg: result.message});
+           });
+		}else if(req.body.type == 'schoolSchedule'){
+            schoolMethods.UploadExcel(req, res, function (result) {
+            console.log("result : ", result);
+            res.send({status: true, msg: result.message});
+           });
 		}
-       
+
         // if(req.file.originalname.split('.')[req.file.originalname.split('.').length-1] === 'xlsx'){
         //     var array = xlsx.parse(__dirname + '/file_name.xlsx');
         // }
@@ -279,9 +295,15 @@ router.post('/saveSubJobTitle', function (req, res, next) {
     });
 });
 
-
 router.post('/getAllSubJobTitles', function (req, res, next) {
     subJobTitleMethods.getSubJobTitles(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+
+router.post('/saveStudentData', function (req, res, next) {
+    studentsMethods.saveStudent(req, res, function (result) {
         res.send(result);
     });
 });
