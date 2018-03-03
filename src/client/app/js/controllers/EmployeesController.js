@@ -43,6 +43,7 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
             schoolId: 0,
             ActivateEmployee:ActivateEmployee,
             DeActivateEmployee:DeActivateEmployee,
+            nextStep:nextStep,
             config:false,
             employees : [],
             config_step : -1,
@@ -139,6 +140,13 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
             model.upload($scope.file);
         };
 
+
+        function nextStep(url){
+            CommonService.nextStep(schoolId,function(result){
+                $window.location.href = url;
+            });
+        }
+
         function upload(file) {
 
             var userObject = localStorageService.get('UserObject');
@@ -160,10 +168,6 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
                 console.log(resp);
                 if (resp.data.status) { //validate success
                     toastr.success("تم رفع الملف بنجاح");
-                    CommonService.nextStep(schoolId,function(result){
-                        console.log('here');
-                        console.log(result);
-                    });
                     manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
                         $scope.employees = employees;
 
@@ -317,8 +321,9 @@ angular.module('MetronicApp').controller('ManageLeader&AgentsController', functi
         agentsObj:{},
         saveLeadersData:saveLeadersData,
         config:false,
+        added:0,
+        nextStep:nextStep,
         config_step:-1,
-        added:0
     };
 
     $scope.model = model;
@@ -368,7 +373,7 @@ angular.module('MetronicApp').controller('ManageLeader&AgentsController', functi
 
 
     $scope.model.schoolId = schoolId;
-    manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
+    manageEmployeeService.getEmployeesBasedJob(schoolId,'قائد مدرسه',0).then(function (employees) {
         $scope.employees = employees;
     });
 
@@ -397,10 +402,10 @@ angular.module('MetronicApp').controller('ManageLeader&AgentsController', functi
 
     }
 
-    function nextStep(){
+    function nextStep(url){
         console.log('here');
         CommonService.nextStep(schoolId,function(result){
-            console.log(result);
+            $window.location.href = url;
         });
     }
     $scope.$on('$viewContentLoaded', function () {

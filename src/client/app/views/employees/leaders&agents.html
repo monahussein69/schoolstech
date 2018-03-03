@@ -15,20 +15,20 @@
     </div>
     <div class="col-md-2">
         <h3 class="page-title">
-            <a ui-sref="Master.dashboard" ng-disabled="model.added == 0" class="btn btn-danger">
+            <button ng-click="model.nextStep('Master.students')" ng-disabled="model.added == 0" class="btn btn-danger">
                 <h4> انتهاء</h4>
-            </a>
+            </button>
         </h3>
     </div>
 </div>
-<h3 class="page-title" ng-hide="(model.config && model.config_step == 1) || model.config" ">القاده و الوكلاء</h3>
+<h3 class="page-title" ng-hide="(model.config && model.config_step == 1) || model.config">  القاده و الوكلاء</h3>
 <div>
     <form method="post " ng-submit="model.saveLeadersData() " name="leadersForm " ng-model="leadersForm ">
-        <div class="alert alert-success " ng-if="model.success !=n ull ">
+        <div class="alert alert-success " ng-if="model.success !=null ">
             <button class="close " data-close="alert "></button>
             <span>{{model.success}}</span>
         </div>
-        <div class="alert alert-danger " ng-if="model.error !=n ull ">
+        <div class="alert alert-danger " ng-if="model.error !=null ">
             <button class="close " data-close="alert "></button>
             <span>{{model.error}}</span>
         </div>

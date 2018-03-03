@@ -101,12 +101,15 @@ var schoolAccountMethods = {
                      if(result.affectedRows){
 
                          if((schoolAccountData.accountStatus ==  'مفعل')) {
-                             var userPassword = randomstring.generate(7);
+                             var userPassword = randomstring.generate({
+                                 length: 7,
+                                 charset: 'numeric '
+                             });
                              var hash = bcrypt.hashSync(userPassword, saltRounds);
                              var userData =
                                  {'schoolId' :schoolAccountData.schoolId ,
                                      'userType' : 2,
-                                     'loginName': schoolAccountData.contactEmail,
+                                     'loginName': schoolAccountData.contactMobile,
                                      'password':userPassword,
                                      'groupId':1,
                                      'PasswordHash':hash,

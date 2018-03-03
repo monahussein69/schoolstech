@@ -17,11 +17,11 @@
     </div>
     <div class="col-md-2">
         <h3 class="page-title">
-            <a ui-sref="Master.ManageLeaders&Agents" ng-disabled="employees.length == 0" class="btn btn-danger">
+            <button ng-click="model.nextStep('Master.ManageLeaders&Agents')" ng-disabled="employees.length == 0" class="btn btn-danger">
                 <h4> الخطوه التاليه
                     <i class="fa fa-arrow-left" aria-hidden="true"></i>
                 </h4>
-            </a>
+            </button>
         </h3>
     </div>
 </div>
