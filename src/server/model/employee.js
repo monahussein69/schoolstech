@@ -1,5 +1,6 @@
 var con = require('../routes/dbConfig.js');
 var jobTitleMethods = require('../model/jobTitle.js');
+var subJobTitleMethods = require('../model/subJobTitle.js');
 var Excel = require('exceljs');
 
 var employeeMethods = {
@@ -471,18 +472,25 @@ var employeeMethods = {
         var response = [];
         if(agents.schoolLeader){
             var promise1 = new Promise(function(resolve, reject) {
-            con.query("update SCH_STR_Employees set jobtitle_id =1 where id = ?",[agents.schoolLeader],function(err,result){
-                if(err)
-                    throw err;
-                if(result.affectedRows){
-                    success = 1;
-                    resolve(success);
-                }else{
-                    success = 0;
-                    reject(success);
-                }
+                req.body.name = 'قائد مدرسة';
+                jobTitleMethods.getjobTitleByName(req,res,function (result) {
+                    if (Object.keys(result).length) {
+                        var job_title_id = result[0].id;
+                        con.query("update SCH_STR_Employees set jobtitle_id =? where id = ?",[job_title_id,agents.schoolLeader],function(err,result){
+                            if(err)
+                                throw err;
+                            if(result.affectedRows){
+                                success = 1;
+                                resolve(success);
+                            }else{
+                                success = 0;
+                                reject(success);
+                            }
 
-            });
+                        });
+                    }
+                });
+
         });
             response.push(promise1);
         }
@@ -490,52 +498,106 @@ var employeeMethods = {
 
         if(agents.studentAgent){
             var promise2 = new Promise(function(resolve, reject) {
-                con.query("update SCH_STR_Employees set jobtitle_id =3,subjobtitle_id = 4 where id = ?", [agents.studentAgent], function (err, result) {
-                    if (err)
-                        throw err;
-                    if (result.affectedRows) {
-                        success = 1;
-                        resolve(success);
-                    } else {
-                        success = 0;
-                        reject(success);
+                req.body.name = 'وكيل';
+                jobTitleMethods.getjobTitleByName(req,res,function (result) {
+                    if (Object.keys(result).length) {
+                        var job_title_id = result[0].id;
+                        req.body.name = 'وكيل المدرسة للشؤون الطلاب';
+                        subJobTitleMethods.getSubJobTitleByName(req,res,function(result){
+
+                            if (Object.keys(result).length) {
+                                var sub_job_title_id = result[0].id;
+                                con.query("update SCH_STR_Employees set jobtitle_id =?,subjobtitle_id = ? where id = ?", [job_title_id,sub_job_title_id,agents.studentAgent], function (err, result) {
+                                    if (err)
+                                        throw err;
+                                    if (result.affectedRows) {
+                                        success = 1;
+                                        resolve(success);
+                                    } else {
+                                        success = 0;
+                                        reject(success);
+                                    }
+                                });
+                            }
+
+                        });
+
+
                     }
                 });
+
             });
             response.push(promise2);
         }
 
         if(agents.educationAgent){
             var promise3 = new Promise(function(resolve, reject) {
-                con.query("update SCH_STR_Employees set jobtitle_id =3,subjobtitle_id = 3 where id = ?", [agents.educationAgent], function (err, result) {
-                    if (err)
-                        throw err;
-                    if (result.affectedRows) {
-                        success = 1;
-                        resolve(success);
-                    } else {
-                        success = 0;
-                        reject(success);
+
+                req.body.name = 'وكيل';
+                jobTitleMethods.getjobTitleByName(req,res,function (result) {
+                    if (Object.keys(result).length) {
+                        var job_title_id = result[0].id;
+                        req.body.name = 'وكيل المدرسة للشؤون التعليمية';
+                        subJobTitleMethods.getSubJobTitleByName(req,res,function(result){
+
+                            if (Object.keys(result).length) {
+                                var sub_job_title_id = result[0].id;
+                                con.query("update SCH_STR_Employees set jobtitle_id =?,subjobtitle_id = ? where id = ?", [job_title_id,sub_job_title_id,agents.educationAgent], function (err, result) {
+                                    if (err)
+                                        throw err;
+                                    if (result.affectedRows) {
+                                        success = 1;
+                                        resolve(success);
+                                    } else {
+                                        success = 0;
+                                        reject(success);
+                                    }
+                                });
+                            }
+
+                        });
+
+
                     }
                 });
+
             });
             response.push(promise3);
         }
 
         if(agents.schoolAgent){
             var promise4 = new Promise(function(resolve, reject) {
-            con.query("update SCH_STR_Employees set jobtitle_id =3,subjobtitle_id = 5 where id = ?",[agents.schoolAgent],function(err,result){
-                if(err)
-                    throw err;
-                if(result.affectedRows){
-                    success = 1;
-                    resolve(success);
-                }else{
-                    success = 0;
-                    reject(success);
-                }
+
+                req.body.name = 'وكيل';
+                jobTitleMethods.getjobTitleByName(req,res,function (result) {
+                    if (Object.keys(result).length) {
+                        var job_title_id = result[0].id;
+                        req.body.name = 'وكيل المدرسة للشؤون المدرسية';
+                        subJobTitleMethods.getSubJobTitleByName(req,res,function(result){
+
+                            if (Object.keys(result).length) {
+                                var sub_job_title_id = result[0].id;
+                                con.query("update SCH_STR_Employees set jobtitle_id =?,subjobtitle_id = ? where id = ?", [job_title_id,sub_job_title_id,agents.schoolAgent], function (err, result) {
+                                    if (err)
+                                        throw err;
+                                    if (result.affectedRows) {
+                                        success = 1;
+                                        resolve(success);
+                                    } else {
+                                        success = 0;
+                                        reject(success);
+                                    }
+                                });
+                            }
+
+                        });
+
+
+                    }
+                });
+
+
             });
-        });
             response.push(promise4);
         }
 

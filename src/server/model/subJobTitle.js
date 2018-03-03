@@ -77,6 +77,17 @@ var subJobTitleMethods = {
             }
         );
     },
+
+    getSubJobTitleByName: function(req,res,callback) {
+        var name = req.body.name;
+        con.query('select * from sub_job_title where name = ?',[name],function(err,result){
+                if(err)
+                    throw err
+
+                callback(result);
+            }
+        );
+    },
 };
 
 

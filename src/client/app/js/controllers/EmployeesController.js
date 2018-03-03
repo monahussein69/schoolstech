@@ -44,9 +44,12 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
             ActivateEmployee:ActivateEmployee,
             DeActivateEmployee:DeActivateEmployee,
             config:false,
-            employees : []
+            employees : [],
+            config_step : -1,
         };
         $scope.model = model;
+
+
 
         var userObject = localStorageService.get('UserObject');
 
@@ -55,11 +58,16 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
             var schoolId = 0;
             if (userType == 2) {
                 schoolId = userObject[0].schoolId;
+                current_school_data = userObject[0].schoolData;
+
+                model.config_step = current_school_data[0].config_steps
             } else {
                 schoolId = $stateParams.schoolId;
             }
             model.config = userObject[0].config_flag;
         }
+
+
 
         console.log(model.config);
         console.log(userObject[0].config_flag);
@@ -67,6 +75,8 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
 
 
         $scope.model.schoolId = schoolId;
+
+        CommonService.checkPage(schoolId);
 
 
 
@@ -200,7 +210,7 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
 ;
 
 
-angular.module('MetronicApp').controller('ManageEmployeeController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageEmployeeService, toastr, manageJobTitleService) {
+angular.module('MetronicApp').controller('ManageEmployeeController', function (CommonService,$stateParams, $rootScope, $scope, $http, $window, localStorageService, manageEmployeeService, toastr, manageJobTitleService) {
 
 
     var model = {
@@ -227,6 +237,7 @@ angular.module('MetronicApp').controller('ManageEmployeeController', function ($
     }
 
     model.empDataObj.schoolId = schoolId;
+    CommonService.checkPage(schoolId);
     if ($stateParams.empId) {
         model.empDataObj.id = $stateParams.empId;
         manageEmployeeService.getEmpData($stateParams.empId, function (response) {
@@ -269,7 +280,7 @@ angular.module('MetronicApp').controller('ManageEmployeeController', function ($
 
                 if (response.success) {
                     //model.success = response.msg;
-                    //$window.location.href = '#/employees';
+                    $window.location.href = '#/manageEmployees';
                     toastr.success(response.msg);
                 } else {
                     //model.error = response.msg;
@@ -306,6 +317,7 @@ angular.module('MetronicApp').controller('ManageLeader&AgentsController', functi
         agentsObj:{},
         saveLeadersData:saveLeadersData,
         config:false,
+        config_step:-1,
         added:0
     };
 
@@ -317,10 +329,13 @@ angular.module('MetronicApp').controller('ManageLeader&AgentsController', functi
         var schoolId = 0;
         if (userType == 2) {
             schoolId = userObject[0].schoolId;
+            current_school_data = userObject[0].schoolData;
+            model.config_step = current_school_data[0].config_steps
         } else {
             schoolId = $stateParams.schoolId;
         }
         model.config = userObject[0].config_flag;
+        CommonService.checkPage(schoolId);
     }
 
 
