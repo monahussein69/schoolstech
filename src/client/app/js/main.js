@@ -13,6 +13,7 @@ var MetronicApp = angular.module("MetronicApp", [
     'toastr',
     'kdate',
     'simditor',
+    'datatables'
 ]);
 
 
@@ -216,6 +217,30 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                 ]
             }
         })
+        .state('Master.schoolSchedule', {
+            url: "/school-schedule.html",
+            templateUrl: "views/schools/schoolSchedule.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "SchoolScheduleController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/services/SchoolFactory.js',
+                            'js/controllers/SchoolsController.js'
+                        ]
+                    });
+                }
+                    //         return QaDashboardService.allOrders(40).then(
+                ]
+            }
+        })
 
         .state('Master.AddEditSchool', {
             url: "/manageSchool/:schoolId",
@@ -384,6 +409,48 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                 }]
             }
         })
+
+        .state('Master.students', {
+            url: "/students",
+            templateUrl: "views/students/students.html",
+            data: {pageTitle: 'الطلاب'},
+            controller: "StudentsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/students/StudentsController.js',
+                            'js/services/StudentsService.js'
+                        ]
+                    });
+                }]
+            }
+        })
+        .state('Master.editStudent', {
+            url: "/edit-student/:studentId",
+            templateUrl: "views/students/editStudent.html",
+            data: {pageTitle: "الطلاب"},
+            controller: "ManageStudentsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/StudentsController.js',
+                            'js/services/StudentsService.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
 
         // Blank Page
         .state('Master.blank', {
