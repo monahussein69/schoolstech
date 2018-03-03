@@ -1,32 +1,110 @@
+angular.module('MetronicApp').controller('EmployeesConfigController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr) {
+
+
+    $scope.enterValidation = function(){
+        return true;
+    };
+
+    $scope.exitValidation = function(){
+        return true;
+    };
+//example using context object
+    $scope.exitValidation = function(context){
+        return context.firstName === "Jacob";
+    }
+//example using promises
+    $scope.exitValidation = function(){
+        var d = $q.defer()
+        $timeout(function(){
+            return d.resolve(true);
+        }, 2000);
+        return d.promise;
+    }
+
+    $scope.$on('$viewContentLoaded', function () {
+        // initialize core components
+        // App.initAjax();
+    });
+
+    // set sidebar closed and body solid layout mode
+    $rootScope.settings.layout.pageContentWhite = true;
+    $rootScope.settings.layout.pageBodySolid = false;
+    $rootScope.settings.layout.pageSidebarClosed = false;
+});
+
+
 angular.module('MetronicApp').controller('ManageEmployeesController',
-    function ($rootScope, $scope, $http, $stateParams, $window, localStorageService, manageEmployeeService, Upload, toastr) {
+    function ($rootScope, $scope, $http, $stateParams, $window, localStorageService, manageEmployeeService, Upload, toastr,CommonService) {
         var model = {
             upload: upload,
             doUpload: doUpload,
             progress: 0,
             deleteEmp: deleteEmp,
-            schoolId: 0
+            schoolId: 0,
+            ActivateEmployee:ActivateEmployee,
+            DeActivateEmployee:DeActivateEmployee,
+            config:false,
+            employees : []
         };
         $scope.model = model;
 
         var userObject = localStorageService.get('UserObject');
-        var userType = userObject[0].userType;
-        var schoolId = 0;
-        if (userType == 2) {
-            schoolId = userObject[0].schoolId;
-        } else {
-            schoolId = $stateParams.schoolId;
+
+        if(userObject){
+            var userType = userObject[0].userType;
+            var schoolId = 0;
+            if (userType == 2) {
+                schoolId = userObject[0].schoolId;
+            } else {
+                schoolId = $stateParams.schoolId;
+            }
+            model.config = userObject[0].config_flag;
         }
 
-        console.log(schoolId);
+        console.log(model.config);
+        console.log(userObject[0].config_flag);
+
+
 
         $scope.model.schoolId = schoolId;
+
+
+
         manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
 
             $scope.employees = employees;
 
             $scope.$apply();
         });
+
+        function ActivateEmployee(empId){
+            manageEmployeeService.ActivateEmployee(empId, function (response) {
+                if (response.success) {
+                    var index = $scope.employees.findIndex(function (employee) {
+                        return employee.id == empId
+                    });
+                    $scope.employees[index].is_active = 1;
+                    toastr.success(response.msg);
+                } else {
+                    toastr.error(response.msg);
+                }
+            });
+        }
+
+        function DeActivateEmployee(empId){
+            manageEmployeeService.DeActivateEmployee(empId, function (response) {
+                if (response.success) {
+                    var index = $scope.employees.findIndex(function (employee) {
+                        return employee.id == empId
+                    });
+                    $scope.employees[index].is_active = 0;
+                    toastr.success(response.msg);
+                } else {
+                    toastr.error(response.msg);
+                }
+            });
+        }
+
 
         function deleteEmp(empId) {
             manageEmployeeService.deleteEmpData(empId, function (response) {
@@ -43,6 +121,8 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
 
             });
         }
+
+
 
         function doUpload() {
             console.log('File : ', $scope.file);
@@ -68,8 +148,18 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
                 } //pass file as data, should be user ng-model
             }).then(function (resp) { //upload function returns a promise
                 console.log(resp);
-                if (resp.status === 200) { //validate success
+                if (resp.data.status) { //validate success
                     toastr.success("تم رفع الملف بنجاح");
+                    CommonService.nextStep(schoolId,function(result){
+                        console.log('here');
+                        console.log(result);
+                    });
+                    manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
+                        $scope.employees = employees;
+
+
+                        $scope.$apply();
+                    });
                 } else {
                     toastr.error('هناك مشكلة في رفع الملف');
                 }
@@ -80,11 +170,7 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
                 console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                 model.progress = progressPercentage; // capture upload progress
 
-                manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
-                    $scope.employees = employees;
 
-                    $scope.$apply();
-                });
             });
         };
 
@@ -210,4 +296,105 @@ angular.module('MetronicApp').controller('ManageEmployeeController', function ($
     return function (obj) {
         return !(obj === undefined || obj === null || Object.keys(obj).length === 0);
     }
+});
+
+
+angular.module('MetronicApp').controller('ManageLeader&AgentsController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageEmployeeService,CommonService, toastr) {
+
+
+    var model = {
+        agentsObj:{},
+        saveLeadersData:saveLeadersData,
+        config:false,
+        added:0
+    };
+
+    $scope.model = model;
+
+    var userObject = localStorageService.get('UserObject');
+    if(userObject){
+        var userType = userObject[0].userType;
+        var schoolId = 0;
+        if (userType == 2) {
+            schoolId = userObject[0].schoolId;
+        } else {
+            schoolId = $stateParams.schoolId;
+        }
+        model.config = userObject[0].config_flag;
+    }
+
+
+
+    manageEmployeeService.getEmployeesBasedJob(schoolId,'قائد مدرسة',0,function (result) {
+        if(result.length) {
+            model.agentsObj.schoolLeader = result[0].id;
+            model.added = 1;
+        }
+    });
+    manageEmployeeService.getEmployeesBasedJob(schoolId,'وكيل',3,function (result) {
+        if(result.length) {
+            model.agentsObj.educationAgent = result[0].id;
+            model.added = 1;
+        }
+    });
+    manageEmployeeService.getEmployeesBasedJob(schoolId,'وكيل',4,function (result) {
+        if(result.length) {
+            model.agentsObj.studentAgent = result[0].id;
+            model.added = 1;
+        }
+    });
+    manageEmployeeService.getEmployeesBasedJob(schoolId,'وكيل',5,function (result) {
+        if(result.length) {
+            model.agentsObj.schoolAgent = result[0].id;
+            model.added = 1;
+        }
+    });
+
+
+
+    $scope.model.schoolId = schoolId;
+    manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
+        $scope.employees = employees;
+    });
+
+    manageEmployeeService.getEmployeesBasedJob(schoolId,'وكيل',0,function (agents_employees) {
+        $scope.agents_employees = agents_employees;
+    });
+
+    function saveLeadersData(){
+
+        if (Object.keys(model.agentsObj).length) {
+            manageEmployeeService.setEmpPostions(model.agentsObj, function (response) {
+
+                if (response.success) {
+                    //model.success = response.msg;
+                    //$window.location.href = '#/employees';
+                    nextStep();
+                    toastr.success(response.msg);
+                    model.added = 1;
+                } else {
+                    //model.error = response.msg;
+                    toastr.error(response.msg);
+                    console.log('error');
+                }
+            });
+        }
+
+    }
+
+    function nextStep(){
+        console.log('here');
+        CommonService.nextStep(schoolId,function(result){
+            console.log(result);
+        });
+    }
+    $scope.$on('$viewContentLoaded', function () {
+        // initialize core components
+        // App.initAjax();
+    });
+
+    // set sidebar closed and body solid layout mode
+    $rootScope.settings.layout.pageContentWhite = true;
+    $rootScope.settings.layout.pageBodySolid = false;
+    $rootScope.settings.layout.pageSidebarClosed = false;
 });

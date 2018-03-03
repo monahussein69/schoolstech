@@ -5,15 +5,21 @@ var Excel = require('exceljs');
 var schoolMethods = {
     saveSchool: function (req, res, callback) {
         var schoolData = req.body.schoolData;
-        console.log('Schools Data : ', schoolData);
         var response = {};
         if (schoolData.schoolId) {
             con.query("select * from SCH_School where id = ?", [schoolData.schoolId], function (err, result) {
+                if(!schoolData.config_steps) {
+                    schoolData.config_steps = result[0].config_steps;
+                }
+                if(!schoolData.userId) {
+                    schoolData.userId = result[0].config_steps;
+                }
                 if (err)
                     throw err;
                 if (Object.keys(result).length) {
-                    con.query(" update SCH_School set name = ? , gender = ?,educationalOffice=?,educationalRegion=?,educationLevel=?, address=?,totalClasses=? ,totalStudents =?,totalStaff=?,rentedBuildings=?,governmentBuildings=?,foundationYear=?,schoolNum=? where id = ?",
-                        [schoolData.name,
+                    con.query(" update SCH_School set userId=?,name = ? , gender = ?,educationalOffice=?,educationalRegion=?,educationLevel=?, address=?,totalClasses=? ,totalStudents =?,totalStaff=?,rentedBuildings=?,governmentBuildings=?,foundationYear=?,schoolNum=?,config_steps =? where id = ?",
+                        [   schoolData.userId,
+                            schoolData.name,
                             schoolData.gender,
                             schoolData.educationalOffice,
                             schoolData.educationalRegion,
@@ -26,6 +32,7 @@ var schoolMethods = {
                             schoolData.governmentBuildings,
                             schoolData.foundationYear,
                             schoolData.schoolNum,
+                            schoolData.config_steps,
                             schoolData.schoolId
                         ], function (err, result) {
                             if (err)
@@ -63,7 +70,8 @@ var schoolMethods = {
                 } else {
 
                     con.query(" insert into SCH_School  (name, gender,educationalOffice,educationalRegion,educationLevel, address,totalClasses ,totalStudents ,totalStaff,rentedBuildings,governmentBuildings,foundationYear,schoolNum) values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                        [schoolData.name,
+                        [
+                            schoolData.name,
                             schoolData.gender,
                             schoolData.educationalOffice,
                             schoolData.educationalRegion,
@@ -96,6 +104,8 @@ var schoolMethods = {
         }
 
     },
+
+
 
     updatePhoto: function (req, res, callback) {
         con.query(" update SCH_School set logoFile=? where id = ?",
@@ -243,6 +253,44 @@ var schoolMethods = {
                 callback(result);
             }
         );
+    },
+
+    setSchoolUser : function (req, res, callback) {
+        var schoolData = req.body.schoolData;
+        var response = {};
+        if (schoolData.id) {
+            con.query("select * from SCH_School where id = ?", [schoolData.id], function (err, result) {
+                if (err)
+                    throw err;
+                if (Object.keys(result).length) {
+                    con.query('update SCH_School set userId = ? where id = ?',[
+                            schoolData.userId,
+                            schoolData.id
+                        ]
+                        , function (err, result) {
+                            if (err)
+                                throw err
+                            if (result.affectedRows) {
+                                response.success = true;
+                                response.id = schoolData.id;
+                                response.msg = 'تم التعديل بنجاح'
+                            } else {
+                                response.success = false;
+                                response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
+                            }
+
+                            callback(response);
+
+                        }
+                    );
+                } else {
+                    response.success = false;
+                    response.msg = 'لا يمكن العثور على الموظف الرجاء المحاوله مره اخرى';
+                    callback(response);
+                }
+            });
+        }
+
     },
 };
 

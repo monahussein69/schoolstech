@@ -1,5 +1,6 @@
 var con = require('../routes/dbConfig.js');
 var userMethods = require('../model/user.js');
+var schoolMethods = require('../model/school.js');
 var randomstring = require("randomstring");
 var bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -45,12 +46,24 @@ var schoolAccountMethods = {
                             'loginName': schoolAccountData.contactEmail,
                             'password':userPassword,
                             'groupId':1,
-                            'PasswordHash':hash
+                            'PasswordHash':hash,
+                            'is_active':1
                         };
                     req.body.userData = userData;
 
                     userMethods.saveUserData(req, res, function (result) {
-                        //res.send(result);
+                        if(result.success){
+                            var userId = result.insertId;
+                            var schoolData = {'userId':userId,'id':schoolAccountData.schoolId};
+                            req.body.schoolData = schoolData;
+                            console.log(schoolData);
+                            schoolMethods.setSchoolUser(req, res, function (result) {});
+                        }
+                    });
+                }else if((schoolAccountData.accountStatus ==  'غير مفعل') && (schoolAccountData.accountStatus != AccountStatus)) {
+                    req.body.type = 'school';
+                    req.body.schoolId = schoolAccountData.schoolId;
+                    userMethods.DeactivateUser(req, res, function (result) {
                     });
                 }
 
@@ -96,11 +109,35 @@ var schoolAccountMethods = {
                                      'loginName': schoolAccountData.contactEmail,
                                      'password':userPassword,
                                      'groupId':1,
-                                     'PasswordHash':hash
+                                     'PasswordHash':hash,
+                                     'is_active':1
                                  };
                              console.log(userData);
                              req.body.userData = userData;
                              userMethods.saveUserData(req, res, function (result) {
+                                 if(result.success){
+
+                                     var userId = result.insertId;
+                                     req.params.schoolId = schoolAccountData.schoolId;
+                                     schoolMethods.getSchool(req, res, function (result) {
+                                         var schoolData = result[0];
+                                         schoolData.userId = userId;
+                                         schoolData.schoolId = schoolAccountData.schoolId;
+                                         req.body.schoolData = schoolData;
+                                         console.log('schoolData');
+                                         console.log(schoolData);
+                                         schoolMethods.saveSchool(req, res, function (result) {});
+
+                                     });
+
+
+                                     //callback(response);
+                                 }
+                             });
+                         }else if((schoolAccountData.accountStatus ==  'غير مفعل')) {
+                             req.body.type = 'school';
+                             req.body.schoolId = schoolAccountData.schoolId;
+                             userMethods.DeactivateUser(req, res, function (result) {
                                  //res.send(result);
                              });
                          }

@@ -13,6 +13,7 @@ var MetronicApp = angular.module("MetronicApp", [
     'toastr',
     'kdate',
     'simditor',
+    'mgo-angular-wizard',
 ]);
 
 
@@ -76,10 +77,12 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', function ($scop
  ***/
 
 /* Setup Layout Part - Header */
-MetronicApp.controller('HeaderController', ['localStorageService', '$scope', function (localStorageService, $scope) {
+MetronicApp.controller('HeaderController', ['localStorageService', '$scope','$window', function (localStorageService, $scope,$window) {
     $scope.$on('$includeContentLoaded', function () {
         var userObject = localStorageService.get('UserObject');
-        console.log(userObject[0].loginName);
+        if (userObject == null) {
+            $window.location.href = '#/login';
+        }
         var model = {username: ''};
         $scope.model = model;
         $scope.model.username = userObject[0].loginName;
@@ -125,16 +128,30 @@ MetronicApp.controller('FooterController', ['$scope', function ($scope) {
         Layout.initFooter(); // init footer
     });
 }]);
+/*
+MetronicApp.controller('LogoutController', ['$scope','$location','$window', function ($scope,$location,$window) {
+    $window.localStorage.clear();
+    $location.path('/');
+}]);
+*/
+
 
 /* Setup Rounting For All Pages */
 MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
     // Redirect any unmatched url
-    $urlRouterProvider.otherwise("/login.html");
+    $urlRouterProvider.otherwise("/login");
 
     $stateProvider
-
+        .state('logout', {
+            url: "/logout",
+            controller: function ($scope,$location,$window,localStorageService) {
+                $window.localStorage.clear();
+                localStorageService.clearAll();
+                $location.path('/login');
+            },
+        })
         .state('login', {
-            url: "/login.html",
+            url: "/login",
             templateUrl: "views/login.html",
             data: {pageTitle: 'تسجيل الدخول'},
             controller: "LoginController",
@@ -207,7 +224,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
                             '../assets/global/plugins/datatables/datatables.all.min.js',
                             '../assets/pages/scripts/table-datatables-managed.min.js',
-                            'js/services/SchoolFactory.js',
                             'js/controllers/SchoolsController.js'
                         ]
                     });
@@ -229,7 +245,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                         insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
                         files: [
                             'js/controllers/SchoolsController.js',
-                            'js/services/SchoolFactory.js',
                         ]
                     });
                 }]
@@ -249,7 +264,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                         files: [
                             'js/controllers/SchoolsController.js',
                             'js/services/SchoolAccountFactory.js',
-                            'js/services/SchoolFactory.js',
                             '../assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css',
                             '../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
                             '../assets/pages/scripts/components-date-time-pickers.min.js',
@@ -287,6 +301,47 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             }
         })
 
+        .state('Master.ManageLeaders&Agents', {
+            url: "/manageLeaders",
+            templateUrl: "views/employees/leaders&agents.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "ManageLeader&AgentsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/EmployeesController.js',
+                            'js/services/EmployeesFactory.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.ConfigEmployees', {
+            url: "/config-employees",
+            templateUrl: "views/employees/employees-config.html",
+            data: {pageTitle: 'المدارس'},
+            controller: "EmployeesConfigController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/EmployeesController.js',
+                            'js/services/EmployeesFactory.js',
+                        ]
+                    });
+                }]
+            }
+        })
 
         .state('Master.AddEditEmployee', {
             url: "/manageEmployee/:schoolId/:empId",

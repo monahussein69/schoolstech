@@ -7,6 +7,7 @@ var appSettingsMethods = require('../model/appSettings.js');
 var employeeMethods = require('../model/employee.js');
 var jobTitleMethods = require('../model/jobTitle.js');
 var subJobTitleMethods = require('../model/subJobTitle.js');
+var userMethods = require('../model/user.js');
 
 var app = express();
 var multer = require('multer');
@@ -112,6 +113,18 @@ router.get('/getAllSchools', function (req, res, next) {
 
 router.get('/getAllEmployees/:schoolId', function (req, res, next) {
     employeeMethods.getEmployees(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/getAllEmployeesByJobTitle', function (req, res, next) {
+    employeeMethods.getEmployeesBasedJob(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/setEmpPostions', function (req, res, next) {
+    employeeMethods.setEmpPostions(req, res, function (result) {
         res.send(result);
     });
 });
@@ -269,6 +282,18 @@ router.post('/saveSubJobTitle', function (req, res, next) {
 
 router.post('/getAllSubJobTitles', function (req, res, next) {
     subJobTitleMethods.getSubJobTitles(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/DeactivateUser', function (req, res, next) {
+    userMethods.DeactivateUser(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/ActivateUser', function (req, res, next) {
+    userMethods.ActivateUser(req, res, function (result) {
         res.send(result);
     });
 });
