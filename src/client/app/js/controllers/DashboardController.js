@@ -1,5 +1,5 @@
 angular.module('MetronicApp')
-    .controller('DashboardController', function ($rootScope, $scope, $http, $timeout, localStorageService, $window, manageAppSettingsService) {
+    .controller('DashboardController', function (CommonService,$rootScope, $scope, $http, $timeout, localStorageService, $window, manageAppSettingsService) {
         var model = {
             loggedUser: '',
             calender: []
@@ -10,6 +10,15 @@ angular.module('MetronicApp')
         if (LoggedUserData == null) {
             $window.location.href = '#/login.html';
         } else {
+                var userType = LoggedUserData[0].userType;
+                var schoolId = 0;
+                if (userType == 2) {
+                    schoolId = LoggedUserData[0].schoolId;
+                    var current_school_data = LoggedUserData[0].schoolData;
+                    CommonService.checkPage(schoolId);
+                }
+
+
             manageAppSettingsService.getCalender(function (response) {
                 var days = [];
                 var weeks = [];

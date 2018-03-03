@@ -11,7 +11,7 @@
         </li>
     </ul>
 </div>
-<div class="row" ng-show="model.config">
+<div class="row" ng-show="model.config && model.config_step == 0">
     <div class="col-md-10">
         <h3 class="page-title"> الخطوه الاولى : استيراد و تحديث بيانات الموظفين</h3>
     </div>
@@ -25,7 +25,7 @@
         </h3>
     </div>
 </div>
-<h3 class="page-title" ng-hide="model.config"> ادارة الموظفين </h3>
+<h3 class="page-title" ng-hide="model.config && model.config_step == 0"> ادارة الموظفين </h3>
 <!-- END PAGE HEADER-->
 <!-- BEGIN MAIN CONTENT -->
 <div class="row">

@@ -26,16 +26,17 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
                             userObj[0].schoolData = response;
                             console.log('response[0].config_steps');
                             console.log(response[0].config_steps);
-                            if (response[0].config_steps == 0) {
+                            if (response[0].config_steps == 0 || response[0].config_steps == 1) {
                                 userObj[0].config_flag = true;
-                                localStorageService.set('UserObject', userObj);
+                            }
+                            localStorageService.set('UserObject', userObj);
+                            if (response[0].config_steps == 0){
                                 $window.location.href = '#/manageEmployees/';
 
                             } else if (response[0].config_steps == 1) {
-                                userObj[0].config_flag = true;
-                                localStorageService.set('UserObject', userObj);
                                 $window.location.href = '#/manageLeaders';
                             }
+
                         });
                     }
                         localStorageService.set('UserObject', response.data.user);

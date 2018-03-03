@@ -1,5 +1,6 @@
 var con = require('../routes/dbConfig.js');
 var Excel = require('exceljs');
+var underscore = require('underscore/underscore.js');
 
 
 var schoolMethods = {
@@ -114,33 +115,38 @@ var schoolMethods = {
         var sections = req.body.sections;
 
         if (sections) {
-            console.log('LALAR ',req.body.sections.Name);
-           var query =  con.query("select * from sch_acd_sections where Name = ?", [sections.Name.trim()], function (err, result) {
-            console.log('Query  : ',query.sql);
-                if (err)
-                    throw err;
-                console.log(Object.keys(result).length);
-                if (Object.keys(result).length <= 0) {
-                    console.log("added");
-                    con.query("INSERT INTO sch_acd_sections SET ? ", sections
-                        , function (err, result) {
-                            if (err)
-                                throw err
-                            if (result.affectedRows) {
-                                response.success = true;
-                                response.msg = 'تم الاضافه بنجاح'
-                                response.id = result.insertId;
-                            } else {
-                                response.success = false;
-                                response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
-                            }
+            sections.forEach(function(section) {
+                var name = '%'+section.Name+'%';
+                console.log('LALAR ',section.Name);
+                var query =  con.query("select * from sch_acd_sections where Name like ?", [name], function (err, result) {
+                    console.log('Query  : ',query.sql);
+                    if (err)
+                        throw err;
+                    console.log(Object.keys(result).length);
+                    if (Object.keys(result).length == 0) {
+                        console.log("added");
+                        var insert_query = con.query("INSERT INTO sch_acd_sections SET ? ", section
+                            , function (err, result) {
+                                console.log('insert_Query  : ',insert_query.sql);
+                                if (err)
+                                    throw err
+                                if (result.affectedRows) {
+                                    response.success = true;
+                                    response.msg = 'تم الاضافه بنجاح'
+                                    response.id = result.insertId;
+                                } else {
+                                    response.success = false;
+                                    response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
+                                }
 
-                        }
-                    );
-                }
-            });
+                            }
+                        );
+                    }
+                });
+                });
+
         }
-        if (req.body.sections) {
+        /*if (req.body.sections) {
             con.query("INSERT INTO APP_DEF_COURSES SET ? ", req.body.courses
                 , function (err, result) {
                     if (err)
@@ -156,7 +162,7 @@ var schoolMethods = {
 
                 }
             );
-        }
+        }*/
     },
 
     updatePhoto: function (req, res, callback) {
@@ -331,12 +337,7 @@ var schoolMethods = {
                                                 rooms.push(roomData);
                                             }
 
-                                            req.body.rooms = roomData;
-                                            req.body.sections = sectionData;
-                                            req.body.courses = courseData;
-                                            schoolMethods.saveSchoolSchedule(req, res, function (result) {
-                                                console.log(result);
-                                            });
+
                                         }
                                     });
 
@@ -345,6 +346,16 @@ var schoolMethods = {
                                 }
                             });
 
+                        });
+
+
+                        var uSections = underscore._.uniq(sections, function(p){ return p.Name; });
+                        req.body.rooms = rooms;
+                        req.body.sections = uSections;
+                        req.body.courses = courses;
+
+                        schoolMethods.saveSchoolSchedule(req, res, function (result) {
+                            console.log(result);
                         });
                         // console.log(sections);
 

@@ -13,7 +13,7 @@ var MetronicApp = angular.module("MetronicApp", [
     'toastr',
     'kdate',
     'simditor',
-    'datatables'
+    'datatables',
     'mgo-angular-wizard',
 ]);
 
@@ -81,9 +81,15 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', function ($scop
 MetronicApp.controller('HeaderController', ['localStorageService', '$scope','$window', function (localStorageService, $scope,$window) {
     $scope.$on('$includeContentLoaded', function () {
         var userObject = localStorageService.get('UserObject');
+
         if (userObject == null) {
             $window.location.href = '#/login';
         }
+
+
+
+
+
         var model = {username: ''};
         $scope.model = model;
         $scope.model.username = userObject[0].loginName;
