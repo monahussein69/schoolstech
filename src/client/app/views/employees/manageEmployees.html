@@ -17,11 +17,11 @@
     </div>
     <div class="col-md-2">
         <h3 class="page-title">
-            <a ui-sref="Master.ManageLeaders&Agents" ng-disabled="employees.length == 0" class="btn btn-danger">
+            <button ng-click="model.nextStep('/manageLeaders')" ng-disabled="employees.length == 0" class="btn btn-danger">
                 <h4> الخطوه التاليه
                     <i class="fa fa-arrow-left" aria-hidden="true"></i>
                 </h4>
-            </a>
+            </button>
         </h3>
     </div>
 </div>
@@ -78,68 +78,11 @@
                         </div>
                     </div>
                 </div>
-                <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
-                    <thead>
-                        <tr>
-                            <th>
-                                <label class="mt-checkbox mt-checkbox-outline mt-checkbox-single">
-                                    <input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes" />
-                                    <span></span>
-                                </label>
-                            </th>
-                            <th> الاسم </th>
-                            <th>الرقم الوظيفي</th>
-                            <th> العنوان</th>
-                            <th> رقم الهاتف</th>
-                            <th> رقم الجوال</th>
-                            <th> البريد الالكتروني </th>
-                            <th> العمليات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="odd gradeX" ng-repeat="employee in employees">
-                            <td>
-                                <label class="mt-checkbox mt-checkbox-outline mt-checkbox-single">
-                                    <input type="checkbox" class="checkboxes" value="1" />
-                                    <span></span>
-                                </label>
-                            </td>
-                            <td> {{employee.name}}</td>
-                            <td> {{employee.job_no}}</td>
-                            <td> {{employee.address}}</td>
-                            <td> {{employee.phone1}}</td>
-                            <td> {{employee.mobile}}</td>
-                            <td> {{employee.email}}</td>
-                            <td>
-                                <div class="btn-group dropdown">
-                                    <button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> العمليات
-                                        <i class="fa fa-angle-down"></i>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right">
-                                        <li>
-                                            <a ui-sref="Master.AddEditEmployee({empId:'{{employee.id}}',schoolId:'{{employee.school_id}}' })">
-                                                <i class="icon-pencil"></i>&nbsp; تعديل </a>
-                                        </li>
-                                        <li ng-if="employee.is_active != 1">
-                                            <a href="javascript:;" ng-click="model.ActivateEmployee(employee.id)">
-                                                <i class="fa fa-user-plus"></i> تفعيل </a>
-                                        </li>
-                                        <li ng-if="employee.is_active == 1">
-                                            <a href="javascript:;" ng-click="model.DeActivateEmployee(employee.id)">
-                                                <i class="fa fa-user-times"></i>&nbsp; الغاء التفعيل </a>
-                                        </li>
-                                        <li class="divider"> </li>
-                                        <li>
-                                            <a href="javascript:;" ng-confirm-click="هل تريد تأكيد حذف الموظف ؟  " confirmed-click="model.deleteEmp(employee.id)">
-                                                <i class="fa fa-trash"></i>&nbsp; حذف </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+
+                <table datatable="" class="table table-striped table-bordered table-hover table-checkable order-column" dt-options="model.options" dt-columns="model.columns" dt-instance="model.dtInstance" class="row-border hover"></table>
+
+
+  </div>
         </div>
         <!-- END EXAMPLE TABLE PORTLET-->
     </div>

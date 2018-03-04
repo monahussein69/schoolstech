@@ -78,16 +78,21 @@ var userMethods = {
             req.params.empId = empId
             employeeMethods.getEmployee(req, res, function (result) {
                 if (Object.keys(result).length) {
-                    var userPassword = randomstring.generate(7);
+                    var userPassword = randomstring.generate({
+                        length: 7,
+                        charset: 'numeric'
+                    });
                     var hash = bcrypt.hashSync(userPassword, saltRounds);
+                    if (result[0].mobile) {
                     var userData =
-                        {'schoolId' :result[0].school_id ,
-                            'userType' : 3,
-                            'loginName':result[0].mobile,
-                            'password':userPassword,
-                            'groupId':0,
-                            'PasswordHash':hash,
-                            'is_active':1,
+                        {
+                            'schoolId': result[0].school_id,
+                            'userType': 3,
+                            'loginName': result[0].mobile,
+                            'password': userPassword,
+                            'groupId': 0,
+                            'PasswordHash': hash,
+                            'is_active': 1,
 
                         };
                     req.body.userData = userData;
@@ -95,19 +100,25 @@ var userMethods = {
                     userMethods.saveUserData(req, res, function (result) {
                         console.log('result');
                         console.log(result);
-                        if(result.success){
+                        if (result.success) {
                             response.success = true;
                             response.msg = 'تم تفعيل الموظف بنجاح';
                             var userId = result.insertId;
-                            var empData = {'userId':userId,'id':empId};
+                            var empData = {'userId': userId, 'id': empId};
                             console.log(empData);
-                            req.body.empData= empData;
+                            req.body.empData = empData;
                             console.log(empData);
-                            employeeMethods.setEmployeeUser(req, res, function (result) {});
+                            employeeMethods.setEmployeeUser(req, res, function (result) {
+                            });
                             callback(response);
                         }
                         //res.send(result);
                     });
+                }else{
+                        response.success = false;
+                        response.msg = 'رقم الجوال غير موجود الرجاء ادخاله ';
+                        callback(response);
+                    }
 
                 }else{
                     response.success = false;
@@ -124,7 +135,10 @@ var userMethods = {
     DeactivateUser : function(req,res,callback){
         var type = req.body.type;
         var response = {};
-        var userPassword = randomstring.generate(7);
+        var userPassword = randomstring.generate({
+            length: 7,
+            charset: 'numeric'
+        });
         var hash = bcrypt.hashSync(userPassword, saltRounds);
 
         if(type == 'employee'){

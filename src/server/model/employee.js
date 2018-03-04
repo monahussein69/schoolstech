@@ -424,10 +424,12 @@ var employeeMethods = {
         var job_title = req.body.job_title;
         var sub_job_title = req.body.sub_job_title;
         if(sub_job_title) {
-            con.query('select SCH_STR_Employees.*,sys_users.is_active from SCH_STR_Employees ' +
+           var query =  con.query('select SCH_STR_Employees.*,sys_users.is_active from SCH_STR_Employees ' +
                 'inner join job_title on SCH_STR_Employees.jobtitle_id = job_title.id ' +
-                'left join sys_users on SCH_STR_Employees.userId = sys_users.id where school_id = ? and job_title.name =? and subjobtitle_id = ?', [schoolId, job_title, sub_job_title], function (err, result) {
-                    if (err)
+                'inner join sub_job_title on SCH_STR_Employees.subjobtitle_id = sub_job_title.id ' +
+                'left join sys_users on SCH_STR_Employees.userId = sys_users.id where school_id = ? and job_title.name =? and sub_job_title.name = ?', [schoolId, job_title, sub_job_title], function (err, result) {
+               console.log(query.sql);
+               if (err)
                         throw err
 
                     callback(result);
@@ -507,8 +509,8 @@ var employeeMethods = {
 
                             if (Object.keys(result).length) {
                                 var sub_job_title_id = result[0].id;
-                                con.query("update SCH_STR_Employees set jobtitle_id =?,subjobtitle_id = ? where id = ?", [job_title_id,sub_job_title_id,agents.studentAgent], function (err, result) {
-                                    if (err)
+                               var query = con.query("update SCH_STR_Employees set jobtitle_id =?,subjobtitle_id = ? where id = ?", [job_title_id,sub_job_title_id,agents.studentAgent], function (err, result) {
+                                   if (err)
                                         throw err;
                                     if (result.affectedRows) {
                                         success = 1;
