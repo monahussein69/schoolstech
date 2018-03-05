@@ -80,6 +80,7 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
             columns: [
                 DTColumnBuilder.newColumn('name').withTitle(' الاسم'),
                 DTColumnBuilder.newColumn('job_no').withTitle(' الرقم الوظيفي'),
+                DTColumnBuilder.newColumn('job_title_name').withTitle('المسمى الوظيفي'),
                 DTColumnBuilder.newColumn('address').withTitle(' العنوان'),
                 DTColumnBuilder.newColumn('phone1').withTitle(' رقم الهاتف'),
                 DTColumnBuilder.newColumn('mobile').withTitle(' رقم الجوال'),
@@ -157,8 +158,12 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
 
 
         function doUpload() {
-            console.log('File : ', $scope.file);
-            model.upload($scope.file);
+
+            model.upload($scope.file).then(function(employees){
+                var resetPaging = true;
+                model.dtInstance.reloadData(employees, resetPaging);
+            });
+
         };
 
 
@@ -178,35 +183,37 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
             } else {
                 schoolId = $stateParams.schoolId;
             }
-            Upload.upload({
-                url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
-                data: {
-                    file: file,
-                    type: 'employee',
-                    schoolId: schoolId
-                } //pass file as data, should be user ng-model
-            }).then(function (resp) { //upload function returns a promise
-                console.log(resp);
-                if (resp.data.status) { //validate success
-                    toastr.success("تم رفع الملف بنجاح");
+            return new Promise(function (resolve, reject) {
+                Upload.upload({
+                    url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
+                    data: {
+                        file: file,
+                        type: 'employee',
+                        schoolId: schoolId
+                    } //pass file as data, should be user ng-model
+                }).then(function (resp) { //upload function returns a promise
+                    console.log('res:'+resp.data);
+                    if (resp.data.status) { //validate success
+                        toastr.success(resp.data.msg);
+                    } else {
+                        toastr.error('هناك مشكلة في رفع الملف');
+                    }
+                }, function (resp) { //catch error
+                    toastr.error('Error status: ' + resp.status);
+                }, function (evt) {
+                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                    console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                    model.progress = progressPercentage; // capture upload progress
+
                     manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
-                        $scope.employees = employees;
-
-
-                        $scope.$apply();
+                        $scope.file = '';
+                        resolve(employees);
                     });
-                } else {
-                    toastr.error('هناك مشكلة في رفع الملف');
-                }
-            }, function (resp) { //catch error
-                toastr.error('Error status: ' + resp.status);
-            }, function (evt) {
-                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-                model.progress = progressPercentage; // capture upload progress
 
-
+                });
             });
+
+
         };
 
         $scope.$on('$viewContentLoaded', function () {

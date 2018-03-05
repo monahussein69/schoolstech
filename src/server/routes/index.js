@@ -176,7 +176,7 @@ router.post('/upload', function (req, res) {
 		}else if(req.body.type == 'employee'){
 			employeeMethods.UploadExcel(req, res, function (result) {
             console.log("result : ", result);
-            res.send({status: true, msg: 'تم اضافة الملف بنجاح'});
+            res.send(result);
            });
 		}else if(req.body.type == 'student'){
 			studentsMethods.UploadExcel(req, res, function (result) {
