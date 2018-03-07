@@ -15,6 +15,7 @@ var MetronicApp = angular.module("MetronicApp", [
     'simditor',
     'datatables',
     'mgo-angular-wizard',
+    'checklist-model'
 ]);
 
 
@@ -451,6 +452,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/pages/scripts/components-date-time-pickers.min.js',
 
                             'js/controllers/Settings/workingSettingsController.js',
+                            'js/services/WorkingSettingsFactory.js',
 
                         ]
                     });

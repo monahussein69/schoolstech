@@ -9,6 +9,7 @@ var jobTitleMethods = require('../model/jobTitle.js');
 var subJobTitleMethods = require('../model/subJobTitle.js');
 var studentsMethods = require('../model/students');
 var userMethods = require('../model/user.js');
+var workingSettingsMethods = require('../model/schedualProfile.js');
 
 var app = express();
 var multer = require('multer');
@@ -316,6 +317,12 @@ router.post('/DeactivateUser', function (req, res, next) {
 
 router.post('/ActivateUser', function (req, res, next) {
     userMethods.ActivateUser(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/saveWorkingSettingsData', function (req, res, next) {
+    workingSettingsMethods.saveWorkingSettingsData(req, res, function (result) {
         res.send(result);
     });
 });
