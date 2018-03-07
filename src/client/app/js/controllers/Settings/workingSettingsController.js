@@ -1,10 +1,41 @@
 angular.module('MetronicApp').controller('WorkingSettingsController',
-    function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,WorkingSettingsService) {
+    function (DTOptionsBuilder, DTColumnBuilder,$q,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,WorkingSettingsService) {
+
+        var schoolId = 0;
+        var userObject = localStorageService.get('UserObject');
+        if(userObject){
+            var userType = userObject[0].userType;
+            var schoolId = 0;
+            if (userType == 2) {
+                schoolId = userObject[0].schoolId;
+            } else {
+                schoolId = $stateParams.schoolId;
+            }
+        }
+
         var model = {
             working_settingsObj : {},
             createLectureArray:createLectureArray,
             lectures:[],
-            saveWorkingSettings:saveWorkingSettings
+            schoolId:schoolId,
+            saveWorkingSettings:saveWorkingSettings,
+            getProfileSetting:getProfileSetting,
+            deleteProfileSetting:deleteProfileSetting,
+            activateProfileSetting:activateProfileSetting,
+            DeactivateProfileSetting:DeactivateProfileSetting,
+            options: DTOptionsBuilder.fromFnPromise(function () {
+                var defer = $q.defer();
+                WorkingSettingsService.getAllSettingsProfiles(schoolId).then(function (profiles) {
+                    defer.resolve(profiles);
+                });
+
+                return defer.promise
+            }),
+            columns: [
+                DTColumnBuilder.newColumn('Profile_Name').withTitle(' الاسم'),
+                DTColumnBuilder.newColumn(null).withTitle(' العمليات'),
+            ],
+            dtInstance: {},
         };
         $scope.model = model;
         $scope.days=
@@ -22,17 +53,11 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
 
 
         function saveWorkingSettings(type){
-            var userObject = localStorageService.get('UserObject');
-            var userType = userObject[0].userType;
-            var schoolId = 0;
-            if (userType == 2) {
-                schoolId = userObject[0].schoolId;
-            } else {
-                schoolId = $stateParams.schoolId;
+            if(type == 'new'){
+                model.working_settingsObj.id = '';
             }
-
             if (Object.keys(model.working_settingsObj).length) {
-                model.working_settingsObj.schoolId = schoolId;
+                model.working_settingsObj.schoolId = model.schoolId;
                 var Day_Begining = model.working_settingsObj.Day_Begining;
                 model.working_settingsObj.Day_Begining = Day_Begining.toString();
 
@@ -48,6 +73,8 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
                     if (response.success) {
                         //model.success = response.msg;
                        // $window.location.href = '#/manageEmployees';
+                        var resetPaging = true;
+                        model.dtInstance.reloadData(response.data, resetPaging);
                         toastr.success(response.msg);
                     } else {
                         //model.error = response.msg;
@@ -58,6 +85,57 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
 
             }
         }
+
+        function getProfileSetting(profileId){
+            WorkingSettingsService.getSettingsData(profileId, function (response) {
+                model.working_settingsObj = response[0];
+            });
+        }
+
+        function deleteProfileSetting(profileId){
+            WorkingSettingsService.deleteSettingProfileData(profileId,model.schoolId, function (response) {
+                model.working_settingsObj = response[0];
+                var resetPaging = true;
+                model.dtInstance.reloadData(response.data, resetPaging);
+            });
+        }
+
+        function activateProfileSetting(profileId){
+            var currentProfile = {};
+            WorkingSettingsService.getSettingsData(profileId, function (response) {
+                currentProfile = response[0];
+                currentProfile.Profile_Active_status = 1;
+                WorkingSettingsService.saveSettingsData(currentProfile, function (response) {
+                    if (response.success) {
+                        var resetPaging = true;
+                        model.dtInstance.reloadData(response.data, resetPaging);
+                        toastr.success(response.msg);
+                    } else {
+                        toastr.error(response.msg);
+                    }
+                });
+            });
+        }
+
+        function DeactivateProfileSetting(profileId){
+            var currentProfile = {};
+            WorkingSettingsService.getSettingsData(profileId, function (response) {
+                currentProfile = response[0];
+                currentProfile.Profile_Active_status = 0;
+                WorkingSettingsService.saveSettingsData(currentProfile, function (response) {
+                    if (response.success) {
+                        var resetPaging = true;
+                        model.dtInstance.reloadData(response.data, resetPaging);
+                        toastr.success(response.msg);
+                    } else {
+                        toastr.error(response.msg);
+                    }
+                });
+            });
+        }
+
+
+
 
 
         $scope.$on('$viewContentLoaded', function () {

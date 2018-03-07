@@ -45,13 +45,21 @@ var workingSettingsMethods = {
                             if (result.affectedRows) {
                                 response.success = true;
                                 response.id = workingSettingsData.id;
-                                response.msg = 'تم التعديل بنجاح'
+                                response.msg = 'تم التعديل بنجاح';
+                                req.params.schoolId = workingSettingsData.SchoolId;
+
+                                workingSettingsMethods.getAllSettingsProfiles(req,res,function (result) {
+                                    response.data = result;
+                                    callback(response);
+                                });
+
                             } else {
                                 response.success = false;
                                 response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
+                                callback(response);
                             }
 
-                            callback(response);
+
 
                         }
                     );
@@ -102,11 +110,18 @@ var workingSettingsMethods = {
                                 response.success = true;
                                 response.msg = 'تم الاضافه بنجاح'
                                 response.id = result.insertId;
+                                req.params.schoolId = workingSettingsData.SchoolId;
+
+                                workingSettingsMethods.getAllSettingsProfiles(req,res,function (result) {
+                                    response.data = result;
+                                    callback(response);
+                                });
                             } else {
                                 response.success = false;
                                 response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
+                                callback(response);
                             }
-                            callback(response);
+
                         }
                     );
                 }
@@ -116,6 +131,53 @@ var workingSettingsMethods = {
 
     },
 
+    getSettingProfile: function (req, res, callback) {
+        var profileId = req.params.profileId;
+        con.query('select * from SCH_ATT_SCHEDULEProfile where id = ?', [profileId], function (err, result) {
+                if (err)
+                    throw err
+
+                callback(result);
+            }
+        );
+    },
+
+    deleteSettingProfile: function (req, res, callback) {
+        var profileId = req.params.profileId;
+        var schoolId = req.params.schoolId;
+        var response = {};
+        con.query('delete from SCH_ATT_SCHEDULEProfile where id = ?', [empId], function (err, result) {
+                if (err)
+                    throw err
+                if (result.affectedRows) {
+                    response.success = true;
+                    response.msg = 'تم حذف الاعدادات بنجاح';
+                    req.params.schoolId = workingSettingsData.SchoolId;
+
+                    workingSettingsMethods.getAllSettingsProfiles(req,res,function (result) {
+                        response.data = result;
+                        callback(response);
+                    });
+                } else {
+                    response.success = false;
+                    response.msg = 'خطأ, الرجاء المحاوله مره اخرى';
+                    callback(response);
+                }
+
+            }
+        );
+    },
+
+    getAllSettingsProfiles: function (req, res, callback) {
+        var schoolId = req.params.schoolId;
+        con.query('select * from SCH_ATT_SCHEDULEProfile where school_id = ?',[schoolId], function (err, result) {
+                if (err)
+                    throw err
+
+                callback(result);
+            }
+        );
+    },
 };
 
 module.exports = workingSettingsMethods;

@@ -327,4 +327,22 @@ router.post('/saveWorkingSettingsData', function (req, res, next) {
     });
 });
 
+router.get('/getSettingsProfile/:profileId', function (req, res, next) {
+    workingSettingsMethods.getSettingsData(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllSettingsProfiles/:schoolId', function (req, res, next) {
+    workingSettingsMethods.getAllSettingsProfiles(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/deleteSettingsProfile/:profileId/:schoolId', function (req, res, next) {
+    workingSettingsMethods.deleteSettingProfile(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 module.exports = router;
