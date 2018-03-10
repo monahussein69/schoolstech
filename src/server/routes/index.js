@@ -10,6 +10,8 @@ var subJobTitleMethods = require('../model/subJobTitle.js');
 var studentsMethods = require('../model/students');
 var userMethods = require('../model/user.js');
 var workingSettingsMethods = require('../model/schedualProfile.js');
+var attScheduleMethods = require('../model/sch_att_schedule.js');
+var employeesAttendanceMethods = require('../model/employeesAttendance.js');
 
 var app = express();
 var multer = require('multer');
@@ -323,12 +325,30 @@ router.post('/ActivateUser', function (req, res, next) {
 
 router.post('/saveWorkingSettingsData', function (req, res, next) {
     workingSettingsMethods.saveWorkingSettingsData(req, res, function (result) {
+        if(result.success){
+            req.body.profile_id = result.id;
+            attScheduleMethods.saveActivityData(req,res,function(result){
+                //res.send(result);
+            });
+        }
+        res.send(result);
+    });
+});
+
+router.get('/getAllProfileActivites/:profileId', function (req, res, next) {
+    attScheduleMethods.getAttSchedule(req, res, function (result) {
         res.send(result);
     });
 });
 
 router.get('/getSettingsProfile/:profileId', function (req, res, next) {
-    workingSettingsMethods.getSettingsData(req, res, function (result) {
+    workingSettingsMethods.getSettingProfile(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllEmployeesAttendance/:schoolId', function (req, res, next) {
+   employeesAttendanceMethods.getAllEmployeesAttendance(req, res, function (result) {
         res.send(result);
     });
 });

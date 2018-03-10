@@ -460,6 +460,48 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             }
         })
 
+
+        .state('Master.scheduleActivity', {
+            url: "/scheduleActivity/:profileId",
+            templateUrl: "views/settings/Activity_schedual.html",
+            data: {pageTitle: 'اعدادات الدوام الرسمي'},
+            controller: "ActivityScheduleController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/Settings/workingSettingsController.js',
+                            'js/services/WorkingSettingsFactory.js',
+
+                        ]
+                    });
+                }]
+            }
+        })
+
+
+        .state('Master.employeesAttendance', {
+            url: "/employeesAttendance/:schoolId",
+            templateUrl: "views/employees_attendance/attendance.html",
+            data: {pageTitle: 'سجل الدوام الرسمي'},
+            controller: "employeesAttendanceController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/EmployeesAttendance/employeesAttendanceController.js',
+                            'js/services/employeesAttendanceFactory.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+
         .state('Master.ManageJobTitles', {
             url: "/manageJobTitles",
             templateUrl: "views/settings/jobTitleSettings.html",

@@ -25,11 +25,22 @@ angular.module('MetronicApp').factory('WorkingSettingsService', function ($http,
 
     };
 
+    fac.getAllActivitySchedual = function (profileId) {
+        return new Promise(function (resolve, reject) {
+            $http.get("http://localhost:3000/getAllProfileActivites/"+profileId).success(function (response) {
+                resolve(response);
+            });
+        });
+
+    };
+
     fac.deleteSettingProfileData = function (profileId,schoolId, callback) {
         $http.get("http://localhost:3000/deleteSettingsProfile/" + profileId+'/'+schoolId).success(function (response) {
             callback(response);
         });
     };
+
+
 
     return fac;
 
