@@ -12,6 +12,15 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
 
     };
 
-    return fac;
+    fac.setEmployeeAttendance = function(attendanceObj,callback) {
+        $http.post("http://localhost:3000/setEmployeeAttendance", {
+            'attendanceObj': attendanceObj
+        }).success(function (response) {
+            callback(response);
+        });
+    }
+
+
+        return fac;
 
 });

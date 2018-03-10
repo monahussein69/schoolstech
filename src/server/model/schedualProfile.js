@@ -179,6 +179,18 @@ var workingSettingsMethods = {
             }
         );
     },
+
+    getActiveAttSchedule: function (req, res, callback) {
+        var schoolId = req.params.SchoolId;
+        con.query('select * from sch_att_scheduleprofile where SchoolId = ? and Profile_Active_status = 1', [schoolId], function (err, result) {
+                if (err)
+                    throw err
+
+                callback(result);
+            }
+        );
+    },
+
 };
 
 module.exports = workingSettingsMethods;

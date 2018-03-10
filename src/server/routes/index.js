@@ -353,6 +353,12 @@ router.get('/getAllEmployeesAttendance/:schoolId', function (req, res, next) {
     });
 });
 
+router.post('/setEmployeeAttendance/', function (req, res, next) {
+   employeesAttendanceMethods.setEmployeeAttendance(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 router.get('/getAllSettingsProfiles/:schoolId', function (req, res, next) {
     workingSettingsMethods.getAllSettingsProfiles(req, res, function (result) {
         res.send(result);

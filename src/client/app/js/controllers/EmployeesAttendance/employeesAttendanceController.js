@@ -26,8 +26,20 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
         });
 
         function recordAttendance(emp_id,type){
+         var attendanceObj = {};
+            attendanceObj.school_id = model.schoolId;
+            attendanceObj.employee_id = emp_id;
+            attendanceObj.Event_Name = 'بدايه الدوام';
+            attendanceObj.is_absent = 0;
+            if(type == 'حضور') {
+                attendanceObj.is_absent = 0;
+            }
 
-
+            employeesAttendanceService.setEmployeeAttendance(attendanceObj,function (result) {
+                if(result.succes){
+                    toastr.success(result.msg);
+                }
+            });
         }
 
 
