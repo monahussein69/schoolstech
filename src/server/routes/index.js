@@ -9,6 +9,9 @@ var jobTitleMethods = require('../model/jobTitle.js');
 var subJobTitleMethods = require('../model/subJobTitle.js');
 var studentsMethods = require('../model/students');
 var userMethods = require('../model/user.js');
+var workingSettingsMethods = require('../model/schedualProfile.js');
+var attScheduleMethods = require('../model/sch_att_schedule.js');
+var employeesAttendanceMethods = require('../model/employeesAttendance.js');
 
 var app = express();
 var multer = require('multer');
@@ -173,22 +176,22 @@ router.post('/upload', function (req, res) {
             return;
         }
         req.body.filename = filename;
-        if (req.body.type == 'school') {
-            schoolMethods.UploadExcel(req, res, function (result) {
-                console.log("result : ", result);
-                res.send({status: true, msg: 'تم اضافة الملف بنجاح'});
-            });
-        } else if (req.body.type == 'employee') {
-            employeeMethods.UploadExcel(req, res, function (result) {
-                console.log("result : ", result);
-                res.send({status: true, msg: 'تم اضافة الملف بنجاح'});
-            });
-        } else if (req.body.type == 'student') {
-            studentsMethods.UploadExcel(req, res, function (result) {
-                console.log("result : ", result);
-                res.send({status: true, msg: result.message});
-            });
-        } else if (req.body.type == 'schoolSchedule') {
+		if(req.body.type == 'school'){
+			schoolMethods.UploadExcel(req, res, function (result) {
+            console.log("result : ", result);
+            res.send({status: true, msg: 'تم اضافة الملف بنجاح'});
+           });
+		}else if(req.body.type == 'employee'){
+			employeeMethods.UploadExcel(req, res, function (result) {
+            console.log("result : ", result);
+            res.send(result);
+           });
+		}else if(req.body.type == 'student'){
+			studentsMethods.UploadExcel(req, res, function (result) {
+            console.log("result : ", result);
+            res.send({status: true, msg: result.message});
+           });
+		}else if(req.body.type == 'schoolSchedule'){
             schoolMethods.UploadExcel(req, res, function (result) {
                 console.log("result : ", result);
                 res.send({status: true, msg: result.message});
@@ -321,6 +324,54 @@ router.post('/DeactivateUser', function (req, res, next) {
 
 router.post('/ActivateUser', function (req, res, next) {
     userMethods.ActivateUser(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/saveWorkingSettingsData', function (req, res, next) {
+    workingSettingsMethods.saveWorkingSettingsData(req, res, function (result) {
+        if(result.success){
+            req.body.profile_id = result.id;
+            attScheduleMethods.saveActivityData(req,res,function(result){
+                //res.send(result);
+            });
+        }
+        res.send(result);
+    });
+});
+
+router.get('/getAllProfileActivites/:profileId', function (req, res, next) {
+    attScheduleMethods.getAttSchedule(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getSettingsProfile/:profileId', function (req, res, next) {
+    workingSettingsMethods.getSettingProfile(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllEmployeesAttendance/:schoolId', function (req, res, next) {
+   employeesAttendanceMethods.getAllEmployeesAttendance(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/setEmployeeAttendance/', function (req, res, next) {
+   employeesAttendanceMethods.setEmployeeAttendance(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllSettingsProfiles/:schoolId', function (req, res, next) {
+    workingSettingsMethods.getAllSettingsProfiles(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/deleteSettingsProfile/:profileId/:schoolId', function (req, res, next) {
+    workingSettingsMethods.deleteSettingProfile(req, res, function (result) {
         res.send(result);
     });
 });

@@ -48,6 +48,7 @@ var employeeMethods = {
                         , function (err, result) {
                             if (err)
                                 throw err
+                            console.log(result);
                             if (result.affectedRows) {
                                 response.success = true;
                                 response.id = empData.id;
@@ -255,6 +256,7 @@ var employeeMethods = {
                         console.log('job_title');
                         console.log(job_title);
                         var job_title_id = 0;
+
                         req.body.name = job_title;
                         jobTitleMethods.getjobTitleByName(req, res, function (result) {
                             if (!Object.keys(result).length) {
@@ -392,7 +394,15 @@ var employeeMethods = {
                                 });
 
                             }
-
+                            var response = {};
+                            if(finalEmployees.length) {
+                                response.msg = 'تم اضافه ' + finalEmployees.length + ' ' + job_title;
+                                response.status = true;
+                            }else{
+                                response.msg = 'خطأ في رفع الملف';
+                                response.status = false;
+                            }
+                          callback(response);
 
 
                         });
@@ -403,7 +413,6 @@ var employeeMethods = {
 
                     });
 
-                    callback(finalEmployees);
                 });
         } catch (e) {
             res.json({error_code: 1, err_desc: "Corupted excel file"});
@@ -411,7 +420,7 @@ var employeeMethods = {
     },
     getEmployees: function (req, res, callback) {
         var schoolId = req.params.schoolId;
-        con.query('select SCH_STR_Employees.*,sys_users.is_active from SCH_STR_Employees left join sys_users on SCH_STR_Employees.userId = sys_users.id where school_id = ?',[schoolId], function (err, result) {
+        con.query('select SCH_STR_Employees.*,sys_users.is_active,job_title.name as job_title_name from SCH_STR_Employees left join sys_users on SCH_STR_Employees.userId = sys_users.id  left join job_title on SCH_STR_Employees.jobtitle_id = job_title.id  where school_id = ?',[schoolId], function (err, result) {
                 if (err)
                     throw err
 
