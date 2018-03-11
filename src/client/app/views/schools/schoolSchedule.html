@@ -59,20 +59,20 @@
                 <span ng-show="model.loading">Loading .... </span>
                 <table class="table" ng-if="!model.loading">
                     <thead>
-                    <th></th>
-                    <th ng-repeat="lecture in model.lectures">{{lecture}}</th>
+                        <th></th>
+                        <th ng-repeat="lecture in model.lectures">{{lecture}}</th>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="day in model.days">
-                        <td>{{day}}</td>
-                        <td ng-repeat="lecture2 in model.lectures">
-                            <ul ng-repeat="schedule in model.schoolSchedule" ng-if="schedule.Day == day && schedule.lecture_name == lecture2"  style="border : 1px solid ">
-                                <li>{{schedule.course_name}} / {{schedule.section_name}}</li>
-                                <li>{{schedule.teacher_name}}</li>
-                                <li>{{schedule.room_name}}</li>
-                            </ul>
-                        </td>
-                    </tr>
+                        <tr ng-repeat="day in model.days">
+                            <td>{{day}}</td>
+                            <td ng-repeat="lecture2 in model.lectures">
+                                <ul ng-repeat="schedule in model.schoolSchedule" ng-if="schedule.Day == day && schedule.lecture_name == lecture2" style="border : 1px solid ">
+                                    <li>{{schedule.course_name}} / {{schedule.section_name}}</li>
+                                    <li>{{schedule.teacher_name}}</li>
+                                    <li>{{schedule.room_name}}</li>
+                                </ul>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 <!--<table class="table table-striped table-bordered table-hover table-checkable order-column"-->

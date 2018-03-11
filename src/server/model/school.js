@@ -37,7 +37,9 @@ const roomsTable = sequelize.define('sch_bui_rooms', {
     room_type: Sequelize.STRING
 });
 const teachersTable = sequelize.define('sch_str_employees', {
-    name: Sequelize.STRING,
+    school_id : Sequelize.INTEGER,
+    name: Sequelize.STRING
+
 });
 const lectureTable = sequelize.define('sch_acd_lectures', {
     name: Sequelize.STRING,
@@ -391,7 +393,7 @@ var schoolMethods = {
                                             });
                                     });
                                     let teacherPromise = new Promise(function (resolve, reject) {
-                                        teachersTable.findOrCreate({where: {name: allCells[counter].teacher_name.trim()}})
+                                        teachersTable.findOrCreate({where: {name: allCells[counter].teacher_name.trim()} , Defaults : {school_id : 1}})
                                             .spread((teacher, created) => {
                                                 console.log('section  : ', teacher.id);
                                                 console.log('created ?   : ', created);
