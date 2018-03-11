@@ -33,7 +33,7 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
             }) .withOption('createdRow', createdRow),
             columns: [
                 DTColumnBuilder.newColumn('Profile_Name').withTitle(' الاسم'),
-                DTColumnBuilder.newColumn(null).withTitle('Actions').notSortable()
+                DTColumnBuilder.newColumn(null).withTitle('العمليات').notSortable()
                     .renderWith(actionsHtml)
             ],
             dtInstance: {},
@@ -52,8 +52,14 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
                 '<button ngConfirmClick class="btn btn-danger" ng-click="model.deleteProfileSetting(' + data.Id + ')">' +
                 '   <i class="fa fa-trash-o"></i>' +
                 '</button>'+'<a ui-sref="Master.scheduleActivity({profileId:{{'+data.Id+'}}})">' +
-                ' الفعاليات</span>' +
-                '</a>';
+                ' الفعاليات</span>' +'</a>'+
+                '<button ng-hide="data.Profile_Active_status" class="btn btn-danger" ng-click="model.activateProfileSetting(' + data.Id + ')">' +
+                'تفعيل' +
+                '</button>'+
+                '<button ng-show="data.Profile_Active_status" class="btn btn-danger" ng-click="model.activateProfileSetting(' + data.Id + ')">' +
+                ' الغاء التفعيل' +
+                '</button>'
+                ;
         }
 
         $scope.model = model;
@@ -140,20 +146,28 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
 
         function activateProfileSetting(profileId){
             var currentProfile = {};
-            WorkingSettingsService.getSettingsData(profileId, function (response) {
-                currentProfile = response[0];
-                console.log(currentProfile);
-                currentProfile.Profile_Active_status = 1;
-                WorkingSettingsService.saveSettingsData(currentProfile, function (response) {
-                    if (response.success) {
-                        var resetPaging = true;
-                        model.dtInstance.reloadData(response.data, resetPaging);
-                        toastr.success(response.msg);
-                    } else {
-                        toastr.error(response.msg);
-                    }
-                });
+            WorkingSettingsService.getActiveSettingsData(model.schoolId, function (result) {
+                if (Object.keys(result).length) {
+                    toastr.error('الرجاء الغاء تفعيل الاعدادات الموجوده');
+                }else {
+                    WorkingSettingsService.getSettingsData(profileId, function (response) {
+                        currentProfile = response[0];
+                        console.log(currentProfile);
+                        currentProfile.Profile_Active_status = 1;
+                        WorkingSettingsService.saveSettingsData(currentProfile, function (response) {
+                            if (response.success) {
+                                var resetPaging = true;
+                                model.dtInstance.reloadData(response.data, resetPaging);
+                                toastr.success(response.msg);
+                            } else {
+                                toastr.error(response.msg);
+                            }
+                        });
+                    });
+                }
+
             });
+
         }
 
         function DeactivateProfileSetting(profileId){

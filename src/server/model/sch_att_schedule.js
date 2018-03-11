@@ -50,17 +50,18 @@ var attScheduleMethods = {
 
             for (var Day = 0; Day < Day_Begining.length; Day++) {
                 var queue_Begining_time = moment(queue_Begining, 'HH:mm');
-                Ending_Time = moment(queue_Begining_time, 'HH:mm').add(queue_Begining_Duration, 'm').format('HH:mm');
+                var Ending_Time = moment(queue_Begining_time, 'HH:mm').add(queue_Begining_Duration, 'm').format('HH:mm');
                 activityObj.SCHEDULE_Id = profile_id;
                 activityObj.Day = Day_Begining[Day];
                 activityObj.eventtype = 'طابور';
                 activityObj.event_Nam = 'طابور';
-                activityObj.Begining_Time = queue_Begining;
+                activityObj.Begining_Time = queue_Begining_time;
                 activityObj.Ending_Time = Ending_Time;
                 activityObj.Day_no = days.indexOf(Day_Begining[Day]);
                 req.body.activityObj = activityObj;
                 attScheduleMethods.addAttSchedule(req, res, function (result) {
                 });
+
 
                 for (var i = 1; i <= Max_Lectures; i++) {
                     var lecture_Begining_time = 0;

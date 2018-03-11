@@ -16,6 +16,12 @@ angular.module('MetronicApp').factory('WorkingSettingsService', function ($http,
         });
     };
 
+    fac.getActiveSettingsData = function (SchoolId, callback) {
+        $http.get("http://localhost:3000/getActiveAttSchedule/" + SchoolId).success(function (response) {
+            callback(response);
+        });
+    };
+
     fac.getAllSettingsProfiles = function (schoolId) {
         return new Promise(function (resolve, reject) {
             $http.get("http://localhost:3000/getAllSettingsProfiles/"+schoolId).success(function (response) {
