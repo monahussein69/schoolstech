@@ -63,6 +63,13 @@ angular.module('MetronicApp').factory('manageSchoolService', function ($http, Up
         });
     };
 
+    fac.getSchoolSchedule = function(schoolId , callback){
+        console.log(schoolId);
+        $http.get("http://localhost:3000/getLectursTable/" + schoolId).success(function (response) {
+            callback(response);
+        });
+    };
+
     return fac;
 
 });

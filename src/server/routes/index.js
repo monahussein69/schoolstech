@@ -83,6 +83,11 @@ router.get('/getSchool/:schoolId', function (req, res, next) {
         res.send(result);
     });
 });
+router.get('/getLectursTable/:schoolId', function (req, res, next) {
+    schoolMethods.getLectursTable(req.params.schoolId).then(function (result) {
+        res.send(result);
+    });
+});
 router.get('/getAllStudents', function (req, res, next) {
     studentsMethods.getAllStudents(req, res, function (result) {
         res.send(result);
@@ -168,27 +173,27 @@ router.post('/upload', function (req, res) {
             return;
         }
         req.body.filename = filename;
-		if(req.body.type == 'school'){
-			schoolMethods.UploadExcel(req, res, function (result) {
-            console.log("result : ", result);
-            res.send({status: true, msg: 'تم اضافة الملف بنجاح'});
-           });
-		}else if(req.body.type == 'employee'){
-			employeeMethods.UploadExcel(req, res, function (result) {
-            console.log("result : ", result);
-            res.send({status: true, msg: 'تم اضافة الملف بنجاح'});
-           });
-		}else if(req.body.type == 'student'){
-			studentsMethods.UploadExcel(req, res, function (result) {
-            console.log("result : ", result);
-            res.send({status: true, msg: result.message});
-           });
-		}else if(req.body.type == 'schoolSchedule'){
+        if (req.body.type == 'school') {
             schoolMethods.UploadExcel(req, res, function (result) {
-            console.log("result : ", result);
-            res.send({status: true, msg: result.message});
-           });
-		}
+                console.log("result : ", result);
+                res.send({status: true, msg: 'تم اضافة الملف بنجاح'});
+            });
+        } else if (req.body.type == 'employee') {
+            employeeMethods.UploadExcel(req, res, function (result) {
+                console.log("result : ", result);
+                res.send({status: true, msg: 'تم اضافة الملف بنجاح'});
+            });
+        } else if (req.body.type == 'student') {
+            studentsMethods.UploadExcel(req, res, function (result) {
+                console.log("result : ", result);
+                res.send({status: true, msg: result.message});
+            });
+        } else if (req.body.type == 'schoolSchedule') {
+            schoolMethods.UploadExcel(req, res, function (result) {
+                console.log("result : ", result);
+                res.send({status: true, msg: result.message});
+            });
+        }
 
         // if(req.file.originalname.split('.')[req.file.originalname.split('.').length-1] === 'xlsx'){
         //     var array = xlsx.parse(__dirname + '/file_name.xlsx');
@@ -208,20 +213,20 @@ router.post('/upload-photo', function (req, res) {
             res.json({error_code: 1, err_desc: "No file passed"});
             return;
         }
-		if(req.body.type == 'school_logo'){
-			req.body.logoFile = filename;
+        if (req.body.type == 'school_logo') {
+            req.body.logoFile = filename;
             schoolMethods.updatePhoto(req, res, function (result) {
-            res.send(filename);
-        }  );
-		}
-		
-		if(req.body.type == 'employee_photo'){
-			req.body.photoFile = filename;
+                res.send(filename);
+            });
+        }
+
+        if (req.body.type == 'employee_photo') {
+            req.body.photoFile = filename;
             employeeMethods.updatePhoto(req, res, function (result) {
-            res.send(filename);
-        }  );
-		}
-        
+                res.send(filename);
+            });
+        }
+
 
     });
 });
@@ -238,7 +243,7 @@ router.post('/upload-app-photo', function (req, res) {
             res.json({error_code: 1, err_desc: "No file passed"});
             return;
         }
-        console.log('File Name : ',filename);
+        console.log('File Name : ', filename);
         res.send(filename);
         // req.body.ministry_logo = filename;
         // appSettingsMethods.updatePhotos(req, res, function (result) {
