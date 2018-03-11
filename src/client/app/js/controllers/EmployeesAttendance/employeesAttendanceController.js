@@ -43,6 +43,8 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             employeesAttendanceService.setEmployeeAttendance(attendanceObj,function (result) {
                 if(result.success){
                     toastr.success(result.msg);
+                }else{
+                    toastr.error(result.msg);
                 }
             });
         }

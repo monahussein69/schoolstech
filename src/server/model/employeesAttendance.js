@@ -30,24 +30,30 @@ var employeesAttendanceMethods = {
                 if (Object.keys(result).length) {
                     var calendarObj = result[0];
                     attendanceObj.Calender_id = calendarObj.Id;
-                    if(attendanceObj.is_absent == 0) {
+
                     workingSettingsMethods.getActiveAttSchedule(req, res, function (result) {
                         if (Object.keys(result).length) {
-                            var schoolProfile = result[0];
-                            var queue_Begining_time = moment(schoolProfile.queue_Begining, 'HH:mm').format('HH:mm');
+                            if(attendanceObj.is_absent == 0) {
+                                var schoolProfile = result[0];
+                                var queue_Begining_time = moment(schoolProfile.queue_Begining, 'HH:mm').format('HH:mm');
+                                var current_time = moment().format('HH:mm');
+                                attendanceObj.time_in = current_time;
 
-                            var current_time = moment().format('HH:mm');
-                            attendanceObj.time_in = current_time;
+                                var ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));
 
-                            var ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));
+                                if (ms <= 0) {
+                                    ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm")) / 2;
+                                }
 
-                            if (ms <= 0) {
-                                ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm")) / 2;
+                                var d = moment.duration(ms);
+                                var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
+                                attendanceObj.late_min = hours;
                             }
 
-                            var d = moment.duration(ms);
-                            var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
-                            attendanceObj.late_min = hours;
+                            req.body.attendanceObj = attendanceObj;
+                            employeesAttendanceMethods.addEmployeeAttendance(req,res,function(result){
+                                callback(result);
+                            });
 
                         } else {
                             response.success = false;
@@ -57,12 +63,9 @@ var employeesAttendanceMethods = {
 
 
                     });
-                    }
 
-                    req.body.attendanceObj = attendanceObj;
-                    employeesAttendanceMethods.addEmployeeAttendance(req,res,function(result){
-                        callback(result);
-                    });
+
+
                 }else{
                     response.success = false;
                     response.msg = 'اليوم ليس موجود';

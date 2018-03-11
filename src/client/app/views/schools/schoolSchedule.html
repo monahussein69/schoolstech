@@ -56,66 +56,76 @@
                         </div>
                     </div>
                 </div>
-                <!--<table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">-->
-                <!--<thead>-->
-                <!--<tr>-->
-                <!--<th>-->
-                <!--<label class="mt-checkbox mt-checkbox-outline mt-checkbox-single">-->
-                <!--<input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes" />-->
-                <!--<span></span>-->
-                <!--</label>-->
-                <!--</th>-->
-                <!--<th> اليوم </th>-->
-                <!--<th>الحصة </th>-->
-                <!--<th> المادة </th>-->
-                <!--<th> الشعبة </th>-->
-                <!--<th> المعلم </th>-->
-                <!--<th> القاعة</th>-->
-                <!--<th> العمليات</th>-->
-                <!--</tr>-->
-                <!--</thead>-->
+                <span ng-show="model.loading">Loading .... </span>
+                <table class="table" ng-if="!model.loading">
+                    <thead>
+                        <th></th>
+                        <th ng-repeat="lecture in model.lectures">{{lecture}}</th>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="day in model.days">
+                            <td>{{day}}</td>
+                            <td ng-repeat="lecture2 in model.lectures">
+                                <ul ng-repeat="schedule in model.schoolSchedule" ng-if="schedule.Day == day && schedule.lecture_name == lecture2" style="border : 1px solid ">
+                                    <li>{{schedule.course_name}} / {{schedule.section_name}}</li>
+                                    <li>{{schedule.teacher_name}}</li>
+                                    <li>{{schedule.room_name}}</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!--<table class="table table-striped table-bordered table-hover table-checkable order-column"-->
+                <!--id="sample_1">-->
+                <!--&lt;!&ndash;<thead>&ndash;&gt;-->
+                <!--&lt;!&ndash;<tr ng-repeat="schedule in model.schoolSchedule">&ndash;&gt;-->
+                <!--&lt;!&ndash;<th>{{schedule.lectureName}}</th>&ndash;&gt;-->
+                <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                <!--&lt;!&ndash;</thead>&ndash;&gt;-->
                 <!--<tbody>-->
-                <!--<tr class="odd gradeX" ng-repeat="school in schools">-->
-                <!--<td>-->
-                <!--<label class="mt-checkbox mt-checkbox-outline mt-checkbox-single">-->
-                <!--<input type="checkbox" class="checkboxes" value="1" />-->
-                <!--<span></span>-->
-                <!--</label>-->
-                <!--</td>-->
-                <!--<td> {{school.name}}</td>-->
-                <!--<td> {{school.schoolNum}}</td>-->
-                <!--<td> {{school.educationalRegion}}</td>-->
-                <!--<td> {{school.educationLevel}}</td>-->
-                <!--<td class="center"> {{school.gender}}</td>-->
-                <!--<td> {{school.educationalOffice}}</td>-->
-                <!--<td> {{school.address}}</td>-->
-                <!--<td>-->
-                <!--<div class="btn-group">-->
-                <!--<button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> العمليات-->
-                <!--<i class="fa fa-angle-down"></i>-->
-                <!--</button>-->
-                <!--<ul class="dropdown-menu dropdown-menu-left" role="menu">-->
-                <!--<li>-->
-                <!--<a ui-sref="Master.AddEditSchool({schoolId:{{school.id}}})">-->
-                <!--<i class="icon-pencil"></i>&nbsp; تعديل </a>-->
-                <!--</li>-->
-                <!--<li>-->
-                <!--<a ui-sref="Master.manageSchoolAccount({schoolId:{{school.id}}})">-->
-                <!--<i class="fa fa-credit-card"></i> &nbsp;بيانات الاشتراك </a>-->
-                <!--</li>-->
-                <!--<li class="divider"> </li>-->
-                <!--<li>-->
-                <!--<a ui-sref="Master.ManageEmployeesData({schoolId:{{school.id}}})">-->
-                <!--<i class="fa fa-credit-card"></i> &nbsp;بيانات الموظفين</a>-->
-                <!--</li>-->
-                <!--<li>-->
-                <!--<a href="javascript:;" ng-confirm-click="هل تريد تأكيد حذف المدرسه ؟ " confirmed-click="model.deleteSchool(school.id)">-->
-                <!--<i class="fa fa-trash"></i>&nbsp; حذف </a>-->
-                <!--</li>-->
-                <!--</ul>-->
-                <!--</div>-->
-                <!--</td>-->
-                <!--</tr>-->
+                <!--&lt;!&ndash;<tr class="odd gradeX" >&ndash;&gt;-->
+                <!--&lt;!&ndash;<td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<label class="mt-checkbox mt-checkbox-outline mt-checkbox-single">&ndash;&gt;-->
+                <!--&lt;!&ndash;<input type="checkbox" class="checkboxes" value="1"/>&ndash;&gt;-->
+                <!--&lt;!&ndash;<span></span>&ndash;&gt;-->
+                <!--&lt;!&ndash;</label>&ndash;&gt;-->
+                <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td> {{school.name}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td> {{school.schoolNum}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td> {{school.educationalRegion}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td> {{school.educationLevel}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td class="center"> {{school.gender}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td> {{school.educationalOffice}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td> {{school.address}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="btn-group">&ndash;&gt;-->
+                <!--&lt;!&ndash;<button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown"&ndash;&gt;-->
+                <!--&lt;!&ndash;aria-expanded="false"> العمليات&ndash;&gt;-->
+                <!--&lt;!&ndash;<i class="fa fa-angle-down"></i>&ndash;&gt;-->
+                <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                <!--&lt;!&ndash;<ul class="dropdown-menu dropdown-menu-left" role="menu">&ndash;&gt;-->
+                <!--&lt;!&ndash;<li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<a ui-sref="Master.AddEditSchool({schoolId:{{school.id}}})">&ndash;&gt;-->
+                <!--&lt;!&ndash;<i class="icon-pencil"></i>&nbsp; تعديل </a>&ndash;&gt;-->
+                <!--&lt;!&ndash;</li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<a ui-sref="Master.manageSchoolAccount({schoolId:{{school.id}}})">&ndash;&gt;-->
+                <!--&lt;!&ndash;<i class="fa fa-credit-card"></i> &nbsp;بيانات الاشتراك </a>&ndash;&gt;-->
+                <!--&lt;!&ndash;</li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<li class="divider"></li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<a ui-sref="Master.ManageEmployeesData({schoolId:{{school.id}}})">&ndash;&gt;-->
+                <!--&lt;!&ndash;<i class="fa fa-credit-card"></i> &nbsp;بيانات الموظفين</a>&ndash;&gt;-->
+                <!--&lt;!&ndash;</li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<a href="javascript:;" ng-confirm-click="هل تريد تأكيد حذف المدرسه ؟ "&ndash;&gt;-->
+                <!--&lt;!&ndash;confirmed-click="model.deleteSchool(school.id)">&ndash;&gt;-->
+                <!--&lt;!&ndash;<i class="fa fa-trash"></i>&nbsp; حذف </a>&ndash;&gt;-->
+                <!--&lt;!&ndash;</li>&ndash;&gt;-->
+                <!--&lt;!&ndash;</ul>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;</tr>&ndash;&gt;-->
                 <!--</tbody>-->
                 <!--</table>-->
             </div>

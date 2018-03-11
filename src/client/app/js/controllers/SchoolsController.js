@@ -264,10 +264,34 @@ angular.module('MetronicApp').controller('SchoolScheduleController',
             upload: upload,
             doUpload: doUpload,
             progress: 0,
-            deleteSchool: deleteSchool
+            deleteSchool: deleteSchool,
+            schoolId : localStorageService.get('UserObject')[0].schoolId,
+            schoolSchedule : [],
+            loading : false
         };
         $scope.model = model;
-
+        getSchoolTable();
+        function getSchoolTable(){
+            model.loading = true;
+            manageSchoolService.getSchoolSchedule(model.schoolId, function (response) {
+                let days = [];
+                let lectures = [];
+               let schedules = response;
+                schedules.forEach(function(schedule){
+                    if(!days.includes(schedule.Day)){
+                        days.push(schedule.Day);
+                    }
+                    if(!lectures.includes(schedule.lecture_name)){
+                        lectures.push(schedule.lecture_name);
+                    }
+                });
+                console.log(response);
+                model.days = days;
+                model.lectures = lectures;
+                model.schoolSchedule = response;
+                model.loading = false;
+            });
+        }
         function deleteSchool(schoolId) {
             manageSchoolService.deleteSchoolData(schoolId, function (response) {
                 if (response.success) {
@@ -290,6 +314,7 @@ angular.module('MetronicApp').controller('SchoolScheduleController',
         };
 
         function upload(file) {
+            model.loading = true;
             Upload.upload({
                 url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
                 data: {file: file,
@@ -309,11 +334,7 @@ angular.module('MetronicApp').controller('SchoolScheduleController',
                 console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                 model.progress = progressPercentage; // capture upload progress
 
-                // manageSchoolService.getAllSchools().then(function (schools) {
-                //     $scope.schools = schools;
-                //
-                //     $scope.$apply();
-                // });
+                getSchoolTable();
             });
         };
 
@@ -327,3 +348,31 @@ angular.module('MetronicApp').controller('SchoolScheduleController',
         $rootScope.settings.layout.pageBodySolid = false;
         $rootScope.settings.layout.pageSidebarClosed = false;
     });
+
+angular.module('MetronicApp').filter('unique', function() {
+    // we will return a function which will take in a collection
+    // and a keyname
+    return function(collection, keyname) {
+        // we define our output and keys array;
+        var output = [],
+            keys = [];
+
+        // we utilize angular's foreach function
+        // this takes in our original collection and an iterator function
+        angular.forEach(collection, function(item) {
+            // we check to see whether our object exists
+            var key = item[keyname];
+            // if it's not already part of our keys array
+            if(keys.indexOf(key) === -1) {
+                // add it to our keys array
+                keys.push(key);
+                // push this item to our final output array
+                output.push(item);
+            }
+        });
+        // return our array which should be devoid of
+        // any duplicates
+        return output;
+    };
+});
+
