@@ -57,8 +57,6 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
 
 
 
-
-
         function createLectureArray(){
             var lecture_count = model.working_settingsObj.Max_Lectures;
             if(lecture_count){
@@ -74,7 +72,7 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
             console.log('working');
             console.log( model.working_settingsObj);
             if(type == 'new'){
-                model.working_settingsObj.id = '';
+                model.working_settingsObj.Id = '';
             }
             if (Object.keys(model.working_settingsObj).length) {
                 model.working_settingsObj.schoolId = model.schoolId;
@@ -91,8 +89,9 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
                 WorkingSettingsService.saveSettingsData(model.working_settingsObj, function (response) {
 
                     if (response.success) {
-                        //model.success = response.msg;
-                        // $window.location.href = '#/manageEmployees';
+
+                        model.working_settingsObj.Activity_Day = Activity_Day;
+                        model.working_settingsObj.Day_Begining = Day_Begining;
                         var resetPaging = true;
                         model.dtInstance.reloadData(response.data, resetPaging);
                         toastr.success(response.msg);
@@ -107,18 +106,30 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
         }
 
         function getProfileSetting(profileId){
+
             WorkingSettingsService.getSettingsData(profileId, function (response) {
                 model.working_settingsObj = response[0];
-                //model.working_settingsObj.Profile_Name = 'test20';
-                //model.saveWorkingSettings('new');
+                var begining_array =  model.working_settingsObj.Day_Begining;
+                var begining_array = begining_array.split(",");
+                model.working_settingsObj.Day_Begining = begining_array;
+                var activity_array =  model.working_settingsObj.Activity_Day;
+                var activity_array = activity_array.split(",");
+                model.working_settingsObj.Activity_Day = activity_array;
+                createLectureArray();
             });
         }
 
         function deleteProfileSetting(profileId){
             WorkingSettingsService.deleteSettingProfileData(profileId,model.schoolId, function (response) {
-                model.working_settingsObj = response[0];
-                var resetPaging = true;
-                model.dtInstance.reloadData(response.data, resetPaging);
+                if (response.success) {
+                    model.dtInstance.reloadData(response.rest_data, true);
+                    //model.dtInstance.reloadData(response.rest_data, true);
+                    toastr.success(response.msg);
+                } else {
+                    //model.error = response.msg;
+                    toastr.error(response.msg);
+                    console.log('error');
+                }
             });
         }
 
@@ -126,6 +137,7 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
             var currentProfile = {};
             WorkingSettingsService.getSettingsData(profileId, function (response) {
                 currentProfile = response[0];
+                console.log(currentProfile);
                 currentProfile.Profile_Active_status = 1;
                 WorkingSettingsService.saveSettingsData(currentProfile, function (response) {
                     if (response.success) {

@@ -7,12 +7,12 @@ var workingSettingsMethods = {
     saveWorkingSettingsData: function (req, res, callback) {
         var workingSettingsData = req.body.workingSettingsData;
         var response = {};
-        if (workingSettingsData.id) {
-            con.query("select * from SCH_ATT_SCHEDULEProfile where Id = ?", [workingSettingsData.id], function (err, result) {
+        if (workingSettingsData.Id) {
+            con.query("select * from SCH_ATT_SCHEDULEProfile where Id = ?", [workingSettingsData.Id], function (err, result) {
                 if (err)
                     throw err;
                 if (Object.keys(result).length) {
-                    con.query('update SCH_ATT_SCHEDULEProfile set SchoolId = ? ,Profile_Name = ?, queue_Begining = ? ,queue_Begining_Duration = ? ,Day_Begining = ? ,First_Att_Closing = ? ,Second_Att_Closing = ? ,Max_Lectures = ? ,Lecture_Duration = ? ,Lecture_Rest = ? ,Lecture_Rest_Duration = ? ,First_Break_Duration = ? ,First_Break_Order = ? ,Second_Break = ? ,Second_Break_Duration = ? ,Second_Break_Order = ? ,Pray_Break_Duration = ? ,Pray_Break_Order = ? ,Activity_Day = ? ,Activity_Period = ? ,Activity_Period_Order = ? ,Activity_Period_Duration = ? ,Profile_Active_status = ? where Id = ?', [
+                    con.query('update SCH_ATT_SCHEDULEProfile set SchoolId = ? ,Profile_Name = ?, queue_Begining = ? ,queue_Begining_Duration = ? ,Day_Begining = ? ,First_Att_Closing = ? ,Second_Att_Closing = ? ,Max_Lectures = ? ,Lecture_Duration = ? ,Lecture_Rest = ? ,Lecture_Rest_Duration = ?,First_Break = ? ,First_Break_Duration = ? ,First_Break_Order = ? ,Second_Break = ? ,Second_Break_Duration = ? ,Second_Break_Order = ? ,Pray_Break_Duration = ? ,Pray_Break_Order = ? ,Activity_Day = ? ,Activity_Period = ? ,Activity_Period_Order = ? ,Activity_Period_Duration = ? ,Profile_Active_status = ? where Id = ?', [
                             workingSettingsData.SchoolId,
                             workingSettingsData.Profile_Name,
                             workingSettingsData.queue_Begining,
@@ -24,6 +24,7 @@ var workingSettingsMethods = {
                             workingSettingsData.Lecture_Duration,
                             workingSettingsData.Lecture_Rest,
                             workingSettingsData.Lecture_Rest_Duration,
+                            workingSettingsData.First_Break,
                             workingSettingsData.First_Break_Duration,
                             workingSettingsData.First_Break_Order,
                             workingSettingsData.Second_Break,
@@ -36,7 +37,7 @@ var workingSettingsMethods = {
                             workingSettingsData.Activity_Period_Order,
                             workingSettingsData.Activity_Period_Duration,
                             workingSettingsData.Profile_Active_status,
-                            workingSettingsData.id
+                            workingSettingsData.Id
                         ]
                         , function (err, result) {
                             if (err)
@@ -80,7 +81,8 @@ var workingSettingsMethods = {
                     callback(response);
                 } else {
 
-                    con.query("insert into SCH_ATT_SCHEDULEProfile (SchoolId ,Profile_Name, queue_Begining ,queue_Begining_Duration  ,Day_Begining  ,First_Att_Closing,Second_Att_Closing ,Max_Lectures ,Lecture_Duration  ,Lecture_Rest  ,Lecture_Rest_Duration  ,First_Break,First_Break_Duration  ,First_Break_Order ,Second_Break ,Second_Break_Duration  ,Second_Break_Order ,Pray_Break_Duration ,Pray_Break_Order ,Activity_Day,Activity_Period ,Activity_Period_Order ,Activity_Period_Duration,Profile_Active_status )  values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [
+
+                    con.query("insert into SCH_ATT_SCHEDULEProfile (SchoolId ,Profile_Name, queue_Begining ,queue_Begining_Duration  ,Day_Begining  ,First_Att_Closing,Second_Att_Closing ,Max_Lectures ,Lecture_Duration  ,Lecture_Rest  ,Lecture_Rest_Duration , First_Break,First_Break_Duration  ,First_Break_Order ,Second_Break ,Second_Break_Duration  ,Second_Break_Order ,Pray_Break_Duration ,Pray_Break_Order ,Activity_Day,Activity_Period ,Activity_Period_Order ,Activity_Period_Duration,Profile_Active_status )  values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [
                         workingSettingsData.schoolId,
                         workingSettingsData.Profile_Name,
                         workingSettingsData.queue_Begining,
@@ -147,16 +149,16 @@ var workingSettingsMethods = {
         var profileId = req.params.profileId;
         var schoolId = req.params.schoolId;
         var response = {};
-        con.query('delete from SCH_ATT_SCHEDULEProfile where id = ?', [empId], function (err, result) {
+        con.query('delete from SCH_ATT_SCHEDULEProfile where Id = ?', [profileId], function (err, result) {
                 if (err)
                     throw err
                 if (result.affectedRows) {
                     response.success = true;
                     response.msg = 'تم حذف الاعدادات بنجاح';
-                    req.params.schoolId = workingSettingsData.SchoolId;
+                    req.params.schoolId = schoolId;
 
                     workingSettingsMethods.getAllSettingsProfiles(req,res,function (result) {
-                        response.data = result;
+                        response.rest_data = result;
                         callback(response);
                     });
                 } else {
@@ -171,7 +173,7 @@ var workingSettingsMethods = {
 
     getAllSettingsProfiles: function (req, res, callback) {
         var schoolId = req.params.schoolId;
-        con.query('select * from SCH_ATT_SCHEDULEProfile where schoolId = ?',[schoolId], function (err, result) {
+        con.query('select * from SCH_ATT_SCHEDULEProfile where SchoolId = ?',[schoolId], function (err, result) {
                 if (err)
                     throw err
 

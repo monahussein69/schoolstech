@@ -10,176 +10,187 @@
     </ul>
 </div>
 <h3 class="page-title">اعدادات الدوام المدرسي </h3>
-<form method="post" name="appSettingsForm" ng-model="schoolSettingsForm" enctype="multipart/form-data">
-    <div class="alert alert-success" ng-if="model.success != null">
-        <button class="close" data-close="alert"></button>
-        <span>{{model.success}}</span>
-    </div>
-    <div class="alert alert-danger" ng-if="model.error != null">
-        <button class="close" data-close="alert"></button>
-        <span>{{model.error}}</span>
-    </div>
-    <div class="row">
-        <div class="col-md-8">
-            <fieldset>
-                <legend> بيانات الدوام</legend>
-                <div class="form-group row">
-                    <label class="col-sm-2 control-label"> الدوام</label>
-                    <div class="col-sm-8">
-                        <input type="text" ng-model="model.working_settingsObj.Profile_Name" class="form-control" /> </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 control-label"> ايام الدوام </label>
-                    <div class="col-sm-8">
-                        <label ng-repeat="day in days">
-                            <input type="checkbox" checklist-model="model.working_settingsObj.Day_Begining" checklist-value="day"> {{day}} </label>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 control-label"> بدايه الطابور </label>
-                    <div class="col-sm-8">
-                        <div class="col-md-6" style="padding: 0px">
-                            <input type="text" class="form-control timepicker timepicker-24 " ng-model="model.working_settingsObj.queue_Begining" /> </div>
-                        <div class="col-md-6" style="padding: 0px">
-                            <label class="col-sm-3 control-label"> الزمن </label>
-                            <div class="col-sm-9" style="padding: 0px">
-                                <input type="text" class="form-control" ng-model="model.working_settingsObj.queue_Begining_Duration" /> </div>
+<div class="row">
+    <div class="col-md-12">
+        <form method="post" name="appSettingsForm" ng-model="schoolSettingsForm" enctype="multipart/form-data">
+            <div class="alert alert-success" ng-if="model.success != null">
+                <button class="close" data-close="alert"></button>
+                <span>{{model.success}}</span>
+            </div>
+            <div class="alert alert-danger" ng-if="model.error != null">
+                <button class="close" data-close="alert"></button>
+                <span>{{model.error}}</span>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <fieldset>
+                        <legend> بيانات الدوام</legend>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"> الدوام</label>
+                            <div class="col-sm-8">
+                                <input type="text" ng-model="model.working_settingsObj.Profile_Name" class="form-control" /> </div>
                         </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 control-label">عدد الحصص </label>
-                    <div class="col-sm-8">
-                        <div class="col-md-6" style="padding: 0px">
-                            <input type="text" class="form-control" ng-model="model.working_settingsObj.Max_Lectures" ng-change="model.createLectureArray()" /> </div>
-                        <div class="col-md-6" style="padding: 0px">
-                            <label class="col-sm-3 control-label"> زمن الحصه </label>
-                            <div class="col-sm-9" style="padding: 0px">
-                                <input type="text" class="form-control" ng-model="model.working_settingsObj.Lecture_Duration" /> </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"> ايام الدوام </label>
+                            <div class="col-sm-8">
+                                <label ng-repeat="day in days">
+                                    <input type="checkbox" checklist-model="model.working_settingsObj.Day_Begining" checklist-value="day"> {{day}} </label>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </fieldset>
-            <fieldset>
-                <legend>اعدادات الاستراحه </legend>
-                <div class="form-group row">
-                    <label class="col-sm-2 control-label">الاستراحه </label>
-                    <div class="col-sm-8">
-                        <div class="col-md-6" style="padding: 0px">
-                            <label class="form-check-label" for="rest">
-                                <input class="form-check-input" type="checkbox" id="rest" ng-model="model.working_settingsObj.Lecture_Rest">&nbsp; استراحه بين الحصص </label>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"> بدايه الطابور </label>
+                            <div class="col-sm-8">
+                                <div class="col-md-6" style="padding: 0px">
+                                    <input type="text" class="form-control timepicker timepicker-24 " ng-model="model.working_settingsObj.queue_Begining" /> </div>
+                                <div class="col-md-6" style="padding: 0px">
+                                    <label class="col-sm-3 control-label"> الزمن </label>
+                                    <div class="col-sm-9" style="padding: 0px">
+                                        <input type="text" class="form-control" ng-model="model.working_settingsObj.queue_Begining_Duration" /> </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6" style="padding: 0px" ng-if="model.working_settingsObj.Lecture_Rest">
-                            <label class="col-sm-3 control-label"> الزمن</label>
-                            <div class="col-sm-9" style="padding: 0px">
-                                <input type="text" class="form-control" ng-model="model.working_settingsObj.Lecture_Rest_Duration" /> </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label">عدد الحصص </label>
+                            <div class="col-sm-8">
+                                <div class="col-md-6" style="padding: 0px">
+                                    <input type="text" class="form-control" ng-model="model.working_settingsObj.Max_Lectures" ng-change="model.createLectureArray()" /> </div>
+                                <div class="col-md-6" style="padding: 0px">
+                                    <label class="col-sm-3 control-label"> زمن الحصه </label>
+                                    <div class="col-sm-9" style="padding: 0px">
+                                        <input type="text" class="form-control" ng-model="model.working_settingsObj.Lecture_Duration" /> </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 control-label">الفسحه </label>
-                    <div class="col-sm-8">
-                        <div class="col-md-3" style="padding: 0px">
-                            <label class="form-check-label" for="space1">
-                                <input class="form-check-input" type="checkbox" id="space1" ng-model="model.working_settingsObj.First_Break">&nbsp;الفسحه الاولى </label>
+                    </fieldset>
+                    <fieldset>
+                        <legend>اعدادات الاستراحه </legend>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label">الاستراحه </label>
+                            <div class="col-sm-8">
+                                <div class="col-md-6" style="padding: 0px">
+                                    <label class="form-check-label" for="rest">
+                                        <input class="form-check-input" type="checkbox" id="rest" ng-checked="model.working_settingsObj.Lecture_Rest == '1'" ng-model="model.working_settingsObj.Lecture_Rest">&nbsp; استراحه بين الحصص </label>
+                                </div>
+                                <div class="col-md-6" style="padding: 0px" ng-if="model.working_settingsObj.Lecture_Rest">
+                                    <label class="col-sm-3 control-label"> الزمن</label>
+                                    <div class="col-sm-9" style="padding: 0px">
+                                        <input type="text" class="form-control" ng-model="model.working_settingsObj.Lecture_Rest_Duration" /> </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-4" ng-if="model.working_settingsObj.First_Break" style="padding: 0px">
-                            <label class="col-sm-4 control-label"> الزمن</label>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label">الفسحه </label>
+                            <div class="col-sm-8">
+                                <div class="col-md-12" style="padding: 0px">
+                                    <div class="col-md-3" style="padding: 0px">
+                                        <label class="form-check-label" for="space1">
+                                            <input class="form-check-input" type="checkbox" id="space1" ng-checked="model.working_settingsObj.First_Break == '1'" ng-model="model.working_settingsObj.First_Break ">&nbsp;الفسحه الاولى </label>
+                                    </div>
+                                    <div class="col-md-4" ng-if="model.working_settingsObj.First_Break" style="padding: 0px">
+                                        <label class="col-sm-4 control-label"> الزمن</label>
+                                        <div class="col-sm-8" style="padding: 0px">
+                                            <input type="text" class="form-control" ng-model="model.working_settingsObj.First_Break_Duration" /> </div>
+                                    </div>
+                                    <div class="col-md-5" style="padding: 0px" ng-if="model.working_settingsObj.First_Break">
+                                        <label class="col-sm-5 control-label"> بعد الحصه </label>
+                                        <div class="col-sm-7" style="padding: 0px">
+                                            <select class="form-control" ng-options="o as o for o in model.lectures" ng-model="model.working_settingsObj.First_Break_Order">
+                                                <option value=""> اختر الحصه </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12" style="padding: 0px">
+                                    <div class="col-md-3" style="padding: 0px">
+                                        <label class="form-check-label" for="space2">
+                                            <input class="form-check-input" type="checkbox" id="space2" ng-model="model.working_settingsObj.Second_Break" ng-checked="model.working_settingsObj.Second_Break == '1'">&nbsp;الفسحه الثانيه </label>
+                                    </div>
+                                    <div class="col-md-4" style="padding: 0px" ng-if="model.working_settingsObj.Second_Break">
+                                        <label class="col-sm-4 control-label"> الزمن</label>
+                                        <div class="col-sm-8" style="padding: 0px">
+                                            <input type="text" class="form-control" ng-model="model.working_settingsObj.Second_Break_Duration" /> </div>
+                                    </div>
+                                    <div class="col-md-5" style="padding: 0px" ng-if="model.working_settingsObj.Second_Break">
+                                        <label class="col-sm-5 control-label"> بعد الحصه </label>
+                                        <div class="col-sm-7" style="padding: 0px">
+                                            <select ng-model="model.working_settingsObj.Second_Break_Order" class="form-control" ng-options="o as o for o in model.lectures" ng-model="model.working_settingsObj.space_lect">
+                                                <option value=""> اختر الحصه </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label">الصلاه </label>
                             <div class="col-sm-8" style="padding: 0px">
-                                <input type="text" class="form-control" ng-model="model.working_settingsObj.First_Break_Duration" /> </div>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" placeholder="الزمن" ng-model="model.working_settingsObj.Pray_Break_Duration" /> </div>
+                                <div class="col-md-6">
+                                    <select class="form-control" ng-options="o as o for o in model.lectures" ng-model="model.working_settingsObj.Pray_Break_Order">
+                                        <option value=""> اختر بعد الحصه </option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-5" style="padding: 0px" ng-if="model.working_settingsObj.First_Break">
-                            <label class="col-sm-5 control-label"> بعد الحصه </label>
-                            <div class="col-sm-7" style="padding: 0px">
-                                <select class="form-control" ng-options="o as o for o in model.lectures" ng-model="model.working_settingsObj.First_Break_Order">
-                                    <option value=""> اختر الحصه </option>
+                    </fieldset>
+                    <fieldset>
+                        <legend>اعدادات اغلاق الدوام</legend>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"> اغلاق الدوام 1</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" ng-model="model.working_settingsObj.First_Att_Closing">
+                                    <option>اختار نوع الاغلاق</option>
+                                    <option value="manual">يدوي</option>
+                                    <option value="auto">الي</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3" style="padding: 0px">
-                            <label class="form-check-label" for="space2">
-                                <input class="form-check-input" type="checkbox" id="space2" ng-model="model.working_settingsObj.Second_Break">&nbsp;الفسحه الثانيه </label>
-                        </div>
-                        <div class="col-md-4" style="padding: 0px" ng-if="model.working_settingsObj.Second_Break">
-                            <label class="col-sm-4 control-label"> الزمن</label>
-                            <div class="col-sm-8" style="padding: 0px">
-                                <input type="text" class="form-control" ng-model="model.working_settingsObj.Second_Break_Duration" /> </div>
-                        </div>
-                        <div class="col-md-5" style="padding: 0px" ng-if="model.working_settingsObj.Second_Break">
-                            <label class="col-sm-5 control-label"> بعد الحصه </label>
-                            <div class="col-sm-7" style="padding: 0px">
-                                <select ng-model="model.working_settingsObj.Second_Break_Order" class="form-control" ng-options="o as o for o in model.lectures" ng-model="model.working_settingsObj.space_lect">
-                                    <option value=""> اختر الحصه </option>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"> اغلاق الدوام 2</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" ng-model="model.working_settingsObj.Second_Att_Closing">
+                                    <option>اختار نوع الاغلاق</option>
+                                    <option value="manual">يدوي</option>
+                                    <option value="auto">الي</option>
                                 </select>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 control-label">الصلاه </label>
-                    <div class="col-sm-8" style="padding: 0px">
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder="الزمن" ng-model="model.working_settingsObj.Pray_Break_Duration" /> </div>
-                        <div class="col-md-6">
-                            <select class="form-control" ng-options="o as o for o in model.lectures" ng-model="model.working_settingsObj.Pray_Break_Order">
-                                <option value=""> اختر بعد الحصه </option>
-                            </select>
+                    </fieldset>
+                    <fieldset>
+                        <legend>اعدادات النشاط</legend>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"> ايام النشاط </label>
+                            <div class="col-sm-8">
+                                <label ng-repeat="day in days">
+                                    <input type="checkbox" checklist-model="model.working_settingsObj.Activity_Day" checklist-value="day"> {{day}} </label>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </fieldset>
-            <fieldset>
-                <legend>اعدادات اغلاق الدوام</legend>
-                <div class="form-group row">
-                    <label class="col-sm-2 control-label"> اغلاق الدوام 1</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" ng-model="model.working_settingsObj.First_Att_Closing">
-                            <option>اختار نوع الاغلاق</option>
-                            <option value="manual">يدوي</option>
-                            <option value="auto">الي</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 control-label"> اغلاق الدوام 2</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" ng-model="model.working_settingsObj.Second_Att_Closing">
-                            <option>اختار نوع الاغلاق</option>
-                            <option value="manual">يدوي</option>
-                            <option value="auto">الي</option>
-                        </select>
-                    </div>
-                </div>
-            </fieldset>
-            <fieldset>
-                <legend>اعدادات النشاط</legend>
-                <div class="form-group row">
-                    <label class="col-sm-2 control-label"> ايام النشاط </label>
-                    <div class="col-sm-8">
-                        <label ng-repeat="day in days">
-                            <input type="checkbox" checklist-model="model.working_settingsObj.Activity_Day" checklist-value="day"> {{day}} </label>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 control-label">توقيت النشاط </label>
-                    <div class="col-sm-8" style="padding: 0px">
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder="الزمن" ng-model="model.working_settingsObj.Activity_Period_Duration" /> </div>
-                        <div class="col-md-6">
-                            <select class="form-control" ng-options="o as o for o in model.lectures" ng-model="model.working_settingsObj.Activity_Period_Order">
-                                <option value=""> اختر بعد الحصه </option>
-                            </select>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label">توقيت النشاط </label>
+                            <div class="col-sm-8" style="padding: 0px">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" placeholder="الزمن" ng-model="model.working_settingsObj.Activity_Period_Duration" /> </div>
+                                <div class="col-md-6">
+                                    <select class="form-control" ng-options="o as o for o in model.lectures" ng-model="model.working_settingsObj.Activity_Period_Order">
+                                        <option value=""> اختر بعد الحصه </option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </fieldset>
+                    <button class="btn btn-primary" type="button" ng-disabled="schoolSettingsForm.$invalid" ng-click="model.saveWorkingSettings('normal')">حفظ</button>
+                    <button class="btn btn-primary" type="button" ng-disabled="schoolSettingsForm.$invalid" ng-click="model.saveWorkingSettings('new')">حفظ باسم</button>
+                    <button class="btn btn-danger">الغاء</button>
                 </div>
-            </fieldset>
-            <button class="btn btn-primary" type="button" ng-disabled="schoolSettingsForm.$invalid" ng-click="model.saveWorkingSettings('normal')">حفظ</button>
-            <button class="btn btn-primary" type="button" ng-disabled="schoolSettingsForm.$invalid" ng-click="model.saveWorkingSettings('new')">حفظ باسم</button>
-            <button class="btn btn-danger">الغاء</button>
-        </div>
+            </div>
+        </form>
     </div>
-</form>
-<table datatable="" class="table table-striped table-bordered table-hover table-checkable order-column" dt-options="model.options" dt-columns="model.columns" dt-instance="model.dtInstance" class="row-border hover"></table>
+    <div class="col-md-12">
+        <table datatable="" class="table table-striped table-bordered table-hover table-checkable order-column" dt-options="model.options" dt-columns="model.columns" dt-instance="model.dtInstance" class="row-border hover"></table>
+    </div>
+
+</div>
 <script>
     ComponentsDateTimePickers.init(); // init todo page
 </script>
