@@ -1,5 +1,5 @@
 angular.module('MetronicApp').controller('employeesAttendanceController',
-    function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService) {
+    function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService,manageEmployeeService) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -16,27 +16,32 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
         var model = {
             schoolId:schoolId,
             recordAttendance:recordAttendance,
-            emp_atts:{}
+            emp_atts:[]
         };
 
 
         $scope.model = model;
-        employeesAttendanceService.getAllEmployeesAttendance(schoolId).then(function (result) {
-           model.emp_atts = result;
+
+        manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
+            model.emp_atts = employees;
         });
 
-        function recordAttendance(emp_id,type){
+
+
+        function recordAttendance(emp_id,type,$event){
+
+
          var attendanceObj = {};
             attendanceObj.school_id = model.schoolId;
             attendanceObj.employee_id = emp_id;
             attendanceObj.Event_Name = 'بدايه الدوام';
-            attendanceObj.is_absent = 0;
+            attendanceObj.is_absent = 1;
             if(type == 'حضور') {
                 attendanceObj.is_absent = 0;
             }
 
             employeesAttendanceService.setEmployeeAttendance(attendanceObj,function (result) {
-                if(result.succes){
+                if(result.success){
                     toastr.success(result.msg);
                 }
             });

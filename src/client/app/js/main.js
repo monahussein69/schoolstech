@@ -495,6 +495,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                         files: [
                             'js/controllers/EmployeesAttendance/employeesAttendanceController.js',
                             'js/services/employeesAttendanceFactory.js',
+                            'js/services/EmployeesFactory.js',
                             '../assets/bower_components/moment/moment.js',
 
                         ]

@@ -45,7 +45,7 @@ var workingSettingsMethods = {
                             console.log(result);
                             if (result.affectedRows) {
                                 response.success = true;
-                                response.id = workingSettingsData.id;
+                                response.id = workingSettingsData.Id;
                                 response.msg = 'تم التعديل بنجاح';
                                 req.params.schoolId = workingSettingsData.SchoolId;
 
@@ -136,7 +136,7 @@ var workingSettingsMethods = {
 
     getSettingProfile: function (req, res, callback) {
         var profileId = req.params.profileId;
-        con.query('select * from SCH_ATT_SCHEDULEProfile where id = ?', [profileId], function (err, result) {
+        con.query('select * from SCH_ATT_SCHEDULEProfile where Id = ?', [profileId], function (err, result) {
                 if (err)
                     throw err
 
