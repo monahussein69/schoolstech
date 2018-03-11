@@ -347,7 +347,7 @@ router.get('/getAllProfileActivites/:profileId', function (req, res, next) {
 });
 
 router.get('/getActiveAttSchedule/:SchoolId', function (req, res, next) {
-    attScheduleMethods.getActiveAttSchedule(req, res, function (result) {
+    workingSettingsMethods.getActiveAttSchedule(req, res, function (result) {
         res.send(result);
     });
 });

@@ -24,6 +24,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
 
         manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
             model.emp_atts = employees;
+            $scope.$apply();
         });
 
 
