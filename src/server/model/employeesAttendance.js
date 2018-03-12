@@ -20,7 +20,6 @@ var employeesAttendanceMethods = {
         var attendanceObj = req.body.attendanceObj;
         req.params.SchoolId = attendanceObj.school_id;
         var response = {};
-        attendanceObj.time_in = '';
         attendanceObj.late_min = '';
 
             var current_date = moment().format('MM-DD-YYYY');
@@ -36,7 +35,8 @@ var employeesAttendanceMethods = {
                             if(attendanceObj.is_absent == 0) {
                                 var schoolProfile = result[0];
                                 var queue_Begining_time = moment(schoolProfile.queue_Begining, 'HH:mm').format('HH:mm');
-                                var current_time = moment().format('HH:mm');
+                                //var current_time = moment().format('HH:mm');
+                                var current_time = attendanceObj.time_in;
                                 attendanceObj.time_in = current_time;
 
                                 var ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));

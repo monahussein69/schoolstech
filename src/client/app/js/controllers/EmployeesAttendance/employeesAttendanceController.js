@@ -1,5 +1,5 @@
 angular.module('MetronicApp').controller('employeesAttendanceController',
-    function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService,manageEmployeeService) {
+    function ($uibModal,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService,manageEmployeeService) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -21,6 +21,31 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
 
 
         $scope.model = model;
+
+
+        $scope.confirmTimeIn = function(employee_id){
+            var dialogInst = $uibModal.open({
+                templateUrl: 'views/employees_attendance/ConfirmInTime.html',
+                controller: 'DialogInstCtrl',
+                size: 'md',
+                resolve: {
+                    selectedEmployee: function () {
+                        return employee_id;
+                    },
+                    schoolId: function () {
+                        return model.schoolId;
+                    }
+                }
+            });
+            dialogInst.result.then(function (newusr) {
+                //$scope.usrs.push(newusr);
+                //$scope.usr = {name: '', job: '', age: '', sal: '', addr:''};
+                console.log('open');
+            }, function () {
+                console.log('close');
+                //$log.info('Modal dismissed at: ' + new Date());
+            });
+        };
 
         manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
             model.emp_atts = employees;
@@ -61,3 +86,38 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
         $rootScope.settings.layout.pageBodySolid = false;
         $rootScope.settings.layout.pageSidebarClosed = false;
     });
+
+
+
+angular.module('MetronicApp').controller('DialogInstCtrl', function(toastr ,employeesAttendanceService ,$moment,$scope, $uibModalInstance, selectedEmployee,schoolId, $log) {
+    $scope.selectedEmployee = selectedEmployee;
+    $scope.currentTime = $moment().format('HH:mm');
+    $scope.submitAttendance = function () {
+
+        //	$scope.usr = {name: '', job: '', age: '', sal: '', addr:''};
+    };
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+    $scope.recordAttendance = function(){
+
+
+        var attendanceObj = {};
+        attendanceObj.school_id = schoolId;
+        attendanceObj.employee_id = selectedEmployee;
+        attendanceObj.Event_Name = 'بدايه الدوام';
+        attendanceObj.is_absent = 0;
+        attendanceObj.time_in = $scope.currentTime;
+
+
+        employeesAttendanceService.setEmployeeAttendance(attendanceObj,function (result) {
+            if(result.success){
+                toastr.success(result.msg);
+            }else{
+                toastr.error(result.msg);
+            }
+            $uibModalInstance.close();
+        });
+    }
+});

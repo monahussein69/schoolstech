@@ -28,7 +28,7 @@
                     <tr ng-repeat="emp_att in model.emp_atts" ng-class="{'color-green': emp_att.is_absent == 0}" id="row_{{emp_att.id}}">
                         <td>{{ emp_att.name }}</td>
                         <td>
-                            <button class="btn btn-primary" ng-click="model.recordAttendance(emp_att.id,'حضور',$event)"> حاضر</button>
+                            <button class="btn btn-primary" ng-click="confirmTimeIn(emp_att.id)"> حاضر</button>
                             <button class="btn btn-danger" ng-click="model.recordAttendance(emp_att.id,'غياب',$event)">غائب</button>
                         </td>
                     </tr>

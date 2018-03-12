@@ -15,7 +15,8 @@ var MetronicApp = angular.module("MetronicApp", [
     'simditor',
     'datatables',
     'mgo-angular-wizard',
-    'checklist-model'
+    'checklist-model',
+    'angular-momentjs'
 ]);
 
 
@@ -493,6 +494,20 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                         name: 'MetronicApp',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
                         files: [
+                            '../assets/global/plugins/clockface/css/clockface.css',
+                            '../assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
+                            '../assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css',
+                            '../assets/global/plugins/bootstrap-colorpicker/css/colorpicker.css',
+                            '../assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css',
+
+                            '../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+                            '../assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js',
+                            '../assets/global/plugins/clockface/js/clockface.js',
+                            '../assets/global/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js',
+                            '../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
+
+                            '../assets/pages/scripts/components-date-time-pickers.min.js',
+
                             'js/controllers/EmployeesAttendance/employeesAttendanceController.js',
                             'js/services/employeesAttendanceFactory.js',
                             'js/services/EmployeesFactory.js',
