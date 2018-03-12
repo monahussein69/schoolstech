@@ -13,6 +13,9 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
             }
         }
 
+
+
+
         var model = {
             working_settingsObj : {},
             createLectureArray:createLectureArray,
@@ -39,6 +42,10 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
             dtInstance: {},
         };
 
+
+        $scope.getValue = function(){
+            console.log(model.working_settingsObj.Lecture_Rest);
+        }
 
         function createdRow(row, data, dataIndex) {
             // Recompiling so we can bind Angular directive to the DT
