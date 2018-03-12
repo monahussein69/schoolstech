@@ -253,8 +253,7 @@ var employeeMethods = {
                     workbook.eachSheet(function (worksheet, sheetId) {
                         // var worksheet = workbook.getWorksheet();
                         var job_title = worksheet.getCell('E5').value;
-                        console.log('job_title');
-                        console.log(job_title);
+
                         var job_title_id = 0;
 
                         req.body.name = job_title;
@@ -294,8 +293,11 @@ var employeeMethods = {
                                                 req.body.empData = data;
 
                                                 employeeMethods.saveEmployee(req, res, function (result) {
+                                                    if(result.success){
+                                                        finalEmployees.push(data);
+                                                    }
                                                 });
-                                                finalEmployees.push(data);
+
                                             }
                                         }else{
                                             if (rowNumber > 15) {
@@ -318,8 +320,11 @@ var employeeMethods = {
                                                 req.body.empData = data;
                                                 if(data.job_no) {
                                                     employeeMethods.saveEmployee(req, res, function (result) {
+                                                        if(result.success){
+                                                            finalEmployees.push(data);
+                                                        }
                                                     });
-                                                    finalEmployees.push(data);
+
                                                 }
                                             }
                                         }
@@ -358,8 +363,10 @@ var employeeMethods = {
                                             req.body.empData = data;
                                             if(data.job_no) {
                                                 employeeMethods.saveEmployee(req, res, function (result) {
+                                                    if(result.success){
+                                                        finalEmployees.push(data);
+                                                    }
                                                 });
-                                                finalEmployees.push(data);
                                             }
                                         }
                                     }else{
@@ -384,8 +391,10 @@ var employeeMethods = {
                                             req.body.empData = data;
                                             if(data.job_no) {
                                                 employeeMethods.saveEmployee(req, res, function (result) {
+                                                    if(result.success){
+                                                        finalEmployees.push(data);
+                                                    }
                                                 });
-                                                finalEmployees.push(data);
                                             }
                                         }
                                     }
@@ -399,7 +408,7 @@ var employeeMethods = {
                                 response.msg = 'تم اضافه ' + finalEmployees.length + ' ' + job_title;
                                 response.status = true;
                             }else{
-                                response.msg = 'خطأ في رفع الملف';
+                                response.msg = 'الموظف موجود مسبقا';
                                 response.status = false;
                             }
                           callback(response);
