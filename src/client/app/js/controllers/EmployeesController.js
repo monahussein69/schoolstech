@@ -34,7 +34,7 @@ angular.module('MetronicApp').controller('EmployeesConfigController', function (
 
 
 angular.module('MetronicApp').controller('ManageEmployeesController',
-    function (DTOptionsBuilder, DTColumnBuilder,$q,$rootScope, $scope, $http, $stateParams, $window, localStorageService, manageEmployeeService, Upload, toastr,CommonService) {
+    function ($compile,DTOptionsBuilder, DTColumnBuilder,$q,$rootScope, $scope, $http, $stateParams, $window, localStorageService, manageEmployeeService, Upload, toastr,CommonService) {
 
     var schoolId = 0;
     var config_step = -1;
@@ -73,10 +73,11 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
                 var defer = $q.defer();
                 manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
                     defer.resolve(employees);
+                    model.employees = employees;
                 });
 
                 return defer.promise
-            }),
+            }).withOption('createdRow', createdRow),
             columns: [
                 DTColumnBuilder.newColumn('name').withTitle(' الاسم'),
                 DTColumnBuilder.newColumn('job_no').withTitle(' الرقم الوظيفي'),
@@ -85,20 +86,49 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
                 DTColumnBuilder.newColumn('phone1').withTitle(' رقم الهاتف'),
                 DTColumnBuilder.newColumn('mobile').withTitle(' رقم الجوال'),
                 DTColumnBuilder.newColumn('email').withTitle(' البريد الالكتروني'),
-                DTColumnBuilder.newColumn(null).withTitle(' العمليات'),
+                DTColumnBuilder.newColumn(null).withTitle('العمليات').notSortable()
+                    .renderWith(actionsHtml)
             ],
             dtInstance: {},
         };
         $scope.model = model;
 
+        function createdRow(row, data, dataIndex) {
+            // Recompiling so we can bind Angular directive to the DT
+            $compile(angular.element(row).contents())($scope);
+        }
+
+        function actionsHtml(data, type, full, meta) {
+
+            return '<div class="btn-group">'+
+                '<button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> العمليات'+
+                '<i class="fa fa-angle-down"></i>'+
+                '</button>'+
+                '<ul class="dropdown-menu pull-right">'+
+                '<li>'+
+                '<a ui-sref="Master.AddEditEmployee({empId:{{'+data.id+'}},schoolId:{{'+data.school_id+'}}})">'+
+                '<i class="icon-pencil"></i>&nbsp; تعديل </a>'+
+            '</li>'+
+            '<li ng-if="'+data.is_active+' != 1">'+
+                '<a href="javascript:;" ng-click="model.ActivateEmployee('+data.id+')">'+
+                '<i class="fa fa-user-plus"></i> تفعيل </a>'+
+            '</li>'+
+            '<li ng-if="'+data.is_active +'== 1">'+
+                '<a href="javascript:;" ng-click="model.DeActivateEmployee('+data.id+')">'+
+                '<i class="fa fa-user-times"></i>&nbsp; الغاء التفعيل </a>'+
+            '</li>'+
+            '<li class="divider"> </li>'+
+             ' <li>'+
+                '<a href="javascript:;" ng-confirm-click="هل تريد تأكيد حذف الموظف ؟  " confirmed-click="model.deleteEmp('+data.id+')">'+
+                '<i class="fa fa-trash"></i>&nbsp; حذف </a>'+
+            '</li>'+
+            '</ul>'+
+                '</div>';
 
 
+        }
 
 
-
-
-        console.log(model.config);
-        console.log(userObject[0].config_flag);
 
 
 
@@ -113,10 +143,15 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
         function ActivateEmployee(empId){
             manageEmployeeService.ActivateEmployee(empId, function (response) {
                 if (response.success) {
-                    var index = $scope.employees.findIndex(function (employee) {
+                    manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
+                        var resetPaging = true;
+                        model.dtInstance.reloadData(employees, resetPaging);
+                    });
+
+                    var index = $scope.model.employees.findIndex(function (employee) {
                         return employee.id == empId
                     });
-                    $scope.employees[index].is_active = 1;
+                    $scope.model.employees[index].is_active = 1;
                     toastr.success(response.msg);
                 } else {
                     toastr.error(response.msg);
@@ -127,10 +162,14 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
         function DeActivateEmployee(empId){
             manageEmployeeService.DeActivateEmployee(empId, function (response) {
                 if (response.success) {
-                    var index = $scope.employees.findIndex(function (employee) {
+                    manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
+                        var resetPaging = true;
+                        model.dtInstance.reloadData(employees, resetPaging);
+                    });
+                    var index = $scope.model.employees.findIndex(function (employee) {
                         return employee.id == empId
                     });
-                    $scope.employees[index].is_active = 0;
+                    $scope.model.employees[index].is_active = 0;
                     toastr.success(response.msg);
                 } else {
                     toastr.error(response.msg);
@@ -142,10 +181,14 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
         function deleteEmp(empId) {
             manageEmployeeService.deleteEmpData(empId, function (response) {
                 if (response.success) {
-                    var index = $scope.employees.findIndex(function (employee) {
+                    manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
+                        var resetPaging = true;
+                        model.dtInstance.reloadData(employees, resetPaging);
+                    });
+                    var index = $scope.model.employees.findIndex(function (employee) {
                         return employee.id == empId
                     });
-                    $scope.employees.splice(index, 1);
+                    $scope.model.employees.splice(index, 1);
                     model.success = response.msg;
                     toastr.success(response.msg);
                 } else {

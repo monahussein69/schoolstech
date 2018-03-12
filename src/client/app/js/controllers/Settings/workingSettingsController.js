@@ -13,6 +13,9 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
             }
         }
 
+
+
+
         var model = {
             working_settingsObj : {},
             createLectureArray:createLectureArray,
@@ -40,26 +43,49 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
         };
 
 
+        $scope.getValue = function(){
+            console.log(model.working_settingsObj.Lecture_Rest);
+        }
+
         function createdRow(row, data, dataIndex) {
             // Recompiling so we can bind Angular directive to the DT
             $compile(angular.element(row).contents())($scope);
         }
 
         function actionsHtml(data, type, full, meta) {
-            return '<button class="btn btn-warning" ng-click="model.getProfileSetting(' + data.Id + ')">' +
-                '   <i class="fa fa-edit"></i>' +
-                '</button>&nbsp;' +
-                '<button ngConfirmClick class="btn btn-danger" ng-click="model.deleteProfileSetting(' + data.Id + ')">' +
-                '   <i class="fa fa-trash-o"></i>' +
-                '</button>'+'<a ui-sref="Master.scheduleActivity({profileId:{{'+data.Id+'}}})">' +
-                ' الفعاليات</span>' +'</a>'+
-                '<button ng-hide="data.Profile_Active_status" class="btn btn-danger" ng-click="model.activateProfileSetting(' + data.Id + ')">' +
-                'تفعيل' +
+            console.log(data.Profile_Active_status);
+
+        return '<div class="btn-group">'+
+                '<button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> العمليات'+
+                '<i class="fa fa-angle-down"></i>'+
                 '</button>'+
-                '<button ng-show="data.Profile_Active_status" class="btn btn-danger" ng-click="model.activateProfileSetting(' + data.Id + ')">' +
-                ' الغاء التفعيل' +
-                '</button>'
-                ;
+                '<ul class="dropdown-menu" role="menu">'+
+                '<li>'+
+                '<a  ng-click="model.getProfileSetting(' + data.Id + ')">'+
+                '<i class="icon-pencil"></i>&nbsp; تعديل </a>'+
+            '</li>'+
+            '<li>'+
+            '<a   ng-confirm-click="هل تريد تأكيد حذف الاعداد ؟ " confirmed-click=="model.deleteProfileSetting(' + data.Id + ')">' +
+            '<i class="fa fa fa-trash-o"></i> &nbsp; حذف</a>'+
+            '</li>'+
+            '<li class="divider"> </li>'+
+            '<li>'+
+            '<a ui-sref="Master.scheduleActivity({profileId:{{'+data.Id+'}}})">' +
+            ' الفعاليات</span>' +'</a>'+
+            '</li>'+
+                '<li>'+
+        '<a ng-if="!'+data.Profile_Active_status+'"  ng-click="model.activateProfileSetting(' + data.Id + ')">' +
+        'تفعيل </a>'+
+        '</li>'+
+            '<li>'+
+        '<a ng-if="'+data.Profile_Active_status+'"  ng-click="model.DeactivateProfileSetting(' + data.Id + ')">' +
+        ' الغاء التفعيل' +
+            '</a>'+
+            '</li>'+
+            '</ul>'+
+            '</div>';
+
+
         }
 
         $scope.model = model;

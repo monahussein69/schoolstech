@@ -1,0 +1,20 @@
+<form>
+    <div class="modal-header">
+        <h3 class="modal-title">تأكيد وقت الحضور</h3>
+    </div>
+    <div class="modal-body">
+     <div class="form-group row">
+        <label class="col-sm-2 control-label"> وقت الحضور </label>
+        <div class="col-sm-6">
+            <input type="text" name="name" class="form-control timepicker timepicker-24" ng-model="currentTime" /> </div>
+     </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default" type="button" ng-click="cancel()">الغاء</button>
+        <button class="btn btn-primary" type="button" ng-click="recordAttendance()">تأكيد</button>
+    </div>
+</form>
+
+<script>
+    ComponentsDateTimePickers.init(); // init todo page
+</script>

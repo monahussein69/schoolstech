@@ -49,7 +49,7 @@ var attScheduleMethods = {
 
 
             for (var Day = 0; Day < Day_Begining.length; Day++) {
-                var queue_Begining_time = moment(queue_Begining, 'HH:mm');
+                var queue_Begining_time = moment(queue_Begining, 'HH:mm').format('HH:mm');
                 var Ending_Time = moment(queue_Begining_time, 'HH:mm').add(queue_Begining_Duration, 'm').format('HH:mm');
                 activityObj.SCHEDULE_Id = profile_id;
                 activityObj.Day = Day_Begining[Day];
@@ -59,6 +59,7 @@ var attScheduleMethods = {
                 activityObj.Ending_Time = Ending_Time;
                 activityObj.Day_no = days.indexOf(Day_Begining[Day]);
                 req.body.activityObj = activityObj;
+                console.log(activityObj);
                 attScheduleMethods.addAttSchedule(req, res, function (result) {
                 });
 

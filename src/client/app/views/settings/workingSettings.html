@@ -69,7 +69,7 @@
                             <div class="col-sm-8">
                                 <div class="col-md-6" style="padding: 0px">
                                     <label class="form-check-label" for="rest">
-                                        <input class="form-check-input" type="checkbox" id="rest" ng-checked="model.working_settingsObj.Lecture_Rest == '1'" ng-model="model.working_settingsObj.Lecture_Rest">&nbsp; استراحه بين الحصص </label>
+                                        <input class="form-check-input" type="checkbox" ng-true-value="1" ng-false-value="0"  id="rest"  ng-model="model.working_settingsObj.Lecture_Rest" ng-change="getValue()">&nbsp; استراحه بين الحصص </label>
                                 </div>
                                 <div class="col-md-6" style="padding: 0px" ng-if="model.working_settingsObj.Lecture_Rest">
                                     <label class="col-sm-3 control-label"> الزمن</label>
@@ -84,7 +84,7 @@
                                 <div class="col-md-12" style="padding: 0px">
                                     <div class="col-md-3" style="padding: 0px">
                                         <label class="form-check-label" for="space1">
-                                            <input class="form-check-input" type="checkbox" id="space1" ng-checked="model.working_settingsObj.First_Break == '1'" ng-model="model.working_settingsObj.First_Break ">&nbsp;الفسحه الاولى </label>
+                                            <input class="form-check-input" type="checkbox" id="space1" ng-true-value="1" ng-false-value="0" ng-model="model.working_settingsObj.First_Break ">&nbsp;الفسحه الاولى </label>
                                     </div>
                                     <div class="col-md-4" ng-if="model.working_settingsObj.First_Break" style="padding: 0px">
                                         <label class="col-sm-4 control-label"> الزمن</label>
@@ -103,7 +103,7 @@
                                 <div class="col-md-12" style="padding: 0px">
                                     <div class="col-md-3" style="padding: 0px">
                                         <label class="form-check-label" for="space2">
-                                            <input class="form-check-input" type="checkbox" id="space2" ng-model="model.working_settingsObj.Second_Break" ng-checked="model.working_settingsObj.Second_Break == '1'">&nbsp;الفسحه الثانيه </label>
+                                            <input class="form-check-input" type="checkbox" id="space2" ng-model="model.working_settingsObj.Second_Break" ng-true-value="1" ng-false-value="0">&nbsp;الفسحه الثانيه </label>
                                     </div>
                                     <div class="col-md-4" style="padding: 0px" ng-if="model.working_settingsObj.Second_Break">
                                         <label class="col-sm-4 control-label"> الزمن</label>
