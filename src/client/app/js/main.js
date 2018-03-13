@@ -511,9 +511,56 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             'js/controllers/EmployeesAttendance/employeesAttendanceController.js',
                             'js/services/employeesAttendanceFactory.js',
                             'js/services/employeesExcuseFactory.js',
+                            'js/services/WorkingSettingsFactory.js',
                             'js/services/EmployeesFactory.js',
                             '../assets/bower_components/moment/moment.js',
 
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.employeeLateRecord', {
+            url: "/employeeLateRecord/:employeeId",
+            templateUrl: "views/employees_attendance/lateRecords.html",
+            data: {pageTitle: 'سجل الدوام الرسمي'},
+            controller: "employeeAttendanceLateRecordController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/EmployeesAttendance/employeeAttendanceRecordsController.js',
+                            'js/services/employeesAttendanceRecordsFactory.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.employeeAbsentRecord', {
+            url: "/employeeAbsentRecord/:employeeId",
+            templateUrl: "views/employees_attendance/absentRecords.html",
+            data: {pageTitle: 'سجل الدوام الرسمي'},
+            controller: "employeeAttendanceAbsentRecordController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/EmployeesAttendance/employeeAttendanceRecordsController.js',
+                            'js/services/employeesAttendanceRecordsFactory.js',
                         ]
                     });
                 }]

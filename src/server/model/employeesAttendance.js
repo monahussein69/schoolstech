@@ -2,6 +2,7 @@ var con = require('../routes/dbConfig.js');
 var moment = require('moment');
 var workingSettingsMethods = require('../model/schedualProfile.js');
 var appSettingsMethods = require('../model/appSettings.js');
+var attScheduleMethods = require('../model/sch_att_schedule.js');
 
 var employeesAttendanceMethods = {
 
@@ -98,30 +99,46 @@ var employeesAttendanceMethods = {
                     var calendarObj = result[0];
                     attendanceObj.Calender_id = calendarObj.Id;
 
+
+
                     workingSettingsMethods.getActiveAttSchedule(req, res, function (result) {
                         if (Object.keys(result).length) {
-                            if(attendanceObj.is_absent == 0) {
-                                var schoolProfile = result[0];
-                                var queue_Begining_time = moment(schoolProfile.queue_Begining, 'HH:mm').format('HH:mm');
-                                //var current_time = moment().format('HH:mm');
-                                var current_time = attendanceObj.time_in;
-                                attendanceObj.time_in = current_time;
+                            var schoolProfile = result[0];
+                            req.body.Day = calendarObj.Day;
+                            req.body.eventtype = 'طابور';
+                            req.body.SCHEDULE_Id = schoolProfile.Id;
+                            attScheduleMethods.getAttScheduleByEventTypeAndDay(req,res,function(result){
+                                console.log(result);
+                                if (Object.keys(result).length) {
+                                    attendanceObj.Event_type_id = result[0].Id;
+                                    if(attendanceObj.is_absent == 0) {
+                                        var queue_Begining_time = moment(schoolProfile.queue_Begining, 'HH:mm').format('HH:mm');
+                                        //var current_time = moment().format('HH:mm');
+                                        var current_time = attendanceObj.time_in;
+                                        attendanceObj.time_in = current_time;
 
-                                var ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));
+                                        var ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));
 
-                                if (ms <= 0) {
-                                    ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm")) / 2;
+                                        if (ms <= 0) {
+                                            ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm")) / 2;
+                                        }
+
+                                        var d = moment.duration(ms);
+                                        var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
+                                        attendanceObj.late_min = hours;
+                                    }
+
+                                    req.body.attendanceObj = attendanceObj;
+                                    employeesAttendanceMethods.addEmployeeAttendance(req,res,function(result){
+                                        callback(result);
+                                    });
+                                }else{
+                                    response.success = false;
+                                    response.msg = 'لا يوجد فعاليه';
+                                    callback(response);
                                 }
-
-                                var d = moment.duration(ms);
-                                var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
-                                attendanceObj.late_min = hours;
-                            }
-
-                            req.body.attendanceObj = attendanceObj;
-                            employeesAttendanceMethods.addEmployeeAttendance(req,res,function(result){
-                                callback(result);
                             });
+
 
                         } else {
                             response.success = false;
@@ -158,8 +175,9 @@ var employeesAttendanceMethods = {
 
             if (Object.keys(result).length) {
 
-                con.query('update sch_att_empatt set  school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?,Event_type_id = ? where Calender_id = ? and employee_id = ? ',
+                con.query('update sch_att_empatt set on_vacation = ?, school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?,Event_type_id = ? where Calender_id = ? and employee_id = ? ',
                     [
+                        attendanceObj.on_vacation,
                         attendanceObj.school_id,
                         attendanceObj.Event_Name ,
                         attendanceObj.time_in,
@@ -190,8 +208,9 @@ var employeesAttendanceMethods = {
                 );
 
             }else{
-                con.query('insert into sch_att_empatt (Calender_id,school_id,employee_id,Event_Name,Event_type_id,time_in,late_min,is_absent) values (?,?,?,?,?,?,?,?) ',
-                    [   attendanceObj.Calender_id,
+                con.query('insert into sch_att_empatt (on_vacation,Calender_id,school_id,employee_id,Event_Name,Event_type_id,time_in,late_min,is_absent) values (?,?,?,?,?,?,?,?,?) ',
+                    [   attendanceObj.on_vacation,
+                        attendanceObj.Calender_id,
                         attendanceObj.school_id,
                         attendanceObj.employee_id,
                         attendanceObj.Event_Name ,

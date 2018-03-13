@@ -221,6 +221,22 @@ var attScheduleMethods = {
         );
     },
 
+    getAttScheduleByEventTypeAndDay: function (req, res, callback) {
+        var Day = req.body.Day;
+        var eventtype = req.body.eventtype;
+        var SCHEDULE_Id = req.body.SCHEDULE_Id;
+        console.log(Day);
+        console.log(eventtype);
+        console.log(SCHEDULE_Id);
+        con.query('select * from sch_att_schedule where Day = ? and eventtype = ? and SCHEDULE_Id = ? ', [Day,eventtype,SCHEDULE_Id], function (err, result) {
+                if (err)
+                    throw err
+
+                callback(result);
+            }
+        );
+    },
+
     addAttSchedule: function (req, res, callback) {
         var activityObj = req.body.activityObj;
         var response = {};

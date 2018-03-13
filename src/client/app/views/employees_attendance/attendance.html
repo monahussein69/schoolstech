@@ -25,8 +25,8 @@
                     </div>
                 </div>
                 <div class="col-md-3 col-md-offset-3">
-                    <button class="btn btn-danger" ng-click="model.closeAttendance()">اغلاق دوام (1)</button>
-                    <button class="btn btn-danger" ng-click="model.recordAttendance(emp_att.id,'غياب',$event)">اغلاق دوام (2)</button>
+                    <button class="btn btn-danger" ng-click="model.closeAttendance()" ng-if = "model.activeProfile.First_Att_Closing == 'manual'">اغلاق دوام (1)</button>
+                    <button class="btn btn-danger" ng-click="model.recordAttendance(emp_att.id,'غياب',$event)" ng-if = "model.activeProfile.Second_Att_Closing == 'manual'">اغلاق دوام (2)</button>
                 </div>
             </div>
             <div class="portlet-body">
@@ -37,9 +37,9 @@
                         <td>{{ emp_att.name }}</td>
                         <td>
                             <button class="btn btn-primary" ng-click="confirmTimeIn(emp_att.id)" style="background-color:limegreen;border-color:limegreen"> حاضر</button>
-                            <button class="btn btn-danger" ng-click="model.recordAttendance(emp_att.id,'غياب',$event)">غائب</button>
-                            <button class="btn btn-primary" ng-click="model.ExcuseRequest(emp_att.id,$event)">استئذان</button>
-                            <button class="btn btn-warning" ng-click="model.recordAttendance(emp_att.id,'غياب',$event)">غياب بعذر</button>
+                            <button class="btn btn-danger" ng-click="model.recordAttendance(emp_att.id,'غياب')">غائب</button>
+                            <button class="btn btn-primary" ng-click="model.ExcuseRequest(emp_att.id)">استئذان</button>
+                            <button class="btn btn-warning" ng-click="model.recordAttendance(emp_att.id,'غياب بعذر')">غياب بعذر</button>
                         </td>
                     </tr>
                 </table>

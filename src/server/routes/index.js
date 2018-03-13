@@ -12,6 +12,7 @@ var userMethods = require('../model/user.js');
 var workingSettingsMethods = require('../model/schedualProfile.js');
 var attScheduleMethods = require('../model/sch_att_schedule.js');
 var employeesAttendanceMethods = require('../model/employeesAttendance.js');
+var employeeAttendanceRecordMethods = require('../model/employeeAttendanceRecord.js');
 var employeesExcuseMethods = require('../model/employeesExcuse.js');
 
 var app = express();
@@ -361,6 +362,18 @@ router.get('/getSettingsProfile/:profileId', function (req, res, next) {
 
 router.get('/getAllEmployeesAttendance/:schoolId', function (req, res, next) {
    employeesAttendanceMethods.getAllEmployeesAttendance(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getEmployeeLateRecord/:schoolId/:employeeId', function (req, res, next) {
+    employeeAttendanceRecordMethods.getEmployeeLateRecord(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getEmployeeAbsentRecord/:schoolId/:employeeId', function (req, res, next) {
+    employeeAttendanceRecordMethods.getEmployeeAbsentRecord(req, res, function (result) {
         res.send(result);
     });
 });

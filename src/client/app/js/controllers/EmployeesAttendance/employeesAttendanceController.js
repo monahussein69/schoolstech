@@ -1,5 +1,5 @@
 angular.module('MetronicApp').controller('employeesAttendanceController',
-    function ($uibModal,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService,manageEmployeeService) {
+    function ($uibModal,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService,manageEmployeeService,WorkingSettingsService) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -18,11 +18,16 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             recordAttendance:recordAttendance,
             closeAttendance:closeAttendance,
             ExcuseRequest:ExcuseRequest,
-            emp_atts:[]
+            emp_atts:[],
+            activeProfile : {}
         };
 
 
         $scope.model = model;
+
+        WorkingSettingsService.getActiveSettingsData(schoolId,function(result){
+           model.activeProfile  = result[0];
+        });
 
 
         $scope.confirmTimeIn = function(employee_id){
@@ -92,7 +97,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
            });
        }
 
-        function recordAttendance(emp_id,type,$event){
+        function recordAttendance(emp_id,type){
 
 
          var attendanceObj = {};
@@ -102,6 +107,8 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             attendanceObj.is_absent = 1;
             if(type == 'حضور') {
                 attendanceObj.is_absent = 0;
+            }else if(type == 'غياب بعذر'){
+                attendanceObj.on_vacation = 1;
             }
 
             employeesAttendanceService.setEmployeeAttendance(attendanceObj,function (result) {

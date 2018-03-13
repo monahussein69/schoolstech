@@ -122,6 +122,14 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
                 '<a href="javascript:;" ng-confirm-click="هل تريد تأكيد حذف الموظف ؟  " confirmed-click="model.deleteEmp('+data.id+')">'+
                 '<i class="fa fa-trash"></i>&nbsp; حذف </a>'+
             '</li>'+
+                '<li>'+
+                '<a ui-sref="Master.employeeLateRecord({employeeId:{{'+data.id+'}}})">'+
+                '<i class="fa fa-bars"></i>&nbsp; سجل التأخير </a>'+
+                '</li>'+
+                '<li>'+
+                '<a ui-sref="Master.employeeAbsentRecord({employeeId:{{'+data.id+'}}})">'+
+                '<i class="fa fa-bars"></i>&nbsp; سجل الغياب </a>'+
+                '</li>'+
             '</ul>'+
                 '</div>';
 
