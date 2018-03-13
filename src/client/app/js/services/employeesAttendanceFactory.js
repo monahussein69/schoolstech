@@ -20,6 +20,14 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
         });
     }
 
+     fac.closeFirstAttendance = function(schoolId,callback) {
+        $http.post("http://localhost:3000/closeFirstAttendance",
+            {'schoolId':schoolId})
+            .success(function (response) {
+            callback(response);
+        });
+    }
+
 
         return fac;
 

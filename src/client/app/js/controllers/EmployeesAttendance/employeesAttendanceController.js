@@ -16,6 +16,8 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
         var model = {
             schoolId:schoolId,
             recordAttendance:recordAttendance,
+            closeAttendance:closeAttendance,
+            ExcuseRequest:ExcuseRequest,
             emp_atts:[]
         };
 
@@ -53,6 +55,42 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
         });
 
 
+       function ExcuseRequest(employee_id,$event){
+               var dialogInst = $uibModal.open({
+                   templateUrl: 'views/employees_attendance/ExcuseFormRequest.html',
+                   controller: 'ExcuseDialogCtrl',
+                   size: 'md',
+                   resolve: {
+                       selectedEmployee: function () {
+                           return employee_id;
+                       },
+                       schoolId: function () {
+                           return model.schoolId;
+                       }
+                   }
+               });
+               dialogInst.result.then(function (result) {
+                   console.log('open');
+                   console.log(angular.element($event.target).attr('disabled','disabled'));
+
+                   if(result.success){
+
+                   }
+               }, function () {
+                   console.log('close');
+                   //$log.info('Modal dismissed at: ' + new Date());
+               });
+           }
+
+       function closeAttendance(){
+           employeesAttendanceService.closeFirstAttendance( model.schoolId,function (result) {
+               if(result.success){
+                   toastr.success(result.msg);
+               }else{
+                   toastr.error(result.msg);
+               }
+           });
+       }
 
         function recordAttendance(emp_id,type,$event){
 
@@ -60,7 +98,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
          var attendanceObj = {};
             attendanceObj.school_id = model.schoolId;
             attendanceObj.employee_id = emp_id;
-            attendanceObj.Event_Name = 'بدايه الدوام';
+            attendanceObj.Event_Name = 'طابور';
             attendanceObj.is_absent = 1;
             if(type == 'حضور') {
                 attendanceObj.is_absent = 0;
@@ -74,6 +112,8 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                 }
             });
         }
+
+
 
 
         $scope.$on('$viewContentLoaded', function () {
@@ -106,7 +146,7 @@ angular.module('MetronicApp').controller('DialogInstCtrl', function(toastr ,empl
         var attendanceObj = {};
         attendanceObj.school_id = schoolId;
         attendanceObj.employee_id = selectedEmployee;
-        attendanceObj.Event_Name = 'بدايه الدوام';
+        attendanceObj.Event_Name = 'طابور';
         attendanceObj.is_absent = 0;
         attendanceObj.time_in = $scope.currentTime;
 
@@ -118,6 +158,38 @@ angular.module('MetronicApp').controller('DialogInstCtrl', function(toastr ,empl
                 toastr.error(result.msg);
             }
             $uibModalInstance.close();
+        });
+    }
+});
+
+
+angular.module('MetronicApp').controller('ExcuseDialogCtrl', function(toastr ,employeesExcuseService ,$moment,$scope, $uibModalInstance, selectedEmployee,schoolId, $log) {
+    var currentTime = $moment().format('HH:mm');
+    var currentDate = $moment().format('MM/DD/YYYY');
+
+    var ExcuseObj = {};
+    ExcuseObj.school_id = schoolId;
+    ExcuseObj.Emp_id = selectedEmployee;
+    ExcuseObj.Departure_time = currentTime;
+    ExcuseObj.Return_time = currentTime;
+    ExcuseObj.Start_Date = currentDate;
+    ExcuseObj.End_Date = currentDate;
+    $scope.ExcuseObj = ExcuseObj;
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+    $scope.ExcuseRequest = function(){
+
+        employeesExcuseService.sendExcuseRequest(ExcuseObj,function (result) {
+            if(result.success){
+                toastr.success(result.msg);
+
+            }else{
+                toastr.error(result.msg);
+            }
+            $uibModalInstance.close(result);
         });
     }
 });

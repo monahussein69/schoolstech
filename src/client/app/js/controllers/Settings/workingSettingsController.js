@@ -90,7 +90,7 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
 
         $scope.model = model;
         $scope.days=
-            ['السبت','الاحد','الاثنين','الثلاثاء','الاربعاء','الخميس','الجمعه'];
+            ['السبت','الأحد','الأثنين','الثلاثاء','الأربعاء','الخميس','الجمعه'];
 
 
 

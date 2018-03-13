@@ -12,6 +12,7 @@ var userMethods = require('../model/user.js');
 var workingSettingsMethods = require('../model/schedualProfile.js');
 var attScheduleMethods = require('../model/sch_att_schedule.js');
 var employeesAttendanceMethods = require('../model/employeesAttendance.js');
+var employeesExcuseMethods = require('../model/employeesExcuse.js');
 
 var app = express();
 var multer = require('multer');
@@ -366,6 +367,18 @@ router.get('/getAllEmployeesAttendance/:schoolId', function (req, res, next) {
 
 router.post('/setEmployeeAttendance/', function (req, res, next) {
    employeesAttendanceMethods.setEmployeeAttendance(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/closeFirstAttendance/', function (req, res, next) {
+   employeesAttendanceMethods.closeFirstAttendance(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/sendExcuseRequest/', function (req, res, next) {
+   employeesExcuseMethods.sendExcuseRequest(req, res, function (result) {
         res.send(result);
     });
 });

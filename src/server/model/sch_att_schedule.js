@@ -7,7 +7,7 @@ var attScheduleMethods = {
         var profile_id = req.body.profile_id;
         req.params.profileId = profile_id;
         var days =
-            ['السبت','الاحد','الاثنين','الثلاثاء','الاربعاء','الخميس','الجمعه'];
+            ['السبت','الأحد','الأثنين','الثلاثاء','الأربعاء','الخميس','الجمعه'];
 
         workingSettingsMethods.getSettingProfile(req,res,function(result) {
             var profileData = result[0];
@@ -49,159 +49,160 @@ var attScheduleMethods = {
 
 
             for (var Day = 0; Day < Day_Begining.length; Day++) {
-                var queue_Begining_time = moment(queue_Begining, 'HH:mm').format('HH:mm');
-                var Ending_Time = moment(queue_Begining_time, 'HH:mm').add(queue_Begining_Duration, 'm').format('HH:mm');
-                activityObj.SCHEDULE_Id = profile_id;
-                activityObj.Day = Day_Begining[Day];
-                activityObj.eventtype = 'طابور';
-                activityObj.event_Nam = 'طابور';
-                activityObj.Begining_Time = queue_Begining_time;
-                activityObj.Ending_Time = Ending_Time;
-                activityObj.Day_no = days.indexOf(Day_Begining[Day]);
-                req.body.activityObj = activityObj;
-                console.log(activityObj);
-                attScheduleMethods.addAttSchedule(req, res, function (result) {
-                });
-
-
-                for (var i = 1; i <= Max_Lectures; i++) {
-                    var lecture_Begining_time = 0;
-                    var lecture_end_time = 0;
-                    var rest_count = 0;
-                    var breaks = 0;
-                    if (i == 1) {
-                        var queue_Begining_time = moment(queue_Begining, 'HH:mm');
-                        lecture_Begining_time = moment(queue_Begining_time, 'HH:mm').add(queue_Begining_Duration, 'm').format('HH:mm');
-                        first_lecture_time = lecture_Begining_time;
-                        lecture_end_time = moment(lecture_Begining_time, 'HH:mm').add(Lecture_Duration, 'm').format('HH:mm');
-                    } else {
-
-                        if (i >= (First_Break_Order + 1) && First_Break) {
-                            rest_count = rest_count + 1;
-                            breaks = breaks + First_Break_Duration;
-                        }
-
-                        if (i >= (Second_Break_Order + 1) && Second_Break) {
-                            rest_count = rest_count + 1;
-                            breaks = breaks + Second_Break_Duration;
-                        }
-
-                        if (i >= (Pray_Break_Order + 1)) {
-                            rest_count = rest_count + 1;
-                            breaks = breaks + Pray_Break_Duration;
-                        }
-
-                        if ((i >= (Activity_Period_Order + 1)) && (Activity_Day.indexOf(Day_Begining[Day]) > -1)) {
-                            rest_count = rest_count + 1;
-                            breaks = breaks + Activity_Period_Duration;
-                        }
-
-                        lecture_Begining_time = ((i - 1) * (Lecture_Duration + Lecture_Rest_Duration)) - (rest_count * Lecture_Rest_Duration) + breaks;
-                        lecture_Begining_time = moment(first_lecture_time, 'HH:mm').add(lecture_Begining_time, 'm').format('HH:mm');
-                        lecture_end_time = moment(lecture_Begining_time, 'HH:mm').add(Lecture_Duration, 'm').format('HH:mm');
-
-                    }
-
-
+                if (Day_Begining[Day]) {
+                    var queue_Begining_time = moment(queue_Begining, 'HH:mm').format('HH:mm');
+                    var Ending_Time = moment(queue_Begining_time, 'HH:mm').add(queue_Begining_Duration, 'm').format('HH:mm');
                     activityObj.SCHEDULE_Id = profile_id;
                     activityObj.Day = Day_Begining[Day];
-                    activityObj.eventtype = 'حصه';
-                    activityObj.event_Nam = 'حصه(' + i + ')';
-                    activityObj.Begining_Time = lecture_Begining_time;
-                    activityObj.Ending_Time = lecture_end_time;
+                    activityObj.eventtype = 'طابور';
+                    activityObj.event_Nam = 'طابور';
+                    activityObj.Begining_Time = queue_Begining_time;
+                    activityObj.Ending_Time = Ending_Time;
                     activityObj.Day_no = days.indexOf(Day_Begining[Day]);
                     req.body.activityObj = activityObj;
+                    console.log(activityObj);
                     attScheduleMethods.addAttSchedule(req, res, function (result) {
                     });
 
-                    if (First_Break) {
-                        if (First_Break_Order == i) {
-                            break_Begining_time = lecture_end_time;
-                            break_end_time = moment(lecture_end_time, 'HH:mm').add(First_Break_Duration, 'm').format('HH:mm');
 
-                            activityObj.SCHEDULE_Id = profile_id;
-                            activityObj.Day = Day_Begining[Day];
-                            activityObj.eventtype = 'فسحه';
-                            activityObj.event_Nam = 'فسحه (1)';
-                            activityObj.Begining_Time = break_Begining_time;
-                            activityObj.Ending_Time = break_end_time;
-                            activityObj.Day_no = days.indexOf(Day_Begining[Day]);
-                            req.body.activityObj = activityObj;
+                    for (var i = 1; i <= Max_Lectures; i++) {
+                        var lecture_Begining_time = 0;
+                        var lecture_end_time = 0;
+                        var rest_count = 0;
+                        var breaks = 0;
+                        if (i == 1) {
+                            var queue_Begining_time = moment(queue_Begining, 'HH:mm');
+                            lecture_Begining_time = moment(queue_Begining_time, 'HH:mm').add(queue_Begining_Duration, 'm').format('HH:mm');
+                            first_lecture_time = lecture_Begining_time;
+                            lecture_end_time = moment(lecture_Begining_time, 'HH:mm').add(Lecture_Duration, 'm').format('HH:mm');
+                        } else {
 
-                            attScheduleMethods.addAttSchedule(req, res, function (result) {
-                            });
+                            if (i >= (First_Break_Order + 1) && First_Break) {
+                                rest_count = rest_count + 1;
+                                breaks = breaks + First_Break_Duration;
+                            }
+
+                            if (i >= (Second_Break_Order + 1) && Second_Break) {
+                                rest_count = rest_count + 1;
+                                breaks = breaks + Second_Break_Duration;
+                            }
+
+                            if (i >= (Pray_Break_Order + 1)) {
+                                rest_count = rest_count + 1;
+                                breaks = breaks + Pray_Break_Duration;
+                            }
+
+                            if ((i >= (Activity_Period_Order + 1)) && (Activity_Day.indexOf(Day_Begining[Day]) > -1)) {
+                                rest_count = rest_count + 1;
+                                breaks = breaks + Activity_Period_Duration;
+                            }
+
+                            lecture_Begining_time = ((i - 1) * (Lecture_Duration + Lecture_Rest_Duration)) - (rest_count * Lecture_Rest_Duration) + breaks;
+                            lecture_Begining_time = moment(first_lecture_time, 'HH:mm').add(lecture_Begining_time, 'm').format('HH:mm');
+                            lecture_end_time = moment(lecture_Begining_time, 'HH:mm').add(Lecture_Duration, 'm').format('HH:mm');
+
                         }
 
-                    }
-
-                    if (Second_Break) {
-                        if (Second_Break_Order == i) {
-                            break_Begining_time = lecture_end_time;
-                            break_end_time = moment(lecture_end_time, 'HH:mm').add(Second_Break_Duration, 'm').format('HH:mm');
-
-                            activityObj.SCHEDULE_Id = profile_id;
-                            activityObj.Day = Day_Begining[Day];
-                            activityObj.eventtype = 'فسحه';
-                            activityObj.event_Nam = 'فسحه (2)';
-                            activityObj.Begining_Time = break_Begining_time;
-                            activityObj.Ending_Time = break_end_time;
-                            activityObj.Day_no = days.indexOf(Day_Begining[Day]);
-                            req.body.activityObj = activityObj;
-                            attScheduleMethods.addAttSchedule(req, res, function (result) {
-                            });
-                        }
-
-                    }
-
-
-                    if (Pray_Break_Order == i) {
-                        break_Begining_time = lecture_end_time;
-                        break_end_time = moment(lecture_end_time, 'HH:mm').add(Pray_Break_Duration, 'm').format('HH:mm');
 
                         activityObj.SCHEDULE_Id = profile_id;
                         activityObj.Day = Day_Begining[Day];
-                        activityObj.eventtype = 'فسحه';
-                        activityObj.event_Nam = 'الصلاه';
-                        activityObj.Begining_Time = break_Begining_time;
-                        activityObj.Ending_Time = break_end_time;
+                        activityObj.eventtype = 'حصه';
+                        activityObj.event_Nam = 'حصه(' + i + ')';
+                        activityObj.Begining_Time = lecture_Begining_time;
+                        activityObj.Ending_Time = lecture_end_time;
                         activityObj.Day_no = days.indexOf(Day_Begining[Day]);
                         req.body.activityObj = activityObj;
                         attScheduleMethods.addAttSchedule(req, res, function (result) {
                         });
-                    }
+
+                        if (First_Break) {
+                            if (First_Break_Order == i) {
+                                break_Begining_time = lecture_end_time;
+                                break_end_time = moment(lecture_end_time, 'HH:mm').add(First_Break_Duration, 'm').format('HH:mm');
+
+                                activityObj.SCHEDULE_Id = profile_id;
+                                activityObj.Day = Day_Begining[Day];
+                                activityObj.eventtype = 'فسحه';
+                                activityObj.event_Nam = 'فسحه (1)';
+                                activityObj.Begining_Time = break_Begining_time;
+                                activityObj.Ending_Time = break_end_time;
+                                activityObj.Day_no = days.indexOf(Day_Begining[Day]);
+                                req.body.activityObj = activityObj;
+
+                                attScheduleMethods.addAttSchedule(req, res, function (result) {
+                                });
+                            }
+
+                        }
+
+                        if (Second_Break) {
+                            if (Second_Break_Order == i) {
+                                break_Begining_time = lecture_end_time;
+                                break_end_time = moment(lecture_end_time, 'HH:mm').add(Second_Break_Duration, 'm').format('HH:mm');
+
+                                activityObj.SCHEDULE_Id = profile_id;
+                                activityObj.Day = Day_Begining[Day];
+                                activityObj.eventtype = 'فسحه';
+                                activityObj.event_Nam = 'فسحه (2)';
+                                activityObj.Begining_Time = break_Begining_time;
+                                activityObj.Ending_Time = break_end_time;
+                                activityObj.Day_no = days.indexOf(Day_Begining[Day]);
+                                req.body.activityObj = activityObj;
+                                attScheduleMethods.addAttSchedule(req, res, function (result) {
+                                });
+                            }
+
+                        }
 
 
-                    if (Activity_Period) {
-                        for (var att_day = 0; att_day < Activity_Day.length; att_day++) {
-                            if (Activity_Day[att_day] == Day_Begining[Day]) {
-                                if (Activity_Period_Order == i) {
-                                    break_Begining_time = lecture_end_time;
-                                    break_end_time = moment(lecture_end_time, 'HH:mm').add(Activity_Period_Duration, 'm').format('HH:mm');
-                                    activityObj.SCHEDULE_Id = profile_id;
-                                    activityObj.Day = Day_Begining[Day];
-                                    activityObj.eventtype = 'نشاط';
-                                    activityObj.event_Nam = 'نشاط';
-                                    activityObj.Begining_Time = break_Begining_time;
-                                    activityObj.Ending_Time = break_end_time;
-                                    activityObj.Day_no = days.indexOf(Day_Begining[Day]);
-                                    req.body.activityObj = activityObj;
-                                    attScheduleMethods.addAttSchedule(req, res, function (result) {
-                                    });
-                                    break;
+                        if (Pray_Break_Order == i) {
+                            break_Begining_time = lecture_end_time;
+                            break_end_time = moment(lecture_end_time, 'HH:mm').add(Pray_Break_Duration, 'm').format('HH:mm');
+
+                            activityObj.SCHEDULE_Id = profile_id;
+                            activityObj.Day = Day_Begining[Day];
+                            activityObj.eventtype = 'فسحه';
+                            activityObj.event_Nam = 'الصلاه';
+                            activityObj.Begining_Time = break_Begining_time;
+                            activityObj.Ending_Time = break_end_time;
+                            activityObj.Day_no = days.indexOf(Day_Begining[Day]);
+                            req.body.activityObj = activityObj;
+                            attScheduleMethods.addAttSchedule(req, res, function (result) {
+                            });
+                        }
+
+
+                        if (Activity_Period) {
+                            for (var att_day = 0; att_day < Activity_Day.length; att_day++) {
+                                if (Activity_Day[att_day] == Day_Begining[Day]) {
+                                    if (Activity_Period_Order == i) {
+                                        break_Begining_time = lecture_end_time;
+                                        break_end_time = moment(lecture_end_time, 'HH:mm').add(Activity_Period_Duration, 'm').format('HH:mm');
+                                        activityObj.SCHEDULE_Id = profile_id;
+                                        activityObj.Day = Day_Begining[Day];
+                                        activityObj.eventtype = 'نشاط';
+                                        activityObj.event_Nam = 'نشاط';
+                                        activityObj.Begining_Time = break_Begining_time;
+                                        activityObj.Ending_Time = break_end_time;
+                                        activityObj.Day_no = days.indexOf(Day_Begining[Day]);
+                                        req.body.activityObj = activityObj;
+                                        attScheduleMethods.addAttSchedule(req, res, function (result) {
+                                        });
+                                        break;
+                                    } else {
+                                        break;
+                                    }
                                 } else {
-                                    break;
+                                    continue;
                                 }
-                            } else {
-                                continue;
                             }
                         }
+
+
                     }
 
 
                 }
-
-
-
             }
 
          });

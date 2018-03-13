@@ -192,6 +192,23 @@ var workingSettingsMethods = {
             }
         );
     },
+    getEventByName : function(req,res,callback){
+        var event_name = req.body.event_name;
+        var schoolId = req.body.schoolId;
+        var day = req.body.day;
+        con.query('select sch_att_schedule.* from sch_att_scheduleprofile ' +
+            'join sch_att_schedule on ' +
+            'sch_att_scheduleprofile.Id =  sch_att_schedule.SCHEDULE_Id ' +
+            'where SchoolId = ? and Profile_Active_status = 1 ' +
+            'and sch_att_schedule.eventtype = ? '+
+            'and sch_att_schedule.Day = ? ', [schoolId,event_name,day], function (err, result) {
+                if (err)
+                    throw err
+
+                callback(result);
+            }
+        );
+    },
 
 };
 
