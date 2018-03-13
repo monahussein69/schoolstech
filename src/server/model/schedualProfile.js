@@ -193,6 +193,28 @@ var workingSettingsMethods = {
         );
     },
 
+    getActivityByDayAndSchoolId : function (req , res, callback) {
+        let currentDay = workingSettingsMethods.getArabicDay(new Date().getDay());
+        let schoolId = req.params.schoolId;
+        con.query('SELECT * FROM sch_att_schedule JOIN sch_att_scheduleprofile ON sch_att_scheduleprofile.Id = sch_att_schedule.SCHEDULE_Id WHERE sch_att_scheduleprofile.SchoolId = ? AND sch_att_scheduleprofile.Profile_Active_status = 1 AND sch_att_schedule.Day = ? ', [schoolId , currentDay], function (err, result) {
+                if (err)
+                    throw err
+                callback(result);
+            }
+        );
+    },
+    getArabicDay: function (dayNo) {
+        var array = [];
+        array[0] = 'الأحد';
+        array[1] = 'الاثنين';
+        array[2] = 'الثلاثاء';
+        array[3] = 'الاربعاء';
+        array[4] = 'الخميس';
+        array[5] = 'الجمعة';
+        array[6] = 'السبت';
+        return array[dayNo];
+    },
+
 };
 
 module.exports = workingSettingsMethods;

@@ -24,6 +24,7 @@
     "angular-editor": "*",
     "angular-datatables": "v0.6.2",
     "checklist-model": "^0.11.0",
-    "angular-moment": "^1.2.0"
+    "angular-moment": "^1.2.0",
+    "angular-momentjs": "^0.2.2"
   }
 }
