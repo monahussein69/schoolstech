@@ -7,47 +7,49 @@ var attScheduleMethods = {
         var profile_id = req.body.profile_id;
         req.params.profileId = profile_id;
         var days =
-            ['السبت', 'الاحد', 'الاثنين', 'الثلاثاء', 'الاربعاء', 'الخميس', 'الجمعه'];
+            ['السبت','الأحد','الأثنين','الثلاثاء','الأربعاء','الخميس','الجمعه'];
 
-        workingSettingsMethods.getSettingProfile(req, res, function (result) {
+        workingSettingsMethods.getSettingProfile(req,res,function(result) {
             var profileData = result[0];
             console.log(profileData);
             req.params.profileId = profile_id;
             attScheduleMethods.deleteAttSchedule(req, res, function (result) {
 
-                var Day_Begining = profileData['Day_Begining'];
-                var Max_Lectures = profileData['Max_Lectures'];
-                var Lecture_Duration = profileData['Lecture_Duration'];
-                var queue_Begining = profileData['queue_Begining'];
-                var queue_Begining_Duration = profileData['queue_Begining_Duration'];
-                var Lecture_Rest = (profileData['Lecture_Rest']) ? profileData['Lecture_Rest'] : 0;
-                var Lecture_Rest_Duration = (profileData['Lecture_Rest_Duration']) ? profileData['Lecture_Rest_Duration'] : 0;
+            var Day_Begining = profileData['Day_Begining'];
+            var Max_Lectures = profileData['Max_Lectures'];
+            var Lecture_Duration = profileData['Lecture_Duration'];
+            var queue_Begining = profileData['queue_Begining'];
+            var queue_Begining_Duration = profileData['queue_Begining_Duration'];
+            var Lecture_Rest = (profileData['Lecture_Rest']) ? profileData['Lecture_Rest'] : 0;
+            var Lecture_Rest_Duration = (profileData['Lecture_Rest_Duration']) ? profileData['Lecture_Rest_Duration'] : 0;
 
-                var First_Break = (profileData['First_Break']) ? profileData['First_Break'] : 0;
-                var First_Break_Duration = (profileData['First_Break_Duration']) ? profileData['First_Break_Duration'] : 0;
-                var First_Break_Order = (profileData['First_Break_Order']) ? profileData['First_Break_Order'] : 0;
+            var First_Break = (profileData['First_Break']) ? profileData['First_Break'] : 0;
+            var First_Break_Duration = (profileData['First_Break_Duration']) ? profileData['First_Break_Duration'] : 0;
+            var First_Break_Order = (profileData['First_Break_Order']) ? profileData['First_Break_Order'] : 0;
 
-                var Second_Break = (profileData['Second_Break']) ? profileData['Second_Break'] : 0;
-                var Second_Break_Duration = (profileData['Second_Break_Duration']) ? profileData['Second_Break_Duration'] : 0;
-                var Second_Break_Order = (profileData['Second_Break_Order']) ? profileData['Second_Break_Order'] : 0;
+            var Second_Break = (profileData['Second_Break']) ? profileData['Second_Break'] : 0;
+            var Second_Break_Duration = (profileData['Second_Break_Duration']) ? profileData['Second_Break_Duration'] : 0;
+            var Second_Break_Order = (profileData['Second_Break_Order']) ? profileData['Second_Break_Order'] : 0;
 
-                var Pray_Break_Duration = (profileData['Pray_Break_Duration']) ? profileData['Pray_Break_Duration'] : 0;
-                var Pray_Break_Order = (profileData['Pray_Break_Order']) ? profileData['Pray_Break_Order'] : 0;
-                var Activity_Period = (profileData['Activity_Period']) ? profileData['Activity_Period'] : 0;
-                var Activity_Period_Order = (profileData['Activity_Period_Order']) ? profileData['Activity_Period_Order'] : 0;
-                var Activity_Period_Duration = (profileData['Activity_Period_Duration']) ? profileData['Activity_Period_Duration'] : 0;
-                var Activity_Day = profileData['Activity_Day'];
-                Day_Begining = Day_Begining.split(",");
-                if (Activity_Day) {
-                    Activity_Day = Activity_Day.split(",");
-                }
-                var activityObj = {};
-                var first_lecture_time = 0;
-                var rest_count = 0;
-                var breaks = 0;
+            var Pray_Break_Duration = (profileData['Pray_Break_Duration']) ? profileData['Pray_Break_Duration'] : 0;
+            var Pray_Break_Order = (profileData['Pray_Break_Order']) ? profileData['Pray_Break_Order'] : 0;
+            var Activity_Period = (profileData['Activity_Period']) ? profileData['Activity_Period'] : 0;
+            var Activity_Period_Order = (profileData['Activity_Period_Order']) ? profileData['Activity_Period_Order'] : 0;
+            var Activity_Period_Duration = (profileData['Activity_Period_Duration']) ? profileData['Activity_Period_Duration'] : 0;
+            var Activity_Day = profileData['Activity_Day'];
+            Day_Begining = Day_Begining.split(",");
+            if (Activity_Day) {
+                Activity_Day = Activity_Day.split(",");
+            }
+            var activityObj = {};
+            var first_lecture_time = 0;
+            var rest_count = 0;
+            var breaks = 0;
 
 
-                for (var Day = 0; Day < Day_Begining.length; Day++) {
+
+            for (var Day = 0; Day < Day_Begining.length; Day++) {
+                if (Day_Begining[Day]) {
                     var queue_Begining_time = moment(queue_Begining, 'HH:mm').format('HH:mm');
                     var Ending_Time = moment(queue_Begining_time, 'HH:mm').add(queue_Begining_Duration, 'm').format('HH:mm');
                     activityObj.SCHEDULE_Id = profile_id;
@@ -201,6 +203,7 @@ var attScheduleMethods = {
 
 
                 }
+            }
 
             });
         });
@@ -208,9 +211,24 @@ var attScheduleMethods = {
     },
 
     getAttSchedule: function (req, res, callback) {
-
         var profileId = req.params.profileId;
         con.query('select * from sch_att_schedule where SCHEDULE_Id = ? order by Day_no,Begining_Time asc', [profileId], function (err, result) {
+                if (err)
+                    throw err
+
+                callback(result);
+            }
+        );
+    },
+
+    getAttScheduleByEventTypeAndDay: function (req, res, callback) {
+        var Day = req.body.Day;
+        var eventtype = req.body.eventtype;
+        var SCHEDULE_Id = req.body.SCHEDULE_Id;
+        console.log(Day);
+        console.log(eventtype);
+        console.log(SCHEDULE_Id);
+        con.query('select * from sch_att_schedule where Day = ? and eventtype = ? and SCHEDULE_Id = ? ', [Day,eventtype,SCHEDULE_Id], function (err, result) {
                 if (err)
                     throw err
 
@@ -223,13 +241,13 @@ var attScheduleMethods = {
         var activityObj = req.body.activityObj;
         var response = {};
         con.query('insert into sch_att_schedule (SCHEDULE_Id,Day,eventtype,event_Nam,Begining_Time,Ending_Time,Day_no) values (?,?,?,?,?,?,?) ',
-            [activityObj.SCHEDULE_Id,
+            [   activityObj.SCHEDULE_Id,
                 activityObj.Day,
-                activityObj.eventtype,
+                activityObj.eventtype ,
                 activityObj.event_Nam,
                 activityObj.Begining_Time,
-                activityObj.Ending_Time,
-                activityObj.Day_no,
+                activityObj.Ending_Time ,
+                activityObj.Day_no ,
             ], function (err, result) {
                 if (err)
                     throw err
@@ -247,7 +265,7 @@ var attScheduleMethods = {
             }
         );
     },
-    deleteAttSchedule: function (req, res, callback) {
+    deleteAttSchedule : function(req,res,callback){
         var profileId = req.params.profileId;
         var response = {};
         con.query('delete from sch_att_schedule where SCHEDULE_Id = ?', [profileId], function (err, result) {
