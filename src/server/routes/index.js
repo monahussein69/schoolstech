@@ -360,6 +360,12 @@ router.get('/getSettingsProfile/:profileId', function (req, res, next) {
     });
 });
 
+router.get('/getActivityByDayAndSchoolId/:schoolId', function (req, res, next) {
+    workingSettingsMethods.getActivityByDayAndSchoolId(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 router.get('/getAllEmployeesAttendance/:schoolId', function (req, res, next) {
    employeesAttendanceMethods.getAllEmployeesAttendance(req, res, function (result) {
         res.send(result);
@@ -380,6 +386,12 @@ router.get('/getEmployeeAbsentRecord/:schoolId/:employeeId', function (req, res,
 
 router.post('/setEmployeeAttendance/', function (req, res, next) {
    employeesAttendanceMethods.setEmployeeAttendance(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/setEmployeeActivityAttendance/', function (req, res, next) {
+   employeesAttendanceMethods.setEmployeeActivityAttendance(req, res, function (result) {
         res.send(result);
     });
 });

@@ -28,18 +28,19 @@ sequelize
 
 const sectionsTable = sequelize.define('sch_acd_sections', {
     Name: Sequelize.STRING,
+    School_Id: Sequelize.INTEGER,
 });
 const courseTable = sequelize.define('app_def_courses', {
     Course_Name: Sequelize.STRING,
 });
 const roomsTable = sequelize.define('sch_bui_rooms', {
+    school_id: Sequelize.INTEGER,
+    room_type: Sequelize.INTEGER,
     Name: Sequelize.STRING,
-    room_type: Sequelize.STRING
 });
 const teachersTable = sequelize.define('sch_str_employees', {
-    school_id : Sequelize.INTEGER,
-    name: Sequelize.STRING
-
+    school_id: Sequelize.STRING,
+    name: Sequelize.INTEGER
 });
 const lectureTable = sequelize.define('sch_acd_lectures', {
     name: Sequelize.STRING,
@@ -361,6 +362,7 @@ var schoolMethods = {
                             });
                             console.log('all cells : ', allCells.length);
                             let counter = 0;
+                            let schoolId = parseInt(req.body.schoolId);
 
                             function addCourseToDB(allCells) {
                                 if (allCells[counter]) {
@@ -374,7 +376,10 @@ var schoolMethods = {
                                     });
 
                                     let sectionPromise = new Promise(function (resolve, reject) {
-                                        sectionsTable.findOrCreate({where: {Name: allCells[counter].section_name.trim()}})
+                                        sectionsTable.findOrCreate({
+                                            where: {Name: allCells[counter].section_name.trim()},
+                                            defaults: {School_Id: schoolId}
+                                        })
                                             .spread((section, created) => {
                                                 console.log('section  : ', section.id);
                                                 console.log('created ?   : ', created);
@@ -383,8 +388,10 @@ var schoolMethods = {
                                     });
                                     let roomPromise = new Promise(function (resolve, reject) {
                                         roomsTable.findOrCreate({
-                                            where: {Name: allCells[counter].room_name.trim()},
-                                            Defaults: {room_type: 'قاعة'}
+                                            where: {
+                                                Name: allCells[counter].room_name.trim()
+                                            },
+                                            defaults: {school_id: schoolId, room_type: 1}
                                         })
                                             .spread((room, created) => {
                                                 console.log('section  : ', room.id);
@@ -393,7 +400,10 @@ var schoolMethods = {
                                             });
                                     });
                                     let teacherPromise = new Promise(function (resolve, reject) {
-                                        teachersTable.findOrCreate({where: {name: allCells[counter].teacher_name.trim()} , Defaults : {school_id : 1}})
+                                        teachersTable.findOrCreate({
+                                            where: {name: allCells[counter].teacher_name.trim()},
+                                            defaults: {school_id: schoolId}
+                                        })
                                             .spread((teacher, created) => {
                                                 console.log('section  : ', teacher.id);
                                                 console.log('created ?   : ', created);
@@ -412,7 +422,7 @@ var schoolMethods = {
                                     Promise.all([sectionPromise, coursePromise, roomPromise, teacherPromise, lecturePromise]).then(function (data) {
                                         console.log(data);
                                         mainLecturesTable.create({
-                                            School_Id: 1,
+                                            School_Id: schoolId,
                                             Day: allCells[counter].day,
                                             Lecture_NO: data[4],
                                             Course_Id: data[1],
@@ -422,6 +432,7 @@ var schoolMethods = {
                                         })
                                             .then(function (err, socialUrl) {
                                                 if (err) {
+                                                    console.log("error : ", err);
                                                     // log error;
                                                 } else {
                                                     console.log("YEEEEEEEEEEEEEEES");
