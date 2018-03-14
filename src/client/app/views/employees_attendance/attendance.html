@@ -30,20 +30,9 @@
                 </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-bordered table-hover">
-                    <th>اسم الموظف</th>
-                    <th>الحضور</th>
-                    <tr ng-repeat="emp_att in model.emp_atts" ng-class="{'color-green': emp_att.is_absent == 0}" id="row_{{emp_att.id}}">
-                        <td>{{ emp_att.name }}</td>
-                        <td>
-                            <button class="btn btn-primary" ng-click="confirmTimeIn(emp_att.id)" style="background-color:limegreen;border-color:limegreen"> حاضر</button>
-                            <button class="btn btn-danger" ng-click="model.recordAttendance(emp_att.id,'غياب')">غائب</button>
-                            <button class="btn btn-primary" ng-click="model.ExcuseRequest(emp_att.id)">استئذان</button>
-                            <button class="btn btn-warning" ng-click="model.recordAttendance(emp_att.id,'غياب بعذر')">غياب بعذر</button>
-                            <button class="btn btn-primary" ng-click="model.employeeActivity(emp_att.id)">تسجيل الفعاليات</button>
-                        </td>
-                    </tr>
-                </table>
+
+                <table datatable="" class="table table-striped table-bordered table-hover table-checkable order-column" dt-options="model.options" dt-columns="model.columns" dt-instance="model.dtInstance" class="row-border hover"></table>
+
             </div>
         </div>
     </div>

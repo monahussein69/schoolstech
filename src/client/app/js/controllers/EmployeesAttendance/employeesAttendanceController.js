@@ -1,5 +1,5 @@
 angular.module('MetronicApp').controller('employeesAttendanceController',
-    function ($uibModal,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService,manageEmployeeService,WorkingSettingsService) {
+    function ($compile,DTOptionsBuilder, DTColumnBuilder,$q,$uibModal,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService,manageEmployeeService,WorkingSettingsService) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -21,8 +21,43 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             emp_atts:[],
             activeProfile : {},
             employeeActivity: employeeActivity,
-            listOfActivity: {}
+            listOfActivity: {},
+            options: DTOptionsBuilder.fromFnPromise(function () {
+                var defer = $q.defer();
+                manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
+                    defer.resolve(employees);
+                    model.emp_atts = employees;
+                });
+
+                return defer.promise
+            }).withOption('createdRow', createdRow),
+            columns: [
+                DTColumnBuilder.newColumn('name').withTitle(' اسم الموظف'),
+                DTColumnBuilder.newColumn(null).withTitle('الحضور').notSortable()
+                    .renderWith(actionsHtml)
+            ],
+            dtInstance: {},
         };
+
+        function createdRow(row, data, dataIndex) {
+            // Recompiling so we can bind Angular directive to the DT
+            $compile(angular.element(row).contents())($scope);
+        }
+
+        function actionsHtml(data, type, full, meta) {
+            console.log(data);
+
+
+            return ''+
+                '<button class="btn btn-primary" ng-click="confirmTimeIn('+data.id+')" style="background-color:limegreen;border-color:limegreen"> حاضر</button>\n'+
+                '<button class="btn btn-danger" ng-click="model.recordAttendance('+data.id+',\'غياب\')">غائب</button>'+
+                '<button class="btn btn-primary" ng-click="model.ExcuseRequest('+data.id+')">استئذان</button>'+
+                '<button class="btn btn-warning" ng-click="model.recordAttendance('+data.id+',\'غياب بعذر\')">غياب بعذر</button>'+
+                '<button class="btn btn-primary" ng-click="model.employeeActivity('+data.id+')">تسجيل الفعاليات</button>'
+                ;
+
+
+        }
 
         employeesAttendanceService.getActivityByDayAndSchoolId(model.schoolId, function (data) {
             console.log("data", data);
@@ -88,13 +123,8 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             });
         };
 
-        manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
-            model.emp_atts = employees;
-            $scope.$apply();
-        });
 
-
-       function ExcuseRequest(employee_id,$event){
+        function ExcuseRequest(employee_id){
                var dialogInst = $uibModal.open({
                    templateUrl: 'views/employees_attendance/ExcuseFormRequest.html',
                    controller: 'ExcuseDialogCtrl',

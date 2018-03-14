@@ -508,6 +508,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
 
                             '../assets/pages/scripts/components-date-time-pickers.min.js',
 
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+
                             'js/controllers/EmployeesAttendance/employeesAttendanceController.js',
                             'js/services/employeesAttendanceFactory.js',
                             'js/services/employeesExcuseFactory.js',
