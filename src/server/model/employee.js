@@ -1,6 +1,7 @@
 var con = require('../routes/dbConfig.js');
 var jobTitleMethods = require('../model/jobTitle.js');
 var subJobTitleMethods = require('../model/subJobTitle.js');
+var workingSettingsMethods = require('../model/schedualProfile.js');
 var Excel = require('exceljs');
 
 var employeeMethods = {
@@ -464,6 +465,27 @@ var employeeMethods = {
                 }
             );
         }
+    },
+
+    getEmployeesBasedActivity : function(req,res,callback){
+        var currentDay = workingSettingsMethods.getArabicDay(new Date().getDay());
+        if(currentDay == 'الاربعاء') currentDay = 'الأربعاء';
+        if(currentDay == 'الاحد') currentDay = 'الأحد';
+        if(currentDay == 'الاثنين') currentDay = 'الأثنين';
+        var schoolId = req.body.schoolId;
+        var lecture_name = req.body.lecture_name;
+        var query = con.query('select sch_str_employees.* from sch_acd_lecturestables join sch_acd_lectures ' +
+            'on sch_acd_lecturestables.Lecture_NO = sch_acd_lectures.id ' +
+            'join sch_str_employees on sch_acd_lecturestables.Teacher_Id = sch_str_employees.id ' +
+            'where sch_acd_lectures.name = ? and sch_acd_lecturestables.Day = ? and sch_acd_lecturestables.School_Id = ?',[lecture_name,currentDay,schoolId], function (err, result) {
+            console.log(query.sql);
+            console.log(result);
+                if (err)
+                    throw err
+
+                callback(result);
+            }
+        );
     },
 
 

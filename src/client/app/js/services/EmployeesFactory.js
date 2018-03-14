@@ -13,6 +13,15 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
         });
     };
 
+    fac.getAllEmployeesByActivity = function (schoolId,lecture_name, callback) {
+        $http.post("http://localhost:3000/getAllEmployeesByActivity", {
+            'schoolId': schoolId,
+            'lecture_name':lecture_name
+        }).success(function (response) {
+            callback(response);
+        });
+    };
+
     fac.getEmpData = function (empId, callback) {
         $http.get("http://localhost:3000/getEmployee/" + empId).success(function (response) {
             callback(response);

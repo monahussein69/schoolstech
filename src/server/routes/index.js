@@ -134,6 +134,12 @@ router.get('/getAllEmployees/:schoolId', function (req, res, next) {
     });
 });
 
+router.post('/getAllEmployeesByActivity', function (req, res, next) {
+    employeeMethods.getEmployeesBasedActivity(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 router.post('/getAllEmployeesByJobTitle', function (req, res, next) {
     employeeMethods.getEmployeesBasedJob(req, res, function (result) {
         res.send(result);

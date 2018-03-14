@@ -11,9 +11,13 @@
         <div class="form-group row">
             <label class="col-sm-2 control-label"> تاريخ نهايه الغياب </label>
             <div class="col-sm-6">
-                <input type="text" name="name" class="form-control date-picker" ng-model="AbsentObj.End_Date" /> </div>
+                <input type="text" name="name" class="form-control date-picker" ng-model="AbsentObj.End_Date" ng-change="absentDays()" /> </div>
         </div>
-
+        <div class="form-group row">
+            <label class="col-sm-2 control-label"> ايام الغياب </label>
+            <div class="col-sm-6">
+                <input type="text" name="name" class="form-control" ng-model="AbsentObj.No_Of_Days" ng-change="absentEndDay()" /> </div>
+        </div>
         <div class="form-group row">
             <label class="col-sm-2 control-label"> اسباب الغياب </label>
             <div class="col-sm-6">

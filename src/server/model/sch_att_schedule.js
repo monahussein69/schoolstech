@@ -9,6 +9,8 @@ var attScheduleMethods = {
         var days =
             ['السبت','الأحد','الأثنين','الثلاثاء','الأربعاء','الخميس','الجمعه'];
 
+        var numbers = ['الأولى' , 'الثانية','الثالثة', 'الرابعة' , 'الخامسة' , 'السادسة' , 'السابعة' , 'الثامنة' , 'التاسعة' , 'العاشرة'];
+
         workingSettingsMethods.getSettingProfile(req,res,function(result) {
             var profileData = result[0];
             console.log(profileData);
@@ -107,7 +109,7 @@ var attScheduleMethods = {
                         activityObj.SCHEDULE_Id = profile_id;
                         activityObj.Day = Day_Begining[Day];
                         activityObj.eventtype = 'حصه';
-                        activityObj.event_Nam = 'حصه(' + i + ')';
+                        activityObj.event_Nam = 'الحصة '+numbers[i-1];
                         activityObj.Begining_Time = lecture_Begining_time;
                         activityObj.Ending_Time = lecture_end_time;
                         activityObj.Day_no = days.indexOf(Day_Begining[Day]);
@@ -228,7 +230,8 @@ var attScheduleMethods = {
         console.log(Day);
         console.log(eventtype);
         console.log(SCHEDULE_Id);
-        con.query('select * from sch_att_schedule where Day = ? and eventtype = ? and SCHEDULE_Id = ? ', [Day,eventtype,SCHEDULE_Id], function (err, result) {
+        var query =con.query('select * from sch_att_schedule where Day = ? and eventtype = ? and SCHEDULE_Id = ? ', [Day,eventtype,SCHEDULE_Id], function (err, result) {
+               console.log(query.sql);
                 if (err)
                     throw err
 
