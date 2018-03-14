@@ -14,6 +14,7 @@ var attScheduleMethods = require('../model/sch_att_schedule.js');
 var employeesAttendanceMethods = require('../model/employeesAttendance.js');
 var employeeAttendanceRecordMethods = require('../model/employeeAttendanceRecord.js');
 var employeesExcuseMethods = require('../model/employeesExcuse.js');
+var employeesVacationMethods = require('../model/employeeVacation.js');
 
 var app = express();
 var multer = require('multer');
@@ -404,6 +405,12 @@ router.post('/closeFirstAttendance/', function (req, res, next) {
 
 router.post('/sendExcuseRequest/', function (req, res, next) {
    employeesExcuseMethods.sendExcuseRequest(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/sendAbsentRequest/', function (req, res, next) {
+    employeesVacationMethods.sendAbsentRequest(req, res, function (result) {
         res.send(result);
     });
 });

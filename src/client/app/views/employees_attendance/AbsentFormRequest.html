@@ -1,0 +1,31 @@
+<form>
+    <div class="modal-header">
+        <h3 class="modal-title">الغياب بعذر </h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group row">
+            <label class="col-sm-2 control-label">تاريخ بدايه الغياب </label>
+            <div class="col-sm-6">
+                <input type="text" name="name" class="form-control date-picker" ng-model="AbsentObj.Start_Date" /> </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 control-label"> تاريخ نهايه الغياب </label>
+            <div class="col-sm-6">
+                <input type="text" name="name" class="form-control date-picker" ng-model="AbsentObj.End_Date" /> </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 control-label"> اسباب الغياب </label>
+            <div class="col-sm-6">
+                <textarea ng-model="AbsentObj.notes" class="form-control"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="AbsentRequest()">تأكيد</button>
+        <button class="btn btn-default" type="button" ng-click="cancel()">الغاء</button>
+    </div>
+</form>
+<script>
+    ComponentsDateTimePickers.init(); // init todo page
+</script>

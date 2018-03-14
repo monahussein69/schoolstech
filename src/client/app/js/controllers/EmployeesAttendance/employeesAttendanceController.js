@@ -18,6 +18,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             recordAttendance:recordAttendance,
             closeAttendance:closeAttendance,
             ExcuseRequest:ExcuseRequest,
+            AbsentRequest:AbsentRequest,
             emp_atts:[],
             activeProfile : {},
             employeeActivity: employeeActivity,
@@ -52,7 +53,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                 '<button class="btn btn-primary" ng-click="confirmTimeIn('+data.id+')" style="background-color:limegreen;border-color:limegreen"> حاضر</button>\n'+
                 '<button class="btn btn-danger" ng-click="model.recordAttendance('+data.id+',\'غياب\')">غائب</button>'+
                 '<button class="btn btn-primary" ng-click="model.ExcuseRequest('+data.id+')">استئذان</button>'+
-                '<button class="btn btn-warning" ng-click="model.recordAttendance('+data.id+',\'غياب بعذر\')">غياب بعذر</button>'+
+                '<button class="btn btn-warning" ng-click="model.AbsentRequest('+data.id+',\'غياب بعذر\')">غياب بعذر</button>'+
                 '<button class="btn btn-primary" ng-click="model.employeeActivity('+data.id+')">تسجيل الفعاليات</button>'
                 ;
 
@@ -141,6 +142,34 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                dialogInst.result.then(function (result) {
                    console.log('open');
                    console.log(angular.element($event.target).attr('disabled','disabled'));
+
+                   if(result.success){
+
+                   }
+               }, function () {
+                   console.log('close');
+                   //$log.info('Modal dismissed at: ' + new Date());
+               });
+           }
+
+
+           function AbsentRequest(employee_id){
+               var dialogInst = $uibModal.open({
+                   templateUrl: 'views/employees_attendance/AbsentFormRequest.html',
+                   controller: 'AbsentDialogCtrl',
+                   size: 'md',
+                   resolve: {
+                       selectedEmployee: function () {
+                           return employee_id;
+                       },
+                       schoolId: function () {
+                           return model.schoolId;
+                       }
+                   }
+               });
+               dialogInst.result.then(function (result) {
+                   console.log('open');
+                   //console.log(angular.element($event.target).attr('disabled','disabled'));
 
                    if(result.success){
 
@@ -295,6 +324,36 @@ angular.module('MetronicApp').controller('ExcuseDialogCtrl', function(toastr ,em
     $scope.ExcuseRequest = function(){
 
         employeesExcuseService.sendExcuseRequest(ExcuseObj,function (result) {
+            if(result.success){
+                toastr.success(result.msg);
+
+            }else{
+                toastr.error(result.msg);
+            }
+            $uibModalInstance.close(result);
+        });
+    }
+});
+
+
+angular.module('MetronicApp').controller('AbsentDialogCtrl', function(toastr ,employeesAbsentService ,$moment,$scope, $uibModalInstance, selectedEmployee,schoolId, $log) {
+    var currentTime = $moment().format('HH:mm');
+    var currentDate = $moment().format('MM/DD/YYYY');
+
+    var AbsentObj = {};
+    AbsentObj.school_id = schoolId;
+    AbsentObj.Emp_id = selectedEmployee;
+    AbsentObj.Start_Date = currentDate;
+    AbsentObj.End_Date = currentDate;
+    $scope.AbsentObj = AbsentObj;
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+    $scope.AbsentRequest = function(){
+
+        employeesAbsentService.sendAbsentRequest(AbsentObj,function (result) {
             if(result.success){
                 toastr.success(result.msg);
 
