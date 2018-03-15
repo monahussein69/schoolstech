@@ -49,16 +49,20 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
         function actionsHtml(data, type, full, meta) {
 
             return ''+
-                '<button class="btn btn-primary" ng-click="model.employeeActivity('+data.id+')">تسجيل الحاله</button>'
+                '<button class="btn btn-primary color-grey" ng-click="model.employeeActivity('+data.id+',0)"> تأخر</button>' +
+                '<button class="btn btn-primary color-grey" ng-click="model.employeeActivity('+data.id+',1)">غياب</button>' +
+                '<button class="btn btn-primary color-grey" ng-click="model.employeeActivity('+data.id+',2)">خروج مبكر</button>'
                 ;
         }
 
         function getAllEmployeesByActivity(){
-            manageEmployeeService.getAllEmployeesByActivity(schoolId,model.activity,function (result) {
-                var resetPaging = true;
-                model.dtInstance.reloadData(result, resetPaging);
-                model.emp_atts = result;
+            var defer = $q.defer();
+            manageEmployeeService.getAllEmployeesByActivity(schoolId,model.activity).then(function (employees) {
+                defer.resolve(employees);
+                model.dtInstance.changeData(defer.promise);
+                model.employees = employees;
             });
+
         }
 
         employeesAttendanceService.getActivityByDayAndSchoolId(model.schoolId, function (data) {
@@ -71,7 +75,11 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
 
 
-        function employeeActivity(employee_id) {
+        function employeeActivity(employee_id,status_id) {
+            var status_names = [];
+            status_names[0] = 'تأخر';
+            status_names[1] = 'غياب';
+            status_names[2] = 'خروج مبكر';
             var dialogInst = $uibModal.open({
                 templateUrl: 'views/employees_attendance/employeeActivityPopup.html',
                 controller: 'EmployeeActivityPopupCtrl',
@@ -85,6 +93,11 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
                     },
                     selectedActivity: function () {
                         return model.activity;
+                    },
+                    status_id: function () {
+                        return status_id;
+                    }, status_name: function () {
+                        return status_names[status_id];
                     },
                     getActivityByDayAndSchoolId: function () {
                         return model.listOfActivity;
@@ -115,7 +128,10 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
 
 
-angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedEmployee,selectedActivity, schoolId, $log, getActivityByDayAndSchoolId) {
+angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedEmployee,selectedActivity, schoolId,status_name,status_id, $log, getActivityByDayAndSchoolId) {
+
+    console.log(status_name);
+    console.log(status_id);
     var model = {
         selectedEmployee: selectedEmployee,
         currentTime: $moment().format('HH:mm'),
@@ -123,7 +139,8 @@ angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (
         onSave: onSave,
         activities: getActivityByDayAndSchoolId,
         activity: selectedActivity,
-        status: ''
+        status: status_id,
+        status_name : status_name
     };
     $scope.model = model;
 

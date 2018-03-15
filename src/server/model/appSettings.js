@@ -180,7 +180,7 @@ var appSettingsMethods = {
 
     getCalenderByDate: function (req, res, callback) {
         var date = req.body.date;
-        con.query('select * from app_def_calender where date = ?',[date], function (err, result) {
+        con.query('select * from app_def_calender where date = ? ',[date], function (err, result) {
                 if (err)
                     throw err
                 callback(result);

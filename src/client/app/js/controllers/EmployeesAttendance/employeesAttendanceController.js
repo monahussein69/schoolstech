@@ -1,5 +1,5 @@
 angular.module('MetronicApp').controller('employeesAttendanceController',
-    function ($compile,DTOptionsBuilder, DTColumnBuilder,$q,$uibModal,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService,manageEmployeeService,WorkingSettingsService) {
+    function ($compile,DTOptionsBuilder, DTColumnBuilder,$q,$uibModal,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService,manageEmployeeService,WorkingSettingsService,manageAppSettingsService) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -52,8 +52,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                 '<button class="btn btn-primary color-grey" ng-click="confirmTimeIn('+data.id+',$event)" > حاضر</button>\n'+
                 '<button class="btn btn-danger color-grey" ng-click="model.recordAttendance('+data.id+',$event,\'غياب\')">غائب</button>'+
                 '<button class="btn btn-primary color-grey" ng-click="model.ExcuseRequest('+data.id+',$event)">استئذان</button> '+
-                '<button class="btn btn-warning color-grey" ng-click="model.AbsentRequest('+data.id+',$event,\'غياب بعذر\')">غياب بعذر</button>'+
-                '<button class="btn btn-primary color-grey" ng-click="model.employeeActivity('+data.id+',$event)">تسجيل الفعاليات</button>'
+                '<button class="btn btn-warning color-grey" ng-click="model.AbsentRequest('+data.id+',$event,\'غياب بعذر\')">غياب بعذر</button>'
                 ;
         }
 
@@ -121,7 +120,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
         };
 
 
-        function ExcuseRequest(employee_id){
+        function ExcuseRequest(employee_id,$event){
                var dialogInst = $uibModal.open({
                    templateUrl: 'views/employees_attendance/ExcuseFormRequest.html',
                    controller: 'ExcuseDialogCtrl',

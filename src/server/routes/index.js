@@ -272,6 +272,12 @@ router.post('/saveAppSettingsData', function (req, res, next) {
     });
 });
 
+router.post('/getCalenderByDate', function (req, res, next) {
+    appSettingsMethods.getCalenderByDate(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 
 router.get('/getAppSettings', function (req, res, next) {
     appSettingsMethods.getappSettingsData(req, res, function (result) {

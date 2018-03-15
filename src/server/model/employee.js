@@ -469,9 +469,6 @@ var employeeMethods = {
 
     getEmployeesBasedActivity : function(req,res,callback){
         var currentDay = workingSettingsMethods.getArabicDay(new Date().getDay());
-        if(currentDay == 'الاربعاء') currentDay = 'الأربعاء';
-        if(currentDay == 'الاحد') currentDay = 'الأحد';
-        if(currentDay == 'الاثنين') currentDay = 'الأثنين';
         var schoolId = req.body.schoolId;
         var lecture_name = req.body.lecture_name;
         var query = con.query('select sch_str_employees.* from sch_acd_lecturestables join sch_acd_lectures ' +

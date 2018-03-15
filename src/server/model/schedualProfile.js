@@ -212,9 +212,6 @@ var workingSettingsMethods = {
 
     getActivityByDayAndSchoolId : function (req , res, callback) {
         var currentDay = workingSettingsMethods.getArabicDay(new Date().getDay());
-        if(currentDay == 'الاربعاء') currentDay = 'الأربعاء';
-        if(currentDay == 'الاحد') currentDay = 'الأحد';
-        if(currentDay == 'الاثنين') currentDay = 'الأثنين';
         var schoolId = req.params.schoolId;
         con.query('SELECT * FROM sch_att_schedule JOIN sch_att_scheduleprofile ON sch_att_scheduleprofile.Id = sch_att_schedule.SCHEDULE_Id WHERE sch_att_scheduleprofile.SchoolId = ? AND sch_att_scheduleprofile.Profile_Active_status = 1 AND sch_att_schedule.Day = ? ', [schoolId , currentDay], function (err, result) {
                 if (err)
@@ -225,7 +222,7 @@ var workingSettingsMethods = {
     },
     getArabicDay: function (dayNo) {
         var array = [];
-        array[0] = 'الأحد';
+        array[0] = 'الاحد';
         array[1] = 'الاثنين';
         array[2] = 'الثلاثاء';
         array[3] = 'الاربعاء';
