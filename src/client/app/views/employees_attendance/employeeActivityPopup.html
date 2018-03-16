@@ -8,7 +8,7 @@
             <div class="col-sm-6">
                 <select name="activity" class="form-control" ng-model="model.activity">
                     <option selected disabled value="">اختر الفعالية </option>
-                    <option ng-repeat="activity in model.activities track by $index" value="{{activity.event_Nam}}">{{activity.event_Nam}} </option>
+                    <option ng-repeat="activity in model.activities track by $index" value="{{$index}}">{{activity.event_Nam}} </option>
                 </select>
             </div>
         </div>

@@ -94,7 +94,7 @@ router.get('/getLectursTable/:schoolId', function (req, res, next) {
         res.send(result);
     });
 });
-router.get('/getAllStudents', function (req, res, next) {
+router.get('/getAllStudents/:schoolId', function (req, res, next) {
     studentsMethods.getAllStudents(req, res, function (result) {
         res.send(result);
     });

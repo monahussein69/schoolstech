@@ -130,15 +130,21 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
 angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedEmployee,selectedActivity, schoolId,status_name,status_id, $log, getActivityByDayAndSchoolId) {
 
-    console.log(status_name);
-    console.log(status_id);
+    var index = -1;
+
+     getActivityByDayAndSchoolId.some(function(obj, i) {
+        return obj.event_Nam === selectedActivity ? index = i : false;
+    });
+    index = index.toString();
+    console.log(index);
+
     var model = {
         selectedEmployee: selectedEmployee,
         currentTime: $moment().format('HH:mm'),
         onCancel: onCancel,
         onSave: onSave,
         activities: getActivityByDayAndSchoolId,
-        activity: selectedActivity,
+        activity: index,
         status: status_id,
         status_name : status_name
     };

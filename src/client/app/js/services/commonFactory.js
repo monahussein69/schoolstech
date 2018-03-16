@@ -4,22 +4,19 @@ angular.module('MetronicApp').factory('CommonService', function ($http, Upload,m
 
     fac.nextStep = function (schoolId, callback) {
         manageSchoolService.getSchoolData(schoolId,function(result){
-            console.log('in get');
-            console.log(result[0]);
+
             var current_step = result[0].config_steps;
             if(current_step < 4) {
                 var new_step = current_step + 1;
                 result[0].config_steps = new_step;
                 result[0].schoolId = schoolId;
-                console.log('add step');
-                console.log(result[0]);
+
                 if(new_step == 4){
                     var userObject = localStorageService.get('UserObject');
                     userObject[0].config_flag = false;
                     localStorageService.set('UserObject', userObject);
                 }
                 manageSchoolService.saveSchoolData(result[0], function (result) {
-                    console.log('in service result');
                     callback(result);
                 });
             }
@@ -45,8 +42,6 @@ angular.module('MetronicApp').factory('CommonService', function ($http, Upload,m
             manageSchoolService.getSchoolData(schoolId,function(result){
 
                 var current_step = result[0].config_steps;
-                console.log('current_step');
-                console.log(current_step);
                 if (current_step == 0){
                     $window.location.href = '#/manageEmployees/';
 
@@ -57,7 +52,7 @@ angular.module('MetronicApp').factory('CommonService', function ($http, Upload,m
                     $window.location.href = '#/students';
                 }
                 else if (current_step == 3) {
-                    $window.location.href = '#/school-schedule.html';
+                    $window.location.href = '#/school-schedule';
                 }
 
             });

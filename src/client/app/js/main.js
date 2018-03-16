@@ -242,7 +242,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             }
         })
         .state('Master.schoolSchedule', {
-            url: "/school-schedule.html",
+            url: "/school-schedule",
             templateUrl: "views/schools/schoolSchedule.html",
             data: {pageTitle: 'المدارس'},
             controller: "SchoolScheduleController",

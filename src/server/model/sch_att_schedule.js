@@ -223,14 +223,12 @@ var attScheduleMethods = {
         );
     },
 
-    getAttScheduleByEventTypeAndDay: function (req, res, callback) {
+    getAttScheduleByEventNameAndDay: function (req, res, callback) {
         var Day = req.body.Day;
-        var eventtype = req.body.eventtype;
+        var eventname = req.body.eventname;
         var SCHEDULE_Id = req.body.SCHEDULE_Id;
-        console.log(Day);
-        console.log(eventtype);
-        console.log(SCHEDULE_Id);
-        var query =con.query('select * from sch_att_schedule where Day = ? and eventtype = ? and SCHEDULE_Id = ? ', [Day,eventtype,SCHEDULE_Id], function (err, result) {
+
+        var query =con.query('select * from sch_att_schedule where Day = ? and event_Nam = ? and SCHEDULE_Id = ? ', [Day,eventname,SCHEDULE_Id], function (err, result) {
                console.log(query.sql);
                 if (err)
                     throw err

@@ -24,9 +24,8 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
                             var schoolId = userObj[0].schoolId;
                         manageSchoolService.getSchoolData(schoolId, function (response) {
                             userObj[0].schoolData = response;
-                            console.log('response[0].config_steps');
-                            console.log(response[0].config_steps);
-                            if (response[0].config_steps == 0 || response[0].config_steps == 1) {
+
+                            if (response[0].config_steps  < 4) {
                                 userObj[0].config_flag = true;
                             }
                             localStorageService.set('UserObject', userObj);
@@ -35,6 +34,10 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
 
                             } else if (response[0].config_steps == 1) {
                                 $window.location.href = '#/manageLeaders';
+                            } else if (response[0].config_steps == 2) {
+                                $window.location.href = '#/students';
+                            }else if (response[0].config_steps == 3) {
+                                $window.location.href = '#/school-schedule';
                             }
 
                         });

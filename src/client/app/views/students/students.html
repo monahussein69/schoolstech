@@ -11,7 +11,22 @@
         </li>
     </ul>
 </div>
-<h3 class="page-title"> ادارة الطلاب </h3>
+<h3 class="page-title" ng-hide="(model.config && model.config_step == 2)"> ادارة الطلاب </h3>
+
+<div class="row" ng-show="model.config && model.config_step == 2">
+    <div class="col-md-10">
+        <h3 class="page-title"> الخطوه الثالثه : استيراد و تحديث بيانات الطلاب</h3>
+    </div>
+    <div class="col-md-2">
+        <h3 class="page-title">
+            <button ng-click="model.nextStep('#/school-schedule')" ng-disabled="model.students.length == 0" class="btn btn-danger">
+                <h4> الخطوه التاليه
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                </h4>
+            </button>
+        </h3>
+    </div>
+</div>
 <!-- END PAGE HEADER-->
 <!-- BEGIN MAIN CONTENT -->
 <div class="row">

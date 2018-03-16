@@ -1,4 +1,5 @@
 var con = require('../routes/dbConfig.js');
+var jobTitleMethods = require('../model/jobTitle.js');
 var Excel = require('exceljs');
 var underscore = require('underscore/underscore.js');
 const Sequelize = require('sequelize');
@@ -40,7 +41,8 @@ const roomsTable = sequelize.define('sch_bui_rooms', {
 });
 const teachersTable = sequelize.define('sch_str_employees', {
     school_id: Sequelize.STRING,
-    name: Sequelize.INTEGER
+    name: Sequelize.INTEGER,
+    jobtitle_id: Sequelize.INTEGER,
 });
 const lectureTable = sequelize.define('sch_acd_lectures', {
     name: Sequelize.STRING,
@@ -400,15 +402,42 @@ var schoolMethods = {
                                             });
                                     });
                                     let teacherPromise = new Promise(function (resolve, reject) {
-                                        teachersTable.findOrCreate({
-                                            where: {name: allCells[counter].teacher_name.trim()},
-                                            defaults: {school_id: schoolId}
-                                        })
-                                            .spread((teacher, created) => {
-                                                console.log('section  : ', teacher.id);
+                                        req.body.name = 'معلم';
+                                        jobTitleMethods.getjobTitleByName(req, res, function (result) {
+                                            if (Object.keys(result).length) {
+                                                job_title_id = result[0].id;
+                                                teachersTable.findOrCreate({
+                                                    where: {name: allCells[counter].teacher_name.trim()},
+                                                    defaults: {school_id: schoolId,jobtitle_id:job_title_id}
+                                                })
+                                                    .spread((teacher, created) => {
+                                                    console.log('section  : ', teacher.id);
                                                 console.log('created ?   : ', created);
                                                 resolve(teacher.id);
                                             });
+                                            }else{
+                                                jobTitleData = {name : 'معلم'};
+                                                req.body.jobTitleData =  jobTitleData;
+                                                jobTitleMethods.saveJobTitle(req, res, function (result) {
+                                                    job_title_id = result.insertId;
+
+                                                    teachersTable.findOrCreate({
+                                                        where: {name: allCells[counter].teacher_name.trim()},
+                                                        defaults: {school_id: schoolId,jobtitle_id:job_title_id}
+                                                    })
+                                                        .spread((teacher, created) => {
+                                                        console.log('section  : ', teacher.id);
+                                                    console.log('created ?   : ', created);
+                                                    resolve(teacher.id);
+                                                });
+
+                                                });
+
+                                            }
+
+
+                                        });
+
                                     });
 
                                     let lecturePromise = new Promise(function (resolve, reject) {

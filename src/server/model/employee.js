@@ -2,7 +2,11 @@ var con = require('../routes/dbConfig.js');
 var jobTitleMethods = require('../model/jobTitle.js');
 var subJobTitleMethods = require('../model/subJobTitle.js');
 var workingSettingsMethods = require('../model/schedualProfile.js');
+var userMethods = require('../model/user.js');
 var Excel = require('exceljs');
+const saltRounds = 10;
+var randomstring = require("randomstring");
+var bcrypt = require('bcrypt');
 
 var employeeMethods = {
     saveEmployee: function (req, res, callback) {
@@ -392,6 +396,8 @@ var employeeMethods = {
                                             req.body.empData = data;
                                             if(data.job_no) {
                                                 employeeMethods.saveEmployee(req, res, function (result) {
+                                                    console.log('in save');
+                                                    console.log(result);
                                                     if(result.success){
                                                         finalEmployees.push(data);
                                                     }
@@ -405,6 +411,34 @@ var employeeMethods = {
 
                             }
                             var response = {};
+                            if(finalEmployees.length == 1 && job_title =='قائد مدرسة'){
+                                var employee = finalEmployees[0];
+                                console.log('emp');
+                                console.log(employee);
+                                var userPassword = randomstring.generate({
+                                    length: 7,
+                                    charset: 'numeric'
+                                });
+                                var hash = bcrypt.hashSync(userPassword, saltRounds);
+                                var userData =
+                                    {
+                                        'schoolId': employee.school_id,
+                                        'userType': 3,
+                                        'loginName': employee.mobile,
+                                        'password': userPassword,
+                                        'groupId': 0,
+                                        'PasswordHash': hash,
+                                        'is_active': 1,
+                                        'isLeader' : 1
+
+                                    };
+
+                                req.body.userData = userData;
+                                req.body.employeeId = employee.id;
+                                employeeMethods.setLeaderUser(req,res,function(result){
+
+                                });
+                            }
                             if(finalEmployees.length) {
                                 response.msg = 'تم اضافه ' + finalEmployees.length + ' ' + job_title;
                                 response.status = true;
@@ -442,28 +476,43 @@ var employeeMethods = {
         var schoolId = req.body.schoolId;
         var job_title = req.body.job_title;
         var sub_job_title = req.body.sub_job_title;
-        if(sub_job_title) {
-           var query =  con.query('select SCH_STR_Employees.*,sys_users.is_active from SCH_STR_Employees ' +
-                'inner join job_title on SCH_STR_Employees.jobtitle_id = job_title.id ' +
-                'inner join sub_job_title on SCH_STR_Employees.subjobtitle_id = sub_job_title.id ' +
-                'left join sys_users on SCH_STR_Employees.userId = sys_users.id where school_id = ? and job_title.name =? and sub_job_title.name = ?', [schoolId, job_title, sub_job_title], function (err, result) {
-               console.log(query.sql);
-               if (err)
-                        throw err
 
-                    callback(result);
-                }
-            );
-        }else{
+        if(job_title == 'قائد مدرسة الحالي'){
+            job_title = 'قائد مدرسة';
             con.query('select SCH_STR_Employees.*,sys_users.is_active from SCH_STR_Employees ' +
                 'inner join job_title on SCH_STR_Employees.jobtitle_id = job_title.id ' +
-                'left join sys_users on SCH_STR_Employees.userId = sys_users.id where school_id = ? and job_title.name =?', [schoolId, job_title], function (err, result) {
+                'inner join sys_users on SCH_STR_Employees.userId = sys_users.id where school_id = ? and job_title.name =? and sys_users.isLeader = 1', [schoolId, job_title], function (err, result) {
                     if (err)
                         throw err
 
                     callback(result);
                 }
             );
+        }else {
+
+            if (sub_job_title) {
+                var query = con.query('select SCH_STR_Employees.*,sys_users.is_active from SCH_STR_Employees ' +
+                    'inner join job_title on SCH_STR_Employees.jobtitle_id = job_title.id ' +
+                    'inner join sub_job_title on SCH_STR_Employees.subjobtitle_id = sub_job_title.id ' +
+                    'left join sys_users on SCH_STR_Employees.userId = sys_users.id where school_id = ? and job_title.name =? and sub_job_title.name = ?', [schoolId, job_title, sub_job_title], function (err, result) {
+                        console.log(query.sql);
+                        if (err)
+                            throw err
+
+                        callback(result);
+                    }
+                );
+            } else {
+                con.query('select SCH_STR_Employees.*,sys_users.is_active from SCH_STR_Employees ' +
+                    'inner join job_title on SCH_STR_Employees.jobtitle_id = job_title.id ' +
+                    'left join sys_users on SCH_STR_Employees.userId = sys_users.id where school_id = ? and job_title.name =?', [schoolId, job_title], function (err, result) {
+                        if (err)
+                            throw err
+
+                        callback(result);
+                    }
+                );
+            }
         }
     },
 
@@ -520,6 +569,37 @@ var employeeMethods = {
                                 throw err;
                             if(result.affectedRows){
                                 success = 1;
+                                req.params.empId = agents.schoolLeader;
+                                employeeMethods.getEmployee(req,res,function(result){
+                                    if (Object.keys(result).length) {
+                                        var employee = result[0];
+                                        var userPassword = randomstring.generate({
+                                            length: 7,
+                                            charset: 'numeric'
+                                        });
+                                        var hash = bcrypt.hashSync(userPassword, saltRounds);
+                                        var userData =
+                                            {
+                                                'schoolId': employee.school_id,
+                                                'userType': 3,
+                                                'loginName': employee.mobile,
+                                                'password': userPassword,
+                                                'groupId': 0,
+                                                'PasswordHash': hash,
+                                                'is_active': 1,
+                                                'isLeader' : 1
+
+                                            };
+
+                                        req.body.userData = userData;
+                                        req.body.employeeId = employee.id;
+                                        employeeMethods.setLeaderUser(req,res,function(result){
+
+                                         });
+
+                                    }
+                                });
+
                                 resolve(success);
                             }else{
                                 success = 0;
@@ -654,6 +734,85 @@ var employeeMethods = {
 
         });
 
+    },
+
+
+
+    setLeaderUser : function (req,res,callback){
+        var userData = req.body.userData;
+        var employeeId = req.body.employeeId;
+        var response = {};
+        con.query(" update sys_users set isLeader = 0 where schoolId = ?",
+            [
+                userData.schoolId
+            ], function (err, result) {
+                if (err)
+                    throw err
+                if (result) {
+                    if (userData.loginName) {
+                        con.query("select * from sys_users where loginName = ?", [userData.loginName], function (err, result) {
+                            if (err)
+                                throw err;
+
+                            if (Object.keys(result).length) {
+                                var user_id = result[0].id;
+                                con.query(" update sys_users set isLeader = 1 where id = ?",
+                                    [
+                                        user_id
+                                    ], function (err, result) {
+                                        if (err)
+                                            throw err
+                                        if (result.affectedRows) {
+                                            response.success = true;
+                                            response.msg = 'تم الحفظ بنجاح';
+                                            response.insertId = user_id;
+                                            var empData = {'userId': user_id, 'id': employeeId};
+                                            req.body.empData = empData;
+                                            employeeMethods.setEmployeeUser(req, res, function (result) {});
+
+                                        } else {
+                                            response.success = false;
+                                            response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
+                                        }
+
+                                        callback(response);
+
+                                    }
+                                );
+                            } else {
+                                con.query(" insert into sys_users  (schoolId,userType,loginName,password,groupId,PasswordHash,is_active,isLeader) values(?,?,?,?,?,?,?,1)",
+                                    [   userData.schoolId,
+                                        userData.userType,
+                                        userData.loginName,
+                                        userData.password,
+                                        userData.groupId,
+                                        userData.PasswordHash,
+                                        userData.is_active,], function (err, result) {
+                                        if (err)
+                                            throw err
+                                        if (result.affectedRows) {
+                                            response.success = true;
+                                            response.msg = 'تم الحفظ بنجاح';
+                                            response.insertId = result.insertId;
+                                            var empData = {'userId': result.insertId, 'id': employeeId};
+                                            req.body.empData = empData;
+                                            employeeMethods.setEmployeeUser(req, res, function (result) {});
+                                        } else {
+                                            response.success = false;
+                                            response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
+                                        }
+                                        callback(response);
+                                    }
+                                );
+                            }
+                        });
+                    }
+                }
+
+                callback(response);
+
+            }
+        );
     }
 
 };
