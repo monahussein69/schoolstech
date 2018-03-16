@@ -134,8 +134,8 @@ router.get('/getAllEmployees/:schoolId', function (req, res, next) {
     });
 });
 
-router.post('/getAllEmployeesByActivity', function (req, res, next) {
-    employeeMethods.getEmployeesBasedActivity(req, res, function (result) {
+router.post('/getAllEmployeesAttendanceByActivity', function (req, res, next) {
+    employeesAttendanceMethods.getAllEmployeesAttendanceByActivity(req, res, function (result) {
         res.send(result);
     });
 });
@@ -411,6 +411,18 @@ router.post('/setEmployeeActivityAttendance/', function (req, res, next) {
 
 router.post('/closeFirstAttendance/', function (req, res, next) {
    employeesAttendanceMethods.closeFirstAttendance(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/closeSecondAttendance/', function (req, res, next) {
+   employeesAttendanceMethods.closeSecondAttendance(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/getClosingButton/', function (req, res, next) {
+   employeesAttendanceMethods.getClosingButton(req, res, function (result) {
         res.send(result);
     });
 });

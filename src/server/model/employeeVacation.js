@@ -6,7 +6,8 @@ var employeesVacationMethods = {
 
     sendAbsentRequest: function (req, res, callback) {
         var AbsentObj = req.body.AbsentObj;
-        var current_date = moment().format('MM-DD-YYYY');
+        //var current_date = moment().format('MM-DD-YYYY');
+        var current_date = '03-18-2018';
 
         var response = {};
         req.body.date = current_date;
@@ -14,8 +15,9 @@ var employeesVacationMethods = {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 AbsentObj.Calender_id = calendarObj.Id;
-                con.query('insert into SCH_ATT_EMPVacation set ?',
+                var query = con.query('insert into SCH_ATT_EMPVacation set ?',
                     [AbsentObj], function (err, result) {
+                    console.log(query.sql);
                         if (err)
                             throw err
 

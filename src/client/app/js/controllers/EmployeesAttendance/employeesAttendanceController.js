@@ -1,5 +1,5 @@
 angular.module('MetronicApp').controller('employeesAttendanceController',
-    function ($compile,DTOptionsBuilder, DTColumnBuilder,$q,$uibModal,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService,manageEmployeeService,WorkingSettingsService) {
+    function ($moment,$compile,DTOptionsBuilder, DTColumnBuilder,$q,$uibModal,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService,manageEmployeeService,WorkingSettingsService) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -19,13 +19,15 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             closeAttendance:closeAttendance,
             ExcuseRequest:ExcuseRequest,
             AbsentRequest:AbsentRequest,
+            First_att_close:0,
+            Second_att_close:0,
             emp_atts:[],
             activeProfile : {},
             employeeActivity: employeeActivity,
             listOfActivity: {},
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
-                manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
+                employeesAttendanceService.getAllEmployeesAttendance(schoolId).then(function (employees) {
                     defer.resolve(employees);
                     model.emp_atts = employees;
                 });
@@ -47,18 +49,23 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
 
         function actionsHtml(data, type, full, meta) {
 
-
+            current_date = $moment().format('MM/DD/YYYY');
             return ''+
-                '<button class="btn btn-primary color-grey" ng-click="confirmTimeIn('+data.id+',$event)" > حاضر</button>\n'+
-                '<button class="btn btn-danger color-grey" ng-click="model.recordAttendance('+data.id+',$event,\'غياب\')">غائب</button>'+
-                '<button class="btn btn-primary color-grey" ng-click="model.ExcuseRequest('+data.id+',$event)">استئذان</button> '+
-                '<button class="btn btn-warning color-grey" ng-click="model.AbsentRequest('+data.id+',$event,\'غياب بعذر\')">غياب بعذر</button>'
+                '<button class="btn btn-primary color-grey" ng-click="confirmTimeIn('+data.main_employee_id+',$event)" ng-class="{\'color-green\': 0 =='+data.is_absent+'}"> حاضر</button>\n'+
+                '<button class="btn btn-danger" ng-class="{\'color-grey\':!'+data.is_absent+'}" ng-click="model.recordAttendance('+data.main_employee_id+',$event,\'غياب\')">غائب</button>'+
+                '<button ng-disabled = "'+data.is_absent+' != 0" class="btn btn-primary excuse" ng-class="{\'color-grey\':!('+data.excuse_date+' == '+current_date+')}" ng-click="model.ExcuseRequest('+data.main_employee_id+',$event)">استئذان</button> '+
+                '<button class="btn btn-warning" ng-class="{\'color-grey\':!('+data.vacation_date+' >='+current_date+')}" ng-click="model.AbsentRequest('+data.main_employee_id+',$event,\'غياب بعذر\')">غياب بعذر</button>'
                 ;
         }
 
         employeesAttendanceService.getActivityByDayAndSchoolId(model.schoolId, function (data) {
             console.log("data", data);
             model.listOfActivity = data;
+        });
+
+        employeesAttendanceService.getClosingButton(model.schoolId,function(data){
+          model.First_att_close = data[0].first_att_closing;
+          model.Second_att_close = data[0].second_att_closing;
         });
 
 
@@ -69,7 +76,8 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
         });
 
 
-        $scope.confirmTimeIn = function(employee_id,$event){
+        $scope.confirmTimeIn = function(employee_id,$event) {
+            if (model.First_att_close) {
             var dialogInst = $uibModal.open({
                 templateUrl: 'views/employees_attendance/ConfirmInTime.html',
                 controller: 'DialogInstCtrl',
@@ -86,10 +94,17 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             dialogInst.result.then(function (newusr) {
                 angular.element($event.target).removeClass('color-grey');
                 angular.element($event.target).addClass('color-green');
+                angular.element($event.target).parent().children('.excuse').attr('disabled',false)
             }, function () {
                 console.log('close');
                 //$log.info('Modal dismissed at: ' + new Date());
             });
+
+          }else{
+
+                model.recordAttendance(employee_id,$event,'حضور');
+
+            }
         };
 
         function employeeActivity(employee_id) {
@@ -166,6 +181,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
 
                    if(result.success){
                        angular.element($event.target).removeClass('color-grey');
+                       angular.element($event.target).parent().children('.excuse').attr('disabled',true);
                    }
                }, function () {
                    console.log('close');
@@ -173,14 +189,25 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                });
            }
 
-       function closeAttendance(){
-           employeesAttendanceService.closeFirstAttendance( model.schoolId,function (result) {
-               if(result.success){
-                   toastr.success(result.msg);
-               }else{
-                   toastr.error(result.msg);
-               }
-           });
+       function closeAttendance(type){
+            if(type == 1){
+                employeesAttendanceService.closeFirstAttendance( model.schoolId,function (result) {
+                    if(result.success){
+                        toastr.success(result.msg);
+                    }else{
+                        toastr.error(result.msg);
+                    }
+                });
+            }else if(type == 2){
+                employeesAttendanceService.closeSecondAttendance( model.schoolId,function (result) {
+                    if(result.success){
+                        toastr.success(result.msg);
+                    }else{
+                        toastr.error(result.msg);
+                    }
+                });
+            }
+
        }
 
        function recordAttendance(emp_id,$event,type){
@@ -190,6 +217,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             attendanceObj.school_id = model.schoolId;
             attendanceObj.employee_id = emp_id;
             attendanceObj.Event_Name = 'طابور';
+            attendanceObj.time_in = $moment().format('HH:mm');
             attendanceObj.is_absent = 1;
             if(type == 'حضور') {
                 attendanceObj.is_absent = 0;
@@ -201,6 +229,12 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                 if (result.success) {
                     toastr.success(result.msg);
                     angular.element($event.target).removeClass('color-grey');
+                    if(type == 'حضور') {
+                        angular.element($event.target).addClass('color-green');
+                        angular.element($event.target).parent().children('.excuse').attr('disabled',false);
+                    }else  if(type == 'غياب' || type == 'غياب بعذر') {
+                        angular.element($event.target).parent().children('.excuse').attr('disabled',true);
+                    }
 
                 } else {
                     toastr.error(result.msg);
@@ -333,7 +367,7 @@ angular.module('MetronicApp').controller('ExcuseDialogCtrl', function(toastr ,em
 
 angular.module('MetronicApp').controller('AbsentDialogCtrl', function(toastr ,employeesAbsentService ,$moment,$scope, $uibModalInstance, selectedEmployee,schoolId, $log) {
     var currentTime = $moment().format('HH:mm');
-    var currentDate = $moment().format('MM/DD/YYYY');
+    var currentDate = $moment().format('MM-DD-YYYY');
 
     var AbsentObj = {};
     AbsentObj.school_id = schoolId;
@@ -360,7 +394,7 @@ angular.module('MetronicApp').controller('AbsentDialogCtrl', function(toastr ,em
         var start = $moment(AbsentObj.Start_Date);
         var days = AbsentObj.No_Of_Days ;
         var end = start.add(days, 'days');
-        AbsentObj.End_Date = end.format("MM/DD/YYYY");
+        AbsentObj.End_Date = end.format("MM-DD-YYYY");
 
     };
 

@@ -165,6 +165,7 @@ var employeeMethods = {
                                 response.success = true;
                                 response.msg = 'تم الاضافه بنجاح'
                                 response.id = result.insertId ;
+
                             } else {
                                 response.success = false;
                                 response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
@@ -252,6 +253,7 @@ var employeeMethods = {
             var workbook = new Excel.Workbook();
             var data = {};
             var schoolId = req.body.schoolId;
+
             workbook.xlsx.readFile('./src/client/app/uploads/' + req.body.filename)
                 .then(function () {
                     var finalEmployees = [];
@@ -524,8 +526,7 @@ var employeeMethods = {
             'on sch_acd_lecturestables.Lecture_NO = sch_acd_lectures.id ' +
             'join sch_str_employees on sch_acd_lecturestables.Teacher_Id = sch_str_employees.id ' +
             'where sch_acd_lectures.name = ? and sch_acd_lecturestables.Day = ? and sch_acd_lecturestables.School_Id = ?',[lecture_name,currentDay,schoolId], function (err, result) {
-            console.log(query.sql);
-            console.log(result);
+
                 if (err)
                     throw err
 

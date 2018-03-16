@@ -23,10 +23,8 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
             activity:'',
             options:DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
-                manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
-                    defer.resolve(employees);
-                    model.employees = employees;
-                });
+                defer.resolve(model.emp_atts);
+
 
                 return defer.promise
             }).withOption('createdRow', createdRow),
@@ -49,15 +47,15 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
         function actionsHtml(data, type, full, meta) {
 
             return ''+
-                '<button class="btn btn-primary color-grey" ng-click="model.employeeActivity('+data.id+',0)"> تأخر</button>' +
-                '<button class="btn btn-primary color-grey" ng-click="model.employeeActivity('+data.id+',1)">غياب</button>' +
-                '<button class="btn btn-primary color-grey" ng-click="model.employeeActivity('+data.id+',2)">خروج مبكر</button>'
+                '<button class="btn btn-primary" ng-class="{\'color-grey\':!('+data.is_absent+' == 0)}"  ng-click="model.employeeActivity('+data.main_employee_id+',0)"> تأخر</button>' +
+                '<button class="btn btn-danger" ng-class="{\'color-grey\':!'+data.is_absent+'}"  ng-click="model.employeeActivity('+data.main_employee_id+',1)">غياب</button>' +
+                '<button class="btn btn-warning" ng-class="{\'color-grey\':'+data.is_absent+' != 2}" ng-click="model.employeeActivity('+data.main_employee_id+',2)">خروج مبكر</button>'
                 ;
         }
 
         function getAllEmployeesByActivity(){
             var defer = $q.defer();
-            manageEmployeeService.getAllEmployeesByActivity(schoolId,model.activity).then(function (employees) {
+            employeesAttendanceService.getAllEmployeesAttendanceByActivity(schoolId,model.activity).then(function (employees) {
                 defer.resolve(employees);
                 model.dtInstance.changeData(defer.promise);
                 model.employees = employees;
@@ -67,6 +65,8 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
         employeesAttendanceService.getActivityByDayAndSchoolId(model.schoolId, function (data) {
             model.listOfActivity = data;
+            console.log('data');
+            console.log(data);
         });
 
 

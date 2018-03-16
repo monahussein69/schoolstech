@@ -12,6 +12,18 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
 
     };
 
+    fac.getAllEmployeesAttendanceByActivity = function (schoolId,lecture_name) {
+        return new Promise(function (resolve, reject) {
+            $http.post("http://localhost:3000/getAllEmployeesAttendanceByActivity",{
+                'lecture_name':lecture_name,
+                'schoolId':schoolId
+            }).success(function (response) {
+                resolve(response);
+            });
+        });
+
+    };
+
     fac.setEmployeeAttendance = function(attendanceObj,callback) {
         $http.post("http://localhost:3000/setEmployeeAttendance", {
             'attendanceObj': attendanceObj
@@ -33,7 +45,21 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
         });
     }
 
+    fac.getClosingButton = function(schoolId,callback) {
+        $http.post("http://localhost:3000/getClosingButton").success(function (response) {
+            callback(response);
+        });
+    }
+
      fac.closeFirstAttendance = function(schoolId,callback) {
+        $http.post("http://localhost:3000/closeFirstAttendance",
+            {'schoolId':schoolId})
+            .success(function (response) {
+            callback(response);
+        });
+    }
+
+    fac.closeAttendance = function(schoolId,callback) {
         $http.post("http://localhost:3000/closeFirstAttendance",
             {'schoolId':schoolId})
             .success(function (response) {
