@@ -1,4 +1,6 @@
 var con = require('../routes/dbConfig.js');
+const sequelizeConfig = require('../routes/sequelizeConfig');
+
 var Excel = require('exceljs');
 
 
@@ -51,13 +53,13 @@ var studentsMethods = {
                 } else {
                     var names = [];
                     var sql = 'INSERT INTO sch_str_student SET ? ';
-                    var Query = con.query(sql, studentData ,function (err, result, fields) {
+                    var Query = con.query(sql, studentData, function (err, result, fields) {
                             if (err) {
                                 throw err;
                             }
                             if (result.affectedRows) {
                                 response.success = true;
-                                response.msg = 'تم اضافة '+studentData.length+' طالب بنجاح'
+                                response.msg = 'تم اضافة ' + studentData.length + ' طالب بنجاح'
                                 response.id = result.insertId;
                             } else {
                                 response.success = false;
@@ -168,53 +170,132 @@ var studentsMethods = {
             //
             console.log('File Name : ', req.body.filename);
             var workbook = new Excel.Workbook();
-            var data = {};
+            let data = {};
+            let standards = [];
+            let counter = 0;
             workbook.xlsx.readFile('./src/client/app/uploads/' + req.body.filename)
                 .then(function () {
-                    var finalStudents = [];
-                    var message = '';
-                    workbook.eachSheet(function (worksheet, sheetId) {
-                        // var worksheet = workbook.getWorksheet();
-                        worksheet.eachRow(function (row, rowNumber) {
-                                if (rowNumber > 16) {
-                                    if(worksheet.getCell('AD' + rowNumber).value) {
-                                    // var cellNumber = "Q"+rowNumber;
-                                        var nextRow = rowNumber + 1;
-                                    data = {
-                                        Name: worksheet.getCell('Z' + rowNumber).value,
-                                        Name_english: worksheet.getCell('Z' + nextRow).value,
-                                        Nationality: worksheet.getCell('X' + rowNumber).value,
-                                        Specialization: worksheet.getCell('W' + rowNumber).value,
-                                        Enter_date: worksheet.getCell('T' + rowNumber).value,
-                                        Identity_type: worksheet.getCell('S' + rowNumber).value,
-                                        Identity_No: worksheet.getCell('Q' + rowNumber).value,
-                                        Identity_Date: worksheet.getCell('O' + rowNumber).value,
-                                        Passport_No: worksheet.getCell('M' + rowNumber).value,
-                                        Bairth_Date: worksheet.getCell('L' + rowNumber).value,
-                                        student_record: worksheet.getCell('J' + rowNumber).value,
-                                        status: worksheet.getCell('E' + rowNumber).value,
-                                        attending_date: worksheet.getCell('D' + rowNumber).value,
-                                        notes: worksheet.getCell('C' + rowNumber).value
-                                    };
-                                    req.body.studentsData = data;
-                                    studentsMethods.saveStudent(req, res, function (result) {
-                                        if(result.success){
-                                            finalStudents.push(data);
-                                            console.log(result);
-                                            message = result.msg;
-                                        }else{
-                                            console.log(result);
-                                            message = result.msg;
+                        let allCells = [];
+                        var message = '';
+                        if (req.body.type == 'students') {
+                            workbook.eachSheet(function (worksheet, sheetId) {
+                                // var worksheet = workbook.getWorksheet();
+                                worksheet.eachRow(function (row, rowNumber) {
+                                    if (rowNumber > 16) {
+                                        if (worksheet.getCell('AD' + rowNumber).value) {
+                                            // var cellNumber = "Q"+rowNumber;
+                                            var nextRow = rowNumber + 1;
+                                            data = {
+                                                Name: worksheet.getCell('Z' + rowNumber).value,
+                                                Name_english: worksheet.getCell('Z' + nextRow).value,
+                                                Nationality: worksheet.getCell('X' + rowNumber).value,
+                                                Specialization: worksheet.getCell('W' + rowNumber).value,
+                                                Enter_date: worksheet.getCell('T' + rowNumber).value,
+                                                Identity_type: worksheet.getCell('S' + rowNumber).value,
+                                                Identity_No: worksheet.getCell('Q' + rowNumber).value,
+                                                Identity_Date: worksheet.getCell('O' + rowNumber).value,
+                                                Passport_No: worksheet.getCell('M' + rowNumber).value,
+                                                Bairth_Date: worksheet.getCell('L' + rowNumber).value,
+                                                student_record: worksheet.getCell('J' + rowNumber).value,
+                                                status: worksheet.getCell('E' + rowNumber).value,
+                                                attending_date: worksheet.getCell('D' + rowNumber).value,
+                                                notes: worksheet.getCell('C' + rowNumber).value,
+                                            };
+                                            req.body.studentsData = data;
+                                            studentsMethods.saveStudent(req, res, function (result) {
+                                                if (result.success) {
+                                                    finalStudents.push(data);
+                                                    console.log(result);
+                                                    message = result.msg;
+                                                } else {
+                                                    console.log(result);
+                                                    message = result.msg;
+                                                }
+                                            });
                                         }
+                                    }
+                                });
+                            });
+                            console.log('MEssage : ', message);
+                            callback({status: true, message: message, data: finalStudents});
+                        } else if (req.body.type == 'studentsDegrees') {
+                            workbook.eachSheet(function (worksheet, sheetId) {
+                                // var worksheet = workbook.getWorksheet();
+                                worksheet.eachRow(function (row, rowNumber) {
+                                    if (rowNumber > 19) {
+                                        if (worksheet.getCell('W' + rowNumber).value) {
+                                            // var cellNumber = "Q"+rowNumber;
+                                            data = {
+                                                student_number: (worksheet.getCell('X' + rowNumber).value) ? worksheet.getCell('X' + rowNumber).value : worksheet.getCell('W' + rowNumber).value,
+                                                student_name: (worksheet.getCell('X' + rowNumber).value) ? worksheet.getCell('W' + rowNumber).value : worksheet.getCell('V' + rowNumber).value,
+                                                course_name: worksheet.getCell('E9').value,
+                                                section_name: worksheet.getCell('E12').value,
+                                            };
+                                            allCells.push(data);
+                                        }
+                                    }
+                                });
+                                let cols = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+                                cols.map(function (col) {
+                                    standards.push(worksheet.getCell(col + '19').value);
+                                });
+                            });
+
+                            function addToDB(allCells) {
+                                if (allCells[counter]) {
+                                    let sectionPromise = new Promise(function (resolve, reject) {
+                                        sequelizeConfig.sectionsTable.findOrCreate({
+                                            where: {Name: allCells[counter].section_name.trim()},
+                                            defaults: {School_Id: 1}
+                                        }).spread((section, created) => {
+                                            resolve(section.id);
+                                        });
                                     });
+                                    let studentPromise = new Promise(function (resolve, reject) {
+                                        sequelizeConfig.studentTable.find({where: {Name: allCells[counter].student_name}})
+                                            .then(function (student) {
+                                                // Check if record exists in db
+                                                if (student) {
+                                                    console.log('student : ', student);
+                                                    student.updateAttributes({
+                                                        Academic_No: allCells[counter].student_number
+                                                    }).then(function () {
+                                                        resolve(student.student_id);
+                                                    })
+                                                } else {
+                                                    console.log('New Name', allCells[counter].student_name);
+                                                    sequelizeConfig.studentTable.create({
+                                                        Academic_No: allCells[counter].student_number,
+                                                        School_Id: 1,
+                                                        Name: allCells[counter].student_name
+                                                    }).then(student => {
+                                                        resolve(student.student_id);
+                                                    });
+                                                }
+                                            });
+                                    });
+                                    Promise.all([studentPromise, sectionPromise]).then(function (data) {
+                                        sequelizeConfig.studentsSectionTable.create({
+                                            School_Id: 1,
+                                            Section_Id: data[1],
+                                            Student_Id: data[0],
+                                        })
+                                            .then(studentsSections => {
+                                                counter++;
+                                                addToDB(allCells);
+                                                console.log("YEEEEEEEEEEEEEEES");
+                                            })
+
+
+                                    });
+                                    //
                                 }
                             }
-                        });
-                    });
-                    console.log('MEssage : ',message);
-                    callback({status : true , message : message , data : finalStudents});
 
-                });
+                            addToDB(allCells);
+                        }
+                    }
+                );
         } catch (e) {
             res.json({error_code: 1, err_desc: "Corupted excel file"});
         }

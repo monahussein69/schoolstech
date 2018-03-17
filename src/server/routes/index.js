@@ -198,6 +198,11 @@ router.post('/upload', function (req, res) {
                 console.log("result : ", result);
                 res.send({status: true, msg: result.message});
             });
+        }else if(req.body.type == 'studentsDegrees'){
+            studentsMethods.UploadExcel(req, res, function (result) {
+                console.log("result : ", result);
+                res.send({status: true, msg: result.message});
+            });
         }
 
         // if(req.file.originalname.split('.')[req.file.originalname.split('.').length-1] === 'xlsx'){
