@@ -6,6 +6,7 @@ var bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 var userMethods = {
+
     saveUserData: function (req, res, callback) {
         var userData = req.body.userData;
         var response = {};
@@ -16,7 +17,7 @@ var userMethods = {
 
                 if (Object.keys(result).length) {
                     var user_id = result[0].id;
-                    con.query(" update sys_users set schoolId = ?,userType = ?,loginName = ?,password = ?,groupId=?,PasswordHash=?,is_active = ? where id = ?",
+                    con.query(" update sys_users set schoolId = ?,userType = ?,loginName = ?,password = ?,groupId=?,PasswordHash=?,is_active = ?,isLeader = ? where id = ?",
                         [
                             userData.schoolId,
                             userData.userType,
@@ -25,6 +26,7 @@ var userMethods = {
                             userData.groupId,
                             userData.PasswordHash,
                             userData.is_active,
+                            userData.isLeader,
                             user_id
                         ], function (err, result) {
                             if (err)
@@ -44,13 +46,14 @@ var userMethods = {
                         }
                     );
                 } else {
-                    con.query(" insert into sys_users  (schoolId,userType,loginName,password,groupId,PasswordHash,is_active) values(?,?,?,?,?,?,?)",
+                    con.query(" insert into sys_users  (schoolId,userType,loginName,password,groupId,PasswordHash,is_active,isLeader) values(?,?,?,?,?,?,?,?)",
                         [   userData.schoolId,
                             userData.userType,
                             userData.loginName,
                             userData.password,
                             userData.groupId,
                             userData.PasswordHash,
+                            userData.isLeader,
                             userData.is_active,], function (err, result) {
                             if (err)
                                 throw err

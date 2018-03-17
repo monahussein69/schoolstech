@@ -11,7 +11,19 @@
         </li>
     </ul>
 </div>
-<h3 class="page-title"> ادارة الجدول المدرسي </h3>
+<div class="row" ng-show="(model.config && model.config_step == 3)">
+    <div class="col-md-10">
+        <h3 class="page-title"> الخطوه الرابعه : استيراد الجدول المدرسي </h3>
+    </div>
+    <div class="col-md-2">
+        <h3 class="page-title">
+            <button ng-click="model.nextStep('#/dashboard.html')" ng-disabled="model.schoolSchedule.length == 0" class="btn btn-danger">
+                <h4> انتهاء</h4>
+            </button>
+        </h3>
+    </div>
+</div>
+<h3 class="page-title" ng-hide="(model.config && model.config_step == 3)"> ادارة الجدول المدرسي </h3>
 <!-- END PAGE HEADER-->
 <!-- BEGIN MAIN CONTENT -->
 <div class="row">

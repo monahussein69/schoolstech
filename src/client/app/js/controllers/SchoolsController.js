@@ -259,17 +259,42 @@ angular.module('MetronicApp').controller('ManageSchoolAccountController', functi
 });
 
 angular.module('MetronicApp').controller('SchoolScheduleController',
-    function ($rootScope, $scope, $http, $window, localStorageService, manageSchoolService, Upload, toastr) {
-        var model = {
+    function ($rootScope, $scope, $http, $window, localStorageService, manageSchoolService, Upload, toastr,CommonService) {
+
+        var config_step = -1;
+        var config = false;
+
+
+            var model = {
             upload: upload,
             doUpload: doUpload,
             progress: 0,
             deleteSchool: deleteSchool,
             schoolId : localStorageService.get('UserObject')[0].schoolId,
             schoolSchedule : [],
+                nextStep:nextStep,
+                config:config,
+                config_step : config_step,
             loading : false
         };
         $scope.model = model;
+        console.log(localStorageService.get('UserObject')[0]);
+
+        CommonService.currentStep(model.schoolId,function(result){
+            model.config_step = result;
+        });
+
+        model.config = localStorageService.get('UserObject')[0].config_flag;
+
+        CommonService.checkPage(model.schoolId);
+
+
+        function nextStep(url){
+            CommonService.nextStep(model.schoolId,function(result){
+                $window.location.href = url;
+            });
+        }
+
         getSchoolTable();
         function getSchoolTable(){
             model.loading = true;

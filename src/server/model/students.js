@@ -168,6 +168,7 @@ var studentsMethods = {
     UploadExcel: function (req, res, callback) {
         try {
             //
+            var schoolId = req.body.schoolId;
             console.log('File Name : ', req.body.filename);
             var workbook = new Excel.Workbook();
             let data = {};
@@ -187,6 +188,7 @@ var studentsMethods = {
                                             var nextRow = rowNumber + 1;
                                             data = {
                                                 Name: worksheet.getCell('Z' + rowNumber).value,
+                                                School_Id : schoolId,
                                                 Name_english: worksheet.getCell('Z' + nextRow).value,
                                                 Nationality: worksheet.getCell('X' + rowNumber).value,
                                                 Specialization: worksheet.getCell('W' + rowNumber).value,
@@ -301,7 +303,8 @@ var studentsMethods = {
         }
     },
     getAllStudents: function (req, res, callback) {
-        con.query('SELECT * FROM sch_str_student', function (err, result) {
+        var schoolId = req.params.schoolId;
+        con.query('SELECT * FROM sch_str_student where School_Id = ?',[schoolId], function (err, result) {
                 if (err)
                     throw err
 

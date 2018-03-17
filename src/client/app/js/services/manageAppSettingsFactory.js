@@ -25,6 +25,13 @@ angular.module('MetronicApp').factory('manageAppSettingsService', function ($htt
 
     };
 
+    fac.getCalenderByDate = function (date,callback) {
+        $http.post("http://localhost:3000/getCalenderByDate",{'date':date}).success(function (response) {
+            callback(response);
+        });
+
+    };
+
     fac.uploadPhoto = function (files, id) {
         return new Promise(function (resolve) {
             Upload.upload({

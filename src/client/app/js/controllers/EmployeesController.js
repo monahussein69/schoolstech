@@ -46,15 +46,13 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
             if (userType == 2) {
                 schoolId = userObject[0].schoolId;
                 current_school_data = userObject[0].schoolData;
-
-                CommonService.currentStep(schoolId,function(result){
-                    config_step = result;
-                });
             } else {
                 schoolId = $stateParams.schoolId;
             }
             config = userObject[0].config_flag;
         }
+
+
 
     var model = {
             upload: upload,
@@ -92,6 +90,10 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
             dtInstance: {},
         };
         $scope.model = model;
+
+        CommonService.currentStep(schoolId,function(result){
+            model.config_step = result;
+        });
 
         function createdRow(row, data, dataIndex) {
             // Recompiling so we can bind Angular directive to the DT
@@ -426,7 +428,7 @@ angular.module('MetronicApp').controller('ManageLeader&AgentsController', functi
 
 
 
-    manageEmployeeService.getEmployeesBasedJob(schoolId,'قائد مدرسة',0,function (result) {
+    manageEmployeeService.getEmployeesBasedJob(schoolId,'قائد مدرسة الحالي',0,function (result) {
         if(result.length) {
             model.agentsObj.schoolLeader = result[0].id;
             model.added = 1;

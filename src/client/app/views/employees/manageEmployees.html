@@ -11,13 +11,14 @@
         </li>
     </ul>
 </div>
+
 <div class="row" ng-show="model.config && model.config_step == 0">
     <div class="col-md-10">
         <h3 class="page-title"> الخطوه الاولى : استيراد و تحديث بيانات الموظفين</h3>
     </div>
     <div class="col-md-2">
         <h3 class="page-title">
-            <button ng-click="model.nextStep('/manageLeaders')" ng-disabled="employees.length == 0" class="btn btn-danger">
+            <button ng-click="model.nextStep('#/manageLeaders')" ng-disabled="model.employees.length == 0" class="btn btn-danger">
                 <h4> الخطوه التاليه
                     <i class="fa fa-arrow-left" aria-hidden="true"></i>
                 </h4>

@@ -14,6 +14,7 @@ var attScheduleMethods = require('../model/sch_att_schedule.js');
 var employeesAttendanceMethods = require('../model/employeesAttendance.js');
 var employeeAttendanceRecordMethods = require('../model/employeeAttendanceRecord.js');
 var employeesExcuseMethods = require('../model/employeesExcuse.js');
+var employeesVacationMethods = require('../model/employeeVacation.js');
 
 var app = express();
 var multer = require('multer');
@@ -93,7 +94,7 @@ router.get('/getLectursTable/:schoolId', function (req, res, next) {
         res.send(result);
     });
 });
-router.get('/getAllStudents', function (req, res, next) {
+router.get('/getAllStudents/:schoolId', function (req, res, next) {
     studentsMethods.getAllStudents(req, res, function (result) {
         res.send(result);
     });
@@ -129,6 +130,12 @@ router.get('/getAllSchools', function (req, res, next) {
 
 router.get('/getAllEmployees/:schoolId', function (req, res, next) {
     employeeMethods.getEmployees(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/getAllEmployeesAttendanceByActivity', function (req, res, next) {
+    employeesAttendanceMethods.getAllEmployeesAttendanceByActivity(req, res, function (result) {
         res.send(result);
     });
 });
@@ -270,6 +277,12 @@ router.post('/saveAppSettingsData', function (req, res, next) {
     });
 });
 
+router.post('/getCalenderByDate', function (req, res, next) {
+    appSettingsMethods.getCalenderByDate(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 
 router.get('/getAppSettings', function (req, res, next) {
     appSettingsMethods.getappSettingsData(req, res, function (result) {
@@ -407,8 +420,26 @@ router.post('/closeFirstAttendance/', function (req, res, next) {
     });
 });
 
+router.post('/closeSecondAttendance/', function (req, res, next) {
+   employeesAttendanceMethods.closeSecondAttendance(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/getClosingButton/', function (req, res, next) {
+   employeesAttendanceMethods.getClosingButton(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 router.post('/sendExcuseRequest/', function (req, res, next) {
    employeesExcuseMethods.sendExcuseRequest(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/sendAbsentRequest/', function (req, res, next) {
+    employeesVacationMethods.sendAbsentRequest(req, res, function (result) {
         res.send(result);
     });
 });

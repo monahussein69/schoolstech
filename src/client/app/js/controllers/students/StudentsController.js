@@ -1,16 +1,37 @@
 angular.module('MetronicApp').controller('StudentsController',
-    function ($rootScope, $scope, $http, $window, localStorageService, StudentsService, Upload, toastr, DTOptionsBuilder, DTColumnBuilder, $q) {
-        console.log("salim");
+    function ($rootScope, $scope, $http, $window, localStorageService, StudentsService, Upload, toastr, DTOptionsBuilder, DTColumnBuilder, $q,CommonService) {
 
+        var schoolId = 0;
+        var config_step = -1;
+        var config = false;
+        var userObject = localStorageService.get('UserObject');
+        if(userObject){
+            var userType = userObject[0].userType;
+            var schoolId = 0;
+            if (userType == 2) {
+                schoolId = userObject[0].schoolId;
+                current_school_data = userObject[0].schoolData;
+
+            } else {
+                schoolId = $stateParams.schoolId;
+            }
+            config = userObject[0].config_flag;
+        }
         var model = {
             upload: upload,
             doUpload: doUpload,
             progress: 0,
             deleteStudent: deleteStudent,
+            schoolId: schoolId,
+            nextStep:nextStep,
+            config:config,
+            config_step : config_step,
+            students:[],
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
-                StudentsService.getAllStudents().then(function (students) {
+                StudentsService.getAllStudents(schoolId).then(function (students) {
                     defer.resolve(students);
+                    model.students = students;
                 });
                 return defer.promise
             }),
@@ -26,6 +47,14 @@ angular.module('MetronicApp').controller('StudentsController',
             students: {}
         };
         $scope.model = model;
+
+        CommonService.currentStep(schoolId,function(result){
+            model.config_step = result;
+        });
+
+        $scope.model.schoolId = schoolId;
+
+        CommonService.checkPage(schoolId);
 
 
         function deleteStudent(studentId) {
@@ -53,13 +82,20 @@ angular.module('MetronicApp').controller('StudentsController',
 
         };
 
+        function nextStep(url){
+            CommonService.nextStep(model.schoolId,function(result){
+                $window.location.href = url;
+            });
+        }
+
         function upload(file) {
             return new Promise(function (resolve, reject) {
                 Upload.upload({
                     url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
                     data: {
                         file: file,
-                        type: 'student'
+                        type: 'student',
+                        schoolId: model.schoolId
                     } //pass file as data, should be user ng-model
                 }).then(function (resp) { //upload function returns a promise
                     console.log(resp);

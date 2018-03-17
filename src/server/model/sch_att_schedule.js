@@ -7,7 +7,9 @@ var attScheduleMethods = {
         var profile_id = req.body.profile_id;
         req.params.profileId = profile_id;
         var days =
-            ['السبت','الأحد','الأثنين','الثلاثاء','الأربعاء','الخميس','الجمعه'];
+            ['السبت','الاحد','الاثنين','الثلاثاء','الاربعاء','الخميس','الجمعة'];
+
+        var numbers = ['الأولى' , 'الثانية','الثالثة', 'الرابعة' , 'الخامسة' , 'السادسة' , 'السابعة' , 'الثامنة' , 'التاسعة' , 'العاشرة'];
 
         workingSettingsMethods.getSettingProfile(req,res,function(result) {
             var profileData = result[0];
@@ -107,7 +109,7 @@ var attScheduleMethods = {
                         activityObj.SCHEDULE_Id = profile_id;
                         activityObj.Day = Day_Begining[Day];
                         activityObj.eventtype = 'حصه';
-                        activityObj.event_Nam = 'حصه(' + i + ')';
+                        activityObj.event_Nam = 'الحصة '+numbers[i-1];
                         activityObj.Begining_Time = lecture_Begining_time;
                         activityObj.Ending_Time = lecture_end_time;
                         activityObj.Day_no = days.indexOf(Day_Begining[Day]);
@@ -221,14 +223,13 @@ var attScheduleMethods = {
         );
     },
 
-    getAttScheduleByEventTypeAndDay: function (req, res, callback) {
+    getAttScheduleByEventNameAndDay: function (req, res, callback) {
         var Day = req.body.Day;
-        var eventtype = req.body.eventtype;
+        var eventname = req.body.eventname;
         var SCHEDULE_Id = req.body.SCHEDULE_Id;
-        console.log(Day);
-        console.log(eventtype);
-        console.log(SCHEDULE_Id);
-        con.query('select * from sch_att_schedule where Day = ? and eventtype = ? and SCHEDULE_Id = ? ', [Day,eventtype,SCHEDULE_Id], function (err, result) {
+
+        var query =con.query('select * from sch_att_schedule where Day = ? and event_Nam = ? and SCHEDULE_Id = ? ', [Day,eventname,SCHEDULE_Id], function (err, result) {
+               console.log(query.sql);
                 if (err)
                     throw err
 

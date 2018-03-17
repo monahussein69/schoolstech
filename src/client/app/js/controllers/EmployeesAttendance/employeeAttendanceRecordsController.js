@@ -83,19 +83,18 @@ angular.module('MetronicApp').controller('employeeAttendanceAbsentRecordControll
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                 employeesAttendanceRecordsService.getEmployeeAbsentRecord(schoolId,employeeId).then(function (record) {
-                    defer.resolve([]);
+                    defer.resolve(record);
                     model.record = record;
                 });
 
                 return defer.promise
             }),
             columns: [
-                DTColumnBuilder.newColumn('start_Day').withTitle(' البدايه / اليوم'),
-                DTColumnBuilder.newColumn('start_Date').withTitle(' البدايه / التاريخ'),
-                DTColumnBuilder.newColumn('end_Day').withTitle('النهايه / اليوم'),
-                DTColumnBuilder.newColumn('end_Date').withTitle(' النهايه /تاريخ'),
-                DTColumnBuilder.newColumn('absent_reason').withTitle(' سبب الغياب'),
-                DTColumnBuilder.newColumn('absent_type').withTitle(' نوع الغياب'),
+                DTColumnBuilder.newColumn('Start_Day').withTitle(' البدايه / اليوم'),
+                DTColumnBuilder.newColumn('Start_Date').withTitle(' البدايه / التاريخ'),
+                DTColumnBuilder.newColumn('End_Day').withTitle('النهايه / اليوم'),
+                DTColumnBuilder.newColumn('End_Date').withTitle(' النهايه /تاريخ'),
+                DTColumnBuilder.newColumn('VactionType').withTitle(' نوع الغياب'),
             ],
             dtInstance: {},
         };

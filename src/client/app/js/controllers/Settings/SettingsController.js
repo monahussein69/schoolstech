@@ -93,7 +93,7 @@ angular.module('MetronicApp').controller('appSettingsController',
 
         function getArabicDay(dayNo) {
             var array = [];
-            array[0] = 'الأحد';
+            array[0] = 'الاحد';
             array[1] = 'الاثنين';
             array[2] = 'الثلاثاء';
             array[3] = 'الاربعاء';

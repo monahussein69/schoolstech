@@ -19,9 +19,9 @@ angular.module('MetronicApp').factory('StudentsService', function ($http, Upload
         });
     };
 
-    service.getAllStudents = function () {
+    service.getAllStudents = function (schoolId) {
         return new Promise(function (resolve, reject) {
-            $http.get("http://localhost:3000/getAllStudents").success(function (response) {
+            $http.get("http://localhost:3000/getAllStudents/"+schoolId).success(function (response) {
                 console.log(response);
                 resolve(response);
             });
