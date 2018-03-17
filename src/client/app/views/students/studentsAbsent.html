@@ -1,0 +1,48 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="dashboard">الرئيسية</a>
+            <i class="fa fa-angle-left"></i>
+        </li>
+        <li>
+            <a ui-sref="datatablesmanaged">سجل الغياب </a>
+        </li>
+    </ul>
+</div>
+<h3 class="page-title"> سجل الغياب  </h3>
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet light bordered">
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"> المعلم </label>
+                            <div class="col-sm-6">
+                                <select name="activity" class="form-control" ng-model="model.activity" ng-change="model.getAllEmployeesByActivity()">
+                                    <option selected disabled value="">اختر المعلم </option>
+                                    <option ng-repeat="activity in model.listOfActivity track by $index" value="{{activity.event_Nam}}">{{activity.event_Nam}} </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"> الفعاليه </label>
+                            <div class="col-sm-6">
+                                <select name="activity" class="form-control" ng-model="model.activity" ng-change="model.getAllEmployeesByActivity()">
+                                    <option selected disabled value="">اختر الفعالية </option>
+                                    <option ng-repeat="activity in model.listOfActivity track by $index" value="{{activity.event_Nam}}">{{activity.event_Nam}} </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table datatable="" class="table table-striped table-bordered table-hover table-checkable order-column" dt-options="model.options" dt-columns="model.columns" dt-instance="model.dtInstance" class="row-border hover"></table>
+            </div>
+        </div>
+    </div>
+</div>

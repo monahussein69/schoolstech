@@ -48,7 +48,7 @@ var upload = multer({
 var uploads = multer({
     storage: storage,
     fileFilter: function (req, file, callback) { //file filter
-        if (['png', 'jpg' , 'jpeg'].indexOf(file.originalname.split('.')[file.originalname.split('.').length - 1]) === -1) {
+        if (['png', 'jpg', 'jpeg'].indexOf(file.originalname.split('.')[file.originalname.split('.').length - 1]) === -1) {
             return callback(new Error('Wrong extension type'));
         }
         callback(null, true);
@@ -58,12 +58,12 @@ var uploads = multer({
 var uploadPhoto = multer({
     storage: storage,
     fileFilter: function (req, file, callback) { //file filter
-        if (['png', 'jpg' , 'jpeg'].indexOf(file.originalname.split('.')[file.originalname.split('.').length - 1]) === -1) {
+        if (['png', 'jpg', 'jpeg'].indexOf(file.originalname.split('.')[file.originalname.split('.').length - 1]) === -1) {
             return callback(new Error('Wrong extension type'));
         }
         callback(null, true);
     }
-}).array('files' , 10);
+}).array('files', 10);
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -185,27 +185,27 @@ router.post('/upload', function (req, res) {
             return;
         }
         req.body.filename = filename;
-		if(req.body.type == 'school'){
-			schoolMethods.UploadExcel(req, res, function (result) {
-            console.log("result : ", result);
-            res.send({status: true, msg: 'تم اضافة الملف بنجاح'});
-           });
-		}else if(req.body.type == 'employee'){
-			employeeMethods.UploadExcel(req, res, function (result) {
-            console.log("result : ", result);
-            res.send(result);
-           });
-		}else if(req.body.type == 'student'){
-			studentsMethods.UploadExcel(req, res, function (result) {
-            console.log("result : ", result);
-            res.send({status: true, msg: result.message});
-           });
-		}else if(req.body.type == 'schoolSchedule'){
+        if (req.body.type == 'school') {
+            schoolMethods.UploadExcel(req, res, function (result) {
+                console.log("result : ", result);
+                res.send({status: true, msg: 'تم اضافة الملف بنجاح'});
+            });
+        } else if (req.body.type == 'employee') {
+            employeeMethods.UploadExcel(req, res, function (result) {
+                console.log("result : ", result);
+                res.send(result);
+            });
+        } else if (req.body.type == 'student') {
+            studentsMethods.UploadExcel(req, res, function (result) {
+                console.log("result : ", result);
+                res.send({status: true, msg: result.message});
+            });
+        } else if (req.body.type == 'schoolSchedule') {
             schoolMethods.UploadExcel(req, res, function (result) {
                 console.log("result : ", result);
                 res.send({status: true, msg: result.message});
             });
-        }else if(req.body.type == 'studentsDegrees'){
+        } else if (req.body.type == 'studentsDegrees') {
             studentsMethods.UploadExcel(req, res, function (result) {
                 console.log("result : ", result);
                 res.send({status: true, msg: result.message});
@@ -350,9 +350,9 @@ router.post('/ActivateUser', function (req, res, next) {
 
 router.post('/saveWorkingSettingsData', function (req, res, next) {
     workingSettingsMethods.saveWorkingSettingsData(req, res, function (result) {
-        if(result.success){
+        if (result.success) {
             req.body.profile_id = result.id;
-            attScheduleMethods.saveActivityData(req,res,function(result){
+            attScheduleMethods.saveActivityData(req, res, function (result) {
                 //res.send(result);
             });
         }
@@ -384,8 +384,14 @@ router.get('/getActivityByDayAndSchoolId/:schoolId', function (req, res, next) {
     });
 });
 
+router.get('/getActivityByEmployeeId/:employeeId', function (req, res, next) {
+    employeeMethods.getActivityByEmployeeId(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 router.get('/getAllEmployeesAttendance/:schoolId', function (req, res, next) {
-   employeesAttendanceMethods.getAllEmployeesAttendance(req, res, function (result) {
+    employeesAttendanceMethods.getAllEmployeesAttendance(req, res, function (result) {
         res.send(result);
     });
 });
@@ -403,37 +409,37 @@ router.get('/getEmployeeAbsentRecord/:schoolId/:employeeId', function (req, res,
 });
 
 router.post('/setEmployeeAttendance/', function (req, res, next) {
-   employeesAttendanceMethods.setEmployeeAttendance(req, res, function (result) {
+    employeesAttendanceMethods.setEmployeeAttendance(req, res, function (result) {
         res.send(result);
     });
 });
 
 router.post('/setEmployeeActivityAttendance/', function (req, res, next) {
-   employeesAttendanceMethods.setEmployeeActivityAttendance(req, res, function (result) {
+    employeesAttendanceMethods.setEmployeeActivityAttendance(req, res, function (result) {
         res.send(result);
     });
 });
 
 router.post('/closeFirstAttendance/', function (req, res, next) {
-   employeesAttendanceMethods.closeFirstAttendance(req, res, function (result) {
+    employeesAttendanceMethods.closeFirstAttendance(req, res, function (result) {
         res.send(result);
     });
 });
 
 router.post('/closeSecondAttendance/', function (req, res, next) {
-   employeesAttendanceMethods.closeSecondAttendance(req, res, function (result) {
+    employeesAttendanceMethods.closeSecondAttendance(req, res, function (result) {
         res.send(result);
     });
 });
 
 router.post('/getClosingButton/', function (req, res, next) {
-   employeesAttendanceMethods.getClosingButton(req, res, function (result) {
+    employeesAttendanceMethods.getClosingButton(req, res, function (result) {
         res.send(result);
     });
 });
 
 router.post('/sendExcuseRequest/', function (req, res, next) {
-   employeesExcuseMethods.sendExcuseRequest(req, res, function (result) {
+    employeesExcuseMethods.sendExcuseRequest(req, res, function (result) {
         res.send(result);
     });
 });

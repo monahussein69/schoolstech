@@ -188,7 +188,7 @@ var studentsMethods = {
                                             var nextRow = rowNumber + 1;
                                             data = {
                                                 Name: worksheet.getCell('Z' + rowNumber).value,
-                                                School_Id : schoolId,
+                                                School_Id: schoolId,
                                                 Name_english: worksheet.getCell('Z' + nextRow).value,
                                                 Nationality: worksheet.getCell('X' + rowNumber).value,
                                                 Specialization: worksheet.getCell('W' + rowNumber).value,
@@ -253,6 +253,13 @@ var studentsMethods = {
                                             resolve(section.id);
                                         });
                                     });
+                                    let coursePromise = new Promise(function (resolve, reject) {
+                                        sequelizeConfig.courseTable.findOrCreate({
+                                            where: {Course_Name: allCells[counter].course_name.trim()},
+                                        }).spread((course, created) => {
+                                            resolve(course.id);
+                                        });
+                                    });
                                     let studentPromise = new Promise(function (resolve, reject) {
                                         sequelizeConfig.studentTable.find({where: {Name: allCells[counter].student_name}})
                                             .then(function (student) {
@@ -276,11 +283,12 @@ var studentsMethods = {
                                                 }
                                             });
                                     });
-                                    Promise.all([studentPromise, sectionPromise]).then(function (data) {
+                                    Promise.all([studentPromise, sectionPromise, coursePromise]).then(function (data) {
                                         sequelizeConfig.studentsSectionTable.create({
                                             School_Id: 1,
                                             Section_Id: data[1],
                                             Student_Id: data[0],
+                                            course_id: data[2]
                                         })
                                             .then(studentsSections => {
                                                 counter++;
@@ -304,7 +312,7 @@ var studentsMethods = {
     },
     getAllStudents: function (req, res, callback) {
         var schoolId = req.params.schoolId;
-        con.query('SELECT * FROM sch_str_student where School_Id = ?',[schoolId], function (err, result) {
+        con.query('SELECT * FROM sch_str_student where School_Id = ?', [schoolId], function (err, result) {
                 if (err)
                     throw err
 
