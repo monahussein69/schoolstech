@@ -609,7 +609,7 @@ var employeesAttendanceMethods = {
 
             if (Object.keys(result).length) {
 
-                con.query('update sch_att_empatt set  school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?, Event_type_id = ? where Calender_id = ? and employee_id = ? ',
+                con.query('update sch_att_empatt set  school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?, Event_type_id = ? where Calender_id = ? and employee_id = ? and Event_Name = ? ',
                     [
                         attendanceObj.school_id,
                         attendanceObj.Event_Name,
@@ -619,6 +619,7 @@ var employeesAttendanceMethods = {
                         attendanceObj.Event_type_id,
                         attendanceObj.Calender_id,
                         attendanceObj.employee_id,
+                        attendanceObj.Event_Name,
                     ], function (err, result) {
                         if (err)
                             throw err
