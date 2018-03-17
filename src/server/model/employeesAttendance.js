@@ -16,6 +16,7 @@ var employeesAttendanceMethods = {
         req.body.date = current_date;
         req.body.date = '03-18-2018';
         var lecture_name = req.body.lecture_name;
+        var breaks = [  'طابور','صلاه', 'فسحه (1)' ,'فسحه (2)'];
         var response = [];
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {
@@ -35,20 +36,32 @@ var employeesAttendanceMethods = {
                     currentDay1 = 'الأربعاء';
                 }
 
-                var query  = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date,sch_att_empvacation.Start_Date as vacation_date from sch_str_employees join sch_acd_lecturestables '+
-                    'on sch_acd_lecturestables.Teacher_Id = sch_str_employees.id '+
-                    'join sch_acd_lectures on sch_acd_lecturestables.Lecture_NO = sch_acd_lectures.id '+
-                    ' left join sch_att_empatt '+
-                    ' on (sch_str_employees.id = sch_att_empatt.employee_id and sch_acd_lectures.name = sch_att_empatt.Event_Name)'+
-                    'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
-                    'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
-                    'where sch_acd_lectures.name = ? and (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) and sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL)', [lecture_name,currentDay,currentDay1,schoolId,calendarId], function (err, result) {
-                    console.log(query.sql);
-                    if (err)
-                            throw err
-                        callback(result);
-                    }
-                );
+                if(breaks.indexOf(lecture_name)  > -1){
+                    var query  = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date,sch_att_empvacation.Start_Date as vacation_date from sch_str_employees  left join sch_att_empatt  on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Event_Name = ?) left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id where (sch_att_empatt.Event_Name = ? or sch_att_empatt.Event_Name IS NULL ) and sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL) order by main_employee_id asc', [lecture_name,lecture_name,schoolId,calendarId], function (err, result) {
+                            console.log(query.sql);
+                            if (err)
+                                throw err
+                            callback(result);
+                        }
+                    );
+                }else{
+                    var query  = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date,sch_att_empvacation.Start_Date as vacation_date from sch_str_employees join sch_acd_lecturestables '+
+                        'on sch_acd_lecturestables.Teacher_Id = sch_str_employees.id '+
+                        'join sch_acd_lectures on sch_acd_lecturestables.Lecture_NO = sch_acd_lectures.id '+
+                        ' left join sch_att_empatt '+
+                        ' on (sch_str_employees.id = sch_att_empatt.employee_id and sch_acd_lectures.name = sch_att_empatt.Event_Name)'+
+                        'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
+                        'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
+                        'where sch_acd_lectures.name = ? and (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) and sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL)', [lecture_name,currentDay,currentDay1,schoolId,calendarId], function (err, result) {
+                            console.log(query.sql);
+                            if (err)
+                                throw err
+                            callback(result);
+                        }
+                    );
+                }
+
+
             }else{
                 callback(response);
             }
