@@ -6,7 +6,7 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
         $http.post("http://localhost:3000/saveEmployeeData", {
             'empData': empObj
         }).success(function (response) {
-			 if(typeof empObj.photo_file !== 'string') {
+            if (typeof empObj.photo_file !== 'string') {
                 fac.uploadPhoto(empObj.photoFile, response.id);
             }
             callback(response);
@@ -14,12 +14,11 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
     };
 
 
-
-    fac.getAllEmployeesByActivity = function (schoolId,lecture_name) {
+    fac.getAllEmployeesByActivity = function (schoolId, lecture_name) {
         return new Promise(function (resolve, reject) {
             $http.post("http://localhost:3000/getAllEmployeesByActivity", {
                 'schoolId': schoolId,
-                'lecture_name':lecture_name
+                'lecture_name': lecture_name
             }).success(function (response) {
                 console.log(response);
                 resolve(response);
@@ -27,6 +26,16 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
         });
 
     };
+
+    fac.getActivityByEmployeeId = function (employeeId) {
+        return new Promise(function (resolve, reject) {
+            $http.get("http://localhost:3000/getActivityByEmployeeId/" + employeeId).success(function (response) {
+                console.log(response);
+                resolve(response);
+            });
+        });
+    };
+
 
     fac.getEmpData = function (empId, callback) {
         $http.get("http://localhost:3000/getEmployee/" + empId).success(function (response) {
@@ -36,18 +45,22 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
 
     fac.getAllEmployees = function (schoolId) {
         return new Promise(function (resolve, reject) {
-            $http.get("http://localhost:3000/getAllEmployees/"+schoolId).success(function (response) {
+            $http.get("http://localhost:3000/getAllEmployees/" + schoolId).success(function (response) {
                 console.log(response);
                 resolve(response);
             });
         });
-
     };
-    fac.getEmployeesBasedJob = function (schoolId,job_title,sub_job_title,callback) {
 
-            $http.post("http://localhost:3000/getAllEmployeesByJobTitle",{'schoolId':schoolId,'job_title':job_title,'sub_job_title':sub_job_title}).success(function (response) {
-                callback(response);
-            });
+    fac.getEmployeesBasedJob = function (schoolId, job_title, sub_job_title, callback) {
+
+        $http.post("http://localhost:3000/getAllEmployeesByJobTitle", {
+            'schoolId': schoolId,
+            'job_title': job_title,
+            'sub_job_title': sub_job_title
+        }).success(function (response) {
+            callback(response);
+        });
 
     };
 
@@ -56,13 +69,13 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
             callback(response);
         });
     };
-	
-	
-	 fac.uploadPhoto = function (file , id) {
+
+
+    fac.uploadPhoto = function (file, id) {
         return new Promise(function (resolve) {
             Upload.upload({
                 url: 'http://localhost:3000/upload-photo', //webAPI exposed to upload the file
-                data: {files: file , id : id,type:'employee_photo'} //pass file as data, should be user ng-model
+                data: {files: file, id: id, type: 'employee_photo'} //pass file as data, should be user ng-model
             }).then(function (resp) { //upload function returns a promise
                 console.log(resp);
                 if (resp.status === 200) { //validate success
@@ -83,20 +96,26 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
     };
 
 
-	 fac.DeActivateEmployee = function (empId, callback) {
-         $http.post("http://localhost:3000/DeactivateUser",{'empId':empId,'type':'employee'}).success(function (response) {
-             callback(response);
-         });
-     };
-
-    fac.ActivateEmployee = function (empId, callback) {
-        $http.post("http://localhost:3000/ActivateUser",{'empId':empId,'type':'employee'}).success(function (response) {
+    fac.DeActivateEmployee = function (empId, callback) {
+        $http.post("http://localhost:3000/DeactivateUser", {
+            'empId': empId,
+            'type': 'employee'
+        }).success(function (response) {
             callback(response);
         });
     };
 
-    fac.setEmpPostions = function(agentsObj,callback){
-        $http.post("http://localhost:3000/setEmpPostions",{'agentsObj':agentsObj}).success(function (response) {
+    fac.ActivateEmployee = function (empId, callback) {
+        $http.post("http://localhost:3000/ActivateUser", {
+            'empId': empId,
+            'type': 'employee'
+        }).success(function (response) {
+            callback(response);
+        });
+    };
+
+    fac.setEmpPostions = function (agentsObj, callback) {
+        $http.post("http://localhost:3000/setEmpPostions", {'agentsObj': agentsObj}).success(function (response) {
             callback(response);
         });
     }

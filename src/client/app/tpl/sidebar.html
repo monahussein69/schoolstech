@@ -8,9 +8,11 @@
     <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
     <div class="page-logo">
         <a ui-sref="dashboard">
-            <img style="margin:10px auto ; display: block;" src="{{settings.layoutPath}}/img/logo.png" alt="logo" class="logo-default" /> </a>
+            <img style="margin:10px auto ; display: block;" src="{{settings.layoutPath}}/img/logo.png" alt="logo"
+                 class="logo-default"/> </a>
     </div>
-    <ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}">
+    <ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200"
+        ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}">
         <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
         <li class="start nav-item">
             <a ui-sref="Master.dashboard">
@@ -49,11 +51,24 @@
                 <span class="title">الشؤون المدرسية</span>
             </a>
         </li>
-        <li class="start nav-item" ng-show="model.userType == 2">
-            <a ui-sref="Master.dashboard">
-                <i class="icon-home"></i>
+        <li class="nav-item" ng-show="model.userType == 2">
+            <a href="#" class="nav-link nav-toggle">
+                <i class="icon-graduation"></i>
                 <span class="title">شؤون الطلاب</span>
+                <span class="arrow"></span>
             </a>
+            <ul class="sub-menu">
+                <li>
+                    <a ui-sref="Master.studentsLate">
+                        <i class="fa fa-list"></i>سجل التأخير  </span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="Master.studentsAbsent">
+                        <i class="fa fa-list"></i>سجل الغياب  </span>
+                    </a>
+                </li>
+            </ul>
         </li>
         <li class="nav-item" ng-show="model.userType == 2">
             <a href="#" class="nav-link nav-toggle">
