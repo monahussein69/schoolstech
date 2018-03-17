@@ -1,61 +1,9 @@
 var con = require('../routes/dbConfig.js');
 var jobTitleMethods = require('../model/jobTitle.js');
+const sequelizeConfig = require('../routes/sequelizeConfig');
 var Excel = require('exceljs');
 var underscore = require('underscore/underscore.js');
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize('schooltech', 'root', '', {
-    host: 'localhost',
-    dialect: 'mysql',
-    operatorsAliases: false,
-    pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-    },
-    define: {
-        timestamps: false // true by default
-    }
-});
 
-sequelize
-    .authenticate()
-    .then(() => {
-        console.log('Connection has been established successfully.');
-    })
-    .catch(err => {
-        console.error('Unable to connect to the database:', err);
-    });
-
-const sectionsTable = sequelize.define('sch_acd_sections', {
-    Name: Sequelize.STRING,
-    School_Id: Sequelize.INTEGER,
-});
-const courseTable = sequelize.define('app_def_courses', {
-    Course_Name: Sequelize.STRING,
-});
-const roomsTable = sequelize.define('sch_bui_rooms', {
-    school_id: Sequelize.INTEGER,
-    room_type: Sequelize.INTEGER,
-    Name: Sequelize.STRING,
-});
-const teachersTable = sequelize.define('sch_str_employees', {
-    school_id: Sequelize.STRING,
-    name: Sequelize.INTEGER,
-    jobtitle_id: Sequelize.INTEGER,
-});
-const lectureTable = sequelize.define('sch_acd_lectures', {
-    name: Sequelize.STRING,
-});
-const mainLecturesTable = sequelize.define('sch_acd_lecturestables', {
-    School_Id: Sequelize.INTEGER,
-    Day: Sequelize.STRING,
-    Lecture_NO: Sequelize.INTEGER,
-    Course_Id: Sequelize.INTEGER,
-    Section_Id: Sequelize.INTEGER,
-    ClassRoom_Id: Sequelize.INTEGER,
-    Teacher_Id: Sequelize.INTEGER,
-});
 
 
 var schoolMethods = {
@@ -369,7 +317,7 @@ var schoolMethods = {
                             function addCourseToDB(allCells) {
                                 if (allCells[counter]) {
                                     let coursePromise = new Promise(function (resolve, reject) {
-                                        courseTable.findOrCreate({where: {Course_Name: allCells[counter].course_name.trim()}})
+                                        sequelizeConfig.courseTable.findOrCreate({where: {Course_Name: allCells[counter].course_name.trim()}})
                                             .spread((course, created) => {
                                                 resolve(course.id);
                                                 console.log('created ?   : ', created);
@@ -378,7 +326,7 @@ var schoolMethods = {
                                     });
 
                                     let sectionPromise = new Promise(function (resolve, reject) {
-                                        sectionsTable.findOrCreate({
+                                        sequelizeConfig.sectionsTable.findOrCreate({
                                             where: {Name: allCells[counter].section_name.trim()},
                                             defaults: {School_Id: schoolId}
                                         })
@@ -389,7 +337,7 @@ var schoolMethods = {
                                             });
                                     });
                                     let roomPromise = new Promise(function (resolve, reject) {
-                                        roomsTable.findOrCreate({
+                                        sequelizeConfig.roomsTable.findOrCreate({
                                             where: {
                                                 Name: allCells[counter].room_name.trim()
                                             },
@@ -406,7 +354,7 @@ var schoolMethods = {
                                         jobTitleMethods.getjobTitleByName(req, res, function (result) {
                                             if (Object.keys(result).length) {
                                                 job_title_id = result[0].id;
-                                                teachersTable.findOrCreate({
+                                                sequelizeConfig.teachersTable.findOrCreate({
                                                     where: {name: allCells[counter].teacher_name.trim()},
                                                     defaults: {school_id: schoolId,jobtitle_id:job_title_id}
                                                 })
@@ -441,7 +389,7 @@ var schoolMethods = {
                                     });
 
                                     let lecturePromise = new Promise(function (resolve, reject) {
-                                        lectureTable.findOrCreate({where: {name: allCells[counter].lecture_name.trim()}})
+                                        sequelizeConfig.lectureTable.findOrCreate({where: {name: allCells[counter].lecture_name.trim()}})
                                             .spread((lecture, created) => {
                                                 console.log('section  : ', lecture.id);
                                                 console.log('created ?   : ', created);
@@ -450,7 +398,7 @@ var schoolMethods = {
                                     });
                                     Promise.all([sectionPromise, coursePromise, roomPromise, teacherPromise, lecturePromise]).then(function (data) {
                                         console.log(data);
-                                        mainLecturesTable.create({
+                                        sequelizeConfig.mainLecturesTable.create({
                                             School_Id: schoolId,
                                             Day: allCells[counter].day,
                                             Lecture_NO: data[4],
