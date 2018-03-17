@@ -98,22 +98,26 @@ var employeesAttendanceMethods = {
 
     getClosingButton : function(req,res,callback){
 
-        var current_date = moment().format('MM-DD-YYYY');
+        //var current_date = moment().format('MM-DD-YYYY');
+        var current_date = '03-18-2018';
+
+        var schoolId = req.body.schoolId;
         req.body.date = current_date;
         var response = {};
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
-                var schoolId = req.body.schoolId;
-                var response = {};
-
-                con.query('select * from closing_att_buttons where calendarId = ? and schoolId = ?',[calendarId,schoolId], function (err, result) {
+                var query = con.query('select * from closing_att_buttons where calendarId = ? and schoolId = ?',[calendarId,schoolId], function (err, result) {
                     if (err)
                         throw err;
-
+                    console.log('close button');
+                    console.log(query.sql);
+                    console.log(result);
                     callback(result);
                 });
+            }else{
+                callback([]);
             }
         });
 
