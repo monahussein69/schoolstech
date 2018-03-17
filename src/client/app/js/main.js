@@ -702,6 +702,51 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                 }]
             }
         })
+        .state('Master.studentsLate', {
+            url: "/studentsLate",
+            templateUrl: "views/students/studentsLate.html",
+            data: {pageTitle: 'كشف رصد درجات الطلاب'},
+            controller: "StudentsLateController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/students/StudentsController.js',
+                            'js/services/StudentsService.js',
+                            'js/services/EmployeesFactory.js'
+                        ]
+                    });
+                }] ,
+            }
+        })
+        .state('Master.studentsAbsent', {
+            url: "/studentsAbsent",
+            templateUrl: "views/students/studentsAbsent.html",
+            data: {pageTitle: 'كشف رصد درجات الطلاب'},
+            controller: "StudentsAbsentController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/students/StudentsController.js',
+                            'js/services/StudentsService.js'
+                        ]
+                    });
+                }]
+            }
+        })
         .state('Master.editStudent', {
             url: "/edit-student/:studentId",
             templateUrl: "views/students/editStudent.html",

@@ -59,6 +59,7 @@ const sequelizeConfig = {
         School_Id: Sequelize.INTEGER,
         Section_Id: Sequelize.INTEGER,
         Student_Id: Sequelize.INTEGER,
+        course_id: Sequelize.INTEGER
     }),
     studentTable: sequelize.define('sch_str_student', {
         student_id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},

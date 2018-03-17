@@ -17,7 +17,7 @@ var employeeMethods = {
                 if (err)
                     throw err;
                 if (Object.keys(result).length) {
-                    con.query('update SCH_STR_Employees set identity_no = ? ,id_date = ?, school_id = ? ,name = ? ,jobtitle_id = ? ,nationality = ? ,birthdate = ? ,birth_place = ? ,educational_level = ? ,graduate_year = ? ,major = ? ,job_no = ? ,ministry_start_date = ? ,school_start_date = ? ,current_position_date = ? ,degree = ? ,address = ? ,phone1 = ? ,phone2 = ? ,mobile = ? ,email = ? ,postal_code = ? ,lectures_qouta = ? ,kids = ? ,kids_under6 = ? ,kids_under24 = ? ,kids_over24 = ? ,notes = ? ,last_update = ? ,updated_by = ? where id = ?',[
+                    con.query('update SCH_STR_Employees set identity_no = ? ,id_date = ?, school_id = ? ,name = ? ,jobtitle_id = ? ,nationality = ? ,birthdate = ? ,birth_place = ? ,educational_level = ? ,graduate_year = ? ,major = ? ,job_no = ? ,ministry_start_date = ? ,school_start_date = ? ,current_position_date = ? ,degree = ? ,address = ? ,phone1 = ? ,phone2 = ? ,mobile = ? ,email = ? ,postal_code = ? ,lectures_qouta = ? ,kids = ? ,kids_under6 = ? ,kids_under24 = ? ,kids_over24 = ? ,notes = ? ,last_update = ? ,updated_by = ? where id = ?', [
                             empData.identity_no,
                             empData.id_date,
                             empData.school_id,
@@ -83,8 +83,8 @@ var employeeMethods = {
                     console.log('found');
                     response.success = false;
                     response.msg = 'الموظف موجود مسبقا';
-                    if(result[0].job_title_name == 'معلم' && empData.job_name == 'قائد مدرسة'){
-                        con.query('update SCH_STR_Employees set identity_no = ? ,id_date = ?, school_id = ? ,name = ? ,jobtitle_id = ? ,nationality = ? ,birthdate = ? ,birth_place = ? ,educational_level = ? ,graduate_year = ? ,major = ? ,job_no = ? ,ministry_start_date = ? ,school_start_date = ? ,current_position_date = ? ,degree = ? ,address = ? ,phone1 = ? ,phone2 = ? ,mobile = ? ,email = ? ,postal_code = ? ,lectures_qouta = ? ,kids = ? ,kids_under6 = ? ,kids_under24 = ? ,kids_over24 = ? ,notes = ? ,last_update = ? ,updated_by = ? where id = ?',[
+                    if (result[0].job_title_name == 'معلم' && empData.job_name == 'قائد مدرسة') {
+                        con.query('update SCH_STR_Employees set identity_no = ? ,id_date = ?, school_id = ? ,name = ? ,jobtitle_id = ? ,nationality = ? ,birthdate = ? ,birth_place = ? ,educational_level = ? ,graduate_year = ? ,major = ? ,job_no = ? ,ministry_start_date = ? ,school_start_date = ? ,current_position_date = ? ,degree = ? ,address = ? ,phone1 = ? ,phone2 = ? ,mobile = ? ,email = ? ,postal_code = ? ,lectures_qouta = ? ,kids = ? ,kids_under6 = ? ,kids_under24 = ? ,kids_over24 = ? ,notes = ? ,last_update = ? ,updated_by = ? where id = ?', [
                                 empData.identity_no,
                                 empData.id_date,
                                 empData.school_id,
@@ -128,7 +128,7 @@ var employeeMethods = {
                     callback(response);
                 } else {
 
-                    con.query("insert into SCH_STR_Employees (identity_no  ,id_date,school_id ,name ,jobtitle_id  ,nationality  ,birthdate  ,birth_place ,educational_level  ,graduate_year ,major ,job_no ,ministry_start_date  ,school_start_date  ,current_position_date ,degree ,address ,phone1 ,phone2 ,mobile ,email ,postal_code ,lectures_qouta  ,kids  ,kids_under6  ,kids_under24  ,kids_over24  ,notes  ,created,created_by)  values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? ,? ,?,?)",[
+                    con.query("insert into SCH_STR_Employees (identity_no  ,id_date,school_id ,name ,jobtitle_id  ,nationality  ,birthdate  ,birth_place ,educational_level  ,graduate_year ,major ,job_no ,ministry_start_date  ,school_start_date  ,current_position_date ,degree ,address ,phone1 ,phone2 ,mobile ,email ,postal_code ,lectures_qouta  ,kids  ,kids_under6  ,kids_under24  ,kids_over24  ,notes  ,created,created_by)  values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? ,? ,?,?)", [
                             empData.identity_no,
                             empData.id_date,
                             empData.school_id,
@@ -164,7 +164,7 @@ var employeeMethods = {
                             if (result.affectedRows) {
                                 response.success = true;
                                 response.msg = 'تم الاضافه بنجاح'
-                                response.id = result.insertId ;
+                                response.id = result.insertId;
 
                             } else {
                                 response.success = false;
@@ -180,7 +180,7 @@ var employeeMethods = {
 
     },
 
-    setEmployeeUser : function (req, res, callback) {
+    setEmployeeUser: function (req, res, callback) {
         var empData = req.body.empData;
         var response = {};
         if (empData.id) {
@@ -188,7 +188,7 @@ var employeeMethods = {
                 if (err)
                     throw err;
                 if (Object.keys(result).length) {
-                    con.query('update SCH_STR_Employees set userId = ? where id = ?',[
+                    con.query('update SCH_STR_Employees set userId = ? where id = ?', [
                             empData.userId,
                             empData.id
                         ]
@@ -266,17 +266,17 @@ var employeeMethods = {
                         req.body.name = job_title;
                         jobTitleMethods.getjobTitleByName(req, res, function (result) {
                             if (!Object.keys(result).length) {
-                                jobTitleData = {name : job_title};
-                                req.body.jobTitleData =  jobTitleData;
+                                jobTitleData = {name: job_title};
+                                req.body.jobTitleData = jobTitleData;
                                 jobTitleMethods.saveJobTitle(req, res, function (result) {
-                                    job_title_id = result.insertId ;
+                                    job_title_id = result.insertId;
                                     worksheet.eachRow(function (row, rowNumber) {
-                                        if(job_title == 'معلم'){
+                                        if (job_title == 'معلم') {
                                             if (rowNumber > 18) {
                                                 // var cellNumber = "Q"+rowNumber;
                                                 data = {
-                                                    school_id : schoolId,
-                                                    name: worksheet.getCell('AD'+ rowNumber).value,
+                                                    school_id: schoolId,
+                                                    name: worksheet.getCell('AD' + rowNumber).value,
                                                     nationality: worksheet.getCell('AC' + rowNumber).value,
                                                     identity_no: worksheet.getCell('AB' + rowNumber).value,
                                                     id_date: worksheet.getCell('X' + rowNumber).value,
@@ -293,25 +293,25 @@ var employeeMethods = {
                                                     mobile: worksheet.getCell('F' + rowNumber).value,
                                                     email: worksheet.getCell('E' + rowNumber).value,
                                                     notes: worksheet.getCell('D' + rowNumber).value,
-                                                    jobtitle_id:job_title_id,
-                                                    job_name:job_title
+                                                    jobtitle_id: job_title_id,
+                                                    job_name: job_title
 
                                                 };
                                                 req.body.empData = data;
 
                                                 employeeMethods.saveEmployee(req, res, function (result) {
-                                                    if(result.success){
+                                                    if (result.success) {
                                                         finalEmployees.push(data);
                                                     }
                                                 });
 
                                             }
-                                        }else{
+                                        } else {
                                             if (rowNumber > 15) {
                                                 // var cellNumber = "Q"+rowNumber;
                                                 data = {
-                                                    school_id : schoolId,
-                                                    name: worksheet.getCell('V'+ rowNumber).value,
+                                                    school_id: schoolId,
+                                                    name: worksheet.getCell('V' + rowNumber).value,
                                                     educational_level: worksheet.getCell('Q' + rowNumber).value,
                                                     graduate_year: worksheet.getCell('M' + rowNumber).value,
                                                     major: worksheet.getCell('R' + rowNumber).value,
@@ -321,13 +321,13 @@ var employeeMethods = {
                                                     mobile: worksheet.getCell('G' + rowNumber).value,
                                                     email: worksheet.getCell('D' + rowNumber).value,
                                                     signature: worksheet.getCell('C' + rowNumber).value,
-                                                    jobtitle_id:job_title_id,
-                                                    job_name:job_title
+                                                    jobtitle_id: job_title_id,
+                                                    job_name: job_title
                                                 };
                                                 req.body.empData = data;
-                                                if(data.job_no) {
+                                                if (data.job_no) {
                                                     employeeMethods.saveEmployee(req, res, function (result) {
-                                                        if(result.success){
+                                                        if (result.success) {
                                                             finalEmployees.push(data);
                                                         }
                                                     });
@@ -339,15 +339,15 @@ var employeeMethods = {
                                     });
 
                                 });
-                            }else{
-                                job_title_id = result[0].id ;
+                            } else {
+                                job_title_id = result[0].id;
                                 worksheet.eachRow(function (row, rowNumber) {
-                                    if(job_title == 'معلم'){
+                                    if (job_title == 'معلم') {
                                         if (rowNumber > 18) {
                                             // var cellNumber = "Q"+rowNumber;
                                             data = {
-                                                school_id : schoolId,
-                                                name: worksheet.getCell('AD'+ rowNumber).value,
+                                                school_id: schoolId,
+                                                name: worksheet.getCell('AD' + rowNumber).value,
                                                 nationality: worksheet.getCell('AC' + rowNumber).value,
                                                 identity_no: worksheet.getCell('AB' + rowNumber).value,
                                                 id_date: worksheet.getCell('X' + rowNumber).value,
@@ -364,24 +364,24 @@ var employeeMethods = {
                                                 mobile: worksheet.getCell('F' + rowNumber).value,
                                                 email: worksheet.getCell('E' + rowNumber).value,
                                                 notes: worksheet.getCell('D' + rowNumber).value,
-                                                jobtitle_id:job_title_id,
-                                                job_name:job_title
+                                                jobtitle_id: job_title_id,
+                                                job_name: job_title
                                             };
                                             req.body.empData = data;
-                                            if(data.job_no) {
+                                            if (data.job_no) {
                                                 employeeMethods.saveEmployee(req, res, function (result) {
-                                                    if(result.success){
+                                                    if (result.success) {
                                                         finalEmployees.push(data);
                                                     }
                                                 });
                                             }
                                         }
-                                    }else{
+                                    } else {
                                         if (rowNumber > 15) {
                                             // var cellNumber = "Q"+rowNumber;
                                             data = {
-                                                school_id : schoolId,
-                                                name: worksheet.getCell('V'+ rowNumber).value,
+                                                school_id: schoolId,
+                                                name: worksheet.getCell('V' + rowNumber).value,
                                                 educational_level: worksheet.getCell('Q' + rowNumber).value,
                                                 graduate_year: worksheet.getCell('M' + rowNumber).value,
                                                 major: worksheet.getCell('R' + rowNumber).value,
@@ -391,16 +391,16 @@ var employeeMethods = {
                                                 mobile: worksheet.getCell('G' + rowNumber).value,
                                                 email: worksheet.getCell('D' + rowNumber).value,
                                                 signature: worksheet.getCell('C' + rowNumber).value,
-                                                jobtitle_id:job_title_id,
-                                                job_name:job_title
+                                                jobtitle_id: job_title_id,
+                                                job_name: job_title
 
                                             };
                                             req.body.empData = data;
-                                            if(data.job_no) {
+                                            if (data.job_no) {
                                                 employeeMethods.saveEmployee(req, res, function (result) {
                                                     console.log('in save');
                                                     console.log(result);
-                                                    if(result.success){
+                                                    if (result.success) {
                                                         finalEmployees.push(data);
                                                     }
                                                 });
@@ -413,7 +413,7 @@ var employeeMethods = {
 
                             }
                             var response = {};
-                            if(finalEmployees.length == 1 && job_title =='قائد مدرسة'){
+                            if (finalEmployees.length == 1 && job_title == 'قائد مدرسة') {
                                 var employee = finalEmployees[0];
                                 console.log('emp');
                                 console.log(employee);
@@ -431,30 +431,27 @@ var employeeMethods = {
                                         'groupId': 0,
                                         'PasswordHash': hash,
                                         'is_active': 1,
-                                        'isLeader' : 1
+                                        'isLeader': 1
 
                                     };
 
                                 req.body.userData = userData;
                                 req.body.employeeId = employee.id;
-                                employeeMethods.setLeaderUser(req,res,function(result){
+                                employeeMethods.setLeaderUser(req, res, function (result) {
 
                                 });
                             }
-                            if(finalEmployees.length) {
+                            if (finalEmployees.length) {
                                 response.msg = 'تم اضافه ' + finalEmployees.length + ' ' + job_title;
                                 response.status = true;
-                            }else{
+                            } else {
                                 response.msg = 'الموظف موجود مسبقا';
                                 response.status = false;
                             }
-                          callback(response);
+                            callback(response);
 
 
                         });
-
-
-
 
 
                     });
@@ -466,20 +463,20 @@ var employeeMethods = {
     },
     getEmployees: function (req, res, callback) {
         var schoolId = req.params.schoolId;
-        con.query('select SCH_STR_Employees.*,sys_users.is_active,job_title.name as job_title_name from SCH_STR_Employees left join sys_users on SCH_STR_Employees.userId = sys_users.id  left join job_title on SCH_STR_Employees.jobtitle_id = job_title.id  where school_id = ?',[schoolId], function (err, result) {
+        con.query('select SCH_STR_Employees.*,sys_users.is_active,job_title.name as job_title_name from SCH_STR_Employees left join sys_users on SCH_STR_Employees.userId = sys_users.id  left join job_title on SCH_STR_Employees.jobtitle_id = job_title.id  where school_id = ?', [schoolId], function (err, result) {
                 if (err)
                     throw err
-
                 callback(result);
             }
         );
     },
+
     getEmployeesBasedJob: function (req, res, callback) {
         var schoolId = req.body.schoolId;
         var job_title = req.body.job_title;
         var sub_job_title = req.body.sub_job_title;
 
-        if(job_title == 'قائد مدرسة الحالي'){
+        if (job_title == 'قائد مدرسة الحالي') {
             job_title = 'قائد مدرسة';
             con.query('select SCH_STR_Employees.*,sys_users.is_active from SCH_STR_Employees ' +
                 'inner join job_title on SCH_STR_Employees.jobtitle_id = job_title.id ' +
@@ -490,7 +487,7 @@ var employeeMethods = {
                     callback(result);
                 }
             );
-        }else {
+        } else {
 
             if (sub_job_title) {
                 var query = con.query('select SCH_STR_Employees.*,sys_users.is_active from SCH_STR_Employees ' +
@@ -518,14 +515,14 @@ var employeeMethods = {
         }
     },
 
-    getEmployeesBasedActivity : function(req,res,callback){
+    getEmployeesBasedActivity: function (req, res, callback) {
         var currentDay = workingSettingsMethods.getArabicDay(new Date().getDay());
         var schoolId = req.body.schoolId;
         var lecture_name = req.body.lecture_name;
         var query = con.query('select sch_str_employees.* from sch_acd_lecturestables join sch_acd_lectures ' +
             'on sch_acd_lecturestables.Lecture_NO = sch_acd_lectures.id ' +
             'join sch_str_employees on sch_acd_lecturestables.Teacher_Id = sch_str_employees.id ' +
-            'where sch_acd_lectures.name = ? and sch_acd_lecturestables.Day = ? and sch_acd_lecturestables.School_Id = ?',[lecture_name,currentDay,schoolId], function (err, result) {
+            'where sch_acd_lectures.name = ? and sch_acd_lecturestables.Day = ? and sch_acd_lecturestables.School_Id = ?', [lecture_name, currentDay, schoolId], function (err, result) {
 
                 if (err)
                     throw err
@@ -535,6 +532,29 @@ var employeeMethods = {
         );
     },
 
+    getActivityByEmployeeId: function (req, res, callback) {
+        // var currentDay = employeeMethods.getArabicDay(new Date().getDay());
+         var currentDay = 'الأحد';
+        var employeeId = req.params.employeeId;
+        var query = con.query('SELECT * FROM sch_acd_lectures JOIN sch_acd_lecturestables ON sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO WHERE sch_acd_lecturestables.Teacher_Id = ? AND sch_acd_lecturestables.Day = ? ', [employeeId, currentDay], function (err, result) {
+                console.log(query.sql);
+                if (err)
+                    throw err
+                callback(result);
+            }
+        );
+    },
+    getArabicDay: function (dayNo) {
+        var array = [];
+        array[0] = 'الاحد';
+        array[1] = 'الاثنين';
+        array[2] = 'الثلاثاء';
+        array[3] = 'الاربعاء';
+        array[4] = 'الخميس';
+        array[5] = 'الجمعة';
+        array[6] = 'السبت';
+        return array[dayNo];
+    },
 
     updatePhoto: function (req, res, callback) {
         con.query(" update SCH_STR_Employees set photo_file=? where id = ?",
@@ -555,23 +575,23 @@ var employeeMethods = {
         );
     },
 
-    setEmpPostions:function(req,res,callback){
+    setEmpPostions: function (req, res, callback) {
         var agents = req.body.agentsObj;
         var success = 0;
         var response = [];
-        if(agents.schoolLeader){
-            var promise1 = new Promise(function(resolve, reject) {
+        if (agents.schoolLeader) {
+            var promise1 = new Promise(function (resolve, reject) {
                 req.body.name = 'قائد مدرسة';
-                jobTitleMethods.getjobTitleByName(req,res,function (result) {
+                jobTitleMethods.getjobTitleByName(req, res, function (result) {
                     if (Object.keys(result).length) {
                         var job_title_id = result[0].id;
-                        con.query("update SCH_STR_Employees set jobtitle_id =? where id = ?",[job_title_id,agents.schoolLeader],function(err,result){
-                            if(err)
+                        con.query("update SCH_STR_Employees set jobtitle_id =? where id = ?", [job_title_id, agents.schoolLeader], function (err, result) {
+                            if (err)
                                 throw err;
-                            if(result.affectedRows){
+                            if (result.affectedRows) {
                                 success = 1;
                                 req.params.empId = agents.schoolLeader;
-                                employeeMethods.getEmployee(req,res,function(result){
+                                employeeMethods.getEmployee(req, res, function (result) {
                                     if (Object.keys(result).length) {
                                         var employee = result[0];
                                         var userPassword = randomstring.generate({
@@ -588,21 +608,21 @@ var employeeMethods = {
                                                 'groupId': 0,
                                                 'PasswordHash': hash,
                                                 'is_active': 1,
-                                                'isLeader' : 1
+                                                'isLeader': 1
 
                                             };
 
                                         req.body.userData = userData;
                                         req.body.employeeId = employee.id;
-                                        employeeMethods.setLeaderUser(req,res,function(result){
+                                        employeeMethods.setLeaderUser(req, res, function (result) {
 
-                                         });
+                                        });
 
                                     }
                                 });
 
                                 resolve(success);
-                            }else{
+                            } else {
                                 success = 0;
                                 reject(success);
                             }
@@ -611,24 +631,24 @@ var employeeMethods = {
                     }
                 });
 
-        });
+            });
             response.push(promise1);
         }
 
 
-        if(agents.studentAgent){
-            var promise2 = new Promise(function(resolve, reject) {
+        if (agents.studentAgent) {
+            var promise2 = new Promise(function (resolve, reject) {
                 req.body.name = 'وكيل';
-                jobTitleMethods.getjobTitleByName(req,res,function (result) {
+                jobTitleMethods.getjobTitleByName(req, res, function (result) {
                     if (Object.keys(result).length) {
                         var job_title_id = result[0].id;
                         req.body.name = 'وكيل المدرسة للشؤون الطلاب';
-                        subJobTitleMethods.getSubJobTitleByName(req,res,function(result){
+                        subJobTitleMethods.getSubJobTitleByName(req, res, function (result) {
 
                             if (Object.keys(result).length) {
                                 var sub_job_title_id = result[0].id;
-                               var query = con.query("update SCH_STR_Employees set jobtitle_id =?,subjobtitle_id = ? where id = ?", [job_title_id,sub_job_title_id,agents.studentAgent], function (err, result) {
-                                   if (err)
+                                var query = con.query("update SCH_STR_Employees set jobtitle_id =?,subjobtitle_id = ? where id = ?", [job_title_id, sub_job_title_id, agents.studentAgent], function (err, result) {
+                                    if (err)
                                         throw err;
                                     if (result.affectedRows) {
                                         success = 1;
@@ -650,19 +670,19 @@ var employeeMethods = {
             response.push(promise2);
         }
 
-        if(agents.educationAgent){
-            var promise3 = new Promise(function(resolve, reject) {
+        if (agents.educationAgent) {
+            var promise3 = new Promise(function (resolve, reject) {
 
                 req.body.name = 'وكيل';
-                jobTitleMethods.getjobTitleByName(req,res,function (result) {
+                jobTitleMethods.getjobTitleByName(req, res, function (result) {
                     if (Object.keys(result).length) {
                         var job_title_id = result[0].id;
                         req.body.name = 'وكيل المدرسة للشؤون التعليمية';
-                        subJobTitleMethods.getSubJobTitleByName(req,res,function(result){
+                        subJobTitleMethods.getSubJobTitleByName(req, res, function (result) {
 
                             if (Object.keys(result).length) {
                                 var sub_job_title_id = result[0].id;
-                                con.query("update SCH_STR_Employees set jobtitle_id =?,subjobtitle_id = ? where id = ?", [job_title_id,sub_job_title_id,agents.educationAgent], function (err, result) {
+                                con.query("update SCH_STR_Employees set jobtitle_id =?,subjobtitle_id = ? where id = ?", [job_title_id, sub_job_title_id, agents.educationAgent], function (err, result) {
                                     if (err)
                                         throw err;
                                     if (result.affectedRows) {
@@ -685,19 +705,19 @@ var employeeMethods = {
             response.push(promise3);
         }
 
-        if(agents.schoolAgent){
-            var promise4 = new Promise(function(resolve, reject) {
+        if (agents.schoolAgent) {
+            var promise4 = new Promise(function (resolve, reject) {
 
                 req.body.name = 'وكيل';
-                jobTitleMethods.getjobTitleByName(req,res,function (result) {
+                jobTitleMethods.getjobTitleByName(req, res, function (result) {
                     if (Object.keys(result).length) {
                         var job_title_id = result[0].id;
                         req.body.name = 'وكيل المدرسة للشؤون المدرسية';
-                        subJobTitleMethods.getSubJobTitleByName(req,res,function(result){
+                        subJobTitleMethods.getSubJobTitleByName(req, res, function (result) {
 
                             if (Object.keys(result).length) {
                                 var sub_job_title_id = result[0].id;
-                                con.query("update SCH_STR_Employees set jobtitle_id =?,subjobtitle_id = ? where id = ?", [job_title_id,sub_job_title_id,agents.schoolAgent], function (err, result) {
+                                con.query("update SCH_STR_Employees set jobtitle_id =?,subjobtitle_id = ? where id = ?", [job_title_id, sub_job_title_id, agents.schoolAgent], function (err, result) {
                                     if (err)
                                         throw err;
                                     if (result.affectedRows) {
@@ -722,12 +742,12 @@ var employeeMethods = {
         }
 
 
-        Promise.all(response).then(function(finalResponse){
+        Promise.all(response).then(function (finalResponse) {
             var result = {};
-            if(finalResponse.includes(1)){
+            if (finalResponse.includes(1)) {
                 result.msg = 'تم التعديل بنجاح';
                 result.success = true;
-            }else{
+            } else {
                 result.msg = 'خطأ الرجاء المحاوله مره اخرى';
                 result.success = false;
             }
@@ -738,8 +758,7 @@ var employeeMethods = {
     },
 
 
-
-    setLeaderUser : function (req,res,callback){
+    setLeaderUser: function (req, res, callback) {
         var userData = req.body.userData;
         var employeeId = req.body.employeeId;
         var response = {};
@@ -769,7 +788,8 @@ var employeeMethods = {
                                             response.insertId = user_id;
                                             var empData = {'userId': user_id, 'id': employeeId};
                                             req.body.empData = empData;
-                                            employeeMethods.setEmployeeUser(req, res, function (result) {});
+                                            employeeMethods.setEmployeeUser(req, res, function (result) {
+                                            });
 
                                         } else {
                                             response.success = false;
@@ -782,7 +802,7 @@ var employeeMethods = {
                                 );
                             } else {
                                 con.query(" insert into sys_users  (schoolId,userType,loginName,password,groupId,PasswordHash,is_active,isLeader) values(?,?,?,?,?,?,?,1)",
-                                    [   userData.schoolId,
+                                    [userData.schoolId,
                                         userData.userType,
                                         userData.loginName,
                                         userData.password,
@@ -797,7 +817,8 @@ var employeeMethods = {
                                             response.insertId = result.insertId;
                                             var empData = {'userId': result.insertId, 'id': employeeId};
                                             req.body.empData = empData;
-                                            employeeMethods.setEmployeeUser(req, res, function (result) {});
+                                            employeeMethods.setEmployeeUser(req, res, function (result) {
+                                            });
                                         } else {
                                             response.success = false;
                                             response.msg = 'خطأ , الرجاء المحاوله مره اخرى';

@@ -1,11 +1,11 @@
 angular.module('MetronicApp').controller('StudentsController',
-    function ($rootScope, $scope, $http, $window, localStorageService, StudentsService, Upload, toastr, DTOptionsBuilder, DTColumnBuilder, $q,CommonService) {
+    function ($rootScope, $scope, $http, $window, localStorageService, StudentsService, Upload, toastr, DTOptionsBuilder, DTColumnBuilder, $q, CommonService) {
 
         var schoolId = 0;
         var config_step = -1;
         var config = false;
         var userObject = localStorageService.get('UserObject');
-        if(userObject){
+        if (userObject) {
             var userType = userObject[0].userType;
             var schoolId = 0;
             if (userType == 2) {
@@ -23,10 +23,10 @@ angular.module('MetronicApp').controller('StudentsController',
             progress: 0,
             deleteStudent: deleteStudent,
             schoolId: schoolId,
-            nextStep:nextStep,
-            config:config,
-            config_step : config_step,
-            students:[],
+            nextStep: nextStep,
+            config: config,
+            config_step: config_step,
+            students: [],
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                 StudentsService.getAllStudents(schoolId).then(function (students) {
@@ -48,7 +48,7 @@ angular.module('MetronicApp').controller('StudentsController',
         };
         $scope.model = model;
 
-        CommonService.currentStep(schoolId,function(result){
+        CommonService.currentStep(schoolId, function (result) {
             model.config_step = result;
         });
 
@@ -75,15 +75,15 @@ angular.module('MetronicApp').controller('StudentsController',
 
         function doUpload() {
             console.log('File : ', $scope.file);
-            model.upload($scope.file).then(function(students){
+            model.upload($scope.file).then(function (students) {
                 var resetPaging = true;
                 model.dtInstance.reloadData(students, resetPaging);
             });
 
         };
 
-        function nextStep(url){
-            CommonService.nextStep(model.schoolId,function(result){
+        function nextStep(url) {
+            CommonService.nextStep(model.schoolId, function (result) {
                 $window.location.href = url;
             });
         }
@@ -190,7 +190,7 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
 
         function doUpload() {
             console.log('File : ', $scope.file);
-            model.upload($scope.file).then(function(students){
+            model.upload($scope.file).then(function (students) {
                 var resetPaging = true;
                 model.dtInstance.reloadData(students, resetPaging);
             });
@@ -249,8 +249,57 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
                 });
             }
         };
-    }])
-;
+    }]);
+
+angular.module('MetronicApp').controller('StudentsLateController',
+    function (DTOptionsBuilder, DTColumnBuilder, $q, $stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter, manageEmployeeService) {
+
+        var schoolId = 0;
+        var userObject = localStorageService.get('UserObject');
+        if (userObject) {
+            var userType = userObject[0].userType;
+            var schoolId = 0;
+            if (userType == 2) {
+                schoolId = userObject[0].schoolId;
+            } else {
+                schoolId = $stateParams.schoolId;
+            }
+        }
+
+        var model = {
+            schoolId: schoolId,
+            record: [],
+            employeeList: [],
+            getActivityByEmployeeId: getActivityByEmployeeId,
+            selectedEmployee: 0,
+            activityList: []
+        };
+
+
+        $scope.model = model;
+
+        manageEmployeeService.getAllEmployees(schoolId).then(employees => {
+            model.employeeList = employees;
+            $scope.$apply();
+        });
+
+        function getActivityByEmployeeId() {
+            manageEmployeeService.getActivityByEmployeeId(model.selectedEmployee).then(activites => {
+                model.activityList = activites;
+                $scope.$apply();
+            });
+        }
+
+        $scope.$on('$viewContentLoaded', function () {
+            // initialize core components
+            // App.initAjax();
+        });
+
+        // set sidebar closed and body solid layout mode
+        $rootScope.settings.layout.pageContentWhite = true;
+        $rootScope.settings.layout.pageBodySolid = false;
+        $rootScope.settings.layout.pageSidebarClosed = false;
+    });
 
 
 angular.module('MetronicApp').controller('ManageStudentsController', function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageSchoolService, toastr) {
