@@ -46,7 +46,7 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
     }
 
     fac.getClosingButton = function(schoolId,callback) {
-        $http.post("http://localhost:3000/getClosingButton").success(function (response) {
+        $http.post("http://localhost:3000/getClosingButton",{'schoolId':schoolId}).success(function (response) {
             callback(response);
         });
     }
