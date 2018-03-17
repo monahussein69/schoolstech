@@ -1,4 +1,4 @@
-angular.module('MetronicApp').factory('employeesAttendanceService', function ($http, Upload) {
+angular.module('MetronicApp').factory('studentsAttendanceService', function ($http, Upload) {
 
     var fac = {};
 

@@ -15,6 +15,8 @@ var employeesAttendanceMethods = require('../model/employeesAttendance.js');
 var employeeAttendanceRecordMethods = require('../model/employeeAttendanceRecord.js');
 var employeesExcuseMethods = require('../model/employeesExcuse.js');
 var employeesVacationMethods = require('../model/employeeVacation.js');
+var studentAttendanceMethods = require('../model/studentAttendance.js');
+var studentExcuseMethods = require('../model/studentExcuse.js');
 
 var app = express();
 var multer = require('multer');
@@ -136,6 +138,12 @@ router.get('/getAllEmployees/:schoolId', function (req, res, next) {
 
 router.post('/getAllEmployeesAttendanceByActivity', function (req, res, next) {
     employeesAttendanceMethods.getAllEmployeesAttendanceByActivity(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/getAllStudentsAttendanceByActivity', function (req, res, next) {
+    studentAttendanceMethods.getAllStudentsAttendanceByActivity(req, res, function (result) {
         res.send(result);
     });
 });
@@ -414,6 +422,12 @@ router.post('/setEmployeeAttendance/', function (req, res, next) {
     });
 });
 
+router.post('/setStudentAttendance/', function (req, res, next) {
+    studentAttendanceMethods.setStudentAttendance(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 router.post('/setEmployeeActivityAttendance/', function (req, res, next) {
     employeesAttendanceMethods.setEmployeeActivityAttendance(req, res, function (result) {
         res.send(result);
@@ -440,6 +454,12 @@ router.post('/getClosingButton/', function (req, res, next) {
 
 router.post('/sendExcuseRequest/', function (req, res, next) {
     employeesExcuseMethods.sendExcuseRequest(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/sendStudentExcuseRequest/', function (req, res, next) {
+    studentExcuseMethods.sendStudentExcuseRequest(req, res, function (result) {
         res.send(result);
     });
 });

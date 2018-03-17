@@ -37,15 +37,32 @@ var studentAttendanceMethods = {
 
                 if(breaks.indexOf(lecture_name)  > -1){
 
+                    var query  = con.query('SELECT SCH_ATT_STDEXCUSE.Start_Date as excuse_date, sch_str_student.student_id as main_student_id , sch_str_student.Name as student_name , SCH_ATT_STDATT.* FROM `sch_str_student` ' +
+                        ' left join SCH_ATT_STDATT on ' +
+                        '(sch_str_student.student_id = SCH_ATT_STDATT.Student_id and  SCH_ATT_STDATT.Event_Name = ? ) ' +
+                        'left join SCH_ATT_STDEXCUSE on SCH_ATT_STDEXCUSE.Student_id = sch_str_student.student_id '+
+                        ' where sch_acd_lecturestables.School_Id = ? and ' +
+                        ' (SCH_ATT_STDATT.Calender_id = ? or SCH_ATT_STDATT.Calender_id IS NULL) group by sch_str_student.student_id', [lecture_name,schoolId,calendarId], function (err, result) {
+                            console.log(query.sql);
+                            if (err)
+                                throw err
+                            callback(result);
+                        }
+                    );
+
                 }else{
-                    var query  = con.query('SELECT * FROM `sch_str_student` ' +
-                        'left join SCH_ATT_STDATT on (sch_str_student.student_id = SCH_ATT_STDATT.Student_id and sch_acd_lectures.name = SCH_ATT_STDATT.Event_Name) ' +
-                        'join sch_acd_studentsections on sch_str_student.student_id = sch_acd_studentsections.Student_Id ' +
-                        'join sch_acd_lecturestables on (sch_acd_lecturestables.Section_Id = sch_acd_studentsections.Section_Id and sch_acd_lecturestables.Course_Id = sch_acd_studentsections.Course_Id) ' +
-                        'join sch_acd_lectures on sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO ' +
-                        'where sch_acd_lecturestables.School_Id = ? and (sch_acd_lecturestables.Day = ? or sch_acd_lecturestables.Day = ?) ' +
-                        'and sch_acd_lecturestables.Teacher_Id = ? and sch_acd_lectures = ? ' +
-                        'and (sch_str_student.Calender_id = ? or sch_str_student.Calender_id IS NULL) ', [schoolId,currentDay,currentDay1,teacherId,lecture_name,calendarId], function (err, result) {
+                    var query  = con.query('SELECT SCH_ATT_STDEXCUSE.Start_Date as excuse_date, sch_str_student.student_id as main_student_id , sch_str_student.Name as student_name , SCH_ATT_STDATT.* FROM `sch_str_student` ' +
+                        ' join sch_acd_studentsections on sch_str_student.student_id = sch_acd_studentsections.Student_Id ' +
+                        ' join sch_acd_lecturestables on ' +
+                        ' (sch_acd_lecturestables.Section_Id = sch_acd_studentsections.Section_Id and sch_acd_lecturestables.Course_Id = sch_acd_studentsections.Course_Id) ' +
+                        ' join sch_acd_lectures on sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO ' +
+                        ' left join SCH_ATT_STDATT on ' +
+                        '(sch_str_student.student_id = SCH_ATT_STDATT.Student_id and sch_acd_lectures.name = SCH_ATT_STDATT.Event_Name) ' +
+                        'left join SCH_ATT_STDEXCUSE on SCH_ATT_STDEXCUSE.Student_id = sch_str_student.student_id '+
+                        ' where sch_acd_lecturestables.School_Id = ? and ' +
+                        ' (sch_acd_lecturestables.Day = ? or sch_acd_lecturestables.Day = ?) ' +
+                        ' and sch_acd_lecturestables.Teacher_Id = ? and sch_acd_lectures.name = ? and ' +
+                        ' (SCH_ATT_STDATT.Calender_id = ? or SCH_ATT_STDATT.Calender_id IS NULL) group by sch_str_student.student_id', [schoolId,currentDay,currentDay1,teacherId,lecture_name,calendarId], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err

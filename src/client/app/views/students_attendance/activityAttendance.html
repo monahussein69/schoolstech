@@ -22,9 +22,9 @@
                         <div class="form-group row">
                             <label class="col-sm-2 control-label"> الفعاليه </label>
                             <div class="col-sm-6">
-                                <select name="activity" class="form-control" ng-model="model.activity" ng-change="model.getAllEmployeesByActivity()">
+                                <select name="activity" class="form-control" ng-model="model.activity" ng-change="model.getAllStudentsByActivity()">
                                     <option selected disabled value="">اختر الفعالية </option>
-                                    <option ng-repeat="activity in model.listOfActivity track by $index" value="{{activity.event_Nam}}">{{activity.event_Nam}} </option>
+                                    <option ng-repeat="activity in model.listOfActivity track by $index" value="{{activity.name}}">{{activity.name}} </option>
                                 </select>
                             </div>
                         </div>

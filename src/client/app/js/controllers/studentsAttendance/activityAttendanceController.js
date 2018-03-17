@@ -1,5 +1,5 @@
 angular.module('MetronicApp').controller('activityAttendanceController',
-    function ($compile,DTOptionsBuilder, DTColumnBuilder,$q,$uibModal,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,studentsAttendanceService) {
+    function ($moment,$compile,DTOptionsBuilder, DTColumnBuilder,$q,$uibModal,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,studentsAttendanceService,manageEmployeeService) {
 
         var schoolId = 0;
         var teacherId = 0;
@@ -20,6 +20,7 @@ angular.module('MetronicApp').controller('activityAttendanceController',
             schoolId:schoolId,
             teacherId:teacherId,
             studentAttendance:[],
+            recordAttendance:recordAttendance,
             getAllStudentsByActivity:getAllStudentsByActivity,
             ExcuseRequest:ExcuseRequest,
             activeProfile : {},
@@ -32,7 +33,7 @@ angular.module('MetronicApp').controller('activityAttendanceController',
                 return defer.promise
             }).withOption('createdRow', createdRow),
             columns: [
-                DTColumnBuilder.newColumn('name').withTitle('اسم الطالب'),
+                DTColumnBuilder.newColumn('student_name').withTitle('اسم الطالب'),
                 DTColumnBuilder.newColumn(null).withTitle('الحضور').notSortable()
                     .renderWith(actionsHtml)
             ],
@@ -48,38 +49,39 @@ angular.module('MetronicApp').controller('activityAttendanceController',
         }
 
         function actionsHtml(data, type, full, meta) {
+            var current_date = $moment().format('MM/DD/YYYY');
 
             return ''+
-                '<button class="btn btn-primary color-grey" ng-click="model.recordAttendance('+data.main_employee_id+',$event,\'حضور\')" ng-class="{\'color-green\': 0 =='+data.is_absent+'}"> حاضر</button>\n'+
-                '<button class="btn btn-danger" ng-class="{\'color-grey\':!'+data.is_absent+'}" ng-click="model.recordAttendance('+data.main_employee_id+',$event,\'غياب\')">غائب</button>'+
-                '<button ng-disabled = "'+data.is_absent+' != 0" class="btn btn-primary excuse" ng-class="{\'color-grey\':!('+data.excuse_date+' == '+current_date+')}" ng-click="model.ExcuseRequest('+data.main_employee_id+',$event)">استئذان</button> '+
+                '<button class="btn btn-primary color-grey" ng-click="model.recordAttendance('+data.main_student_id+',$event,\'حضور\')" ng-class="{\'color-green\': 0 =='+data.is_absent+'}"> حاضر</button>\n'+
+                '<button class="btn btn-danger" ng-class="{\'color-grey\':!'+data.is_absent+'}" ng-click="model.recordAttendance('+data.main_student_id+',$event,\'غياب\')">غائب</button>'+
+                '<button ng-disabled = "'+data.is_absent+' != 0" class="btn btn-primary excuse" ng-class="{\'color-grey\':!('+data.excuse_date+' == '+current_date+')}" ng-click="model.ExcuseRequest('+data.main_student_id+',$event)">استئذان</button> '
                 ;
         }
 
         function getAllStudentsByActivity(){
             var defer = $q.defer();
-            studentsAttendanceService.getAllStudentsAttendanceByActivity(schoolId,teacherId,model.activity).then(function (employees) {
-                defer.resolve(employees);
+            studentsAttendanceService.getAllStudentsAttendanceByActivity(schoolId,teacherId,model.activity).then(function (studentAttendance) {
+                defer.resolve(studentAttendance);
                 model.dtInstance.changeData(defer.promise);
                 model.studentAttendance = studentAttendance;
             });
 
         }
 
-        studentsAttendanceService.getActivityByDayAndSchoolIdAndTeacherId(model.schoolId,model.teacherId,function (data) {
-            model.listOfActivity = data;
-            console.log('data');
-            console.log(data);
-        });
+
 
 
         $scope.model = model;
 
 
+        manageEmployeeService.getActivityByEmployeeId(model.teacherId).then(function(data){
+        model.listOfActivity = data;
+        });
+
 
         function recordAttendance(student_id,$event,type){
 
-
+           console.log('test');
             var attendanceObj = {};
             attendanceObj.school_id = model.schoolId;
             attendanceObj.Student_id = student_id;
@@ -167,7 +169,7 @@ angular.module('MetronicApp').controller('ExcuseDialogCtrl', function(toastr ,st
 
     $scope.ExcuseRequest = function(){
 
-        studentExcuseService.sendExcuseRequest(ExcuseObj,function (result) {
+        studentExcuseService.sendStudentExcuseRequest(ExcuseObj,function (result) {
             if(result.success){
                 toastr.success(result.msg);
 
