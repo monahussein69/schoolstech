@@ -80,16 +80,13 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', function ($scop
  ***/
 
 /* Setup Layout Part - Header */
-MetronicApp.controller('HeaderController', ['localStorageService', '$scope','$window', function (localStorageService, $scope,$window) {
+MetronicApp.controller('HeaderController', ['localStorageService', '$scope', '$window', function (localStorageService, $scope, $window) {
     $scope.$on('$includeContentLoaded', function () {
         var userObject = localStorageService.get('UserObject');
 
         if (userObject == null) {
             $window.location.href = '#/login';
         }
-
-
-
 
 
         var model = {username: ''};
@@ -101,7 +98,7 @@ MetronicApp.controller('HeaderController', ['localStorageService', '$scope','$wi
 }]);
 
 /* Setup Layout Part - Sidebar */
-MetronicApp.controller('SidebarController', ['localStorageService','$state', '$scope', function (localStorageService,$state, $scope) {
+MetronicApp.controller('SidebarController', ['localStorageService', '$state', '$scope', function (localStorageService, $state, $scope) {
 
     var userObject = localStorageService.get('UserObject');
     console.log(userObject[0].userType);
@@ -153,7 +150,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
     $stateProvider
         .state('logout', {
             url: "/logout",
-            controller: function ($scope,$location,$window,localStorageService) {
+            controller: function ($scope, $location, $window, localStorageService) {
                 $window.localStorage.clear();
                 localStorageService.clearAll();
                 $location.path('/login');
@@ -397,7 +394,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
         })
 
 
-
         .state('Master.appSettings', {
             url: "/appSettings",
             templateUrl: "views/settings/appSettings.html",
@@ -418,7 +414,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
 
                             '../assets/global/scripts/getDates.js',
-
 
 
                         ]
@@ -667,6 +662,29 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             templateUrl: "views/students/students.html",
             data: {pageTitle: 'الطلاب'},
             controller: "StudentsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/students/StudentsController.js',
+                            'js/services/StudentsService.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.studentsDegrees', {
+            url: "/studentsDegrees",
+            templateUrl: "views/students/studentsDegrees.html",
+            data: {pageTitle: 'كشف رصد درجات الطلاب'},
+            controller: "StudentsDegreesController",
             resolve: {
                 deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load({
