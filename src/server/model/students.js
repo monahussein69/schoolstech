@@ -72,99 +72,22 @@ var studentsMethods = {
             });
         }
     },
-
-    // updatePhoto: function (req, res, callback) {
-    //     con.query(" update SCH_School set logoFile=? where id = ?",
-    //         [req.body.logoFile,
-    //             req.body.id
-    //         ], function (err, result) {
-    //             var response = {};
-    //             if (err)
-    //                 throw err
-    //             if (result.affectedRows) {
-    //                 response.success = true;
-    //             } else {
-    //                 response.success = false;
-    //                 response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
-    //             }
-    //             callback(response);
-    //         }
-    //     );
-    // },
-    //
-    //
-    // saveSchools: function (req, res, callback) {
-    //     var schoolsData = req.body.schoolsData;
-    //     console.log('in obj11');
-    //     console.log(schoolsData);
-    //     var response = {};
-    //     schoolsData.foreach(function (schoolData) {
-    //
-    //         con.query("select * from SCH_School where schoolNum = ?", [schoolData.schoolNum], function (err, result) {
-    //             if (err)
-    //                 throw err;
-    //             if (!Object.keys(result).length) {
-    //                 console.log('in obj');
-    //                 con.query(" insert into SCH_School  (name, gender,educationalOffice,educationalRegion,educationLevel, address,totalClasses ,totalStudents ,totalStaff,rentedBuildings,governmentBuildings,foundationYear,logoFile) values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-    //                     [schoolData.name,
-    //                         schoolData.gender,
-    //                         schoolData.educationalOffice,
-    //                         schoolData.educationalRegion,
-    //                         schoolData.educationLevel,
-    //                         schoolData.address,
-    //                         schoolData.totalClasses,
-    //                         schoolData.totalStudents,
-    //                         schoolData.totalStaff,
-    //                         schoolData.rentedBuildings,
-    //                         schoolData.governmentBuildings,
-    //                         schoolData.foundationYear,
-    //                         schoolData.logoFile
-    //                     ], function (err, result) {
-    //                         if (err)
-    //                             throw err
-    //
-    //
-    //                     }
-    //                 );
-    //             }
-    //         });
-    //
-    //
-    //     });
-    //
-    //     response.success = true;
-    //     response.msg = 'تم الاضافه بنجاح';
-    //
-    //     callback(response);
-    // },
-    // getSchool: function (req, res, callback) {
-    //     var schoolId = req.params.schoolId;
-    //     con.query('select * from SCH_School where id = ?', [schoolId], function (err, result) {
-    //             if (err)
-    //                 throw err
-    //
-    //             callback(result);
-    //         }
-    //     );
-    // },
-    //
-    // deleteSchool: function (req, res, callback) {
-    //     var schoolId = req.params.schoolId;
-    //     var response = {};
-    //     con.query('delete from SCH_School where id = ?', [schoolId], function (err, result) {
-    //             if (err)
-    //                 throw err
-    //             if (result.affectedRows) {
-    //                 response.success = true;
-    //                 response.msg = 'تم حذف المدرسه بنجاح';
-    //             } else {
-    //                 response.success = false;
-    //                 response.msg = 'خطأ, الرجاء المحاوله مره اخرى';
-    //             }
-    //             callback(response);
-    //         }
-    //     );
-    // },
+    getStudentsByActivityId: function (req, res, callback) {
+        var currentDay = 'الأحد';
+        let activityId = req.params.activityId;
+        var query = con.query('SELECT * FROM sch_str_student JOIN sch_acd_studentsections ON sch_acd_studentsections.Student_Id = sch_str_student.student_id ' +
+            'JOIN sch_acd_lecturestables ON (sch_acd_studentsections.Section_Id = sch_acd_lecturestables.Section_Id AND sch_acd_studentsections.course_id = sch_acd_lecturestables.Course_Id)' +
+            ' WHERE sch_acd_lecturestables.Lecture_NO = ? AND sch_acd_lecturestables.Day = ? GROUP BY sch_str_student.student_id',
+            [activityId , currentDay]
+            , function (err, result) {
+                console.log(query.sql);
+                if (err)
+                    throw err
+            console.log(result);
+                callback(result);
+            }
+        );
+    },
     UploadExcel: function (req, res, callback) {
         try {
             //

@@ -252,7 +252,7 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
     }]);
 
 angular.module('MetronicApp').controller('StudentsLateController',
-    function (DTOptionsBuilder, DTColumnBuilder, $q, $stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter, manageEmployeeService) {
+    function (DTOptionsBuilder, DTColumnBuilder, $q, $stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter, manageEmployeeService , StudentsService) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -271,23 +271,63 @@ angular.module('MetronicApp').controller('StudentsLateController',
             record: [],
             employeeList: [],
             getActivityByEmployeeId: getActivityByEmployeeId,
+            getStudentsByActivityId: getStudentsByActivityId,
             selectedEmployee: 0,
-            activityList: []
+            activityList: [],
+            selectedActivity : 0,
+            studentsList  : [],
+            options:DTOptionsBuilder.fromFnPromise(function () {
+                var defer = $q.defer();
+                defer.resolve(model.studentsList);
+
+
+                return defer.promise
+            }),
+            columns: [
+                DTColumnBuilder.newColumn('Name').withTitle(' اسم الطالب'),
+                DTColumnBuilder.newColumn(null).withTitle('الحالة').notSortable()
+                    .renderWith(actionsHtml),
+                DTColumnBuilder.newColumn(null).withTitle('مدة التأخير').notSortable()
+                    .renderWith(actionsHtml2)
+            ],
+            dtInstance: {},
         };
 
 
         $scope.model = model;
 
-        manageEmployeeService.getAllEmployees(schoolId).then(employees => {
+
+
+        manageEmployeeService.getAllTeachers(schoolId).then(employees => {
             model.employeeList = employees;
             $scope.$apply();
         });
+
+        function actionsHtml(data, type, full, meta) {
+
+            return '<span>متأخر</span>'
+                ;
+        }
+        function actionsHtml2(data, type, full, meta) {
+
+            return '<span>10 دقايق</span>'
+                ;
+        }
 
         function getActivityByEmployeeId() {
             manageEmployeeService.getActivityByEmployeeId(model.selectedEmployee).then(activites => {
                 model.activityList = activites;
                 $scope.$apply();
             });
+        }
+        function getStudentsByActivityId() {
+            var defer = $q.defer();
+            StudentsService.getStudentsByActivityId(model.selectedActivity).then(students => {
+                model.studentsList = students;
+                defer.resolve(students);
+                $scope.$apply();
+            });
+            model.dtInstance.changeData(defer.promise);
         }
 
         $scope.$on('$viewContentLoaded', function () {
