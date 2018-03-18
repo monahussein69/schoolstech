@@ -248,12 +248,16 @@ var employeeMethods = {
     },
     UploadExcel: function (req, res, callback) {
         try {
+
+
+
             //
             console.log('File Name : ', req.body.filename);
             var workbook = new Excel.Workbook();
             var data = {};
             var schoolId = req.body.schoolId;
 
+            var counter = 0;
             workbook.xlsx.readFile('./src/client/app/uploads/' + req.body.filename)
                 .then(function () {
                     var finalEmployees = [];
@@ -297,13 +301,16 @@ var employeeMethods = {
                                                     job_name: job_title
 
                                                 };
-                                                req.body.empData = data;
+                                                if (data.job_no) {
+                                                    finalEmployees.push(data);
+                                                }
+                                               /* req.body.empData = data;
 
                                                 employeeMethods.saveEmployee(req, res, function (result) {
                                                     if (result.success) {
                                                         finalEmployees.push(data);
                                                     }
-                                                });
+                                                });*/
 
                                             }
                                         } else {
@@ -324,7 +331,10 @@ var employeeMethods = {
                                                     jobtitle_id: job_title_id,
                                                     job_name: job_title
                                                 };
-                                                req.body.empData = data;
+                                                if (data.job_no) {
+                                                    finalEmployees.push(data);
+                                                }
+                                                /*req.body.empData = data;
                                                 if (data.job_no) {
                                                     employeeMethods.saveEmployee(req, res, function (result) {
                                                         if (result.success) {
@@ -332,7 +342,7 @@ var employeeMethods = {
                                                         }
                                                     });
 
-                                                }
+                                                }*/
                                             }
                                         }
 
@@ -367,14 +377,17 @@ var employeeMethods = {
                                                 jobtitle_id: job_title_id,
                                                 job_name: job_title
                                             };
-                                            req.body.empData = data;
+                                            if (data.job_no) {
+                                                finalEmployees.push(data);
+                                            }
+                                            /*req.body.empData = data;
                                             if (data.job_no) {
                                                 employeeMethods.saveEmployee(req, res, function (result) {
                                                     if (result.success) {
                                                         finalEmployees.push(data);
                                                     }
                                                 });
-                                            }
+                                            }*/
                                         }
                                     } else {
                                         if (rowNumber > 15) {
@@ -395,8 +408,13 @@ var employeeMethods = {
                                                 job_name: job_title
 
                                             };
-                                            req.body.empData = data;
+
                                             if (data.job_no) {
+                                                finalEmployees.push(data);
+                                            }
+                                            /*req.body.empData = data;
+                                            if (data.job_no) {
+
                                                 employeeMethods.saveEmployee(req, res, function (result) {
                                                     console.log('in save');
                                                     console.log(result);
@@ -404,7 +422,7 @@ var employeeMethods = {
                                                         finalEmployees.push(data);
                                                     }
                                                 });
-                                            }
+                                            }*/
                                         }
                                     }
 
@@ -412,49 +430,80 @@ var employeeMethods = {
                                 });
 
                             }
-                            var response = {};
-                            if (finalEmployees.length == 1 && job_title == 'قائد مدرسة') {
-                                var employee = finalEmployees[0];
-                                console.log('emp');
-                                console.log(employee);
-                                var userPassword = randomstring.generate({
-                                    length: 7,
-                                    charset: 'numeric'
+
+                            console.log('finalEmployees');
+                            console.log(finalEmployees);
+
+
+                            var requests = finalEmployees.map(function(item) {
+                                return new Promise(function(resolve) {
+                                    req.body.empData = item;
+                                    employeeMethods.saveEmployee(req, res, function (result) {
+                                        if (result.success) {
+                                            counter = counter + 1;
+                                            item.id = result.id;
+
+                                        }
+                                        resolve(result);
+                                    });
                                 });
-                                var hash = bcrypt.hashSync(userPassword, saltRounds);
-                                var userData =
-                                    {
-                                        'schoolId': employee.school_id,
-                                        'userType': 3,
-                                        'loginName': employee.mobile,
-                                        'password': userPassword,
-                                        'groupId': 0,
-                                        'PasswordHash': hash,
-                                        'is_active': 1,
-                                        'isLeader': 1
+                            });
 
-                                    };
+                            Promise.all(requests).then(function (result) {
+                                console.log(result);
 
-                                req.body.userData = userData;
-                                req.body.employeeId = employee.id;
-                                employeeMethods.setLeaderUser(req, res, function (result) {
+                                var response = {};
+                                if (counter == 1 && job_title == 'قائد مدرسة') {
+                                    var employee = finalEmployees[0];
+                                    console.log('emp');
+                                    console.log(employee);
+                                    var userPassword = randomstring.generate({
+                                        length: 7,
+                                        charset: 'numeric'
+                                    });
+                                    var hash = bcrypt.hashSync(userPassword, saltRounds);
+                                    var userData =
+                                        {
+                                            'schoolId': employee.school_id,
+                                            'userType': 3,
+                                            'loginName': employee.mobile,
+                                            'password': userPassword,
+                                            'groupId': 0,
+                                            'PasswordHash': hash,
+                                            'is_active': 1,
+                                            'isLeader': 1
 
-                                });
-                            }
-                            if (finalEmployees.length) {
-                                response.msg = 'تم اضافه ' + finalEmployees.length + ' ' + job_title;
-                                response.status = true;
-                            } else {
-                                response.msg = 'الموظف موجود مسبقا';
-                                response.status = false;
-                            }
-                            callback(response);
+                                        };
 
+                                    req.body.userData = userData;
+                                    req.body.employeeId = employee.id;
+                                    employeeMethods.setLeaderUser(req, res, function (result) {
+
+                                    });
+                                }
+                                if (counter) {
+                                    response.msg = 'تم اضافه ' + counter + ' ' + job_title;
+                                    response.status = true;
+                                } else {
+                                    response.msg = 'الموظف موجود مسبقا';
+                                    response.status = false;
+                                }
+
+                                callback(response);
+                            });
+
+
+
+
+                            //callback(finalEmployees);
 
                         });
 
 
                     });
+
+
+                    resolve(finalEmployees);
 
                 });
         } catch (e) {
@@ -797,6 +846,8 @@ var employeeMethods = {
                                             response.insertId = user_id;
                                             var empData = {'userId': user_id, 'id': employeeId};
                                             req.body.empData = empData;
+                                            console.log('employee user');
+                                            console.log(empData);
                                             employeeMethods.setEmployeeUser(req, res, function (result) {
                                             });
 

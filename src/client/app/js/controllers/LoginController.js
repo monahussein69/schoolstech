@@ -42,6 +42,29 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
 
                         });
                     }
+
+                        else if (userObj[0].userType == 3){
+                            var schoolId = userObj[0].schoolId;
+                            manageSchoolService.getSchoolData(schoolId, function (response) {
+                                userObj[0].schoolData = response;
+
+                                if (response[0].config_steps  < 4) {
+                                    userObj[0].config_flag = true;
+                                }
+                                localStorageService.set('UserObject', userObj);
+                                if (response[0].config_steps == 0){
+                                    $window.location.href = '#/manageEmployees/';
+
+                                } else if (response[0].config_steps == 1) {
+                                    $window.location.href = '#/manageLeaders';
+                                } else if (response[0].config_steps == 2) {
+                                    $window.location.href = '#/students';
+                                }else if (response[0].config_steps == 3) {
+                                    $window.location.href = '#/school-schedule';
+                                }
+
+                            });
+                        }
                         localStorageService.set('UserObject', response.data.user);
                         $window.location.href = '#/dashboard.html';
                     } else {

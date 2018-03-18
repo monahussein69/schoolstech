@@ -23,7 +23,7 @@ var MetronicApp = angular.module("MetronicApp", [
 MetronicApp.config(function (localStorageServiceProvider) {
     localStorageServiceProvider
         .setPrefix('MetronicApp')
-        .setStorageType('sessionStorage')
+        //.setStorageType('sessionStorage')
         .setNotify(true, true)
 });
 
