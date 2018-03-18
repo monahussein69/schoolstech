@@ -136,6 +136,12 @@ router.get('/getAllEmployees/:schoolId', function (req, res, next) {
     });
 });
 
+router.get('/getAllTeachers/:schoolId', function (req, res, next) {
+    employeeMethods.getAllTeachers(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 router.post('/getAllEmployeesAttendanceByActivity', function (req, res, next) {
     employeesAttendanceMethods.getAllEmployeesAttendanceByActivity(req, res, function (result) {
         res.send(result);
@@ -394,6 +400,12 @@ router.get('/getActivityByDayAndSchoolId/:schoolId', function (req, res, next) {
 
 router.get('/getActivityByEmployeeId/:employeeId', function (req, res, next) {
     employeeMethods.getActivityByEmployeeId(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getStudentsByActivityId/:activityId', function (req, res, next) {
+    studentsMethods.getStudentsByActivityId(req, res, function (result) {
         res.send(result);
     });
 });

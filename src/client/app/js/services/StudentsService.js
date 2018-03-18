@@ -57,5 +57,13 @@ angular.module('MetronicApp').factory('StudentsService', function ($http, Upload
             });
         });
     };
+    service.getStudentsByActivityId = function (activityId) {
+        return new Promise(function (resolve, reject) {
+            $http.get("http://localhost:3000/getStudentsByActivityId/" + activityId).success(function (response) {
+                console.log(response);
+                resolve(response);
+            });
+        });
+    };
     return service;
 });

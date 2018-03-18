@@ -470,6 +470,15 @@ var employeeMethods = {
             }
         );
     },
+    getAllTeachers: function (req, res, callback) {
+        var schoolId = req.params.schoolId;
+        con.query('select SCH_STR_Employees.*,sys_users.is_active,job_title.name as job_title_name from SCH_STR_Employees left join sys_users on SCH_STR_Employees.userId = sys_users.id  left join job_title on SCH_STR_Employees.jobtitle_id = job_title.id  where school_id = ? AND job_title.name = "معلم" ', [schoolId], function (err, result) {
+                if (err)
+                    throw err
+                callback(result);
+            }
+        );
+    },
 
     getEmployeesBasedJob: function (req, res, callback) {
         var schoolId = req.body.schoolId;

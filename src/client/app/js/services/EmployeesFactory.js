@@ -37,6 +37,7 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
     };
 
 
+
     fac.getEmpData = function (empId, callback) {
         $http.get("http://localhost:3000/getEmployee/" + empId).success(function (response) {
             callback(response);
@@ -46,6 +47,15 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
     fac.getAllEmployees = function (schoolId) {
         return new Promise(function (resolve, reject) {
             $http.get("http://localhost:3000/getAllEmployees/" + schoolId).success(function (response) {
+                console.log(response);
+                resolve(response);
+            });
+        });
+    };
+
+    fac.getAllTeachers = function (schoolId) {
+        return new Promise(function (resolve, reject) {
+            $http.get("http://localhost:3000/getAllTeachers/" + schoolId).success(function (response) {
                 console.log(response);
                 resolve(response);
             });

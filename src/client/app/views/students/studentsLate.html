@@ -33,15 +33,15 @@
                         <div class="form-group row">
                             <label class="col-sm-2 control-label"> الفعاليه </label>
                             <div class="col-sm-6">
-                                <select name="activity" class="form-control" ng-model="model.activity" ng-change="model.getAllEmployeesByActivity()">
+                                <select name="activity" class="form-control" ng-model="model.selectedActivity" ng-change="model.getStudentsByActivityId()">
                                     <option selected disabled value="">اختر الفعالية </option>
-                                    <option ng-repeat="activity in model.activityList track by $index" value="{{activity.name}}">{{activity.name}} </option>
+                                    <option ng-repeat="activity in model.activityList track by $index" value="{{activity.id}}">{{activity.name}} </option>
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!--<table datatable="" class="table table-striped table-bordered table-hover table-checkable order-column" dt-options="model.options" dt-columns="model.columns" dt-instance="model.dtInstance" class="row-border hover"></table>-->
+                <table datatable="" class="table table-striped table-bordered table-hover table-checkable order-column" dt-options="model.options" dt-columns="model.columns" dt-instance="model.dtInstance" class="row-border hover"></table>
             </div>
         </div>
     </div>
