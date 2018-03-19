@@ -1,4 +1,4 @@
-angular.module('MetronicApp').controller('LoginController', function($rootScope, $scope , $http, $window , localStorageService,$location,manageSchoolService) {
+angular.module('MetronicApp').controller('LoginController', function($rootScope, $scope , $http, $window , localStorageService,$location,manageSchoolService,manageEmployeeService) {
     var model = {
         username : '',
         password : '',
@@ -42,6 +42,13 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
 
                         });
                     }
+
+                        else if (userObj[0].userType == 3){
+                            var userId = userObj[0].id;
+                            manageEmployeeService.getEmployeeByUserId(userId, function (response) {
+                                userObj[0].employeeData = response;
+                            });
+                        }
                         localStorageService.set('UserObject', response.data.user);
                         $window.location.href = '#/dashboard.html';
                     } else {

@@ -44,6 +44,13 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
         });
     };
 
+
+    fac.getEmployeeByUserId = function (userId, callback) {
+        $http.get("http://localhost:3000/getEmployeeByUserId/" + userId).success(function (response) {
+            callback(response);
+        });
+    };
+
     fac.getAllEmployees = function (schoolId) {
         return new Promise(function (resolve, reject) {
             $http.get("http://localhost:3000/getAllEmployees/" + schoolId).success(function (response) {

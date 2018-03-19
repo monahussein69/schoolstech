@@ -12,11 +12,21 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
 
     };
 
-    fac.getAllEmployeesAttendanceByActivity = function (schoolId,lecture_name) {
+    fac.getAllEmployeesAttendanceByDate = function (schoolId,date) {
+        return new Promise(function (resolve, reject) {
+            $http.post("http://localhost:3000/getAllEmployeesAttendanceByDate",{'schoolId':schoolId,'date':date}).success(function (response) {
+                resolve(response);
+            });
+        });
+
+    };
+
+    fac.getAllEmployeesAttendanceByActivity = function (schoolId,lecture_name,date) {
         return new Promise(function (resolve, reject) {
             $http.post("http://localhost:3000/getAllEmployeesAttendanceByActivity",{
                 'lecture_name':lecture_name,
-                'schoolId':schoolId
+                'schoolId':schoolId,
+                'date':date
             }).success(function (response) {
                 resolve(response);
             });
@@ -39,27 +49,35 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
             callback(response);
         });
     };
-    fac.getActivityByDayAndSchoolId = function(schoolId,callback) {
-        $http.get("http://localhost:3000/getActivityByDayAndSchoolId/"+schoolId).success(function (response) {
+    fac.getActivityByDayAndSchoolId = function(schoolId,date,callback) {
+        $http.post("http://localhost:3000/getActivityByDayAndSchoolId",{'schoolId':schoolId,'date':date}).success(function (response) {
             callback(response);
         });
     }
 
-    fac.getClosingButton = function(schoolId,callback) {
-        $http.post("http://localhost:3000/getClosingButton",{'schoolId':schoolId}).success(function (response) {
+    fac.getClosingButton = function(schoolId,date,callback) {
+        $http.post("http://localhost:3000/getClosingButton",{'schoolId':schoolId,'date':date}).success(function (response) {
             callback(response);
         });
     }
 
-     fac.closeFirstAttendance = function(schoolId,callback) {
+     fac.closeFirstAttendance = function(schoolId,date,callback) {
         $http.post("http://localhost:3000/closeFirstAttendance",
-            {'schoolId':schoolId})
+            {'schoolId':schoolId,'date':date})
             .success(function (response) {
             callback(response);
         });
     }
 
-    fac.closeAttendance = function(schoolId,callback) {
+    fac.closeSecondAttendance = function(schoolId,date,callback) {
+        $http.post("http://localhost:3000/closeSecondAttendance",
+            {'schoolId':schoolId,'date':date})
+            .success(function (response) {
+            callback(response);
+        });
+    }
+
+    fac.closeAttendance = function(schoolId,date,callback) {
         $http.post("http://localhost:3000/closeFirstAttendance",
             {'schoolId':schoolId})
             .success(function (response) {

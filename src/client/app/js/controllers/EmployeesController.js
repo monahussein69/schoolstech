@@ -249,7 +249,7 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
                     if (resp.data.status) { //validate success
                         toastr.success(resp.data.msg);
                     } else {
-                        toastr.error('هناك مشكلة في رفع الملف');
+                        toastr.error(resp.data.msg);
                     }
                 }, function (resp) { //catch error
                     toastr.error('Error status: ' + resp.status);

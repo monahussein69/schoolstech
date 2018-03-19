@@ -23,7 +23,7 @@ var MetronicApp = angular.module("MetronicApp", [
 MetronicApp.config(function (localStorageServiceProvider) {
     localStorageServiceProvider
         .setPrefix('MetronicApp')
-        .setStorageType('sessionStorage')
+        //.setStorageType('sessionStorage')
         .setNotify(true, true)
 });
 
@@ -177,6 +177,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/pages/scripts/login.min.js',
 
                             // '../assets/pages/scripts/dashboard.min.js',
+                            'js/services/EmployeesFactory.js',
                             'js/controllers/LoginController.js',
                         ]
                     });

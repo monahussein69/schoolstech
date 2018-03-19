@@ -179,6 +179,12 @@ router.get('/getEmployee/:empId', function (req, res, next) {
         res.send(result);
     });
 });
+
+router.get('/getEmployeeByUserId/:userId', function (req, res, next) {
+    employeeMethods.getEmployeeByUserId(req, res, function (result) {
+        res.send(result);
+    });
+});
 router.get('/deleteEmployee/:empId', function (req, res, next) {
     employeeMethods.deleteEmployee(req, res, function (result) {
         res.send(result);
@@ -392,7 +398,7 @@ router.get('/getSettingsProfile/:profileId', function (req, res, next) {
     });
 });
 
-router.get('/getActivityByDayAndSchoolId/:schoolId', function (req, res, next) {
+router.post('/getActivityByDayAndSchoolId', function (req, res, next) {
     workingSettingsMethods.getActivityByDayAndSchoolId(req, res, function (result) {
         res.send(result);
     });
@@ -412,6 +418,12 @@ router.get('/getStudentsByActivityId/:activityId', function (req, res, next) {
 
 router.get('/getAllEmployeesAttendance/:schoolId', function (req, res, next) {
     employeesAttendanceMethods.getAllEmployeesAttendance(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/getAllEmployeesAttendanceByDate', function (req, res, next) {
+    employeesAttendanceMethods.getAllEmployeesAttendanceByDate(req, res, function (result) {
         res.send(result);
     });
 });

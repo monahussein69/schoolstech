@@ -54,7 +54,7 @@
                 <span class="title">الشؤون المدرسية</span>
             </a>
         </li>
-        <li class="nav-item" ng-show="model.userType == 2">
+        <li class="nav-item" ng-show="model.userType == 2 || model.userType == 3">
             <a href="#" class="nav-link nav-toggle">
                 <i class="icon-graduation"></i>
                 <span class="title">شؤون الطلاب</span>
@@ -117,7 +117,7 @@
                 </li>
             </ul>
         </li>
-        <li class="nav-item" ng-show="model.userType != 2">
+        <li class="nav-item" ng-show="model.userType == 1">
             <a href="#" class="nav-link nav-toggle">
                 <i class="icon-graduation"></i>
                 <span class="title">ادارة المدارس</span>
@@ -137,7 +137,7 @@
                 </li>
             </ul>
         </li>
-        <li class="nav-item" ng-show="model.userType != 2">
+        <li class="nav-item" ng-show="model.userType == 1">
             <a href="#" class="nav-link nav-toggle">
                 <i class="icon-graduation"></i>
                 <span class="title">الاعدادات</span>
