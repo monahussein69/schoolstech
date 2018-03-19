@@ -524,7 +524,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
 
 
         .state('Master.studentAttendance', {
-            url: "/studentAttendance/:schoolId/:teacherId",
+            url: "/studentAttendance",
             templateUrl: "views/students_attendance/activityAttendance.html",
             data: {pageTitle: 'سجل الدوام الرسمي'},
             controller: "activityAttendanceController",

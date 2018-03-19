@@ -201,7 +201,7 @@ var studentAttendanceMethods = {
                         if (result.affectedRows) {
                             response.success = true;
                             if (attendanceObj.is_absent == 0)
-                                response.msg = 'تم تسجيل التأخر بنجاح';
+                                response.msg = 'تم تسجيل الحضور بنجاح';
                             if (attendanceObj.is_absent == 1)
                                 response.msg = 'تم تسجيل الغياب بنجاح';
                             response.id = result.insertId;

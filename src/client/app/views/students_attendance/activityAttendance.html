@@ -20,6 +20,20 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group row">
+                            <label class="col-sm-2 control-label"> المعلم </label>
+                            <div class="col-sm-6">
+                                <select name="activity" class="form-control" ng-model="model.teacherId" ng-change="model.getActivityByEmployeeId()">
+                                    <option selected disabled value="">اختر المعلم </option>
+                                    <option ng-repeat="employee in model.employeeList track by $index" value="{{employee.id}}">{{employee.name}} </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
                             <label class="col-sm-2 control-label"> الفعاليه </label>
                             <div class="col-sm-6">
                                 <select name="activity" class="form-control" ng-model="model.activity" ng-change="model.getAllStudentsByActivity()">
