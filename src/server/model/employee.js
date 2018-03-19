@@ -229,6 +229,17 @@ var employeeMethods = {
         );
     },
 
+    getEmployeeByUserId: function (req, res, callback) {
+        var userId = req.params.userId;
+        con.query('select * from SCH_STR_Employees where userId = ?', [userId], function (err, result) {
+                if (err)
+                    throw err
+
+                callback(result);
+            }
+        );
+    },
+
     deleteEmployee: function (req, res, callback) {
         var empId = req.params.empId;
         var response = {};

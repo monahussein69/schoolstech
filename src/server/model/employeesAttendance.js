@@ -12,9 +12,8 @@ var employeesAttendanceMethods = {
 
     getAllEmployeesAttendanceByActivity: function (req, res, callback) {
 
-        var current_date = moment().format('MM-DD-YYYY');
+        var current_date = moment(req.body.date).format('MM-DD-YYYY');
         req.body.date = current_date;
-        req.body.date = '03-18-2018';
         var lecture_name = req.body.lecture_name;
         var breaks = [  'طابور','صلاه', 'فسحه (1)' ,'فسحه (2)'];
         var response = [];
@@ -23,7 +22,7 @@ var employeesAttendanceMethods = {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
                 var schoolId = req.body.schoolId;
-                var currentDay = workingSettingsMethods.getArabicDay(new Date().getDay());
+                var currentDay = workingSettingsMethods.getArabicDay(new Date(req.body.date).getDay());
                 currentDay = 'الاحد';
                 var currentDay1 = currentDay;
                 if(currentDay ==  'الاحد'){
@@ -73,19 +72,49 @@ var employeesAttendanceMethods = {
 
         var current_date = moment().format('MM-DD-YYYY');
         req.body.date = current_date;
-        req.body.date = '03-18-2018';
         var response = [];
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
                 var schoolId = req.params.schoolId;
-                con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date,sch_att_empvacation.Start_Date as vacation_date from sch_str_employees left join sch_att_empatt '+
+                con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date,sch_att_empvacation.Start_Date as vacation_date_start ,sch_att_empvacation.End_Date as vacation_date_end  from sch_str_employees left join sch_att_empatt '+
                     'on sch_str_employees.id = sch_att_empatt.employee_id '+
                     'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
                     'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
                     'where sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL)', [schoolId,calendarId], function (err, result) {
                         if (err)
+                            throw err
+                        callback(result);
+                    }
+                );
+            }else{
+                callback(response);
+            }
+        });
+
+    },
+
+
+    getAllEmployeesAttendanceByDate: function (req, res, callback) {
+
+        var current_date = req.body.date;
+        current_date = moment(current_date).format('MM-DD-YYYY');
+        console.log(current_date);
+        req.body.date = current_date;
+        var response = [];
+        appSettingsMethods.getCalenderByDate(req, res, function (result) {
+            if (Object.keys(result).length) {
+                var calendarObj = result[0];
+                var calendarId = calendarObj.Id;
+                var schoolId = req.body.schoolId;
+                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date , sch_att_empvacation.Start_Date as vacation_date_start ,sch_att_empvacation.End_Date as vacation_date_end from sch_str_employees left join sch_att_empatt '+
+                    'on sch_str_employees.id = sch_att_empatt.employee_id '+
+                    'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
+                    'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
+                    'where sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL)', [schoolId,calendarId], function (err, result) {
+                    console.log(query.sql);
+                    if (err)
                             throw err
                         callback(result);
                     }
@@ -111,8 +140,8 @@ var employeesAttendanceMethods = {
 
     getClosingButton : function(req,res,callback){
 
-        //var current_date = moment().format('MM-DD-YYYY');
-        var current_date = '03-18-2018';
+        var current_date = moment(req.body.date).format('MM-DD-YYYY');
+       // var current_date = '03-18-2018';
 
         var schoolId = req.body.schoolId;
         req.body.date = current_date;
@@ -216,7 +245,7 @@ var employeesAttendanceMethods = {
     closeSecondAttendance:function(req,res,callback){
         var schoolId = req.body.schoolId;
         var closing_type = req.body.closing_type;
-        var current_date = moment().format('MM-DD-YYYY');
+        var current_date = moment(req.body.date).format('MM-DD-YYYY');
         req.body.date = current_date;
         var response = {};
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
@@ -228,7 +257,7 @@ var employeesAttendanceMethods = {
                 var closingObj = {};
                 //closingObj.first_att_closing_time = moment().format('MM-DD-YYYY HH:mm');
                 //closingObj.first_att_closing = 1;
-                closingObj.second_att_closing_time = moment().format('MM-DD-YYYY HH:mm'),
+                closingObj.second_att_closing_time =  moment(current_date).format('MM-DD-YYYY HH:mm')+' '+moment().format('HH:mm');
                 closingObj.second_att_closing = 1;
                 closingObj.calendarId = calendarObj.Id;
                 closingObj.schoolId = schoolId;
@@ -261,7 +290,7 @@ var employeesAttendanceMethods = {
     closeFirstAttendance:function(req,res,callback){
         var schoolId = req.body.schoolId;
         var closing_type = req.body.closing_type;
-        var current_date = moment().format('MM-DD-YYYY');
+        var current_date = moment(req.body.date).format('MM-DD-YYYY');
         req.body.date = current_date;
         var response = {};
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
@@ -270,7 +299,7 @@ var employeesAttendanceMethods = {
                 req.body.calenderId = calendarObj.Id;
                 req.body.schoolId = schoolId;
                 var closingObj = {};
-                closingObj.first_att_closing_time = moment().format('MM-DD-YYYY HH:mm');
+                closingObj.first_att_closing_time = moment(current_date).format('MM-DD-YYYY HH:mm')+' '+moment().format('HH:mm');
                 closingObj.first_att_closing = 1;
                 //closingObj.second_att_closing_time = moment().format('MM-DD-YYYY HH:mm'),
                 //closingObj.second_att_closing = 1;
@@ -337,8 +366,8 @@ var employeesAttendanceMethods = {
         var response = {};
         attendanceObj.late_min = '';
 
-            var current_date = moment().format('MM-DD-YYYY');
-            var current_date = '03-18-2018';
+            var current_date = moment(attendanceObj.attendance_day).format('MM-DD-YYYY');
+            //var current_date = '03-18-2018';
 
             req.body.date = current_date;
             appSettingsMethods.getCalenderByDate(req, res, function (result) {
@@ -465,6 +494,9 @@ var employeesAttendanceMethods = {
                                 response.msg = 'تم تسجيل الحضور بنجاح';
                             if (attendanceObj.is_absent == 1)
                                 response.msg = 'تم تسجيل الغياب بنجاح';
+                            if (attendanceObj.is_absent == 2)
+                                response.msg = 'تم تسجيل خروج مبكر بنجاح';
+
                             response.id = result.insertId;
                             callback(response);
                         } else {
@@ -517,9 +549,9 @@ var employeesAttendanceMethods = {
         var response = {};
         attendanceObj.late_min = '';
 
-        var current_date = moment().format('MM-DD-YYYY');
-        //req.body.date = current_date;
-        req.body.date = '03-18-2018';
+        var current_date = moment(attendanceObj.Attendance_Day).format('MM-DD-YYYY');
+        req.body.date = current_date;
+        //req.body.date = '03-18-2018';
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];

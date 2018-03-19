@@ -1,5 +1,5 @@
 angular.module('MetronicApp').controller('employeeActivityAttendanceController',
-    function ($compile,DTOptionsBuilder, DTColumnBuilder,$q,$uibModal,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService,manageEmployeeService,WorkingSettingsService) {
+    function ($moment,$compile,DTOptionsBuilder, DTColumnBuilder,$q,$uibModal,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService,manageEmployeeService,WorkingSettingsService) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -12,12 +12,14 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
                 schoolId = $stateParams.schoolId;
             }
         }
-
+        var attendance_day = $moment().format('MM/DD/YYYY');
         var model = {
             schoolId:schoolId,
             emp_atts:[],
+            attendance_day: attendance_day,
             getAllEmployeesByActivity:getAllEmployeesByActivity,
             activeProfile : {},
+            getAttendanceBasedDate:getAttendanceBasedDate,
             employeeActivity: employeeActivity,
             listOfActivity: {},
             activity:'',
@@ -47,15 +49,28 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
         function actionsHtml(data, type, full, meta) {
 
             return ''+
-                '<button class="btn btn-primary" ng-class="{\'color-grey\':!('+data.is_absent+' == 0)}"  ng-click="model.employeeActivity('+data.main_employee_id+',0)"> تأخر</button>' +
-                '<button class="btn btn-danger" ng-class="{\'color-grey\':!'+data.is_absent+'}"  ng-click="model.employeeActivity('+data.main_employee_id+',1)">غياب</button>' +
-                '<button class="btn btn-warning" ng-class="{\'color-grey\':'+data.is_absent+' != 2}" ng-click="model.employeeActivity('+data.main_employee_id+',2)">خروج مبكر</button>'
+                '<button class="btn btn-primary" ng-class="{\'color-grey\':!('+data.is_absent+' == 0)}"  ng-click="model.employeeActivity('+data.main_employee_id+',0,$event)"> تأخر</button>' +
+                '<button class="btn btn-danger" ng-class="{\'color-grey\':!'+data.is_absent+'}"  ng-click="model.employeeActivity('+data.main_employee_id+',1,$event)">غياب</button>' +
+                '<button class="btn btn-warning" ng-class="{\'color-grey\':'+data.is_absent+' != 2}" ng-click="model.employeeActivity('+data.main_employee_id+',2,$event)">خروج مبكر</button>'
                 ;
+        }
+
+
+        function getAttendanceBasedDate(){
+            var defer = $q.defer();
+            if(model.attendance_day){
+
+                employeesAttendanceService.getActivityByDayAndSchoolId(model.schoolId,model.attendance_day, function (data) {
+                    model.listOfActivity = data;
+                    console.log('data');
+                    console.log(data);
+                });
+            }
         }
 
         function getAllEmployeesByActivity(){
             var defer = $q.defer();
-            employeesAttendanceService.getAllEmployeesAttendanceByActivity(schoolId,model.activity).then(function (employees) {
+            employeesAttendanceService.getAllEmployeesAttendanceByActivity(schoolId,model.activity,model.attendance_day).then(function (employees) {
                 defer.resolve(employees);
                 model.dtInstance.changeData(defer.promise);
                 model.employees = employees;
@@ -63,7 +78,7 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
         }
 
-        employeesAttendanceService.getActivityByDayAndSchoolId(model.schoolId, function (data) {
+        employeesAttendanceService.getActivityByDayAndSchoolId(model.schoolId,model.attendance_day, function (data) {
             model.listOfActivity = data;
             console.log('data');
             console.log(data);
@@ -75,7 +90,7 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
 
 
-        function employeeActivity(employee_id,status_id) {
+        function employeeActivity(employee_id,status_id,$event) {
             var status_names = [];
             status_names[0] = 'تأخر';
             status_names[1] = 'غياب';
@@ -99,12 +114,20 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
                     }, status_name: function () {
                         return status_names[status_id];
                     },
+                    selected_date: function () {
+                        return model.attendance_day;
+                    },
                     getActivityByDayAndSchoolId: function () {
                         return model.listOfActivity;
                     }
                 }
             });
-            dialogInst.result.then(function (newusr) {
+            dialogInst.result.then(function (result) {
+
+                if(result.success){
+                    angular.element($event.target).removeClass('color-grey');
+                }
+
                 //$scope.usrs.push(newusr);
                 //$scope.usr = {name: '', job: '', age: '', sal: '', addr:''};
                 console.log('open');
@@ -128,7 +151,7 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
 
 
-angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedEmployee,selectedActivity, schoolId,status_name,status_id, $log, getActivityByDayAndSchoolId) {
+angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedEmployee,selectedActivity, schoolId,status_name,status_id,selected_date, $log, getActivityByDayAndSchoolId) {
 
     var index = -1;
 
@@ -163,7 +186,8 @@ angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (
             Event_Name: model.activities[model.activity].event_Nam,
             time_in: model.currentTime,
             Begining_Time: model.activities[model.activity].Begining_Time,
-            Ending_Time: model.activities[model.activity].Ending_Time
+            Ending_Time: model.activities[model.activity].Ending_Time,
+            Attendance_Day : selected_date
         }
 
 
@@ -173,7 +197,7 @@ angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (
             } else {
                 toastr.error(result.msg);
             }
-            $uibModalInstance.close();
+            $uibModalInstance.close(result);
         });
     }
 });
