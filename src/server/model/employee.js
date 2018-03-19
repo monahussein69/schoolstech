@@ -602,9 +602,9 @@ var employeeMethods = {
     },
 
     getActivityByEmployeeId: function (req, res, callback) {
-        // var currentDay = employeeMethods.getArabicDay(new Date().getDay());
-         var currentDay = 'الأحد';
-        var employeeId = req.params.employeeId;
+         var currentDay = employeeMethods.getArabicDay(new Date(req.body.date).getDay());
+         //var currentDay = 'الأحد';
+        var employeeId = req.body.employeeId;
         var query = con.query('SELECT * FROM sch_acd_lectures JOIN sch_acd_lecturestables ON sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO WHERE sch_acd_lecturestables.Teacher_Id = ? AND sch_acd_lecturestables.Day = ? ', [employeeId, currentDay], function (err, result) {
                 console.log(query.sql);
                 if (err)

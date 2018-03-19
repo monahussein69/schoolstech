@@ -404,7 +404,7 @@ router.post('/getActivityByDayAndSchoolId', function (req, res, next) {
     });
 });
 
-router.get('/getActivityByEmployeeId/:employeeId', function (req, res, next) {
+router.post('/getActivityByEmployeeId', function (req, res, next) {
     employeeMethods.getActivityByEmployeeId(req, res, function (result) {
         res.send(result);
     });

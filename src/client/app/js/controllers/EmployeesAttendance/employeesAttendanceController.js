@@ -14,6 +14,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
         }
 
         var attendance_day = $moment().format('MM/DD/YYYY');
+        var titleHtml = '<input type="checkbox" ng-model="model.selectAll" ng-click="model.toggleAll(model.selectAll, model.selected)">';
         var model = {
             schoolId:schoolId,
             recordAttendance:recordAttendance,
@@ -21,6 +22,10 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             ExcuseRequest:ExcuseRequest,
             AbsentRequest:AbsentRequest,
             getAttendanceBasedDate:getAttendanceBasedDate,
+            selected : {},
+            selectAll : false,
+            toggleAll : toggleAll,
+            toggleOne : toggleOne,
             First_att_close:0,
             Second_att_close:0,
             emp_atts:[],
@@ -28,6 +33,8 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             employeeActivity: employeeActivity,
             attendance_day: attendance_day,
             listOfActivity: {},
+            headerCompiled:false,
+            ids:[],
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                 employeesAttendanceService.getAllEmployeesAttendance(schoolId).then(function (employees) {
@@ -36,8 +43,21 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                 });
 
                 return defer.promise
-            }).withOption('createdRow', createdRow),
+            }).withOption('createdRow', createdRow)
+            .withOption('headerCallback', function(header) {
+                if (!model.headerCompiled) {
+                    // Use this headerCompiled field to only compile header once
+                    model.headerCompiled = true;
+                    $compile(angular.element(header).contents())($scope);
+                }
+            }),
             columns: [
+                DTColumnBuilder.newColumn(null).withTitle(titleHtml).notSortable()
+                    .renderWith(function(data, type, full, meta) {
+                        model.selected[full.id] = false;
+                        return '<input type="checkbox" ng-model="model.selected[' + data.main_employee_id + ']" ng-click="model.toggleOne(model.selected)">';
+                    }),
+               // DTColumnBuilder.newColumn(null).withTitle('<input type="checkbox" ng-click="model.checkAll()" ng-model="model.selectAllButton"/>').renderWith(selectAll),
                 DTColumnBuilder.newColumn('name').withTitle(' اسم الموظف'),
                 DTColumnBuilder.newColumn(null).withTitle('الحضور').notSortable()
                     .renderWith(actionsHtml)
@@ -45,14 +65,37 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             dtInstance: {},
         };
 
-        function createdRow(row, data, dataIndex) {
+        function toggleAll (selectAll, selectedItems) {
+            console.log('in click');
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    selectedItems[id] = selectAll;
+                }
+            }
+        }
+        function toggleOne (selectedItems) {
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    if(!selectedItems[id]) {
+                        model.selectAll = false;
+                        return;
+                    }
+                }
+            }
+            model.selectAll = true;
+        }
+
+
+
+function createdRow(row, data, dataIndex) {
             // Recompiling so we can bind Angular directive to the DT
             $compile(angular.element(row).contents())($scope);
+
         }
 
         function actionsHtml(data, type, full, meta) {
 
-            var current_date = $moment(attendance_day).format('MM-DD-YYYY');
+            var current_date = $moment(model.attendance_day).format('MM-DD-YYYY');
             console.log(current_date);
             return ''+
                 '<button class="btn btn-primary color-grey" ng-click="confirmTimeIn('+data.main_employee_id+',$event)" ng-class="{\'color-green\': 0 =='+data.is_absent+'}"> حاضر</button>\n'+
@@ -61,6 +104,9 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                 '<button class="btn btn-warning" ng-class="{\'color-grey\':(\''+data.vacation_date_start+'\' == null) || !(\''+data.vacation_date_start+' \' <= \''+current_date+'\' && \''+data.vacation_date_end+'\' >= \''+current_date+'\')}" ng-click="model.AbsentRequest('+data.main_employee_id+',$event,\'غياب بعذر\')">غياب بعذر</button>'
                 ;
         }
+
+
+
 
         function getAttendanceBasedDate(){
             var defer = $q.defer();
@@ -83,7 +129,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             }
         }
 
-        employeesAttendanceService.getActivityByDayAndSchoolId(model.schoolId, function (data) {
+        employeesAttendanceService.getActivityByDayAndSchoolId(model.schoolId,model.attendance_day, function (data) {
             console.log("data", data);
             model.listOfActivity = data;
         });

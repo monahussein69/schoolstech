@@ -2,12 +2,13 @@ angular.module('MetronicApp').factory('studentsAttendanceService', function ($ht
 
     var fac = {};
 
-    fac.getAllStudentsAttendanceByActivity = function (schoolId,teacherId,lecture_name) {
+    fac.getAllStudentsAttendanceByActivity = function (schoolId,teacherId,lecture_name,date) {
         return new Promise(function (resolve, reject) {
             $http.post("http://localhost:3000/getAllStudentsAttendanceByActivity",{
                 'lecture_name':lecture_name,
                 'schoolId':schoolId,
-                'teacherId':teacherId
+                'teacherId':teacherId,
+                'date':date
             }).success(function (response) {
                 resolve(response);
             });

@@ -20,6 +20,15 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group row">
+                            <label class="col-sm-2 control-label"> اليوم </label>
+                            <div class="col-sm-6">
+                                <input type="text" name="name" class="form-control date-picker" ng-model="model.attendance_day" ng-change="model.getAttendanceBasedDate()" /> </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
                             <label class="col-sm-2 control-label"> المعلم </label>
                             <div class="col-sm-6">
                                 <select name="activity" class="form-control" ng-model="model.teacherId" ng-change="model.getActivityByEmployeeId()">
@@ -29,7 +38,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="row">
                     <div class="col-md-6">
@@ -49,3 +57,6 @@
         </div>
     </div>
 </div>
+<script>
+    ComponentsDateTimePickers.init(); // init todo page
+</script>

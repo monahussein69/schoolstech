@@ -5,10 +5,11 @@ var appSettingsMethods = require('../model/appSettings.js');
 var studentExcuseMethods = {
 
     sendStudentExcuseRequest: function (req, res, callback) {
-        //var current_date = moment().format('MM-DD-YYYY');
-        var current_date = '03-18-2018';
+
+       // var current_date = '03-18-2018';
         var ExcuseObj = req.body.ExcuseObj;
         var response = {};
+        var current_date = moment(ExcuseObj.currentDate).format('MM-DD-YYYY');
         req.body.date = current_date;
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {

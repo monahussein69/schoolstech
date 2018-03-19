@@ -28,14 +28,26 @@
                     <button ng-disabled="model.First_att_close == 1" class="btn btn-danger" ng-click="model.closeAttendance(1)" ng-if="model.activeProfile.First_Att_Closing == 'manual'">اغلاق دوام (1)</button>
                     <button ng-disabled="model.Second_att_close == 1" class="btn btn-danger" ng-click="model.closeAttendance(2)" ng-if="model.activeProfile.Second_Att_Closing == 'manual'">اغلاق دوام (2)</button>
                 </div>
-            </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="col-sm-6">
+                                <button class="btn btn-primary color-grey" ng-click="confirmTimeIn('+data.main_employee_id+',$event)" ng-class="{\'color-green\': 0 =='+data.is_absent+'}"> حاضر</button>
+                                <button class="btn btn-danger" ng-class="{\'color-grey\':!'+data.is_absent+'}" ng-click="model.recordAttendance('+data.main_employee_id+',$event,\'غياب\')">غائب</button>
+                                <button ng-disabled = "'+data.is_absent+' != 0" class="btn btn-primary excuse" ng-class="{\'color-grey\':!('+data.excuse_date+' == '+current_date+')}" ng-click="model.ExcuseRequest('+data.main_employee_id+',$event)">استئذان</button>
+                                <button class="btn btn-warning" ng-class="{\'color-grey\':(\''+data.vacation_date_start+'\' == null) || !(\''+data.vacation_date_start+' \' <= \''+current_date+'\' && \''+data.vacation_date_end+'\' >= \''+current_date+'\')}" ng-click="model.AbsentRequest('+data.main_employee_id+',$event,'غياب بعذر')">غياب بعذر</button>
 
+                            </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group row">
                         <label class="col-sm-2 control-label">اليوم</label>
                         <div class="col-sm-6">
-                            <input type="text" name="name" class="form-control date-picker" ng-model="model.attendance_day" ng-change="model.getAttendanceBasedDate()"/> </div>
+                            <input type="text" name="name" class="form-control date-picker" ng-model="model.attendance_day" ng-change="model.getAttendanceBasedDate()" /> </div>
                     </div>
                 </div>
             </div>
@@ -46,7 +58,6 @@
         </div>
     </div>
 </div>
-
 <script>
     ComponentsDateTimePickers.init(); // init todo page
 </script>
