@@ -48,10 +48,10 @@ var employeesAttendanceMethods = {
                         'on sch_acd_lecturestables.Teacher_Id = sch_str_employees.id '+
                         'join sch_acd_lectures on sch_acd_lecturestables.Lecture_NO = sch_acd_lectures.id '+
                         ' left join sch_att_empatt '+
-                        ' on (sch_str_employees.id = sch_att_empatt.employee_id and sch_acd_lectures.name = sch_att_empatt.Event_Name)'+
+                        ' on (sch_att_empatt.Calender_id = ? and sch_str_employees.id = sch_att_empatt.employee_id and sch_acd_lectures.name = sch_att_empatt.Event_Name)'+
                         'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
                         'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
-                        'where sch_acd_lectures.name = ? and (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) and sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL)', [lecture_name,currentDay,currentDay1,schoolId,calendarId], function (err, result) {
+                        'where sch_acd_lectures.name = ? and (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) and sch_str_employees.school_id = ?', [calendarId,lecture_name,currentDay,currentDay1,schoolId], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err
@@ -78,11 +78,12 @@ var employeesAttendanceMethods = {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
                 var schoolId = req.params.schoolId;
-                con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date,sch_att_empvacation.Start_Date as vacation_date_start ,sch_att_empvacation.End_Date as vacation_date_end  from sch_str_employees left join sch_att_empatt '+
-                    'on sch_str_employees.id = sch_att_empatt.employee_id '+
+                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date , sch_att_empvacation.Start_Date as vacation_date_start ,sch_att_empvacation.End_Date as vacation_date_end from sch_str_employees left join sch_att_empatt '+
+                    'on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)'+
                     'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
                     'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
-                    'where sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL)', [schoolId,calendarId], function (err, result) {
+                    'where sch_str_employees.school_id = ?  ', [calendarId,schoolId], function (err, result) {
+                        console.log(query.sql);
                         if (err)
                             throw err
                         callback(result);
@@ -109,10 +110,10 @@ var employeesAttendanceMethods = {
                 var calendarId = calendarObj.Id;
                 var schoolId = req.body.schoolId;
                 var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date , sch_att_empvacation.Start_Date as vacation_date_start ,sch_att_empvacation.End_Date as vacation_date_end from sch_str_employees left join sch_att_empatt '+
-                    'on sch_str_employees.id = sch_att_empatt.employee_id '+
+                    'on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)'+
                     'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
                     'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
-                    'where sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL)', [schoolId,calendarId], function (err, result) {
+                    'where sch_str_employees.school_id = ?  ', [calendarId,schoolId], function (err, result) {
                     console.log(query.sql);
                     if (err)
                             throw err

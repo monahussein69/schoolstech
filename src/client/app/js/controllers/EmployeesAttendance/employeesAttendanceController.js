@@ -75,6 +75,9 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                     if (Object.keys(data).length) {
                         model.First_att_close = data[0].first_att_closing;
                         model.Second_att_close = data[0].second_att_closing;
+                    }else{
+                        model.First_att_close = 0;
+                        model.Second_att_close = 0;
                     }
                 });
             }
