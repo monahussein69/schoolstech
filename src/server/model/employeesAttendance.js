@@ -82,7 +82,7 @@ var employeesAttendanceMethods = {
                     'on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)'+
                     'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
                     'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
-                    'where sch_str_employees.school_id = ?  ', [calendarId,schoolId], function (err, result) {
+                    'where sch_str_employees.school_id = ?  GROUP by main_employee_id', [calendarId,schoolId], function (err, result) {
                         console.log(query.sql);
                         if (err)
                             throw err
@@ -113,7 +113,7 @@ var employeesAttendanceMethods = {
                     'on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)'+
                     'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
                     'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
-                    'where sch_str_employees.school_id = ?  ', [calendarId,schoolId], function (err, result) {
+                    'where sch_str_employees.school_id = ?  GROUP by main_employee_id', [calendarId,schoolId], function (err, result) {
                     console.log(query.sql);
                     if (err)
                             throw err
@@ -365,7 +365,7 @@ var employeesAttendanceMethods = {
         var attendanceObj = req.body.attendanceObj;
         req.params.SchoolId = attendanceObj.school_id;
         var response = {};
-        attendanceObj.late_min = '';
+       // attendanceObj.late_min = '';
 
             var current_date = moment(attendanceObj.attendance_day).format('MM-DD-YYYY');
             //var current_date = '03-18-2018';
@@ -390,27 +390,29 @@ var employeesAttendanceMethods = {
                                 console.log(result);
                                 if (Object.keys(result).length) {
                                     attendanceObj.Event_type_id = result[0].Id;
-                                    if(attendanceObj.is_absent == 0) {
-                                        var queue_Begining_time = moment(schoolProfile.queue_Begining, 'HH:mm').format('HH:mm');
-                                        //var current_time = moment().format('HH:mm');
-                                        var current_time = attendanceObj.time_in;
-                                        attendanceObj.time_in = current_time;
+                                    if(!( attendanceObj.late_min)) {
+                                        if (attendanceObj.is_absent == 0) {
+                                            var queue_Begining_time = moment(schoolProfile.queue_Begining, 'HH:mm').format('HH:mm');
+                                            //var current_time = moment().format('HH:mm');
+                                            var current_time = attendanceObj.time_in;
+                                            attendanceObj.time_in = current_time;
 
-                                        var ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));
-                                       console.log('ms');
-                                       console.log(ms);
-                                        if (ms <= 0) {
-                                            ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));
+                                            var ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));
+                                            console.log('ms');
+                                            console.log(ms);
+                                            if (ms <= 0) {
+                                                ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));
+                                            }
+
+                                            var d = moment.duration(ms);
+                                            var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
+                                            attendanceObj.late_min = hours;
                                         }
-
-                                        var d = moment.duration(ms);
-                                        var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
-                                        attendanceObj.late_min = hours;
                                     }
 
                                     req.body.attendanceObj = attendanceObj;
                                     employeesAttendanceMethods.addEmployeeAttendance(req,res,function(result){
-                                        if(result.success){
+                                        if(result.success &&  (attendanceObj.is_absent == 1)){
                                             var currentTime = moment().format('HH:mm');
                                             var Start_Date = moment().format('MM-DD-YYYY');
                                             var End_Date = moment().add(1, 'days');

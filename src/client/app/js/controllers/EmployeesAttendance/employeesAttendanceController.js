@@ -68,11 +68,13 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
            if(data.late_min) {
 
                return '' +
+                   '<div class="confirm_late">'+
                    '<div class="col-md-2">'+
-                   '<label>' + late_min + '</label>' +
+                   '<label class="late_label">' + late_min + '</label>' +
                    '</div>'+
                    '<div class="col-md-4">'+
                    '<button class="btn btn-primary" ng-click="confirmLateMin(' + data.main_employee_id + ',$event,\''+ data.late_min +'\',\''+ data.time_in +'\')" > تعديل</button>'+
+               '</div>'+
                '</div>';
 
            }else{
@@ -180,10 +182,8 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
 
                 }
             });
-            confirmLateMinInst.result.then(function (newusr) {
-                angular.element($event.target).removeClass('color-grey');
-                angular.element($event.target).addClass('color-green');
-                angular.element($event.target).parent().children('.excuse').attr('disabled',false)
+            confirmLateMinInst.result.then(function (result) {
+                angular.element($event.target).parent('.confirm_late').children('.late_label').text(result.late_min);
             }, function () {
                 console.log('close');
                 //$log.info('Modal dismissed at: ' + new Date());
@@ -390,10 +390,10 @@ angular.module('MetronicApp').controller('DialogInstCtrl', function (toastr, emp
     }
 });
 
-angular.module('MetronicApp').controller('confirmLateMinCtrl', function (toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedEmployee,selectedDate,employee_data,late_min,time_in, schoolId, $log) {
+angular.module('MetronicApp').controller('confirmLateMinCtrl', function (toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedEmployee,selectedDate,late_min,time_in, schoolId, $log) {
     $scope.selectedEmployee = selectedEmployee;
     $scope.currentTime = $moment().format('H:m');
-    $scope.late_min = late_min;
+    $scope.late_min_modified = late_min;
 
     $scope.submitAttendance = function () {
 
@@ -407,7 +407,7 @@ angular.module('MetronicApp').controller('confirmLateMinCtrl', function (toastr,
 
     $scope.recordAttendance = function () {
         var attendanceObj = {};
-            attendanceObj.late_min = $scope.late_min;
+            attendanceObj.late_min = $scope.late_min_modified;
             attendanceObj.time_in = time_in;
 
 
@@ -424,6 +424,8 @@ angular.module('MetronicApp').controller('confirmLateMinCtrl', function (toastr,
             } else {
                 toastr.error(result.msg);
             }
+            console.log($scope.late_min_modified);
+            result.late_min = $scope.late_min_modified;
             $uibModalInstance.close(result);
         });
     }
