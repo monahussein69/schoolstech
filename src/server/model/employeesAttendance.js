@@ -426,6 +426,7 @@ var employeesAttendanceMethods = {
                                             req.body.AbsentObj = AbsentObj;
                                             employeesVacationMethods.sendAbsentRequest(req,res,function(result){});
                                         }
+                                        result.late_min = attendanceObj.late_min;
                                         callback(result);
                                     });
                                 }else{
@@ -706,6 +707,8 @@ var employeesAttendanceMethods = {
             }
         });
     },
+
+
 
 
 };
