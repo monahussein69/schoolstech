@@ -56,7 +56,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
 
             var current_date = $moment(attendance_day).format('MM-DD-YYYY');
             return ''+
-                '<button class="btn btn-primary color-grey" ng-click="confirmTimeIn('+data.main_employee_id+',$event)" ng-class="{\'color-green\': 0 =='+data.is_absent+'}"> حاضر</button>\n'+
+                '<button class="btn btn-primary color-grey" ng-click="confirmTimeIn('+data.main_employee_id+',$event)" ng-class="{\'color-green\': 0 =='+data.is_absent+' && '+!data.late_min+',\'color-orange\': 0 =='+data.is_absent+' && \''+data.late_min+'\' != \'\' || \''+data.late_min+'\' != null}"> حاضر</button>\n'+
                 '<button class="btn btn-danger" ng-class="{\'color-grey\':!'+data.is_absent+'}" ng-click="model.recordAttendance('+data.main_employee_id+',$event,\'غياب\')">غائب</button>'+
                 '<button ng-disabled = "'+data.is_absent+' != 0" class="btn btn-primary excuse" ng-class="{\'color-grey\':!('+data.excuse_date+' == '+current_date+')}" ng-click="model.ExcuseRequest('+data.main_employee_id+',$event)">استئذان</button> '+
                 '<button class="btn btn-warning" ng-class="{\'color-grey\':(\''+data.vacation_date_start+'\' == null) || !(\''+data.vacation_date_start+' \' <= \''+current_date+'\' && \''+data.vacation_date_end+'\' >= \''+current_date+'\')}" ng-click="model.AbsentRequest('+data.main_employee_id+',$event,\'غياب بعذر\')">غياب بعذر</button>'
@@ -183,6 +183,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                 }
             });
             confirmLateMinInst.result.then(function (result) {
+                console.log(angular.element($event.target).parent().parent().find('.late_label').text(result.late_min));
                 angular.element($event.target).parent('.confirm_late').children('.late_label').text(result.late_min);
             }, function () {
                 console.log('close');
