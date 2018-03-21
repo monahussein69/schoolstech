@@ -23,6 +23,7 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
             activeProfile : {},
             getAttendanceBasedDate:getAttendanceBasedDate,
             employeeActivity: employeeActivity,
+            recordAttendanceAll:recordAttendanceAll,
             listOfActivity: {},
             selected : {},
             selectAll : false,
@@ -82,37 +83,81 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
 
         function recordAttendanceAll(type){
-            console.log(model.selected);
-            var ids = model.selected;
-            var requests = Object.keys(ids).map(function(key,item) {
-                return new Promise(function (resolve) {
-                    var attendanceObj = {};
-                    attendanceObj.school_id = model.schoolId;
-                    attendanceObj.employee_id = key;
-                    attendanceObj.Event_Name = 'طابور';
-                    attendanceObj.time_in = $moment().format('H:m');
-                    attendanceObj.attendance_day = model.attendance_day;
-                    attendanceObj.is_absent = 1;
-                    if(type == 'حضور') {
-                        attendanceObj.is_absent = 0;
-                    }else if(type == 'غياب'){
-                        attendanceObj.on_vacation = 1;
-                    }
 
-                    employeesAttendanceService.setEmployeeAttendance(attendanceObj, function (result) {
-                        resolve(result);
+            var ids = model.selected;
+            if(Object.keys(ids).length > 0) {
+                var requests = Object.keys(ids).map(function (key, item) {
+                    return new Promise(function (resolve) {
+                        var attendanceObj = {};
+                        attendanceObj.Begining_Time = model.listOfActivity[model.activity].Begining_Time,
+                            attendanceObj.Ending_Time = model.listOfActivity[model.activity].Ending_Time,
+                            attendanceObj.school_id = model.schoolId;
+                        attendanceObj.employee_id = key;
+                        attendanceObj.Event_Name = model.listOfActivity[model.activity].event_Nam;
+                        attendanceObj.time_in = $moment().format('H:m');
+                        attendanceObj.attendance_day = model.attendance_day;
+                        attendanceObj.is_absent = 1;
+                        if (type == 'تأخر') {
+                            attendanceObj.is_absent = 0;
+                        } else if (type == 'خروج مبكر') {
+                            attendanceObj.is_absent = 2;
+                        }
+
+                        employeesAttendanceService.setEmployeeAttendance(attendanceObj, function (result) {
+                            resolve(result);
+                        });
                     });
                 });
-            });
 
-            Promise.all(requests).then(function (result) {
-                var resetPaging = true;
-                model.dtInstance.reloadData();
-                //callback(response);
-            });
+                Promise.all(requests).then(function (result) {
+                    model.getAllEmployeesByActivity();
+                    toastr.success('تم تسجيل '+type+' بنجاح');
+                    //callback(response);
+                });
+            }else{
+                toastr.error('الرجاء اختيار الموظفين');
+            }
 
 
         }
+
+        $scope.confirmLateMin = function(employee_id,$event,late_min,time_in) {
+            var confirmLateMinInst = $uibModal.open({
+                templateUrl: 'views/employees_attendance/ConfirmInTime.html',
+                controller: 'confirmLateMinCtrl',
+                size: 'md',
+                resolve: {
+                    selectedEmployee: function () {
+                        return employee_id;
+                    },
+                    schoolId: function () {
+                        return model.schoolId;
+                    },
+                    selectedDate: function () {
+                        return model.attendance_day;
+                    },
+                    late_min: function () {
+                        return late_min;
+                    },
+                    time_in: function () {
+                        return time_in;
+                    },
+                    selectedEvent: function () {
+                        return model.listOfActivity[model.activity].event_Nam;
+                    }
+
+                }
+            });
+            confirmLateMinInst.result.then(function (result) {
+                console.log(angular.element($event.target).parent().parent().find('.late_label').text(result.late_min));
+                angular.element($event.target).parent('.confirm_late').children('.late_label').text(result.late_min);
+            }, function () {
+                console.log('close');
+                //$log.info('Modal dismissed at: ' + new Date());
+            });
+
+
+        };
 
         function toggleAll (selectAll, selectedItems) {
             console.log('in click');
@@ -167,7 +212,7 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
         function getAllEmployeesByActivity(){
             var defer = $q.defer();
-            employeesAttendanceService.getAllEmployeesAttendanceByActivity(schoolId,model.activity,model.attendance_day).then(function (employees) {
+            employeesAttendanceService.getAllEmployeesAttendanceByActivity(schoolId,model.listOfActivity[model.activity].event_Nam,model.attendance_day).then(function (employees) {
                 defer.resolve(employees);
                 model.dtInstance.changeData(defer.promise);
                 model.employees = employees;
@@ -222,7 +267,7 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
             dialogInst.result.then(function (result) {
 
                 if(result.success){
-                    angular.element($event.target).removeClass('color-grey');
+                  model.getAllEmployeesByActivity();
                 }
 
                 //$scope.usrs.push(newusr);
@@ -246,17 +291,54 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
         $rootScope.settings.layout.pageSidebarClosed = false;
     });
 
+angular.module('MetronicApp').controller('confirmLateMinCtrl', function (toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedEmployee,selectedDate,late_min,time_in,selectedEvent, schoolId, $log) {
+    $scope.selectedEmployee = selectedEmployee;
+    $scope.currentTime = $moment().format('H:m');
+    $scope.late_min_modified = late_min;
 
+    $scope.submitAttendance = function () {
+
+        //	$scope.usr = {name: '', job: '', age: '', sal: '', addr:''};
+    };
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+
+
+    $scope.recordAttendance = function () {
+        var attendanceObj = {};
+        attendanceObj.late_min = $scope.late_min_modified;
+        attendanceObj.time_in = time_in;
+        attendanceObj.school_id = schoolId;
+        attendanceObj.employee_id = selectedEmployee;
+        attendanceObj.Event_Name = selectedEvent;
+        attendanceObj.is_absent = 0;
+        attendanceObj.attendance_day = selectedDate;
+
+
+        employeesAttendanceService.setEmployeeAttendance(attendanceObj, function (result) {
+            if (result.success) {
+                toastr.success('تم تعديل وقت التأخر بنجاح');
+            } else {
+                toastr.error(result.msg);
+            }
+            console.log($scope.late_min_modified);
+            result.late_min = $scope.late_min_modified;
+            $uibModalInstance.close(result);
+        });
+    }
+});
 
 angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedEmployee,selectedActivity, schoolId,status_name,status_id,selected_date, $log, getActivityByDayAndSchoolId) {
 
-    var index = -1;
+    /*var index = -1;
 
      getActivityByDayAndSchoolId.some(function(obj, i) {
         return obj.event_Nam === selectedActivity ? index = i : false;
     });
     index = index.toString();
-    console.log(index);
+    console.log(index);*/
 
     var model = {
         selectedEmployee: selectedEmployee,
@@ -264,7 +346,7 @@ angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (
         onCancel: onCancel,
         onSave: onSave,
         activities: getActivityByDayAndSchoolId,
-        activity: index,
+        activity: selectedActivity,
         status: status_id,
         status_name : status_name
     };

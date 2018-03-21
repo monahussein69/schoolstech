@@ -17,25 +17,47 @@ angular.module('MetronicApp').controller('activityAttendanceController',
         }
 
         var attendance_day = $moment().format('MM/DD/YYYY');
+        var titleHtml = '<input type="checkbox" ng-model="model.selectAll" ng-click="model.toggleAll(model.selectAll, model.selected)">';
+
         var model = {
             schoolId: schoolId,
             teacherId: teacherId,
             studentAttendance: [],
             recordAttendance: recordAttendance,
+            recordAttendanceAll:recordAttendanceAll,
             getAllStudentsByActivity: getAllStudentsByActivity,
             ExcuseRequest: ExcuseRequest,
             attendance_day:attendance_day,
             activeProfile: {},
             listOfActivity: {},
+            selected : {},
+            selectAll : false,
+            toggleAll : toggleAll,
+            toggleOne : toggleOne,
+            headerCompiled:false,
+            ids:[],
             activity: '',
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                 defer.resolve(model.studentAttendance);
 
                 return defer.promise
-            }).withOption('createdRow', createdRow),
+            }).withOption('createdRow', createdRow).withOption('createdRow', createdRow)
+                .withOption('headerCallback', function(header) {
+                    //if (!model.headerCompiled) {
+                    // Use this headerCompiled field to only compile header once
+                    // model.headerCompiled = true;
+                    $compile(angular.element(header).contents())($scope);
+                    //}
+                }),
             columns: [
+                DTColumnBuilder.newColumn(null).withTitle(titleHtml).notSortable()
+                    .renderWith(function(data, type, full, meta) {
+                        model.selected[full.main_student_id] = false;
+                        return '<input type="checkbox" ng-model="model.selected[' + data.main_student_id + ']" ng-click="model.toggleOne(date.selected)">';
+                    }),
                 DTColumnBuilder.newColumn('student_name').withTitle('اسم الطالب'),
+                DTColumnBuilder.newColumn('late_min').withTitle('مده التأخير'),
                 DTColumnBuilder.newColumn(null).withTitle('الحضور').notSortable()
                     .renderWith(actionsHtml)
             ],
@@ -79,6 +101,63 @@ angular.module('MetronicApp').controller('activityAttendanceController',
                 ;
         }
 
+        function recordAttendanceAll(type){
+
+            var ids = model.selected;
+            if(Object.keys(ids).length > 0) {
+                var requests = Object.keys(ids).map(function (key, item) {
+                    return new Promise(function (resolve) {
+                        var attendanceObj = {};
+                        attendanceObj.school_id = model.schoolId;
+                        attendanceObj.Student_id = key;
+                        attendanceObj.Event_Name = model.activity;
+                        attendanceObj.time_in = $moment().format('HH:mm');
+                        attendanceObj.is_absent = 1;
+                        attendanceObj.attendance_day = model.attendance_day;
+
+                        if (type == 'حضور') {
+                            attendanceObj.is_absent = 0;
+                        }
+
+                        studentsAttendanceService.setStudentAttendance(attendanceObj, function (result) {
+                            resolve(result);
+                        });
+                    });
+                });
+
+                Promise.all(requests).then(function (result) {
+                    model.getAllStudentsByActivity();
+                    toastr.success('تم تسجيل '+type+' بنجاح');
+                    //callback(response);
+                });
+            }else{
+                toastr.error('الرجاء اختيار الطلاب');
+            }
+
+
+        }
+
+
+        function toggleAll (selectAll, selectedItems) {
+            console.log('in click');
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    selectedItems[id] = selectAll;
+                }
+            }
+        }
+        function toggleOne (selectedItems) {
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    if(!selectedItems[id]) {
+                        model.selectAll = false;
+                        return;
+                    }
+                }
+            }
+            model.selectAll = true;
+        }
+
         function getAllStudentsByActivity() {
             var defer = $q.defer();
             studentsAttendanceService.getAllStudentsAttendanceByActivity(schoolId, model.teacherId, model.activity,model.attendance_day).then(function (studentAttendance) {
@@ -111,14 +190,15 @@ angular.module('MetronicApp').controller('activityAttendanceController',
 
             studentsAttendanceService.setStudentAttendance(attendanceObj, function (result) {
                 if (result.success) {
+                    model.getAllStudentsByActivity();
                     toastr.success(result.msg);
-                    angular.element($event.target).removeClass('color-grey');
+                    /*angular.element($event.target).removeClass('color-grey');
                     if (type == 'حضور') {
                         angular.element($event.target).addClass('color-green');
                         angular.element($event.target).parent().children('.excuse').attr('disabled', false);
                     } else if (type == 'غياب') {
                         angular.element($event.target).parent().children('.excuse').attr('disabled', true);
-                    }
+                    }*/
 
                 } else {
                     toastr.error(result.msg);

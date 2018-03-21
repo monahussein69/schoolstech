@@ -131,32 +131,42 @@ function createdRow(row, data, dataIndex) {
         function recordAttendanceAll(type){
            console.log(model.selected);
            var ids = model.selected;
+            if(Object.keys(ids).length > 0) {
             var requests = Object.keys(ids).map(function(key,item) {
-                return new Promise(function (resolve) {
-                    var attendanceObj = {};
-                    attendanceObj.school_id = model.schoolId;
-                    attendanceObj.employee_id = key;
-                    attendanceObj.Event_Name = 'طابور';
-                    attendanceObj.time_in = $moment().format('H:m');
-                    attendanceObj.attendance_day = model.attendance_day;
-                    attendanceObj.is_absent = 1;
-                    if(type == 'حضور') {
-                        attendanceObj.is_absent = 0;
-                    }else if(type == 'غياب'){
-                        attendanceObj.on_vacation = 1;
-                    }
 
-                    employeesAttendanceService.setEmployeeAttendance(attendanceObj, function (result) {
-                        resolve(result);
+                if (item){
+                    return new Promise(function (resolve) {
+                        var attendanceObj = {};
+                        attendanceObj.school_id = model.schoolId;
+                        attendanceObj.employee_id = key;
+                        attendanceObj.Event_Name = 'طابور';
+                        attendanceObj.time_in = $moment().format('H:m');
+                        attendanceObj.attendance_day = model.attendance_day;
+                        attendanceObj.is_absent = 1;
+                        if (type == 'حضور') {
+                            attendanceObj.is_absent = 0;
+                        } else if (type == 'غياب') {
+                            attendanceObj.on_vacation = 1;
+                        }
+
+                        employeesAttendanceService.setEmployeeAttendance(attendanceObj, function (result) {
+                            resolve(result);
+                        });
                     });
-                });
+             }
             });
 
             Promise.all(requests).then(function (result) {
                 var resetPaging = true;
                 model.dtInstance.reloadData();
+                toastr.success('تم تسجيل '+type+' بنجاح');
                 //callback(response);
             });
+
+            }else{
+                toastr.error('الرجاء اختيار الموظفين');
+            }
+
 
 
         }
@@ -489,13 +499,10 @@ angular.module('MetronicApp').controller('confirmLateMinCtrl', function (toastr,
         var attendanceObj = {};
             attendanceObj.late_min = $scope.late_min_modified;
             attendanceObj.time_in = time_in;
-
-
         attendanceObj.school_id = schoolId;
         attendanceObj.employee_id = selectedEmployee;
         attendanceObj.Event_Name = 'طابور';
         attendanceObj.is_absent = 0;
-        attendanceObj.time_in = $scope.currentTime;
         attendanceObj.attendance_day = selectedDate;
 
 

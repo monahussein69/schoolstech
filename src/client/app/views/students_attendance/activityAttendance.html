@@ -19,39 +19,45 @@
             <div class="portlet-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group row">
-                            <label class="col-sm-2 control-label"> اليوم </label>
-                            <div class="col-sm-6">
-                                <input type="text" name="name" class="form-control date-picker" ng-model="model.attendance_day" ng-change="model.getAttendanceBasedDate()" /> </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label class="col-sm-2 control-label"> المعلم </label>
-                            <div class="col-sm-6">
-                                <select name="activity" class="form-control" ng-model="model.teacherId" ng-change="model.getActivityByEmployeeId()">
-                                    <option selected disabled value="">اختر المعلم </option>
-                                    <option ng-repeat="employee in model.employeeList track by $index" value="{{employee.id}}">{{employee.name}} </option>
-                                </select>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-2 control-label"> اليوم </label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="name" class="form-control date-picker" ng-model="model.attendance_day" ng-change="model.getAttendanceBasedDate()" /> </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-2 control-label"> المعلم </label>
+                                    <div class="col-sm-6">
+                                        <select name="activity" class="form-control" ng-model="model.teacherId" ng-change="model.getActivityByEmployeeId()">
+                                            <option selected disabled value="">اختر المعلم </option>
+                                            <option ng-repeat="employee in model.employeeList track by $index" value="{{employee.id}}">{{employee.name}} </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-2 control-label"> الفعاليه </label>
+                                    <div class="col-sm-6">
+                                        <select name="activity" class="form-control" ng-model="model.activity" ng-change="model.getAllStudentsByActivity()">
+                                            <option selected disabled value="">اختر الفعالية </option>
+                                            <option ng-repeat="activity in model.listOfActivity track by $index" value="{{activity.name}}">{{activity.name}} </option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label class="col-sm-2 control-label"> الفعاليه </label>
-                            <div class="col-sm-6">
-                                <select name="activity" class="form-control" ng-model="model.activity" ng-change="model.getAllStudentsByActivity()">
-                                    <option selected disabled value="">اختر الفعالية </option>
-                                    <option ng-repeat="activity in model.listOfActivity track by $index" value="{{activity.name}}">{{activity.name}} </option>
-                                </select>
-                            </div>
-                        </div>
+                    <div class="col-md-2 col-md-offset-4">
+                        <button class="btn btn-primary"  ng-click="model.recordAttendanceAll('حضور')"> حاضر</button>
+                        <button class="btn btn-danger color-grey"   ng-click="model.recordAttendanceAll('غياب')">غياب</button>
+
                     </div>
                 </div>
+
                 <table datatable="" class="table table-striped table-bordered table-hover table-checkable order-column" dt-options="model.options" dt-columns="model.columns" dt-instance="model.dtInstance" class="row-border hover"></table>
             </div>
         </div>
