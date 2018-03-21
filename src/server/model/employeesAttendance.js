@@ -51,7 +51,7 @@ var employeesAttendanceMethods = {
                         ' on (sch_att_empatt.Calender_id = ? and sch_str_employees.id = sch_att_empatt.employee_id and sch_acd_lectures.name = sch_att_empatt.Event_Name)'+
                         'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
                         'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
-                        'where sch_acd_lectures.name = ? and (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) and sch_str_employees.school_id = ?', [calendarId,lecture_name,currentDay,currentDay1,schoolId], function (err, result) {
+                        'where sch_acd_lectures.name = ? and (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) and sch_str_employees.school_id = ? group by main_employee_id', [calendarId,lecture_name,currentDay,currentDay1,schoolId], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err
@@ -468,11 +468,11 @@ var employeesAttendanceMethods = {
       var attendanceObj = req.body.attendanceObj;
         var response = {};
 
-        con.query('select * from sch_att_empatt where Calender_id = ? and employee_id = ? and Event_Name = ?',[attendanceObj.Calender_id,attendanceObj.employee_id,attendanceObj.Event_Name], function (err, result) {
+        con.query('select * from sch_att_empatt where Calender_id = ? and employee_id = ? and Event_Name = ?',[attendanceObj.Calender_id,attendanceObj.employee_id,attendanceObj.Event_Name], function (err, result1) {
             if(err)
                 throw err;
 
-            if (Object.keys(result).length) {
+            if (Object.keys(result1).length) {
 
                 var query = con.query('update sch_att_empatt set on_vacation = ?, school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?,Event_type_id = ? where Calender_id = ? and employee_id = ? and Event_Name=?',
                     [
@@ -501,7 +501,7 @@ var employeesAttendanceMethods = {
                             if (attendanceObj.is_absent == 2)
                                 response.msg = 'تم تسجيل خروج مبكر بنجاح';
 
-                            response.id = result.insertId;
+                            response.id = result1[0].id;
                             callback(response);
                         } else {
                             response.success = false;

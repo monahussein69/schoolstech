@@ -13,6 +13,8 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
             }
         }
         var attendance_day = $moment().format('MM/DD/YYYY');
+        var titleHtml = '<input type="checkbox" ng-model="model.selectAll" ng-click="model.toggleAll(model.selectAll, model.selected)">';
+
         var model = {
             schoolId:schoolId,
             emp_atts:[],
@@ -22,6 +24,12 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
             getAttendanceBasedDate:getAttendanceBasedDate,
             employeeActivity: employeeActivity,
             listOfActivity: {},
+            selected : {},
+            selectAll : false,
+            toggleAll : toggleAll,
+            toggleOne : toggleOne,
+            headerCompiled:false,
+            ids:[],
             activity:'',
             options:DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
@@ -29,14 +37,103 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
 
                 return defer.promise
-            }).withOption('createdRow', createdRow),
+            }).withOption('createdRow', createdRow)
+                .withOption('headerCallback', function(header) {
+                //if (!model.headerCompiled) {
+                    // Use this headerCompiled field to only compile header once
+                   // model.headerCompiled = true;
+                    $compile(angular.element(header).contents())($scope);
+                //}
+            }),
             columns: [
+                DTColumnBuilder.newColumn(null).withTitle(titleHtml).notSortable()
+                    .renderWith(function(data, type, full, meta) {
+                        model.selected[full.main_employee_id] = false;
+                        return '<input type="checkbox" ng-model="model.selected[' + data.main_employee_id + ']" ng-click="model.toggleOne(date.selected)">';
+                    }),
                 DTColumnBuilder.newColumn('name').withTitle(' اسم الموظف'),
+                DTColumnBuilder.newColumn(null).withTitle('مده التأخير').notSortable()
+                    .renderWith(lateHtml),
                 DTColumnBuilder.newColumn(null).withTitle('الحضور').notSortable()
                     .renderWith(actionsHtml)
             ],
             dtInstance: {},
         };
+
+
+        function lateHtml(data, type, full, meta) {
+            var late_min = data.late_min;
+            if(data.late_min) {
+
+                return '' +
+                    '<div class="confirm_late">'+
+                    '<div class="col-md-2">'+
+                    '<label class="late_label">' + late_min + '</label>' +
+                    '</div>'+
+                    '<div class="col-md-4">'+
+                    '<button class="btn btn-primary" ng-click="confirmLateMin(' + data.main_employee_id + ',$event,\''+ data.late_min +'\',\''+ data.time_in +'\')" > تعديل</button>'+
+                    '</div>'+
+                    '</div>';
+
+            }else{
+                return '';
+            }
+        }
+
+
+        function recordAttendanceAll(type){
+            console.log(model.selected);
+            var ids = model.selected;
+            var requests = Object.keys(ids).map(function(key,item) {
+                return new Promise(function (resolve) {
+                    var attendanceObj = {};
+                    attendanceObj.school_id = model.schoolId;
+                    attendanceObj.employee_id = key;
+                    attendanceObj.Event_Name = 'طابور';
+                    attendanceObj.time_in = $moment().format('H:m');
+                    attendanceObj.attendance_day = model.attendance_day;
+                    attendanceObj.is_absent = 1;
+                    if(type == 'حضور') {
+                        attendanceObj.is_absent = 0;
+                    }else if(type == 'غياب'){
+                        attendanceObj.on_vacation = 1;
+                    }
+
+                    employeesAttendanceService.setEmployeeAttendance(attendanceObj, function (result) {
+                        resolve(result);
+                    });
+                });
+            });
+
+            Promise.all(requests).then(function (result) {
+                var resetPaging = true;
+                model.dtInstance.reloadData();
+                //callback(response);
+            });
+
+
+        }
+
+        function toggleAll (selectAll, selectedItems) {
+            console.log('in click');
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    selectedItems[id] = selectAll;
+                }
+            }
+        }
+        function toggleOne (selectedItems) {
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    if(!selectedItems[id]) {
+                        model.selectAll = false;
+                        return;
+                    }
+                }
+            }
+            model.selectAll = true;
+        }
+
 
 
 
