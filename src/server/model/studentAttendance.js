@@ -16,14 +16,15 @@ var studentAttendanceMethods = {
         var schoolId = req.body.schoolId;
         var teacherId = req.body.teacherId;
         var lecture_name = req.body.lecture_name;
+        var status = req.body.status;
         var breaks = [  'طابور','صلاه', 'فسحه (1)' ,'فسحه (2)'];
         var response = [];
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
-                var currentDay = workingSettingsMethods.getArabicDay(new Date().getDay());
-                currentDay = 'الاحد';
+                var currentDay = workingSettingsMethods.getArabicDay(new Date(current_date).getDay());
+                //currentDay = 'الاحد';
                 var currentDay1 = currentDay;
                 if(currentDay ==  'الاحد'){
                     currentDay1 = 'الأحد';
@@ -34,14 +35,24 @@ var studentAttendanceMethods = {
                 if(currentDay ==  'الاربعاء'){
                     currentDay1 = 'الأربعاء';
                 }
+                var condition = '';
+                if(status == 'حاضر'){
+                    condition = 'and SCH_ATT_STDATT.is_absent = 0 and (SCH_ATT_STDATT.late_min = "" OR SCH_ATT_STDATT.late_min IS  NULL)';
+                }else  if(status == 'متأخر'){
+                    condition = 'and SCH_ATT_STDATT.is_absent = 0 and (SCH_ATT_STDATT.late_min != "" OR SCH_ATT_STDATT.late_min IS NOT NULL)';
+                }else if(status == 'غائب'){
+                    condition = 'and SCH_ATT_STDATT.is_absent = 1';
+                }
+
+
 
                 if(breaks.indexOf(lecture_name)  > -1){
 
                     var query  = con.query('SELECT SCH_ATT_STDEXCUSE.Start_Date as excuse_date, sch_str_student.student_id as main_student_id , sch_str_student.Name as student_name , SCH_ATT_STDATT.* FROM `sch_str_student` ' +
                         ' left join SCH_ATT_STDATT on ' +
-                        '(sch_str_student.student_id = SCH_ATT_STDATT.Student_id and  SCH_ATT_STDATT.Event_Name = ? and (SCH_ATT_STDATT.Calender_id = ? )) ' +
+                        '(sch_str_student.student_id = SCH_ATT_STDATT.Student_id and  SCH_ATT_STDATT.Event_Name = ? and (SCH_ATT_STDATT.Calender_id = ? ) ) ' +
                         'left join SCH_ATT_STDEXCUSE on SCH_ATT_STDEXCUSE.Student_id = sch_str_student.student_id '+
-                        ' where sch_acd_lecturestables.School_Id = ?  ' +
+                        ' where sch_acd_lecturestables.School_Id = ?  ' + condition + ' '+
                         '  group by sch_str_student.student_id', [lecture_name,calendarId,schoolId], function (err, result) {
                             console.log(query.sql);
                             if (err)
@@ -57,11 +68,11 @@ var studentAttendanceMethods = {
                         ' (sch_acd_lecturestables.Section_Id = sch_acd_studentsections.Section_Id and sch_acd_lecturestables.Course_Id = sch_acd_studentsections.Course_Id) ' +
                         ' join sch_acd_lectures on sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO ' +
                         ' left join SCH_ATT_STDATT on ' +
-                        '(sch_str_student.student_id = SCH_ATT_STDATT.Student_id and sch_acd_lectures.name = SCH_ATT_STDATT.Event_Name) and SCH_ATT_STDATT.Calender_id = ? ' +
+                        '(sch_str_student.student_id = SCH_ATT_STDATT.Student_id and sch_acd_lectures.name = SCH_ATT_STDATT.Event_Name and SCH_ATT_STDATT.Calender_id = ? )' +
                         'left join SCH_ATT_STDEXCUSE on SCH_ATT_STDEXCUSE.Student_id = sch_str_student.student_id '+
                         ' where sch_acd_lecturestables.School_Id = ? and ' +
                         ' (sch_acd_lecturestables.Day = ? or sch_acd_lecturestables.Day = ?) ' +
-                        ' and sch_acd_lecturestables.Teacher_Id = ? and sch_acd_lectures.name = ?  ' +
+                        ' and sch_acd_lecturestables.Teacher_Id = ? and sch_acd_lectures.name = ?  ' + condition + ' '+
                         '  group by sch_str_student.student_id', [calendarId,schoolId,currentDay,currentDay1,teacherId,lecture_name], function (err, result) {
                             console.log(query.sql);
                             if (err)

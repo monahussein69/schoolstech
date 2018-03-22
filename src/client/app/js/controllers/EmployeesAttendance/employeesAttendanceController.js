@@ -46,12 +46,12 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                 return defer.promise
             }).withOption('createdRow', createdRow)
             .withOption('headerCallback', function(header) {
-                if (!model.headerCompiled) {
+                //if (!model.headerCompiled) {
                     // Use this headerCompiled field to only compile header once
-                    model.headerCompiled = true;
+                   // model.headerCompiled = true;
                     $compile(angular.element(header).contents())($scope);
-                }
-            }),
+                //}
+            }).withOption('autoWidth', false),
             columns: [
                 DTColumnBuilder.newColumn(null).withTitle(titleHtml).notSortable()
                     .renderWith(function(data, type, full, meta) {
@@ -157,8 +157,7 @@ function createdRow(row, data, dataIndex) {
             });
 
             Promise.all(requests).then(function (result) {
-                var resetPaging = true;
-                model.dtInstance.reloadData();
+                model.getAttendanceBasedDate();
                 toastr.success('تم تسجيل '+type+' بنجاح');
                 //callback(response);
             });

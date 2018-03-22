@@ -748,7 +748,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             }
         })
         .state('Master.studentsLate', {
-            url: "/studentsLate",
+            url: "/students-attendance-records",
             templateUrl: "views/students/studentsLate.html",
             data: {pageTitle: 'كشف رصد درجات الطلاب'},
             controller: "StudentsLateController",
@@ -761,10 +761,24 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/global/plugins/datatables/datatables.min.css',
                             '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
                             '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/global/plugins/clockface/css/clockface.css',
+                            '../assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
+                            '../assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css',
+                            '../assets/global/plugins/bootstrap-colorpicker/css/colorpicker.css',
+                            '../assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css',
+
+                            '../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+                            '../assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js',
+                            '../assets/global/plugins/clockface/js/clockface.js',
+                            '../assets/global/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js',
+                            '../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
+
+                            '../assets/pages/scripts/components-date-time-pickers.min.js',
                             '../assets/pages/scripts/table-datatables-managed.min.js',
                             'js/controllers/students/StudentsController.js',
                             'js/services/StudentsService.js',
-                            'js/services/EmployeesFactory.js'
+                            'js/services/EmployeesFactory.js',
+                            'js/services/studentsAttendanceFactory.js'
                         ]
                     });
                 }] ,
