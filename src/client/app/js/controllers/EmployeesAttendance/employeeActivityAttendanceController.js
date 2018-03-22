@@ -85,8 +85,10 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
         function recordAttendanceAll(type){
 
             var ids = model.selected;
+            var results = [];
             if(Object.keys(ids).length > 0) {
                 var requests = Object.keys(ids).map(function (key, item) {
+                    if (ids[key]){
                     return new Promise(function (resolve) {
                         var attendanceObj = {};
                         attendanceObj.Begining_Time = model.listOfActivity[model.activity].Begining_Time,
@@ -104,14 +106,22 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
                         }
 
                         employeesAttendanceService.setEmployeeAttendance(attendanceObj, function (result) {
+                            if (result.success) {
+                                results.push(1);
+                            }
                             resolve(result);
                         });
                     });
+                }
                 });
 
                 Promise.all(requests).then(function (result) {
+                    if (results.includes(1)) {
                     model.getAllEmployeesByActivity();
                     toastr.success('تم تسجيل '+type+' بنجاح');
+                    }else{
+                        toastr.error('الرجاء اختار موظف');
+                    }
                     //callback(response);
                 });
             }else{

@@ -104,30 +104,40 @@ angular.module('MetronicApp').controller('activityAttendanceController',
         function recordAttendanceAll(type){
 
             var ids = model.selected;
+            var results = [];
             if(Object.keys(ids).length > 0) {
                 var requests = Object.keys(ids).map(function (key, item) {
-                    return new Promise(function (resolve) {
-                        var attendanceObj = {};
-                        attendanceObj.school_id = model.schoolId;
-                        attendanceObj.Student_id = key;
-                        attendanceObj.Event_Name = model.activity;
-                        attendanceObj.time_in = $moment().format('HH:mm');
-                        attendanceObj.is_absent = 1;
-                        attendanceObj.attendance_day = model.attendance_day;
+                    if (ids[key]) {
+                        return new Promise(function (resolve) {
+                            var attendanceObj = {};
+                            attendanceObj.school_id = model.schoolId;
+                            attendanceObj.Student_id = key;
+                            attendanceObj.Event_Name = model.activity;
+                            attendanceObj.time_in = $moment().format('HH:mm');
+                            attendanceObj.is_absent = 1;
+                            attendanceObj.attendance_day = model.attendance_day;
 
-                        if (type == 'حضور') {
-                            attendanceObj.is_absent = 0;
-                        }
+                            if (type == 'حضور') {
+                                attendanceObj.is_absent = 0;
+                            }
 
-                        studentsAttendanceService.setStudentAttendance(attendanceObj, function (result) {
-                            resolve(result);
+                            studentsAttendanceService.setStudentAttendance(attendanceObj, function (result) {
+                                if (result.success) {
+                                    results.push(1);
+                                }
+                                resolve(result);
+                            });
                         });
-                    });
+                    }
                 });
 
                 Promise.all(requests).then(function (result) {
+                    if (results.includes(1)) {
                     model.getAllStudentsByActivity();
                     toastr.success('تم تسجيل '+type+' بنجاح');
+                    }else{
+                        toastr.error('الرجاء اختيار الطلاب');
+                    }
                     //callback(response);
                 });
             }else{

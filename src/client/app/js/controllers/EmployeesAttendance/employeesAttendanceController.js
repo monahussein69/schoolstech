@@ -131,10 +131,11 @@ function createdRow(row, data, dataIndex) {
         function recordAttendanceAll(type){
            console.log(model.selected);
            var ids = model.selected;
+            var results = [];
             if(Object.keys(ids).length > 0) {
             var requests = Object.keys(ids).map(function(key,item) {
 
-                if (item){
+                if (ids[key]){
                     return new Promise(function (resolve) {
                         var attendanceObj = {};
                         attendanceObj.school_id = model.schoolId;
@@ -150,6 +151,9 @@ function createdRow(row, data, dataIndex) {
                         }
 
                         employeesAttendanceService.setEmployeeAttendance(attendanceObj, function (result) {
+                            if(result.success){
+                                results.push(1);
+                            }
                             resolve(result);
                         });
                     });
@@ -157,8 +161,12 @@ function createdRow(row, data, dataIndex) {
             });
 
             Promise.all(requests).then(function (result) {
-                model.getAttendanceBasedDate();
-                toastr.success('تم تسجيل '+type+' بنجاح');
+                if (results.includes(1)) {
+                    model.getAttendanceBasedDate();
+                    toastr.success('تم تسجيل ' + type + ' بنجاح');
+                }else{
+                    toastr.error('الرجاء اختار موظف');
+                }
                 //callback(response);
             });
 
