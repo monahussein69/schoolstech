@@ -252,7 +252,7 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
     }]);
 
 angular.module('MetronicApp').controller('StudentsLateController',
-    function (DTOptionsBuilder, DTColumnBuilder, $q, $stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter, manageEmployeeService , StudentsService) {
+    function ($moment,DTOptionsBuilder, DTColumnBuilder, $q, $stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter, manageEmployeeService , StudentsService,studentsAttendanceService ) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -265,15 +265,20 @@ angular.module('MetronicApp').controller('StudentsLateController',
                 schoolId = $stateParams.schoolId;
             }
         }
-
+        var attendance_day = $moment().format('MM/DD/YYYY');
+        var statusList = ['غائب','متأخر','حاضر'];
         var model = {
             schoolId: schoolId,
+            selectedStudentStatus:'',
             record: [],
             employeeList: [],
             getActivityByEmployeeId: getActivityByEmployeeId,
+            getAttendanceBasedDate:getAttendanceBasedDate,
             getStudentsByActivityId: getStudentsByActivityId,
+            attendance_day: attendance_day,
             selectedEmployee: 0,
             activityList: [],
+            statusList:statusList,
             selectedActivity : 0,
             studentsList  : [],
             options:DTOptionsBuilder.fromFnPromise(function () {
@@ -284,11 +289,10 @@ angular.module('MetronicApp').controller('StudentsLateController',
                 return defer.promise
             }),
             columns: [
-                DTColumnBuilder.newColumn('Name').withTitle(' اسم الطالب'),
+                DTColumnBuilder.newColumn('student_name').withTitle(' اسم الطالب'),
                 DTColumnBuilder.newColumn(null).withTitle('الحالة').notSortable()
                     .renderWith(actionsHtml),
-                DTColumnBuilder.newColumn(null).withTitle('مدة التأخير').notSortable()
-                    .renderWith(actionsHtml2)
+                DTColumnBuilder.newColumn('late_min').withTitle('مدة التأخير')
             ],
             dtInstance: {},
         };
@@ -305,8 +309,18 @@ angular.module('MetronicApp').controller('StudentsLateController',
 
         function actionsHtml(data, type, full, meta) {
 
-            return '<span>متأخر</span>'
-                ;
+           if(data.is_absent != null) {
+               if (data.is_absent == 0 && (data.late_min == null || data.late_min == '')) {
+                   return '<span>حاضر</span>';
+               }
+               if (data.is_absent == 0 && (data.late_min != null || data.late_min != '')) {
+                   return '<span>متأخر</span>';
+               }
+               if (data.is_absent == 1) {
+                   return '<span>غائب</span>';
+               }
+           }
+           return '';
         }
         function actionsHtml2(data, type, full, meta) {
 
@@ -314,20 +328,36 @@ angular.module('MetronicApp').controller('StudentsLateController',
                 ;
         }
 
+        function getAttendanceBasedDate(){
+            model.getActivityByEmployeeId();
+        }
+
         function getActivityByEmployeeId() {
-            manageEmployeeService.getActivityByEmployeeId(model.selectedEmployee).then(activites => {
+            manageEmployeeService.getActivityByEmployeeId(model.selectedEmployee,model.attendance_day).then(activites => {
                 model.activityList = activites;
                 $scope.$apply();
             });
         }
         function getStudentsByActivityId() {
-            var defer = $q.defer();
-            StudentsService.getStudentsByActivityId(model.selectedActivity).then(students => {
-                model.studentsList = students;
-                defer.resolve(students);
-                $scope.$apply();
-            });
-            model.dtInstance.changeData(defer.promise);
+
+            if(model.selectedStudentStatus != ''){
+                var defer = $q.defer();
+
+                studentsAttendanceService.getAllStudentsAttendanceByActivityAndStatus(model.schoolId, model.selectedEmployee, model.selectedActivity,model.attendance_day,model.statusList[model.selectedStudentStatus]).then(function (studentsList) {
+                    defer.resolve(studentsList);
+                    model.dtInstance.changeData(defer.promise);
+                    model.studentsList = studentsList;
+                });
+            }else{
+                var defer = $q.defer();
+
+                studentsAttendanceService.getAllStudentsAttendanceByActivity(model.schoolId, model.selectedEmployee, model.selectedActivity,model.attendance_day).then(function (studentsList) {
+                    defer.resolve(studentsList);
+                    model.dtInstance.changeData(defer.promise);
+                    model.studentsList = studentsList;
+                });
+            }
+
         }
 
         $scope.$on('$viewContentLoaded', function () {
