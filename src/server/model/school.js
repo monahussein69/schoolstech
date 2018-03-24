@@ -119,7 +119,7 @@ var schoolMethods = {
                     " JOIN sch_bui_rooms ON sch_bui_rooms.id = sch_acd_lecturestables.ClassRoom_Id" +
                     " JOIN sch_str_employees ON sch_str_employees.id = sch_acd_lecturestables.Teacher_Id" +
                     " JOIN sch_acd_lectures ON sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO" +
-                    " where sch_acd_lecturestables.School_Id = ? ", [schoolId], function (err, result) {
+                    " where sch_acd_lecturestables.School_Id = ? ORDER BY sch_acd_lectures.id ASC ", [schoolId], function (err, result) {
                     console.log('query : ', query.sql);
                     if (err)
                         throw err;
