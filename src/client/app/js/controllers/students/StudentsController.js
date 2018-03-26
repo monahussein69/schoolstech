@@ -91,7 +91,7 @@ angular.module('MetronicApp').controller('StudentsController',
         function upload(file) {
             return new Promise(function (resolve, reject) {
                 Upload.upload({
-                    url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
+                    url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
                     data: {
                         file: file,
                         type: 'student',
@@ -200,7 +200,7 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
         function upload(file) {
             return new Promise(function (resolve, reject) {
                 Upload.upload({
-                    url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
+                    url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
                     data: {
                         file: file,
                         type: 'studentsDegrees'

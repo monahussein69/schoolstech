@@ -37,7 +37,7 @@ angular.module('MetronicApp').controller('SchoolsController',
 
         function upload(file) {
             Upload.upload({
-                url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
+                url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
                 data: {file: file,
 				 type:'school'
 				} //pass file as data, should be user ng-model
@@ -341,7 +341,7 @@ angular.module('MetronicApp').controller('SchoolScheduleController',
         function upload(file) {
             model.loading = true;
             Upload.upload({
-                url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
+                url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
                 data: {file: file,
                     type:'schoolSchedule',
                     schoolId : parseInt(model.schoolId)
