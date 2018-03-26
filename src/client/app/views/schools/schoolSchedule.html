@@ -1,0 +1,153 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="dashboard">الرئيسية</a>
+            <i class="fa fa-angle-left"></i>
+        </li>
+        <li>
+            <a ui-sref="datatablesmanaged"> الجدول المدرسي</a>
+        </li>
+    </ul>
+</div>
+<div class="row" ng-show="(model.config && model.config_step == 3)">
+    <div class="col-md-10">
+        <h3 class="page-title"> الخطوه الرابعه : استيراد الجدول المدرسي </h3>
+    </div>
+    <div class="col-md-2">
+        <h3 class="page-title">
+            <button ng-click="model.nextStep('#/dashboard.html')" ng-disabled="model.schoolSchedule.length == 0" class="btn btn-danger">
+                <h4> انتهاء</h4>
+            </button>
+        </h3>
+    </div>
+</div>
+<h3 class="page-title" ng-hide="(model.config && model.config_step == 3)"> ادارة الجدول المدرسي </h3>
+<!-- END PAGE HEADER-->
+<!-- BEGIN MAIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption font-dark">
+                    <i class="icon-graduation font-dark"></i>
+                    <span class="caption-subject bold uppercase"> الجدول المدرسي </span>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+                                <label for="file-upload" class="btn sbold red">
+                                    <i class="fa fa-cloud-upload"></i> استيراد الجدول المدرسي </label>
+                                <input type="file" ngf-select ng-model="file" name="file" ng-change="model.doUpload()" id="file-upload" style="display:none" /> </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="btn-group pull-right">
+                                <button class="btn green  btn-outline dropdown-toggle" data-toggle="dropdown">ادوات مساعدة
+                                    <i class="fa fa-angle-down"></i>
+                                </button>
+                                <ul class="dropdown-menu pull-right">
+                                    <li>
+                                        <a href="javascript:;">
+                                            <i class="fa fa-print"></i> طباعة </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <i class="fa fa-file-pdf-o"></i> حفظ كـ PDF </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <i class="fa fa-file-excel-o"></i> تصدير لـ Excel </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <span ng-show="model.loading">Loading .... </span>
+                <table class="table" ng-if="!model.loading">
+                    <thead>
+                        <th></th>
+                        <th ng-repeat="lecture in model.lectures">{{lecture}}</th>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="day in model.days">
+                            <td>{{day}}</td>
+                            <td ng-repeat="lecture2 in model.lectures">
+                                <ul ng-repeat="schedule in model.schoolSchedule" ng-if="schedule.Day == day && schedule.lecture_name == lecture2" style="border : 1px solid ">
+                                    <li>{{schedule.course_name}} / {{schedule.section_name}}</li>
+                                    <li>{{schedule.teacher_name}}</li>
+                                    <li>{{schedule.room_name}}</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!--<table class="table table-striped table-bordered table-hover table-checkable order-column"-->
+                <!--id="sample_1">-->
+                <!--&lt;!&ndash;<thead>&ndash;&gt;-->
+                <!--&lt;!&ndash;<tr ng-repeat="schedule in model.schoolSchedule">&ndash;&gt;-->
+                <!--&lt;!&ndash;<th>{{schedule.lectureName}}</th>&ndash;&gt;-->
+                <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                <!--&lt;!&ndash;</thead>&ndash;&gt;-->
+                <!--<tbody>-->
+                <!--&lt;!&ndash;<tr class="odd gradeX" >&ndash;&gt;-->
+                <!--&lt;!&ndash;<td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<label class="mt-checkbox mt-checkbox-outline mt-checkbox-single">&ndash;&gt;-->
+                <!--&lt;!&ndash;<input type="checkbox" class="checkboxes" value="1"/>&ndash;&gt;-->
+                <!--&lt;!&ndash;<span></span>&ndash;&gt;-->
+                <!--&lt;!&ndash;</label>&ndash;&gt;-->
+                <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td> {{school.name}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td> {{school.schoolNum}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td> {{school.educationalRegion}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td> {{school.educationLevel}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td class="center"> {{school.gender}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td> {{school.educationalOffice}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td> {{school.address}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="btn-group">&ndash;&gt;-->
+                <!--&lt;!&ndash;<button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown"&ndash;&gt;-->
+                <!--&lt;!&ndash;aria-expanded="false"> العمليات&ndash;&gt;-->
+                <!--&lt;!&ndash;<i class="fa fa-angle-down"></i>&ndash;&gt;-->
+                <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                <!--&lt;!&ndash;<ul class="dropdown-menu dropdown-menu-left" role="menu">&ndash;&gt;-->
+                <!--&lt;!&ndash;<li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<a ui-sref="Master.AddEditSchool({schoolId:{{school.id}}})">&ndash;&gt;-->
+                <!--&lt;!&ndash;<i class="icon-pencil"></i>&nbsp; تعديل </a>&ndash;&gt;-->
+                <!--&lt;!&ndash;</li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<a ui-sref="Master.manageSchoolAccount({schoolId:{{school.id}}})">&ndash;&gt;-->
+                <!--&lt;!&ndash;<i class="fa fa-credit-card"></i> &nbsp;بيانات الاشتراك </a>&ndash;&gt;-->
+                <!--&lt;!&ndash;</li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<li class="divider"></li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<a ui-sref="Master.ManageEmployeesData({schoolId:{{school.id}}})">&ndash;&gt;-->
+                <!--&lt;!&ndash;<i class="fa fa-credit-card"></i> &nbsp;بيانات الموظفين</a>&ndash;&gt;-->
+                <!--&lt;!&ndash;</li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<li>&ndash;&gt;-->
+                <!--&lt;!&ndash;<a href="javascript:;" ng-confirm-click="هل تريد تأكيد حذف المدرسه ؟ "&ndash;&gt;-->
+                <!--&lt;!&ndash;confirmed-click="model.deleteSchool(school.id)">&ndash;&gt;-->
+                <!--&lt;!&ndash;<i class="fa fa-trash"></i>&nbsp; حذف </a>&ndash;&gt;-->
+                <!--&lt;!&ndash;</li>&ndash;&gt;-->
+                <!--&lt;!&ndash;</ul>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                <!--</tbody>-->
+                <!--</table>-->
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+<!-- END MAIN CONTENT -->
+<!-- BEGIN MAIN JS -->
+<script>
+    TableDatatablesManaged.init();
+</script>
+<!-- END MAIN JS -->

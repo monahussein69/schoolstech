@@ -1,0 +1,157 @@
+<div class="page-sidebar navbar-collapse collapse">
+    <!-- BEGIN SIDEBAR MENU -->
+    <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+    <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+    <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+    <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+    <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+    <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+    <div class="page-logo">
+        <a ui-sref="dashboard">
+            <img style="margin:10px auto ; display: block;" src="{{settings.layoutPath}}/img/logo.png" alt="logo" class="logo-default" /> </a>
+    </div>
+    <ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}">
+        <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+        <li class="start nav-item">
+            <a ui-sref="Master.dashboard">
+                <i class="icon-home"></i>
+                <span class="title">الرئيسية</span>
+            </a>
+        </li>
+        <li class="start nav-item" ng-show="model.userType == 2">
+            <a ui-sref="Master.dashboard">
+                <i class="icon-home"></i>
+                <span class="title">الشؤون الادارية </span>
+            </a>
+        </li>
+        <li class="nav-item" ng-show="model.userType == 2">
+            <a href="#" class="nav-link nav-toggle">
+                <i class="icon-graduation"></i>
+                <span class="title">الشؤون التعليمية</span>
+                <span class="arrow"></span>
+            </a>
+            <ul class="sub-menu">
+                <li>
+                    <a ui-sref="Master.workingSettings">
+                        <i class="fa fa-list"></i>اعدادات الدوام المدرسي</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="Master.employeesAttendance">
+                        <i class="fa fa-list"></i>كشف الدوام اليومي</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="Master.employeesActivityAttendance">
+                        <i class="fa fa-list"></i>كشف الانشطه اليوميه</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="start nav-item" ng-show="model.userType == 2">
+            <a ui-sref="Master.dashboard">
+                <i class="icon-home"></i>
+                <span class="title">الشؤون المدرسية</span>
+            </a>
+        </li>
+        <li class="nav-item" ng-show="model.userType == 2 || model.userType == 3">
+            <a href="#" class="nav-link nav-toggle">
+                <i class="icon-graduation"></i>
+                <span class="title">شؤون الطلاب</span>
+                <span class="arrow"></span>
+            </a>
+            <ul class="sub-menu">
+                <li>
+                    <a ui-sref="Master.studentAttendance">
+                        <i class="fa fa-list"></i>كشف الانشطه اليوميه</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="Master.studentsLate">
+                        <i class="fa fa-list"></i>سجل الحضور </span>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+        <li class="nav-item" ng-show="model.userType == 2">
+            <a href="#" class="nav-link nav-toggle">
+                <i class="icon-graduation"></i>
+                <span class="title">الاعدادات</span>
+                <span class="arrow"></span>
+            </a>
+            <ul class="sub-menu">
+                <li>
+                    <a ui-sref="Master.ManageEmployeesData">
+                        <i class="fa fa-list"></i>
+                        <span> اداره و عرض الموظفين </span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="Master.students">
+                        <i class="fa fa-list"></i>
+                        <span> اداره و عرض الطلاب</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="Master.ManageLeaders&Agents">
+                        <i class="fa fa-list"></i>
+                        <span> القاده و الوكلاء</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="Master.schoolSchedule">
+                        <i class="fa fa-list"></i>
+                        <span> الجدول المدرسي</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="Master.studentsDegrees">
+                        <i class="fa fa-list"></i>
+                        <span>كشف رصد درجات الطلاب </span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item" ng-show="model.userType == 1">
+            <a href="#" class="nav-link nav-toggle">
+                <i class="icon-graduation"></i>
+                <span class="title">ادارة المدارس</span>
+                <span class="arrow"></span>
+            </a>
+            <ul class="sub-menu">
+                <li>
+                    <a ui-sref="Master.schools">
+                        <i class="fa fa-list"></i> اداره و عرض المدارس</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="Master.AddEditSchool">
+                        <i class="fa fa-plus-circle"></i>
+                        <span class="title">اضافه مدرسه</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item" ng-show="model.userType == 1">
+            <a href="#" class="nav-link nav-toggle">
+                <i class="icon-graduation"></i>
+                <span class="title">الاعدادات</span>
+                <span class="arrow"></span>
+            </a>
+            <ul class="sub-menu">
+                <li>
+                    <a ui-sref="Master.appSettings">
+                        <i class="fa fa-list"></i>الاعدادات العامه</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="Master.ManageJobTitles">
+                        <i class="fa fa-list"></i>المسميات الوظيفيه</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <!-- END SIDEBAR MENU -->
+</div>

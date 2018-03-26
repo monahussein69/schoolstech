@@ -1,0 +1,140 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a ui-sref="dashboard">الرئيسية</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a ui-sref="dashboard">التقويم المدرسي</a>
+        </li>
+    </ul>
+</div>
+<!-- END PAGE HEADER-->
+<!-- BEGIN MAIN CONTENT -->
+<div ng-controller="DashboardController">
+    <!-- BEGIN DASHBOARD STATS -->
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="dashboard-stat blue">
+                <div class="visual">
+                    <i class="fa fa-comments"></i>
+                </div>
+                <div class="details">
+                    <div class="number"> 1349 </div>
+                    <div class="desc"> New Feedbacks </div>
+                </div>
+                <a class="more" href="#"> View more
+                    <i class="m-icon-swapright m-icon-white"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="dashboard-stat red">
+                <div class="visual">
+                    <i class="fa fa-bar-chart-o"></i>
+                </div>
+                <div class="details">
+                    <div class="number"> 12,5M$ </div>
+                    <div class="desc"> Total Profit </div>
+                </div>
+                <a class="more" href="#"> View more
+                    <i class="m-icon-swapright m-icon-white"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="dashboard-stat green">
+                <div class="visual">
+                    <i class="fa fa-shopping-cart"></i>
+                </div>
+                <div class="details">
+                    <div class="number"> 549 </div>
+                    <div class="desc"> New Orders </div>
+                </div>
+                <a class="more" href="#"> View more
+                    <i class="m-icon-swapright m-icon-white"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="dashboard-stat purple">
+                <div class="visual">
+                    <i class="fa fa-globe"></i>
+                </div>
+                <div class="details">
+                    <div class="number"> +89% </div>
+                    <div class="desc"> Brand Popularity </div>
+                </div>
+                <a class="more" href="#"> View more
+                    <i class="m-icon-swapright m-icon-white"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- END DASHBOARD STATS -->
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <!-- BEGIN PORTLET-->
+            <div class="portlet light bordered ">
+                <div class="portlet-title">
+                    <div class="caption caption-md">
+                        <i class="icon-settings font-green"></i>
+                        <span class="caption-subject font-green bold uppercase">التقويم المدرسي</span>
+                        <span class="caption-helper hide">weekly stats...</span>
+                    </div>
+                </div>
+                <style>
+                    .weeks h4 {
+                        text-align: center;
+                        background: #0f8c7a;
+                        padding: 10px;
+                        color: white;
+                    }
+
+                    .weeks ul {
+                        list-style: none;
+                        padding-right: 0px;
+                    }
+
+                    .weeks ul li span {
+                        display: inline-block;
+                        padding: 2px;
+                        background: gray;
+                        color: white;
+                        margin-left: 10px;
+                        width: 50px;
+                        text-align: center;
+                    }
+
+                    .weeks ul li p {
+                        display: inline-block;
+                        padding: 2px;
+                        border: 1px solid gray;
+                        margin-bottom: 0px;
+                        width: 160px;
+                        text-align: center;
+                    }
+                </style>
+                <div class="portlet-body">
+                    <div class="weeks col-md-3" ng-repeat="week in weeks track by $index">
+                        <h4 style="">الاسبوع {{week}}</h4>
+                        <ul ng-repeat="calender2 in model.calender track by $index">
+                            <li ng-if="week == calender2.Week_Name">
+                                <span>{{calender2.Day }}</span>
+                                <p>{{calender2.Date | kdate: '' : 'ar' : 'ummalqura'}} هـ</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- END PORTLET-->
+        </div>
+    </div>
+</div>
+<!-- END MAIN CONTENT -->
+<!-- BEGIN MAIN JS & CSS -->
+<script>
+    Dashboard.init();
+</script>
+<!-- BEGIN MAIN JS & CSS -->

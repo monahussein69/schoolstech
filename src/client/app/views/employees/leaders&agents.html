@@ -1,0 +1,70 @@
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a ui-sref="dashboard">الصفحه الرئيسيه</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a ui-sref="Master.ManageLeaders&Agents">القاده و الوكلاء</a>
+        </li>
+    </ul>
+</div>
+<div class="row" ng-show="(model.config && model.config_step == 1)">
+    <div class="col-md-10">
+        <h3 class="page-title"> الخطوه الثانيه : القاده و الوكلاء</h3>
+    </div>
+    <div class="col-md-2">
+        <h3 class="page-title">
+            <button ng-click="model.nextStep('#/students')" ng-disabled="model.added == 0" class="btn btn-danger">
+                <h4> الخطوه التاليه</h4>
+            </button>
+        </h3>
+    </div>
+</div>
+<h3 class="page-title" ng-hide="(model.config && model.config_step == 1)"> القاده و الوكلاء</h3>
+<div>
+    <form method="post " ng-submit="model.saveLeadersData() " name="leadersForm " ng-model="leadersForm ">
+        <div class="alert alert-success " ng-if="model.success !=null ">
+            <button class="close " data-close="alert "></button>
+            <span>{{model.success}}</span>
+        </div>
+        <div class="alert alert-danger " ng-if="model.error !=null ">
+            <button class="close " data-close="alert "></button>
+            <span>{{model.error}}</span>
+        </div>
+        <div class="form-group row ">
+            <label class="col-sm-2 control-label "> قائد المدرسه </label>
+            <div class="col-sm-6 ">
+                <select class="form-control " ng-model="model.agentsObj.schoolLeader" ng-options="employee.id as employee.name for employee in employees">
+                    <option value=" "> اختر قائد المدرسه </option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row ">
+            <label class="col-sm-2 control-label "> وكيل الشؤون الطلابيه</label>
+            <div class="col-sm-6 ">
+                <select class="form-control " ng-model="model.agentsObj.studentAgent " ng-options="std_agent.id as std_agent.name for std_agent in agents_employees ">
+                    <option value=" "> اختر الوكيل </option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row ">
+            <label class="col-sm-2 control-label "> وكيل الشؤون التعليميه </label>
+            <div class="col-sm-6 ">
+                <select class="form-control " ng-model="model.agentsObj.educationAgent " ng-options="edu_agent.id as edu_agent.name for edu_agent in agents_employees ">
+                    <option value=" "> اختر الوكيل </option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row ">
+            <label class="col-sm-2 control-label "> وكيل الشؤون المدرسيه </label>
+            <div class="col-sm-6 ">
+                <select class="form-control " ng-model="model.agentsObj.schoolAgent " ng-options="sch_agent.id as sch_agent.name for sch_agent in agents_employees ">
+                    <option value=" "> اختر الوكيل</option>
+                </select>
+            </div>
+        </div>
+        <button class="btn btn-primary " type="submit " ng-disabled="leadersForm.$invalid ">حفظ</button>
+        <button class="btn btn-danger ">الغاء</button>
+    </form>
+</div>
