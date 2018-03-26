@@ -15,7 +15,7 @@ var employeesVacationMethods = {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 AbsentObj.Calender_id = calendarObj.Id;
-                var query = con.query('insert into SCH_ATT_EMPVacation set ?',
+                var query = con.query('insert into sch_att_empvacation set ?',
                     [AbsentObj], function (err, result) {
                     console.log(query.sql);
                         if (err)

@@ -12,12 +12,12 @@ var schoolAccountMethods = {
      var response = {};
 
      if(schoolAccountData.schoolId){
-       con.query("select * from SYS_School_Account where schoolId = ?",[schoolAccountData.schoolId],function(err,result){
+       con.query("select * from sys_school_account where schoolId = ?",[schoolAccountData.schoolId],function(err,result){
          if(err)
           throw err;
          if (Object.keys(result).length){
             AccountStatus = result[0].accountStatus;
-          con.query(" update SYS_School_Account set accountName = ? , accountStatus = ?,activationDate=?,expirationDate=?,expirationType=?,expirationDuration=?,contactPerson=?, contactEmail=?,contactTitle=? ,contactMobile =?,contactPhone=?,contactPostal=?,contactMailBox=? where schoolId = ?",
+          con.query(" update sys_school_account set accountName = ? , accountStatus = ?,activationDate=?,expirationDate=?,expirationType=?,expirationDuration=?,contactPerson=?, contactEmail=?,contactTitle=? ,contactMobile =?,contactPhone=?,contactPostal=?,contactMailBox=? where schoolId = ?",
           [ schoolAccountData.accountName ,
             schoolAccountData.accountStatus,
             schoolAccountData.activationDate ,
@@ -83,7 +83,7 @@ var schoolAccountMethods = {
           );
          }else{
 
-             con.query(" insert into SYS_School_Account  (accountName, accountStatus,activationDate,expirationDate,contactPerson, contactEmail,contactTitle ,contactMobile ,contactPhone,contactPostal,contactMailBox,schoolId,expirationType,expirationDuration) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+             con.query(" insert into sys_school_account  (accountName, accountStatus,activationDate,expirationDate,contactPerson, contactEmail,contactTitle ,contactMobile ,contactPhone,contactPostal,contactMailBox,schoolId,expirationType,expirationDuration) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                  [schoolAccountData.accountName ,
                      schoolAccountData.accountStatus,
                      schoolAccountData.activationDate ,
@@ -164,7 +164,7 @@ var schoolAccountMethods = {
 	
     getSchoolAccount: function(req,res,callback) {
         var schoolId = req.params.schoolId;
-        con.query('select * from SYS_School_Account where schoolId = ?',[schoolId],function(err,result){
+        con.query('select * from sys_school_account where schoolId = ?',[schoolId],function(err,result){
                 if(err)
                     throw err
 
@@ -175,7 +175,7 @@ var schoolAccountMethods = {
     deleteSchoolAccount: function(req,res,callback) {
         var schoolId = req.params.schoolId;
         var response = {};
-        con.query('delete from SYS_School_Account where schoolId = ?',[schoolId],function(err,result){
+        con.query('delete from sys_school_account where schoolId = ?',[schoolId],function(err,result){
                 if(err)
                     throw err
                 if(result.affectedRows){
