@@ -2,7 +2,7 @@ angular.module('MetronicApp').factory('StudentsService', function ($http, Upload
     var service = {};
     service.saveStudentData = function (studentObj, callback) {
         console.log(studentObj);
-        $http.post("http://localhost:3000/saveStudentData", {
+        $http.post("http://138.197.175.116:3000/saveStudentData", {
             'studentData': studentObj
         }).success(function (response) {
             console.log("response : " , typeof studentObj.logoFile);
@@ -14,14 +14,14 @@ angular.module('MetronicApp').factory('StudentsService', function ($http, Upload
     };
 
     service.getStudentData = function (studentId, callback) {
-        $http.get("http://localhost:3000/getStudent/" + studentId).success(function (response) {
+        $http.get("http://138.197.175.116:3000/getStudent/" + studentId).success(function (response) {
             callback(response);
         });
     };
 
     service.getAllStudents = function (schoolId) {
         return new Promise(function (resolve, reject) {
-            $http.get("http://localhost:3000/getAllStudents/"+schoolId).success(function (response) {
+            $http.get("http://138.197.175.116:3000/getAllStudents/"+schoolId).success(function (response) {
                 console.log(response);
                 resolve(response);
             });
@@ -29,7 +29,7 @@ angular.module('MetronicApp').factory('StudentsService', function ($http, Upload
     };
 
     service.deleteStudentData = function (studentId, callback) {
-        $http.get("http://localhost:3000/deleteStudent/" + studentId).success(function (response) {
+        $http.get("http://138.197.175.116:3000/deleteStudent/" + studentId).success(function (response) {
             callback(response);
         });
     };
@@ -37,7 +37,7 @@ angular.module('MetronicApp').factory('StudentsService', function ($http, Upload
     service.uploadPhoto = function (file , id) {
         return new Promise(function (resolve) {
             Upload.upload({
-                url: 'http://localhost:3000/upload-photo', //webAPI exposed to upload the file
+                url: 'http://138.197.175.116:3000/upload-photo', //webAPI exposed to upload the file
                 data: {files: file , id : id,type:'student_logo'} //pass file as data, should be user ng-model
             }).then(function (resp) { //upload function returns a promise
                 console.log(resp);
@@ -59,7 +59,7 @@ angular.module('MetronicApp').factory('StudentsService', function ($http, Upload
     };
     service.getStudentsByActivityId = function (activityId) {
         return new Promise(function (resolve, reject) {
-            $http.get("http://localhost:3000/getStudentsByActivityId/" + activityId).success(function (response) {
+            $http.get("http://138.197.175.116:3000/getStudentsByActivityId/" + activityId).success(function (response) {
                 console.log(response);
                 resolve(response);
             });
