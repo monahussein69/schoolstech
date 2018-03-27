@@ -65,7 +65,7 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
                 '<i class="icon-pencil"></i>&nbsp; تعديل </a>'+
             '</li>'+
             '<li>'+
-            '<a   ng-confirm-click="هل تريد تأكيد حذف الاعداد ؟ " confirmed-click=="model.deleteProfileSetting(' + data.Id + ')">' +
+            '<a   ng-confirm-click="هل تريد تأكيد حذف الاعداد ؟ " confirmed-click="model.deleteProfileSetting(' + data.Id + ')">' +
             '<i class="fa fa fa-trash-o"></i> &nbsp; حذف</a>'+
             '</li>'+
             '<li class="divider"> </li>'+
