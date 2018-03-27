@@ -82,7 +82,7 @@ var employeesAttendanceMethods = {
                     'on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)'+
                     'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
                     'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
-                    'where sch_str_employees.school_id = ?  GROUP by main_employee_id', [calendarId,schoolId], function (err, result) {
+                    'where sch_str_employees.school_id = ?  group by main_employee_id', [calendarId,schoolId], function (err, result) {
                         console.log(query.sql);
                         if (err)
                             throw err
@@ -113,7 +113,7 @@ var employeesAttendanceMethods = {
                     'on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)'+
                     'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
                     'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
-                    'where sch_str_employees.school_id = ?  GROUP by main_employee_id', [calendarId,schoolId], function (err, result) {
+                    'where sch_str_employees.school_id = ?  group by main_employee_id', [calendarId,schoolId], function (err, result) {
                     console.log(query.sql);
                     if (err)
                             throw err
