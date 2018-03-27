@@ -36,7 +36,7 @@ angular.module('MetronicApp').controller('StudentsController',
                 return defer.promise
             }),
             columns: [
-                DTColumnBuilder.newColumn('Name').withTitle('اسم الطالب'),
+                DTColumnBuilder.newColumn('name').withTitle('اسم الطالب'),
                 DTColumnBuilder.newColumn('Nationality').withTitle('الجنسية'),
                 DTColumnBuilder.newColumn('Specialization').withTitle('التخصص'),
                 DTColumnBuilder.newColumn('Identity_No').withTitle('رقم الهوية'),
