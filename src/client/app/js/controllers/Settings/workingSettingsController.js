@@ -132,6 +132,7 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
                         var resetPaging = true;
                         model.dtInstance.reloadData(response.data, resetPaging);
                         toastr.success(response.msg);
+						model.working_settingsObj = {};
                     } else {
                         //model.error = response.msg;
                         toastr.error(response.msg);
