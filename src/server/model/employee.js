@@ -74,7 +74,7 @@ var employeeMethods = {
                 }
             });
         } else {
-            con.query("select sch_str_employees.id,job_title.name as job_title_name from sch_str_employees join job_title on SCH_STR_Employees.jobtitle_id = job_title.id where job_no = ?", [empData.job_no], function (err, result) {
+            con.query("select sch_str_employees.id,job_title.name as job_title_name from sch_str_employees join job_title on sch_str_employees.jobtitle_id = job_title.id where job_no = ?", [empData.job_no], function (err, result) {
                 console.log('here');
                 console.log(result);
                 if (err)
@@ -523,7 +523,7 @@ var employeeMethods = {
     },
     getEmployees: function (req, res, callback) {
         var schoolId = req.params.schoolId;
-        con.query('select sch_str_employees.*,sys_users.is_active,job_title.name as job_title_name from sch_str_employees left join sys_users on SCH_STR_Employees.userId = sys_users.id  left join job_title on SCH_STR_Employees.jobtitle_id = job_title.id  where school_id = ?', [schoolId], function (err, result) {
+        con.query('select sch_str_employees.*,sys_users.is_active,job_title.name as job_title_name from sch_str_employees left join sys_users on sch_str_employees.userId = sys_users.id  left join job_title on sch_str_employees.jobtitle_id = job_title.id  where school_id = ?', [schoolId], function (err, result) {
                 if (err)
                     throw err
                 callback(result);
@@ -532,7 +532,7 @@ var employeeMethods = {
     },
     getAllTeachers: function (req, res, callback) {
         var schoolId = req.params.schoolId;
-        con.query('select sch_str_employees.*,sys_users.is_active,job_title.name as job_title_name from sch_str_employees left join sys_users on SCH_STR_Employees.userId = sys_users.id  left join job_title on SCH_STR_Employees.jobtitle_id = job_title.id  where school_id = ? AND job_title.name = "معلم" ', [schoolId], function (err, result) {
+        con.query('select sch_str_employees.*,sys_users.is_active,job_title.name as job_title_name from sch_str_employees left join sys_users on sch_str_employees.userId = sys_users.id  left join job_title on sch_str_employees.jobtitle_id = job_title.id  where school_id = ? AND job_title.name = "معلم" ', [schoolId], function (err, result) {
                 if (err)
                     throw err
                 callback(result);
