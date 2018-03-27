@@ -365,7 +365,7 @@ angular.module('MetronicApp').controller('ManageEmployeeController', function (C
 
                 if (response.success) {
                     //model.success = response.msg;
-                    $window.location.href = '#/manageEmployees';
+                    $window.location.href = '/manageEmployees';
                     toastr.success(response.msg);
                 } else {
                     //model.error = response.msg;
