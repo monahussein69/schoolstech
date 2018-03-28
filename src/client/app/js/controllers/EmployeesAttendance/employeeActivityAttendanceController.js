@@ -330,7 +330,7 @@ angular.module('MetronicApp').controller('confirmLateMinCtrl', function (toastr,
                 toastr.error(result.msg);
             }
             console.log($scope.late_min_modified);
-            result.late_min = $scope.late_min_modified;
+            result.time_in = $scope.late_min_modified;
             $uibModalInstance.close(result);
         });
     }
