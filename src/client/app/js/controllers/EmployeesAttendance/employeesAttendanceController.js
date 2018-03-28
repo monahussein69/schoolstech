@@ -620,15 +620,15 @@ angular.module('MetronicApp').controller('AbsentDialogCtrl', function(toastr ,em
     };
 
     $scope.absentDays = function(){
-        var start = $moment(AbsentObj.Start_Date);
-        var end = $moment(AbsentObj.End_Date);
+        var start = $moment(AbsentObj.Start_Date).format('MM-DD-YYYY');
+        var end = $moment(AbsentObj.End_Date).format('MM-DD-YYYY');
         var duration = $moment.duration(end.diff(start));
         var days = duration.asDays();
         AbsentObj.No_Of_Days = days;
     };
 
     $scope.absentEndDay = function(){
-        var start = $moment(AbsentObj.Start_Date);
+        var start = $moment(AbsentObj.Start_Date).format('MM-DD-YYYY');
         var days = AbsentObj.No_Of_Days ;
         var end = start.add(days, 'days');
         AbsentObj.End_Date = end.format("MM-DD-YYYY");
