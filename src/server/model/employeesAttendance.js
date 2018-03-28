@@ -636,7 +636,7 @@ var employeesAttendanceMethods = {
                 throw err;
 
             if (Object.keys(result).length) {
-
+                
                 con.query('update sch_att_empatt set  school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?, Event_type_id = ? where Calender_id = ? and employee_id = ? and Event_Name = ? ',
                     [
                         attendanceObj.school_id,
@@ -658,6 +658,8 @@ var employeesAttendanceMethods = {
                                 response.msg = 'تم تسجيل الحضور بنجاح';
                             if (attendanceObj.is_absent == 1)
                                 response.msg = 'تم تسجيل الغياب بنجاح';
+								if (attendanceObj.is_absent == 2)
+                                response.msg = 'تم تسجيل خروج مبكر بنجاح';
                             response.id = result.insertId;
                             callback(response);
                         } else {
@@ -689,6 +691,8 @@ var employeesAttendanceMethods = {
                                 response.msg = 'تم تسجيل التأخر بنجاح';
                             if (attendanceObj.is_absent == 1)
                                 response.msg = 'تم تسجيل الغياب بنجاح';
+								if (attendanceObj.is_absent == 2)
+                                response.msg = 'تم تسجيل خروج مبكر بنجاح';
                             response.id = result.insertId;
                             callback(response);
                         } else {
