@@ -637,8 +637,8 @@ angular.module('MetronicApp').controller('AbsentDialogCtrl', function(toastr ,em
     };
 
     $scope.AbsentRequest = function(){
-        AbsentObj.Start_Date = AbsentObj.Start_Date.format("MM-DD-YYYY")
-        AbsentObj.End_Date = AbsentObj.End_Date.format("MM-DD-YYYY")
+        AbsentObj.Start_Date = $moment(AbsentObj.Start_Date).format("MM-DD-YYYY")
+        AbsentObj.End_Date = $moment(AbsentObj.End_Date).format("MM-DD-YYYY")
         employeesAbsentService.sendAbsentRequest(AbsentObj,function (result) {
             if(result.success){
                 toastr.success(result.msg);
