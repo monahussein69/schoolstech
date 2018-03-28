@@ -44,7 +44,7 @@ angular.module('MetronicApp').controller('StudentsController',
                 DTColumnBuilder.newColumn('Specialization').withTitle('التخصص').withOption('defaultContent', ' '),
                 DTColumnBuilder.newColumn('Identity_No').withTitle('رقم الهوية').withOption('defaultContent', ' '),
                 DTColumnBuilder.newColumn('student_record').withTitle('سجل الطالب').withOption('defaultContent', ' '),
-                DTColumnBuilder.newColumn('status').withTitle('الحالة').withOption('defaultContent', ''),
+                DTColumnBuilder.newColumn('status').withTitle('الحالة').withOption('defaultContent', ' '),
             ],
             dtInstance: {},
             students: {}
