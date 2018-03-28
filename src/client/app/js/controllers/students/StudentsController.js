@@ -36,12 +36,12 @@ angular.module('MetronicApp').controller('StudentsController',
                 return defer.promise
             }),
             columns: [
-                DTColumnBuilder.newColumn('name').withTitle('اسم الطالب'),
-                DTColumnBuilder.newColumn('Nationality').withTitle('الجنسية'),
-                DTColumnBuilder.newColumn('Specialization').withTitle('التخصص'),
-                DTColumnBuilder.newColumn('Identity_No').withTitle('رقم الهوية'),
-                DTColumnBuilder.newColumn('student_record').withTitle('سجل الطالب'),
-                DTColumnBuilder.newColumn('status').withTitle('الحالة'),
+                DTColumnBuilder.newColumn('name').withTitle('اسم الطالب').withOption('defaultContent', ''),
+                DTColumnBuilder.newColumn('Nationality').withTitle('الجنسية').withOption('defaultContent', ''),
+                DTColumnBuilder.newColumn('Specialization').withTitle('التخصص').withOption('defaultContent', ''),
+                DTColumnBuilder.newColumn('Identity_No').withTitle('رقم الهوية').withOption('defaultContent', ''),
+                DTColumnBuilder.newColumn('student_record').withTitle('سجل الطالب').withOption('defaultContent', ''),
+                DTColumnBuilder.newColumn('status').withTitle('الحالة').withOption('defaultContent', ''),
             ],
             dtInstance: {},
             students: {}
