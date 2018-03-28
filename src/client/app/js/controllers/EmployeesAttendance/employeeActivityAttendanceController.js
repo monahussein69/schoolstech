@@ -199,7 +199,7 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
             return ''+
                 '<button class="btn btn-primary" ng-class="{\'color-grey\':!('+data.is_absent+' == 0)}"  ng-click="model.employeeActivity('+data.main_employee_id+',0,$event)"> تأخر</button>' +
-                '<button class="btn btn-danger" ng-class="{\'color-grey\':!'+data.is_absent+'}"  ng-click="model.employeeActivity('+data.main_employee_id+',1,$event)">غياب</button>' +
+                '<button class="btn btn-danger" ng-class="{\'color-grey\':!('+data.is_absent+' == 1)}"  ng-click="model.employeeActivity('+data.main_employee_id+',1,$event)">غياب</button>' +
                 '<button class="btn btn-warning" ng-class="{\'color-grey\':'+data.is_absent+' != 2}" ng-click="model.employeeActivity('+data.main_employee_id+',2,$event)">خروج مبكر</button>'
                 ;
         }
