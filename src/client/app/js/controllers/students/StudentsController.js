@@ -39,12 +39,12 @@ angular.module('MetronicApp').controller('StudentsController',
                 return defer.promise
             }),
             columns: [
-                DTColumnBuilder.newColumn('name').withTitle('اسم الطالب').withOption('defaultContent', 'لا يوجد'),
-                DTColumnBuilder.newColumn('Nationality').withTitle('الجنسية').withOption('defaultContent', 'لا يوجد'),
-                DTColumnBuilder.newColumn('Specialization').withTitle('التخصص').withOption('defaultContent', 'لا يوجد'),
-                DTColumnBuilder.newColumn('Identity_No').withTitle('رقم الهوية').withOption('defaultContent', 'لا يوجد'),
-                DTColumnBuilder.newColumn('student_record').withTitle('سجل الطالب').withOption('defaultContent', 'لا يوجد'),
-                DTColumnBuilder.newColumn('status').withTitle('الحالة').withOption('defaultContent', 'لا يوجد'),
+                DTColumnBuilder.newColumn('name').withTitle('اسم الطالب').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('Nationality').withTitle('الجنسية').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('Specialization').withTitle('التخصص').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('Identity_No').withTitle('رقم الهوية').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('student_record').withTitle('سجل الطالب').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('status').withTitle('الحالة').withOption('defaultContent', 'غير مدخل'),
             ],
             dtInstance: {},
             students: {}
