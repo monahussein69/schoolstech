@@ -30,17 +30,20 @@ angular.module('MetronicApp').controller('StudentsController',
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                 StudentsService.getAllStudents(schoolId).then(function (students) {
+                    console.log('students');
+                    console.log(students);
+                    
                     defer.resolve(students);
                     model.students = students;
                 });
                 return defer.promise
             }),
             columns: [
-                DTColumnBuilder.newColumn('name').withTitle('اسم الطالب').withOption('defaultContent', ''),
-                DTColumnBuilder.newColumn('Nationality').withTitle('الجنسية').withOption('defaultContent', ''),
-                DTColumnBuilder.newColumn('Specialization').withTitle('التخصص').withOption('defaultContent', ''),
-                DTColumnBuilder.newColumn('Identity_No').withTitle('رقم الهوية').withOption('defaultContent', ''),
-                DTColumnBuilder.newColumn('student_record').withTitle('سجل الطالب').withOption('defaultContent', ''),
+                DTColumnBuilder.newColumn('name').withTitle('اسم الطالب').withOption('defaultContent', ' '),
+                DTColumnBuilder.newColumn('Nationality').withTitle('الجنسية').withOption('defaultContent', ' '),
+                DTColumnBuilder.newColumn('Specialization').withTitle('التخصص').withOption('defaultContent', ' '),
+                DTColumnBuilder.newColumn('Identity_No').withTitle('رقم الهوية').withOption('defaultContent', ' '),
+                DTColumnBuilder.newColumn('student_record').withTitle('سجل الطالب').withOption('defaultContent', ' '),
                 DTColumnBuilder.newColumn('status').withTitle('الحالة').withOption('defaultContent', ''),
             ],
             dtInstance: {},
