@@ -506,7 +506,7 @@ angular.module('MetronicApp').controller('confirmLateMinCtrl', function (toastr,
 
     $scope.recordAttendance = function () {
         var attendanceObj = {};
-        attendanceObj.time_in = time_in;
+        attendanceObj.time_in = $scope.late_min_modified;
         attendanceObj.school_id = schoolId;
         attendanceObj.employee_id = selectedEmployee;
         attendanceObj.Event_Name = 'طابور';
