@@ -365,6 +365,7 @@ function createdRow(row, data, dataIndex) {
                dialogInst.result.then(function (result) {
 
                    if(result.success){
+				       model.getAttendanceBasedDate();
                        angular.element($event.target).removeClass('color-grey');
                        angular.element($event.target).parent().children('.excuse').attr('disabled',true);
                    }
@@ -620,15 +621,15 @@ angular.module('MetronicApp').controller('AbsentDialogCtrl', function(toastr ,em
     };
 
     $scope.absentDays = function(){
-        var start = $moment(AbsentObj.Start_Date).format('MM-DD-YYYY');
-        var end = $moment(AbsentObj.End_Date).format('MM-DD-YYYY');
+        var start = $moment(AbsentObj.Start_Date);
+        var end = $moment(AbsentObj.End_Date);
         var duration = $moment.duration(end.diff(start));
         var days = duration.asDays();
         AbsentObj.No_Of_Days = days;
     };
 
     $scope.absentEndDay = function(){
-        var start = $moment(AbsentObj.Start_Date).format('MM-DD-YYYY');
+        var start = $moment(AbsentObj.Start_Date);
         var days = AbsentObj.No_Of_Days ;
         var end = start.add(days, 'days');
         AbsentObj.End_Date = end.format("MM-DD-YYYY");
@@ -636,7 +637,8 @@ angular.module('MetronicApp').controller('AbsentDialogCtrl', function(toastr ,em
     };
 
     $scope.AbsentRequest = function(){
-
+        AbsentObj.Start_Date = AbsentObj.Start_Date.format("MM-DD-YYYY")
+        AbsentObj.End_Date = AbsentObj.End_Date.format("MM-DD-YYYY")
         employeesAbsentService.sendAbsentRequest(AbsentObj,function (result) {
             if(result.success){
                 toastr.success(result.msg);
