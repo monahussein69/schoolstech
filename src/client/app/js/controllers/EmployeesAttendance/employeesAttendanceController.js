@@ -109,13 +109,13 @@ function createdRow(row, data, dataIndex) {
         }
 
         function lateHtml(data, type, full, meta) {
-            var late_min = data.late_min;
-           if(data.late_min) {
+            var time_in = data.time_in;
+           if(data.time_in) {
 
                return '' +
                    '<div class="confirm_late">'+
                    '<div class="col-md-2">'+
-                   '<label class="late_label">' + late_min + '</label>' +
+                   '<label class="late_label">' + time_in + '</label>' +
                    '</div>'+
                    '<div class="col-md-4">'+
                    '<button class="btn btn-primary" ng-click="confirmLateMin(' + data.main_employee_id + ',$event,\''+ data.time_in +'\')" > تعديل</button>'+
