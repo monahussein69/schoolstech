@@ -37,21 +37,21 @@ var studentAttendanceMethods = {
                 }
                 var condition = '';
                 if(status == 'حاضر'){
-                    condition = 'and SCH_ATT_STDATT.is_absent = 0 and (SCH_ATT_STDATT.late_min = "" OR SCH_ATT_STDATT.late_min IS  NULL)';
+                    condition = 'and sch_att_stdatt.is_absent = 0 and (sch_att_stdatt.late_min = "" OR sch_att_stdatt.late_min IS  NULL)';
                 }else  if(status == 'متأخر'){
-                    condition = 'and SCH_ATT_STDATT.is_absent = 0 and (SCH_ATT_STDATT.late_min != "" OR SCH_ATT_STDATT.late_min IS NOT NULL)';
+                    condition = 'and sch_att_stdatt.is_absent = 0 and (sch_att_stdatt.late_min != "" OR sch_att_stdatt.late_min IS NOT NULL)';
                 }else if(status == 'غائب'){
-                    condition = 'and SCH_ATT_STDATT.is_absent = 1';
+                    condition = 'and sch_att_stdatt.is_absent = 1';
                 }
 
 
 
                 if(breaks.indexOf(lecture_name)  > -1){
 
-                    var query  = con.query('SELECT SCH_ATT_STDEXCUSE.Start_Date as excuse_date, sch_str_student.student_id as main_student_id , sch_str_student.Name as student_name , SCH_ATT_STDATT.* FROM `sch_str_student` ' +
-                        ' left join SCH_ATT_STDATT on ' +
-                        '(sch_str_student.student_id = SCH_ATT_STDATT.Student_id and  SCH_ATT_STDATT.Event_Name = ? and (SCH_ATT_STDATT.Calender_id = ? ) ) ' +
-                        'left join SCH_ATT_STDEXCUSE on SCH_ATT_STDEXCUSE.Student_id = sch_str_student.student_id '+
+                    var query  = con.query('SELECT sch_att_stdexcuse.Start_Date as excuse_date, sch_str_student.student_id as main_student_id , sch_str_student.Name as student_name , sch_att_stdatt.* FROM `sch_str_student` ' +
+                        ' left join sch_att_stdatt on ' +
+                        '(sch_str_student.student_id = sch_att_stdatt.Student_id and  sch_att_stdatt.Event_Name = ? and (sch_att_stdatt.Calender_id = ? ) ) ' +
+                        'left join sch_att_stdexcuse on sch_att_stdexcuse.Student_id = sch_str_student.student_id '+
                         ' where sch_acd_lecturestables.School_Id = ?  ' + condition + ' '+
                         '  group by sch_str_student.student_id', [lecture_name,calendarId,schoolId], function (err, result) {
                             console.log(query.sql);
@@ -67,9 +67,9 @@ var studentAttendanceMethods = {
                         ' join sch_acd_lecturestables on ' +
                         ' (sch_acd_lecturestables.Section_Id = sch_acd_studentsections.Section_Id and sch_acd_lecturestables.Course_Id = sch_acd_studentsections.Course_Id) ' +
                         ' join sch_acd_lectures on sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO ' +
-                        ' left join SCH_ATT_STDATT on ' +
-                        '(sch_str_student.student_id = SCH_ATT_STDATT.Student_id and sch_acd_lectures.name = SCH_ATT_STDATT.Event_Name and SCH_ATT_STDATT.Calender_id = ? )' +
-                        'left join SCH_ATT_STDEXCUSE on SCH_ATT_STDEXCUSE.Student_id = sch_str_student.student_id '+
+                        ' left join sch_att_stdatt on ' +
+                        '(sch_str_student.student_id = sch_att_stdatt.Student_id and sch_acd_lectures.name = sch_att_stdatt.Event_Name and sch_att_stdatt.Calender_id = ? )' +
+                        'left join sch_att_stdexcuse on sch_att_stdexcuse.Student_id = sch_str_student.student_id '+
                         ' where sch_acd_lecturestables.School_Id = ? and ' +
                         ' (sch_acd_lecturestables.Day = ? or sch_acd_lecturestables.Day = ?) ' +
                         ' and sch_acd_lecturestables.Teacher_Id = ? and sch_acd_lectures.name = ?  ' + condition + ' '+
