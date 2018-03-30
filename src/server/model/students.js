@@ -130,10 +130,8 @@ var studentsMethods = {
                                             studentsMethods.saveStudent(req, res, function (result) {
                                                 if (result.success) {
                                                     finalStudents.push(data);
-                                                    console.log(result);
                                                     message = result.msg;
                                                 } else {
-                                                    console.log(result);
                                                     message = result.msg;
                                                 }
                                             });
@@ -141,28 +139,30 @@ var studentsMethods = {
                                     }
                                 });
                             });
-                            console.log('MEssage : ', message);
                             callback({status: true, message: message, data: finalStudents});
                         } else if (req.body.type == 'studentsDegrees') {
                             workbook.eachSheet(function (worksheet, sheetId) {
                                 // var worksheet = workbook.getWorksheet();
                                 worksheet.eachRow(function (row, rowNumber) {
                                     if (rowNumber > 19) {
-                                        if (worksheet.getCell('W' + rowNumber).value) {
-                                            // var cellNumber = "Q"+rowNumber;
-                                            data = {
-                                                student_number: (worksheet.getCell('X' + rowNumber).value) ? worksheet.getCell('X' + rowNumber).value : worksheet.getCell('W' + rowNumber).value,
-                                                student_name: (worksheet.getCell('X' + rowNumber).value) ? worksheet.getCell('W' + rowNumber).value : worksheet.getCell('V' + rowNumber).value,
-                                                course_name: worksheet.getCell('E9').value,
-                                                section_name: worksheet.getCell('E12').value,
-                                            };
-                                            allCells.push(data);
-                                        }
+                                        row.eachCell(function (cell, ColNumber) {
+                                            if (cell.value) {
+                                                if (/^\d+$/.test(cell.value)) {
+                                                    data = {
+                                                        student_number: cell.value,
+                                                        course_name: worksheet.getCell('E9').value,
+                                                        section_name: worksheet.getCell('E12').value,
+                                                    };
+                                                    allCells.push(data);
+                                                } else if (cell.value.indexOf('المعلم') !== -1) {
+                                                    data.teacher_name = cell.value.split('المعلم')[1];
+
+                                                } else {
+                                                    data.student_name = cell.value;
+                                                }
+                                            }
+                                        })
                                     }
-                                });
-                                let cols = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-                                cols.map(function (col) {
-                                    standards.push(worksheet.getCell(col + '19').value);
                                 });
                             });
 
@@ -171,7 +171,7 @@ var studentsMethods = {
                                     let sectionPromise = new Promise(function (resolve, reject) {
                                         sequelizeConfig.sectionsTable.findOrCreate({
                                             where: {Name: allCells[counter].section_name.trim()},
-                                            defaults: {School_Id: 1}
+                                            defaults: {School_Id: schoolId}
                                         }).spread((section, created) => {
                                             resolve(section.id);
                                         });
@@ -182,6 +182,18 @@ var studentsMethods = {
                                         }).spread((course, created) => {
                                             resolve(course.id);
                                         });
+                                    });
+                                    let teacherPromise = new Promise(function (resolve, reject) {
+                                        if (allCells[counter].teacher_name) {
+                                            sequelizeConfig.teachersTable.findOrCreate({
+                                                where: {name: allCells[counter].teacher_name.trim()},
+                                                defaults: {School_Id: schoolId}
+                                            }).spread((teacher, created) => {
+                                                resolve(teacher.id);
+                                            });
+                                        } else {
+                                            resolve(false);
+                                        }
                                     });
                                     let studentPromise = new Promise(function (resolve, reject) {
                                         sequelizeConfig.studentTable.find({where: {Name: allCells[counter].student_name}})
@@ -198,7 +210,7 @@ var studentsMethods = {
                                                     console.log('New Name', allCells[counter].student_name);
                                                     sequelizeConfig.studentTable.create({
                                                         Academic_No: allCells[counter].student_number,
-                                                        School_Id: 1,
+                                                        School_Id: schoolId,
                                                         Name: allCells[counter].student_name
                                                     }).then(student => {
                                                         resolve(student.student_id);
@@ -206,9 +218,9 @@ var studentsMethods = {
                                                 }
                                             });
                                     });
-                                    Promise.all([studentPromise, sectionPromise, coursePromise]).then(function (data) {
+                                    Promise.all([studentPromise, sectionPromise, coursePromise, teacherPromise]).then(function (data) {
                                         sequelizeConfig.studentsSectionTable.create({
-                                            School_Id: 1,
+                                            School_Id: schoolId,
                                             Section_Id: data[1],
                                             Student_Id: data[0],
                                             course_id: data[2]
@@ -218,14 +230,12 @@ var studentsMethods = {
                                                 addToDB(allCells);
                                                 console.log("YEEEEEEEEEEEEEEES");
                                             })
-
-
                                     });
-                                    //
                                 }
                             }
 
                             addToDB(allCells);
+
                         }
                     }
                 );

@@ -78,11 +78,7 @@ var employeesAttendanceMethods = {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
                 var schoolId = req.params.schoolId;
-                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date , sch_att_empvacation.Start_Date as vacation_date_start ,sch_att_empvacation.End_Date as vacation_date_end from sch_str_employees left join sch_att_empatt '+
-                    'on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)'+
-                    'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
-                    'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
-                    'where sch_str_employees.school_id = ?  GROUP by main_employee_id', [calendarId,schoolId], function (err, result) {
+                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date , emp_vacation.Start_Date as vacation_date_start ,emp_vacation.End_Date as vacation_date_end from sch_str_employees left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join (SELECT s1.* FROM sch_att_empvacation as s1 LEFT JOIN sch_att_empvacation AS s2 ON s1.Emp_id = s2.Emp_id AND s1.Start_Date < s2.Start_Date WHERE s2.Emp_id IS NULL) as emp_vacation on emp_vacation.Emp_id = sch_str_employees.id where sch_str_employees.school_id = ?  group by main_employee_id', [calendarId,schoolId], function (err, result) {
                         console.log(query.sql);
                         if (err)
                             throw err
@@ -109,11 +105,7 @@ var employeesAttendanceMethods = {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
                 var schoolId = req.body.schoolId;
-                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date , sch_att_empvacation.Start_Date as vacation_date_start ,sch_att_empvacation.End_Date as vacation_date_end from sch_str_employees left join sch_att_empatt '+
-                    'on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)'+
-                    'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
-                    'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
-                    'where sch_str_employees.school_id = ?  GROUP by main_employee_id', [calendarId,schoolId], function (err, result) {
+                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date , emp_vacation.Start_Date as vacation_date_start ,emp_vacation.End_Date as vacation_date_end from sch_str_employees left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join (SELECT s1.* FROM sch_att_empvacation as s1 LEFT JOIN sch_att_empvacation AS s2 ON s1.Emp_id = s2.Emp_id AND s1.Start_Date < s2.Start_Date WHERE s2.Emp_id IS NULL) as emp_vacation on emp_vacation.Emp_id = sch_str_employees.id where sch_str_employees.school_id = ?  group by main_employee_id', [calendarId,schoolId], function (err, result) {
                     console.log(query.sql);
                     if (err)
                             throw err
@@ -644,7 +636,7 @@ var employeesAttendanceMethods = {
                 throw err;
 
             if (Object.keys(result).length) {
-
+                
                 con.query('update sch_att_empatt set  school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?, Event_type_id = ? where Calender_id = ? and employee_id = ? and Event_Name = ? ',
                     [
                         attendanceObj.school_id,
@@ -666,6 +658,8 @@ var employeesAttendanceMethods = {
                                 response.msg = 'تم تسجيل الحضور بنجاح';
                             if (attendanceObj.is_absent == 1)
                                 response.msg = 'تم تسجيل الغياب بنجاح';
+								if (attendanceObj.is_absent == 2)
+                                response.msg = 'تم تسجيل خروج مبكر بنجاح';
                             response.id = result.insertId;
                             callback(response);
                         } else {
@@ -697,6 +691,8 @@ var employeesAttendanceMethods = {
                                 response.msg = 'تم تسجيل التأخر بنجاح';
                             if (attendanceObj.is_absent == 1)
                                 response.msg = 'تم تسجيل الغياب بنجاح';
+								if (attendanceObj.is_absent == 2)
+                                response.msg = 'تم تسجيل خروج مبكر بنجاح';
                             response.id = result.insertId;
                             callback(response);
                         } else {

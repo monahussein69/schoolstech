@@ -11,7 +11,7 @@ var schoolMethods = {
             var schoolData = req.body.schoolData;
             var response = {};
             if (schoolData.schoolId) {
-                con.query("select * from SCH_School where id = ?", [schoolData.schoolId], function (err, result) {
+                con.query("select * from sch_school where id = ?", [schoolData.schoolId], function (err, result) {
                     if (!schoolData.config_steps) {
                         schoolData.config_steps = result[0].config_steps;
                     }
@@ -21,7 +21,7 @@ var schoolMethods = {
                     if (err)
                         throw err;
                     if (Object.keys(result).length) {
-                        con.query(" update SCH_School set userId=?,name = ? , gender = ?,educationalOffice=?,educationalRegion=?,educationLevel=?, address=?,totalClasses=? ,totalStudents =?,totalStaff=?,rentedBuildings=?,governmentBuildings=?,foundationYear=?,schoolNum=?,config_steps =? where id = ?",
+                        con.query(" update sch_school set userId=?,name = ? , gender = ?,educationalOffice=?,educationalRegion=?,educationLevel=?, address=?,totalClasses=? ,totalStudents =?,totalStaff=?,rentedBuildings=?,governmentBuildings=?,foundationYear=?,schoolNum=?,config_steps =? where id = ?",
                             [schoolData.userId,
                                 schoolData.name,
                                 schoolData.gender,
@@ -61,7 +61,7 @@ var schoolMethods = {
                     }
                 });
             } else {
-                con.query("select * from SCH_School where schoolNum = ?", [schoolData.schoolNum], function (err, result) {
+                con.query("select * from sch_school where schoolNum = ?", [schoolData.schoolNum], function (err, result) {
                     console.log('here');
                     console.log(result);
                     if (err)
@@ -73,7 +73,7 @@ var schoolMethods = {
                         callback(response);
                     } else {
 
-                        con.query(" insert into SCH_School  (name, gender,educationalOffice,educationalRegion,educationLevel, address,totalClasses ,totalStudents ,totalStaff,rentedBuildings,governmentBuildings,foundationYear,schoolNum) values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        con.query(" insert into sch_school  (name, gender,educationalOffice,educationalRegion,educationLevel, address,totalClasses ,totalStudents ,totalStaff,rentedBuildings,governmentBuildings,foundationYear,schoolNum) values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
                             [
                                 schoolData.name,
                                 schoolData.gender,
@@ -119,7 +119,7 @@ var schoolMethods = {
                     " JOIN sch_bui_rooms ON sch_bui_rooms.id = sch_acd_lecturestables.ClassRoom_Id" +
                     " JOIN sch_str_employees ON sch_str_employees.id = sch_acd_lecturestables.Teacher_Id" +
                     " JOIN sch_acd_lectures ON sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO" +
-                    " where sch_acd_lecturestables.School_Id = ? ", [schoolId], function (err, result) {
+                    " where sch_acd_lecturestables.School_Id = ? ORDER BY sch_acd_lectures.id ASC ", [schoolId], function (err, result) {
                     console.log('query : ', query.sql);
                     if (err)
                         throw err;
@@ -134,7 +134,7 @@ var schoolMethods = {
         },
 
         updatePhoto: function (req, res, callback) {
-            con.query(" update SCH_School set logoFile=? where id = ?",
+            con.query(" update sch_school set logoFile=? where id = ?",
                 [req.body.logoFile,
                     req.body.id
                 ], function (err, result) {
@@ -160,12 +160,12 @@ var schoolMethods = {
             console.log(schoolsData);
             var response = {};
             schoolsData.foreach(function (schoolData) {
-                con.query("select * from SCH_School where schoolNum = ?", [schoolData.schoolNum], function (err, result) {
+                con.query("select * from sch_school where schoolNum = ?", [schoolData.schoolNum], function (err, result) {
                     if (err)
                         throw err;
                     if (!Object.keys(result).length) {
                         console.log('in obj');
-                        con.query(" insert into SCH_School  (name, gender,educationalOffice,educationalRegion,educationLevel, address,totalClasses ,totalStudents ,totalStaff,rentedBuildings,governmentBuildings,foundationYear,logoFile) values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        con.query(" insert into sch_school  (name, gender,educationalOffice,educationalRegion,educationLevel, address,totalClasses ,totalStudents ,totalStaff,rentedBuildings,governmentBuildings,foundationYear,logoFile) values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
                             [schoolData.name,
                                 schoolData.gender,
                                 schoolData.educationalOffice,
@@ -200,7 +200,7 @@ var schoolMethods = {
         ,
         getSchool: function (req, res, callback) {
             var schoolId = req.params.schoolId;
-            con.query('select * from SCH_School where id = ?', [schoolId], function (err, result) {
+            con.query('select * from sch_school where id = ?', [schoolId], function (err, result) {
                     if (err)
                         throw err
 
@@ -213,7 +213,7 @@ var schoolMethods = {
         deleteSchool: function (req, res, callback) {
             var schoolId = req.params.schoolId;
             var response = {};
-            con.query('delete from SCH_School where id = ?', [schoolId], function (err, result) {
+            con.query('delete from sch_school where id = ?', [schoolId], function (err, result) {
                     if (err)
                         throw err
                     if (result.affectedRows) {
@@ -434,7 +434,7 @@ var schoolMethods = {
         ,
         getSchools: function (req, res, callback) {
             var schoolId = req.params.schoolId;
-            con.query('select * from SCH_School', function (err, result) {
+            con.query('select * from sch_school', function (err, result) {
                     if (err)
                         throw err
 
@@ -447,11 +447,11 @@ var schoolMethods = {
             var schoolData = req.body.schoolData;
             var response = {};
             if (schoolData.id) {
-                con.query("select * from SCH_School where id = ?", [schoolData.id], function (err, result) {
+                con.query("select * from sch_school where id = ?", [schoolData.id], function (err, result) {
                     if (err)
                         throw err;
                     if (Object.keys(result).length) {
-                        con.query('update SCH_School set userId = ? where id = ?', [
+                        con.query('update sch_school set userId = ? where id = ?', [
                                 schoolData.userId,
                                 schoolData.id
                             ]

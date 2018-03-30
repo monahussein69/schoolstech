@@ -30,18 +30,21 @@ angular.module('MetronicApp').controller('StudentsController',
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                 StudentsService.getAllStudents(schoolId).then(function (students) {
+                    console.log('students');
+                    console.log(students);
+                    
                     defer.resolve(students);
                     model.students = students;
                 });
                 return defer.promise
             }),
             columns: [
-                DTColumnBuilder.newColumn('Name').withTitle('اسم الطالب'),
-                DTColumnBuilder.newColumn('Nationality').withTitle('الجنسية'),
-                DTColumnBuilder.newColumn('Specialization').withTitle('التخصص'),
-                DTColumnBuilder.newColumn('Identity_No').withTitle('رقم الهوية'),
-                DTColumnBuilder.newColumn('student_record').withTitle('سجل الطالب'),
-                DTColumnBuilder.newColumn('status').withTitle('الحالة'),
+                DTColumnBuilder.newColumn('name').withTitle('اسم الطالب').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('Nationality').withTitle('الجنسية').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('Specialization').withTitle('التخصص').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('Identity_No').withTitle('رقم الهوية').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('student_record').withTitle('سجل الطالب').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('status').withTitle('الحالة').withOption('defaultContent', 'غير مدخل'),
             ],
             dtInstance: {},
             students: {}
@@ -91,7 +94,7 @@ angular.module('MetronicApp').controller('StudentsController',
         function upload(file) {
             return new Promise(function (resolve, reject) {
                 Upload.upload({
-                    url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
+                    url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
                     data: {
                         file: file,
                         type: 'student',
@@ -200,7 +203,7 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
         function upload(file) {
             return new Promise(function (resolve, reject) {
                 Upload.upload({
-                    url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
+                    url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
                     data: {
                         file: file,
                         type: 'studentsDegrees'

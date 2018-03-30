@@ -15,7 +15,7 @@ var studentExcuseMethods = {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 ExcuseObj.Calender_id = calendarObj.Id;
-                con.query('insert into SCH_ATT_STDEXCUSE set ?',
+                con.query('insert into sch_att_stdexcuse set ?',
                     [ExcuseObj], function (err, result) {
                         if (err)
                             throw err

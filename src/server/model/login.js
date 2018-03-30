@@ -7,7 +7,7 @@ var loginMethods = {
         var password = req.body.password;
         var data = {};
         console.log(con);
-        con.query('select * from SYS_Users where loginName = ? and is_active = 1', [name],function(err,result) {
+        con.query('select * from sys_users where loginName = ? and is_active = 1', [name],function(err,result) {
             if (err)
                 throw err;
 

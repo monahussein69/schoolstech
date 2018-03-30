@@ -5,7 +5,7 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
 
     fac.getAllEmployeesAttendance = function (schoolId) {
         return new Promise(function (resolve, reject) {
-            $http.get("http://localhost:3000/getAllEmployeesAttendance/"+schoolId).success(function (response) {
+            $http.get("http://138.197.175.116:3000/getAllEmployeesAttendance/"+schoolId).success(function (response) {
                 resolve(response);
             });
         });
@@ -14,7 +14,7 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
 
     fac.getAllEmployeesAttendanceByDate = function (schoolId,date) {
         return new Promise(function (resolve, reject) {
-            $http.post("http://localhost:3000/getAllEmployeesAttendanceByDate",{'schoolId':schoolId,'date':date}).success(function (response) {
+            $http.post("http://138.197.175.116:3000/getAllEmployeesAttendanceByDate",{'schoolId':schoolId,'date':date}).success(function (response) {
                 resolve(response);
             });
         });
@@ -23,7 +23,7 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
 
     fac.getAllEmployeesAttendanceByActivity = function (schoolId,lecture_name,date) {
         return new Promise(function (resolve, reject) {
-            $http.post("http://localhost:3000/getAllEmployeesAttendanceByActivity",{
+            $http.post("http://138.197.175.116:3000/getAllEmployeesAttendanceByActivity",{
                 'lecture_name':lecture_name,
                 'schoolId':schoolId,
                 'date':date
@@ -35,7 +35,7 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
     };
 
     fac.setEmployeeAttendance = function(attendanceObj,callback) {
-        $http.post("http://localhost:3000/setEmployeeAttendance", {
+        $http.post("http://138.197.175.116:3000/setEmployeeAttendance", {
             'attendanceObj': attendanceObj
         }).success(function (response) {
             callback(response);
@@ -43,26 +43,26 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
     };
 
     fac.setEmployeeActivityAttendance = function(attendanceObj,callback) {
-        $http.post("http://localhost:3000/setEmployeeActivityAttendance", {
+        $http.post("http://138.197.175.116:3000/setEmployeeActivityAttendance", {
             'attendanceObj': attendanceObj
         }).success(function (response) {
             callback(response);
         });
     };
     fac.getActivityByDayAndSchoolId = function(schoolId,date,callback) {
-        $http.post("http://localhost:3000/getActivityByDayAndSchoolId",{'schoolId':schoolId,'date':date}).success(function (response) {
+        $http.post("http://138.197.175.116:3000/getActivityByDayAndSchoolId",{'schoolId':schoolId,'date':date}).success(function (response) {
             callback(response);
         });
     }
 
     fac.getClosingButton = function(schoolId,date,callback) {
-        $http.post("http://localhost:3000/getClosingButton",{'schoolId':schoolId,'date':date}).success(function (response) {
+        $http.post("http://138.197.175.116:3000/getClosingButton",{'schoolId':schoolId,'date':date}).success(function (response) {
             callback(response);
         });
     }
 
      fac.closeFirstAttendance = function(schoolId,date,callback) {
-        $http.post("http://localhost:3000/closeFirstAttendance",
+        $http.post("http://138.197.175.116:3000/closeFirstAttendance",
             {'schoolId':schoolId,'date':date})
             .success(function (response) {
             callback(response);
@@ -70,7 +70,7 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
     }
 
     fac.closeSecondAttendance = function(schoolId,date,callback) {
-        $http.post("http://localhost:3000/closeSecondAttendance",
+        $http.post("http://138.197.175.116:3000/closeSecondAttendance",
             {'schoolId':schoolId,'date':date})
             .success(function (response) {
             callback(response);
@@ -78,7 +78,7 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
     }
 
     fac.closeAttendance = function(schoolId,date,callback) {
-        $http.post("http://localhost:3000/closeFirstAttendance",
+        $http.post("http://138.197.175.116:3000/closeFirstAttendance",
             {'schoolId':schoolId})
             .success(function (response) {
             callback(response);
