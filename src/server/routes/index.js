@@ -215,7 +215,7 @@ router.post('/upload', function (req, res) {
                 console.log("result : ", result);
                 res.send(result);
             });
-        } else if (req.body.type == 'student') {
+        } else if (req.body.type == 'students') {
             studentsMethods.UploadExcel(req, res, function (result) {
                 console.log("result : ", result);
                 res.send({status: true, msg: result.message});
