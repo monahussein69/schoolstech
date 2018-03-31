@@ -210,6 +210,7 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
         function doUpload() {
             console.log('File : ', $scope.file);
             model.upload($scope.file);
+            }
 
         function upload(file) {
 
