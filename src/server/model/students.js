@@ -97,6 +97,7 @@ var studentsMethods = {
             let data = {};
             let standards = [];
             let counter = 0;
+			let finalStudents = [];
             workbook.xlsx.readFile('./src/client/app/uploads/' + req.body.filename)
                 .then(function () {
                         let allCells = [];
