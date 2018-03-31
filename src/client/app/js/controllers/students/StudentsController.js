@@ -148,7 +148,7 @@ angular.module('MetronicApp').controller('StudentsController',
     }]);
 
 angular.module('MetronicApp').controller('StudentsDegreesController',
-    function ($rootScope, $scope, $http, $window, localStorageService, StudentsService, Upload, toastr, DTOptionsBuilder, DTColumnBuilder, $q) {
+    function ($rootScope, $scope, $http, $window, localStorageService, StudentsService,manageJobTitleService, Upload, toastr, DTOptionsBuilder, DTColumnBuilder, $q) {
         console.log("StudentsDegreesController");
         var model = {
             upload: upload,
