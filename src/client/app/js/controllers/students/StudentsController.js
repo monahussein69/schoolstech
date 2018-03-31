@@ -209,12 +209,7 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
 
         function doUpload() {
             console.log('File : ', $scope.file);
-            model.upload($scope.file).then(function (students) {
-                var resetPaging = true;
-                model.dtInstance.reloadData(students, resetPaging);
-            });
-
-        };
+            model.upload($scope.file);
 
         function upload(file) {
 
