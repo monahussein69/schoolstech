@@ -97,7 +97,7 @@ angular.module('MetronicApp').controller('StudentsController',
                     url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
                     data: {
                         file: file,
-                        type: 'student',
+                        type: 'students',
                         schoolId: model.schoolId
                     } //pass file as data, should be user ng-model
                 }).then(function (resp) { //upload function returns a promise
