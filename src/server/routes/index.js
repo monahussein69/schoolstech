@@ -452,6 +452,12 @@ router.post('/setStudentAttendance/', function (req, res, next) {
     });
 });
 
+router.post('/getjobTitleByName', function (req, res, next) {
+    jobTitleMethods.getjobTitleByName(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 router.post('/setEmployeeActivityAttendance/', function (req, res, next) {
     employeesAttendanceMethods.setEmployeeActivityAttendance(req, res, function (result) {
         res.send(result);
