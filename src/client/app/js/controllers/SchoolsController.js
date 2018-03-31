@@ -1,5 +1,5 @@
 angular.module('MetronicApp').controller('SchoolsController',
-    function ($rootScope, $scope, $http, $window, localStorageService, manageSchoolService, Upload, toastr) {
+    function ($compile,DTOptionsBuilder, DTColumnBuilder,$q,$rootScope, $scope, $http, $window, localStorageService, manageSchoolService, Upload, toastr) {
         var model = {
             upload: upload,
             doUpload: doUpload,
