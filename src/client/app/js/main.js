@@ -741,7 +741,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/global/plugins/datatables/datatables.all.min.js',
                             '../assets/pages/scripts/table-datatables-managed.min.js',
                             'js/controllers/students/StudentsController.js',
-                            'js/services/StudentsService.js'
+                            'js/services/StudentsService.js',
+							'js/services/manageJobTitleFactory.js',
                         ]
                     });
                 }]
