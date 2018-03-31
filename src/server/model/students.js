@@ -101,7 +101,9 @@ var studentsMethods = {
                 .then(function () {
                         let allCells = [];
                         var message = '';
+						console.log('before if');
                         if (req.body.type == 'students') {
+						console.log('in if');
                             workbook.eachSheet(function (worksheet, sheetId) {
                                 // var worksheet = workbook.getWorksheet();
                                 worksheet.eachRow(function (row, rowNumber) {
