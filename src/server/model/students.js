@@ -129,6 +129,7 @@ var studentsMethods = {
                                                 attending_date: worksheet.getCell('D' + rowNumber).value,
                                                 notes: worksheet.getCell('C' + rowNumber).value,
                                             };
+											console.log(data);
                                             req.body.studentsData = data;
                                             studentsMethods.saveStudent(req, res, function (result) {
                                                 if (result.success) {
