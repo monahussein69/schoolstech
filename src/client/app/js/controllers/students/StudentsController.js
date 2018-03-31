@@ -104,6 +104,9 @@ angular.module('MetronicApp').controller('StudentsController',
                     console.log(resp);
                     if (resp.status === 200) { //validate success
                         toastr.success("تم رفع الملف بنجاح");
+                        StudentsService.getAllStudents(model.schoolId).then(function (student) {
+                        resolve(student);
+                    });
                     } else {
                         toastr.error('هناك مشكلة في رفع الملف');
                     }
@@ -114,9 +117,7 @@ angular.module('MetronicApp').controller('StudentsController',
                     console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                     model.progress = progressPercentage; // capture upload progress
 
-                    StudentsService.getAllStudents().then(function (student) {
-                        resolve(student);
-                    });
+                    
 
                 });
             });
