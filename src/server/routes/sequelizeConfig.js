@@ -41,7 +41,8 @@ const sequelizeConfig = {
     }),
     teachersTable: sequelize.define('sch_str_employees', {
         school_id: Sequelize.STRING,
-        name: Sequelize.INTEGER
+        name: Sequelize.INTEGER,
+        jobtitle_id:Sequelize.INTEGER
     }),
     lectureTable: sequelize.define('sch_acd_lectures', {
         name: Sequelize.STRING,
