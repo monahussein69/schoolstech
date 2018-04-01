@@ -172,7 +172,7 @@ var studentsMethods = {
                                 });
                             });
 
-                            function addToDB(allCells,jobtitle_id) {
+                            function addToDB(allCells,jobtitle_id,schoolId) {
                             
                                 if (allCells[counter]) {
                                     let sectionPromise = new Promise(function (resolve, reject) {
@@ -234,14 +234,14 @@ var studentsMethods = {
                                         })
                                             .then(studentsSections => {
                                                 counter++;
-                                                addToDB(allCells,jobtitle_id);
+                                                addToDB(allCells,jobtitle_id,schoolId);
                                                 console.log("YEEEEEEEEEEEEEEES");
                                             })
                                     });
                                 }
                             }
 
-                            addToDB(allCells,jobtitle_id);
+                            addToDB(allCells,jobtitle_id,schoolId);
 
                         }
                     }
