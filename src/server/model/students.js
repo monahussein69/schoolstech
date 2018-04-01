@@ -194,7 +194,7 @@ var studentsMethods = {
                                         if (allCells[counter].teacher_name) {
                                             sequelizeConfig.teachersTable.findOrCreate({
                                                 where: {name: allCells[counter].teacher_name.trim()},
-                                                defaults: {School_Id: schoolId,jobtitle_id:jobtitle_id}
+                                                defaults: {school_id: schoolId,jobtitle_id:jobtitle_id}
                                             }).spread((teacher, created) => {
                                                 resolve(teacher.id);
                                             });
