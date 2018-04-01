@@ -145,9 +145,10 @@ var studentsMethods = {
                             });
                             callback({status: true, message: message, data: finalStudents});
                         } else if (req.body.type == 'studentsDegrees') {
+						    var jobtitle_id = req.body.jobtitle_id;
                             workbook.eachSheet(function (worksheet, sheetId) {
                                 // var worksheet = workbook.getWorksheet();
-                                var jobtitle_id = req.body.jobtitle_id;
+                               
                                 worksheet.eachRow(function (row, rowNumber) {
                                     if (rowNumber > 19) {
                                         row.eachCell(function (cell, ColNumber) {
@@ -171,7 +172,8 @@ var studentsMethods = {
                                 });
                             });
 
-                            function addToDB(allCells) {
+                            function addToDB(allCells,jobtitle_id) {
+                            
                                 if (allCells[counter]) {
                                     let sectionPromise = new Promise(function (resolve, reject) {
                                         sequelizeConfig.sectionsTable.findOrCreate({
@@ -232,14 +234,14 @@ var studentsMethods = {
                                         })
                                             .then(studentsSections => {
                                                 counter++;
-                                                addToDB(allCells);
+                                                addToDB(allCells,jobtitle_id);
                                                 console.log("YEEEEEEEEEEEEEEES");
                                             })
                                     });
                                 }
                             }
 
-                            addToDB(allCells);
+                            addToDB(allCells,jobtitle_id);
 
                         }
                     }
