@@ -16,6 +16,7 @@ var employeesAttendanceMethods = {
         req.body.date = current_date;
         var lecture_name = req.body.lecture_name;
         var breaks = [  'طابور','صلاه', 'فسحه (1)' ,'فسحه (2)'];
+
         var response = [];
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {

@@ -1,0 +1,183 @@
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a ui-sref="dashboard">الصفحه الرئيسيه</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a ui-sref="Master.appSettings">اضافه مهمه</a>
+        </li>
+    </ul>
+</div>
+<h3 class="page-title">اضافه مهمه </h3>
+
+<div>
+    <form method="post" ng-submit="model.saveTask()" name="addtaskForm" ng-model="schoolForm" enctype="multipart/form-data">
+        <div class="alert alert-success" ng-if="model.success != null">
+            <button class="close" data-close="alert"></button>
+            <span>{{model.success}}</span>
+        </div>
+        <div class="alert alert-danger" ng-if="model.error != null">
+            <button class="close" data-close="alert"></button>
+            <span>{{model.error}}</span>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <fieldset>
+                    <legend>بيانات التعميم :</legend>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> تصدير ك pdf : </label>
+                        <div class="col-sm-6">
+                            <input type="checkbox" name="popPdf"  ng-model="model.popObj.popPdf" /> </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">رقم التعميم : </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="InComing_No" class="form-control" ng-model="model.taskObj.InComing_No" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">تاريخ التعميم : </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="popDate" class="form-control" ng-model="model.popObj.popDate" /> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> الموضوع : </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="popSubject" class="form-control" ng-model="model.popSubject" /> </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>بيانات المهمه :</legend>
+
+
+
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-2">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 control-label" style="padding: 0px"> التاريخ : </label>
+                                    <div class="col-sm-8" style="padding: 0px">
+                                        <input type="text" name="CurrentDate" class="form-control date-picker" ng-model="model.taskObj.CurrentDate" ng-change="model.getDay()"/> </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 control-label" style="padding: 0px;padding-right:15px"> اليوم : </label>
+                                    <div class="col-sm-8" style="padding: 0px">
+                                        <input type="text" name="CurrentDay" class="form-control" ng-model="model.CurrentDay" /> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> اسم المهمه : </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="Task_Tittle" class="form-control" ng-model="model.taskObj.Task_Tittle" /> </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> مشرف المهمه : </label>
+                        <div class="col-sm-6">
+                            <select name="Suppervisor_Emp_id" class="form-control" ng-model="model.taskObj.Suppervisor_Emp_id">
+                                <option value=""> اختر مشرف المهمه</option>
+                                <option ng-repeat="employee in model.employees track by $index" value="{{employee.id}}">{{employee.name}} </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <label>
+                                <input type="checkbox" name=""> تكليف بتشكيل فريق العمل </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> نوع المهمه : </label>
+                        <div class="col-sm-6">
+                            <select name="Task_InOut_Type" class="form-control" ng-model="model.taskObj.Task_InOut_Type">
+                                <option value=""> اختر نوع المهمه</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> مكان المهمه : </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="Task_Place" class="form-control" ng-model="model.taskObj.Task_Place" /> </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> وقت المهمه : </label>
+                        <div class="col-sm-6">
+                         <div class="row">
+                             <div class="col-md-6">
+                                 <input type="text" name="Start_Date" class="form-control date-picker" ng-model="model.taskObj.Start_Date" placeholder="تاريخ البدايه" /> </div>
+                             <div class="col-md-6">
+                                 <input type="text" name="start_time" class="form-control timepicker timepicker-24" ng-model="model.taskObj.start_time" placeholder="وقت البدايه" />
+
+                             </div>
+                         </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6 col-sm-offset-2">
+                         <div class="row">
+                             <div class="col-md-6">
+                                 <input type="text" name="End_Date" class="form-control date-picker" ng-model="model.taskObj.End_Date" placeholder="تاريخ النهايه" /> </div>
+                             <div class="col-md-6">
+                                 <input type="text" name="End_time" class="form-control timepicker timepicker-24" ng-model="model.taskObj.End_time" placeholder="وقت النهايه" />
+
+                             </div>
+                         </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> تم انشاء المهمه بواسطة: </label>
+                        <div class="col-sm-6">
+                            <select name="Issued_By" class="form-control" ng-model="model.taskObj.Issued_By" >
+                                <option value="">اختر الموظف</option>
+                                <option ng-repeat="employee in model.employees track by $index" value="{{employee.id}}">{{employee.name}} </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> تاريخ انشاء المهمه : </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="Issued_Date" class="form-control date-picker" ng-model="model.taskObj.Issued_Date" /> </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> حالة المهمه : </label>
+                        <div class="col-sm-6">
+                            <select name="Task_Staus" class="form-control" ng-model="model.taskObj.Task_Staus">
+                                <option value=""> اختر حالة المهمه</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> وصف المهمه : </label>
+                        <div class="col-sm-6">
+                        <div class="col-sm-12" simditor ng-model="model.taskObj.Task_Description" style="padding:0px "></div>
+                    </div>
+                    </div>
+
+                </fieldset>
+
+                <button class="btn btn-primary" type="submit" ng-disabled="addtaskForm.$invalid">حفظ</button>
+                <button class="btn btn-danger">تشكيل فريق العمل</button>
+                <button class="btn btn-default">الغاء</button>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    ComponentsDateTimePickers.init(); // init todo page
+</script>
