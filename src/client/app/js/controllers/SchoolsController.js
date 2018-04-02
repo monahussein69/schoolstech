@@ -1,18 +1,73 @@
 angular.module('MetronicApp').controller('SchoolsController',
-    function ($rootScope, $scope, $http, $window, localStorageService, manageSchoolService, Upload, toastr) {
+    function ($compile,DTOptionsBuilder, DTColumnBuilder,$q,$rootScope, $scope, $http, $window, localStorageService, manageSchoolService, Upload, toastr) {
         var model = {
             upload: upload,
             doUpload: doUpload,
             progress: 0,
-            deleteSchool: deleteSchool
+            deleteSchool: deleteSchool,
+            options: DTOptionsBuilder.fromFnPromise(function () {
+                var defer = $q.defer();
+
+                manageSchoolService.getAllSchools().then(function (schools) {
+                    $scope.schools = schools;
+                    defer.resolve(schools);
+                    $scope.$apply();
+                });
+                return defer.promise
+            }).withOption('createdRow', createdRow),
+            columns: [
+                DTColumnBuilder.newColumn('name').withTitle(' المدرسة'),
+                DTColumnBuilder.newColumn('schoolNum').withTitle(' الرقم الاحصائي'),
+                DTColumnBuilder.newColumn('educationalRegion').withTitle('المنطقة التعليمية'),
+                DTColumnBuilder.newColumn('educationLevel').withTitle(' المرحلة التعليمية'),
+                DTColumnBuilder.newColumn('gender').withTitle(' جنس المدرسة'),
+                DTColumnBuilder.newColumn('educationalOffice').withTitle(' المكتب'),
+                DTColumnBuilder.newColumn('address').withTitle(' العنوان'),
+                DTColumnBuilder.newColumn(null).withTitle('العمليات').notSortable()
+                    .renderWith(actionsHtml)
+            ],
+            dtInstance: {},
         };
         $scope.model = model;
 
-        manageSchoolService.getAllSchools().then(function (schools) {
-            $scope.schools = schools;
 
-            $scope.$apply();
-        });
+
+        function createdRow(row, data, dataIndex) {
+            // Recompiling so we can bind Angular directive to the DT
+            $compile(angular.element(row).contents())($scope);
+        }
+
+        function actionsHtml(data, type, full, meta) {
+
+            return '<div class="btn-group">'+
+                '<button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> العمليات'+
+                '<i class="fa fa-angle-down"></i>'+
+                '</button>'+
+                '<ul class="dropdown-menu pull-right">'+
+                '<li>'+
+                '<a ui-sref="Master.AddEditSchool({schoolId:{{'+data.id+'}}})">'+
+                '<i class="icon-pencil"></i>&nbsp; تعديل </a>'+
+                '</li>'+
+                '<li>'+
+                '<a ui-sref="Master.manageSchoolAccount({schoolId:{{'+data.id+'}}})">'+
+                '<i class="icon-pencil"></i>&nbsp; بيانات الاشتراك  </a>'+
+                '</li>'+
+                '<li>'+
+                '<a ui-sref="Master.ManageEmployeesData({schoolId:{{'+data.id+'}}})">'+
+                '<i class="icon-pencil"></i>&nbsp; بيانات الموظفين </a>'+
+                '</li>'+
+
+                '<li class="divider"> </li>'+
+                ' <li>'+
+                '<a href="javascript:;" ng-confirm-click="هل تريد تأكيد حذف المدرسه ؟  " confirmed-click="model.deleteSchool('+data.id+')">'+
+                '<i class="fa fa-trash"></i>&nbsp; حذف </a>'+
+                '</li>'+
+
+                '</ul>'+
+                '</div>';
+
+
+        }
 
         function deleteSchool(schoolId) {
             manageSchoolService.deleteSchoolData(schoolId, function (response) {
@@ -45,6 +100,7 @@ angular.module('MetronicApp').controller('SchoolsController',
                 console.log(resp);
                 if (resp.status === 200) { //validate success
                     toastr.success("تم رفع الملف بنجاح");
+                    model.dtInstance.reloadData();
                 } else {
                     toastr.error('هناك مشكلة في رفع الملف');
                 }
@@ -55,11 +111,7 @@ angular.module('MetronicApp').controller('SchoolsController',
                 console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                 model.progress = progressPercentage; // capture upload progress
 
-                manageSchoolService.getAllSchools().then(function (schools) {
-                    $scope.schools = schools;
 
-                    $scope.$apply();
-                });
             });
         };
 

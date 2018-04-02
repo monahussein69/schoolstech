@@ -18,6 +18,14 @@ angular.module('MetronicApp').factory('manageJobTitleService', function ($http, 
         });
 
     };
+    
+    
+    fac.getJobTitleByName = function(name,callback){
+        $http.post("http://138.197.175.116:3000/getjobTitleByName",{'name':name}).success(function (response) {
+            callback(response);
+        });
+    };
+    
     return fac;
 
 });

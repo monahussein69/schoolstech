@@ -60,69 +60,11 @@
                         </div>
                     </div>
                 </div>
-                <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
-                    <thead>
-                        <tr>
-                            <th>
-                                <label class="mt-checkbox mt-checkbox-outline mt-checkbox-single">
-                                    <input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes" />
-                                    <span></span>
-                                </label>
-                            </th>
-                            <th> المدرسة</th>
-                            <th>الرقم الاحصائي</th>
-                            <th> المنطقة التعليمية</th>
-                            <th> المرحلة التعليمية</th>
-                            <th> جنس المدرسة</th>
-                            <th> المكتب</th>
-                            <th> العنوان</th>
-                            <th> العمليات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="odd gradeX" ng-repeat="school in schools">
-                            <td>
-                                <label class="mt-checkbox mt-checkbox-outline mt-checkbox-single">
-                                    <input type="checkbox" class="checkboxes" value="1" />
-                                    <span></span>
-                                </label>
-                            </td>
-                            <td> {{school.name}}</td>
-                            <td> {{school.schoolNum}}</td>
-                            <td> {{school.educationalRegion}}</td>
-                            <td> {{school.educationLevel}}</td>
-                            <td class="center"> {{school.gender}}</td>
-                            <td> {{school.educationalOffice}}</td>
-                            <td> {{school.address}}</td>
-                            <td>
-                                <div class="btn-group dropdown">
-                                    <button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> العمليات
-                                        <i class="fa fa-angle-down"></i>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right">
-                                        <li>
-                                            <a ui-sref="Master.AddEditSchool({schoolId:{{school.id}}})">
-                                                <i class="icon-pencil"></i>&nbsp; تعديل </a>
-                                        </li>
-                                        <li>
-                                            <a ui-sref="Master.manageSchoolAccount({schoolId:{{school.id}}})">
-                                                <i class="fa fa-credit-card"></i> &nbsp;بيانات الاشتراك </a>
-                                        </li>
-                                        <li class="divider"> </li>
-                                        <li>
-                                            <a ui-sref="Master.ManageEmployeesData({schoolId:{{school.id}}})">
-                                                <i class="fa fa-credit-card"></i> &nbsp;بيانات الموظفين</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:;" ng-confirm-click="هل تريد تأكيد حذف المدرسه ؟ " confirmed-click="model.deleteSchool(school.id)">
-                                                <i class="fa fa-trash"></i>&nbsp; حذف </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+
+
+                <table datatable=" " class="table table-striped table-bordered table-hover table-checkable order-column " dt-options="model.options " dt-columns="model.columns " dt-instance="model.dtInstance " class="row-border hover "></table>
+
+
             </div>
         </div>
         <!-- END EXAMPLE TABLE PORTLET-->

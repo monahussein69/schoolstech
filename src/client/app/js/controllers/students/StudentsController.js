@@ -97,13 +97,16 @@ angular.module('MetronicApp').controller('StudentsController',
                     url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
                     data: {
                         file: file,
-                        type: 'student',
+                        type: 'students',
                         schoolId: model.schoolId
                     } //pass file as data, should be user ng-model
                 }).then(function (resp) { //upload function returns a promise
                     console.log(resp);
                     if (resp.status === 200) { //validate success
                         toastr.success("تم رفع الملف بنجاح");
+                        StudentsService.getAllStudents(model.schoolId).then(function (student) {
+                        resolve(student);
+                    });
                     } else {
                         toastr.error('هناك مشكلة في رفع الملف');
                     }
@@ -114,9 +117,7 @@ angular.module('MetronicApp').controller('StudentsController',
                     console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                     model.progress = progressPercentage; // capture upload progress
 
-                    StudentsService.getAllStudents().then(function (student) {
-                        resolve(student);
-                    });
+                    
 
                 });
             });
@@ -147,13 +148,28 @@ angular.module('MetronicApp').controller('StudentsController',
     }]);
 
 angular.module('MetronicApp').controller('StudentsDegreesController',
-    function ($rootScope, $scope, $http, $window, localStorageService, StudentsService, Upload, toastr, DTOptionsBuilder, DTColumnBuilder, $q) {
+    function ($rootScope, $scope, $http, $window, localStorageService, StudentsService,manageJobTitleService, Upload, toastr, DTOptionsBuilder, DTColumnBuilder, $q) {
         console.log("StudentsDegreesController");
+		
+		
+		var userObject = localStorageService.get('UserObject');
+        if (userObject) {
+            var userType = userObject[0].userType;
+            var schoolId = 0;
+            if (userType == 2) {
+                schoolId = userObject[0].schoolId;
+
+            } else {
+                schoolId = $stateParams.schoolId;
+            }
+        }
+		
         var model = {
             upload: upload,
             doUpload: doUpload,
             progress: 0,
             deleteStudent: deleteStudent,
+			schoolId:schoolId,
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                 StudentsService.getAllStudents().then(function (students) {
@@ -193,41 +209,81 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
 
         function doUpload() {
             console.log('File : ', $scope.file);
-            model.upload($scope.file).then(function (students) {
-                var resetPaging = true;
-                model.dtInstance.reloadData(students, resetPaging);
-            });
-
-        };
+            model.upload($scope.file);
+            }
 
         function upload(file) {
-            return new Promise(function (resolve, reject) {
-                Upload.upload({
-                    url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
-                    data: {
-                        file: file,
-                        type: 'studentsDegrees'
-                    } //pass file as data, should be user ng-model
-                }).then(function (resp) { //upload function returns a promise
-                    console.log(resp);
-                    if (resp.status === 200) { //validate success
-                        toastr.success("تم رفع الملف بنجاح");
-                    } else {
-                        toastr.error('هناك مشكلة في رفع الملف');
-                    }
-                }, function (resp) { //catch error
-                    toastr.error('Error status: ' + resp.status);
-                }, function (evt) {
-                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                    console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-                    model.progress = progressPercentage; // capture upload progress
 
-                    StudentsService.getAllStudents().then(function (student) {
-                        resolve(student);
+            manageJobTitleService.getJobTitleByName('معلم',function(result){
+                var jobtitle_id = 0;
+                if (Object.keys(result).length){
+                    jobtitle_id = result[0].id;
+                    return new Promise(function (resolve, reject) {
+                        Upload.upload({
+                            url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
+                            data: {
+                                file: file,
+                                type: 'studentsDegrees',
+                                jobtitle_id:jobtitle_id,
+								schoolId:model.schoolId,
+                            } //pass file as data, should be user ng-model
+                        }).then(function (resp) { //upload function returns a promise
+                            console.log(resp);
+                            if (resp.status === 200) { //validate success
+                                toastr.success("تم رفع الملف بنجاح");
+                            } else {
+                                toastr.error('هناك مشكلة في رفع الملف');
+                            }
+                        }, function (resp) { //catch error
+                            toastr.error('Error status: ' + resp.status);
+                        }, function (evt) {
+                            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                            console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                            model.progress = progressPercentage; // capture upload progress
+
+                            StudentsService.getAllStudents().then(function (student) {
+                                resolve(student);
+                            });
+
+                        });
                     });
+                } else{
+                    var jobTitleObj = {name:'معلم'};
+                    manageJobTitleService.saveJobTitleData(jobTitleObj,function(result){
+                        jobtitle_id = result.insertId;
+                        return new Promise(function (resolve, reject) {
+                            Upload.upload({
+                                url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
+                                data: {
+                                    file: file,
+                                    type: 'studentsDegrees',
+                                    jobtitle_id:jobtitle_id,
+									schoolId:model.schoolId,
+                                } //pass file as data, should be user ng-model
+                            }).then(function (resp) { //upload function returns a promise
+                                console.log(resp);
+                                if (resp.status === 200) { //validate success
+                                    toastr.success("تم رفع الملف بنجاح");
+                                } else {
+                                    toastr.error('هناك مشكلة في رفع الملف');
+                                }
+                            }, function (resp) { //catch error
+                                toastr.error('Error status: ' + resp.status);
+                            }, function (evt) {
+                                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                                console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                                model.progress = progressPercentage; // capture upload progress
 
-                });
+                                StudentsService.getAllStudents().then(function (student) {
+                                    resolve(student);
+                                });
+
+                            });
+                        });
+                    });
+                }
             });
+         
         };
 
         $scope.$on('$viewContentLoaded', function () {

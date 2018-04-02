@@ -53,8 +53,8 @@ var userMethods = {
                             userData.password,
                             userData.groupId,
                             userData.PasswordHash,
-                            userData.isLeader,
-                            userData.is_active,], function (err, result) {
+                            userData.is_active,
+                            userData.isLeader,], function (err, result) {
                             if (err)
                                 throw err
                             if (result.affectedRows) {
