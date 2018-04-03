@@ -2,12 +2,28 @@ angular.module('MetronicApp').factory('studentsAttendanceService', function ($ht
 
     var fac = {};
 
-    fac.getAllStudentsAttendanceByActivity = function (schoolId,teacherId,lecture_name) {
+    fac.getAllStudentsAttendanceByActivity = function (schoolId,teacherId,lecture_name,date) {
         return new Promise(function (resolve, reject) {
-            $http.post("http://localhost:3000/getAllStudentsAttendanceByActivity",{
+            $http.post("http://138.197.175.116:3000/getAllStudentsAttendanceByActivity",{
                 'lecture_name':lecture_name,
                 'schoolId':schoolId,
-                'teacherId':teacherId
+                'teacherId':teacherId,
+                'date':date
+            }).success(function (response) {
+                resolve(response);
+            });
+        });
+
+    };
+
+    fac.getAllStudentsAttendanceByActivityAndStatus = function (schoolId,teacherId,lecture_name,date,status) {
+        return new Promise(function (resolve, reject) {
+            $http.post("http://138.197.175.116:3000/getAllStudentsAttendanceByActivity",{
+                'lecture_name':lecture_name,
+                'schoolId':schoolId,
+                'teacherId':teacherId,
+                'date':date,
+                'status':status
             }).success(function (response) {
                 resolve(response);
             });
@@ -17,7 +33,7 @@ angular.module('MetronicApp').factory('studentsAttendanceService', function ($ht
 
 
     fac.setStudentAttendance = function(attendanceObj,callback) {
-        $http.post("http://localhost:3000/setStudentAttendance", {
+        $http.post("http://138.197.175.116:3000/setStudentAttendance", {
             'attendanceObj': attendanceObj
         }).success(function (response) {
             callback(response);

@@ -215,7 +215,7 @@ router.post('/upload', function (req, res) {
                 console.log("result : ", result);
                 res.send(result);
             });
-        } else if (req.body.type == 'student') {
+        } else if (req.body.type == 'students') {
             studentsMethods.UploadExcel(req, res, function (result) {
                 console.log("result : ", result);
                 res.send({status: true, msg: result.message});
@@ -404,7 +404,7 @@ router.post('/getActivityByDayAndSchoolId', function (req, res, next) {
     });
 });
 
-router.get('/getActivityByEmployeeId/:employeeId', function (req, res, next) {
+router.post('/getActivityByEmployeeId', function (req, res, next) {
     employeeMethods.getActivityByEmployeeId(req, res, function (result) {
         res.send(result);
     });
@@ -448,6 +448,12 @@ router.post('/setEmployeeAttendance/', function (req, res, next) {
 
 router.post('/setStudentAttendance/', function (req, res, next) {
     studentAttendanceMethods.setStudentAttendance(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/getjobTitleByName', function (req, res, next) {
+    jobTitleMethods.getjobTitleByName(req, res, function (result) {
         res.send(result);
     });
 });

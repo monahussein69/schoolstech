@@ -30,18 +30,21 @@ angular.module('MetronicApp').controller('StudentsController',
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                 StudentsService.getAllStudents(schoolId).then(function (students) {
+                    console.log('students');
+                    console.log(students);
+                    
                     defer.resolve(students);
                     model.students = students;
                 });
                 return defer.promise
             }),
             columns: [
-                DTColumnBuilder.newColumn('Name').withTitle('اسم الطالب'),
-                DTColumnBuilder.newColumn('Nationality').withTitle('الجنسية'),
-                DTColumnBuilder.newColumn('Specialization').withTitle('التخصص'),
-                DTColumnBuilder.newColumn('Identity_No').withTitle('رقم الهوية'),
-                DTColumnBuilder.newColumn('student_record').withTitle('سجل الطالب'),
-                DTColumnBuilder.newColumn('status').withTitle('الحالة'),
+                DTColumnBuilder.newColumn('name').withTitle('اسم الطالب').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('Nationality').withTitle('الجنسية').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('Specialization').withTitle('التخصص').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('Identity_No').withTitle('رقم الهوية').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('student_record').withTitle('سجل الطالب').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('status').withTitle('الحالة').withOption('defaultContent', 'غير مدخل'),
             ],
             dtInstance: {},
             students: {}
@@ -91,16 +94,19 @@ angular.module('MetronicApp').controller('StudentsController',
         function upload(file) {
             return new Promise(function (resolve, reject) {
                 Upload.upload({
-                    url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
+                    url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
                     data: {
                         file: file,
-                        type: 'student',
+                        type: 'students',
                         schoolId: model.schoolId
                     } //pass file as data, should be user ng-model
                 }).then(function (resp) { //upload function returns a promise
                     console.log(resp);
                     if (resp.status === 200) { //validate success
                         toastr.success("تم رفع الملف بنجاح");
+                        StudentsService.getAllStudents(model.schoolId).then(function (student) {
+                        resolve(student);
+                    });
                     } else {
                         toastr.error('هناك مشكلة في رفع الملف');
                     }
@@ -111,9 +117,7 @@ angular.module('MetronicApp').controller('StudentsController',
                     console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                     model.progress = progressPercentage; // capture upload progress
 
-                    StudentsService.getAllStudents().then(function (student) {
-                        resolve(student);
-                    });
+                    
 
                 });
             });
@@ -144,13 +148,28 @@ angular.module('MetronicApp').controller('StudentsController',
     }]);
 
 angular.module('MetronicApp').controller('StudentsDegreesController',
-    function ($rootScope, $scope, $http, $window, localStorageService, StudentsService, Upload, toastr, DTOptionsBuilder, DTColumnBuilder, $q) {
+    function ($rootScope, $scope, $http, $window, localStorageService, StudentsService,manageJobTitleService, Upload, toastr, DTOptionsBuilder, DTColumnBuilder, $q) {
         console.log("StudentsDegreesController");
+		
+		
+		var userObject = localStorageService.get('UserObject');
+        if (userObject) {
+            var userType = userObject[0].userType;
+            var schoolId = 0;
+            if (userType == 2) {
+                schoolId = userObject[0].schoolId;
+
+            } else {
+                schoolId = $stateParams.schoolId;
+            }
+        }
+		
         var model = {
             upload: upload,
             doUpload: doUpload,
             progress: 0,
             deleteStudent: deleteStudent,
+			schoolId:schoolId,
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                 StudentsService.getAllStudents().then(function (students) {
@@ -190,41 +209,81 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
 
         function doUpload() {
             console.log('File : ', $scope.file);
-            model.upload($scope.file).then(function (students) {
-                var resetPaging = true;
-                model.dtInstance.reloadData(students, resetPaging);
-            });
-
-        };
+            model.upload($scope.file);
+            }
 
         function upload(file) {
-            return new Promise(function (resolve, reject) {
-                Upload.upload({
-                    url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
-                    data: {
-                        file: file,
-                        type: 'studentsDegrees'
-                    } //pass file as data, should be user ng-model
-                }).then(function (resp) { //upload function returns a promise
-                    console.log(resp);
-                    if (resp.status === 200) { //validate success
-                        toastr.success("تم رفع الملف بنجاح");
-                    } else {
-                        toastr.error('هناك مشكلة في رفع الملف');
-                    }
-                }, function (resp) { //catch error
-                    toastr.error('Error status: ' + resp.status);
-                }, function (evt) {
-                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                    console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-                    model.progress = progressPercentage; // capture upload progress
 
-                    StudentsService.getAllStudents().then(function (student) {
-                        resolve(student);
+            manageJobTitleService.getJobTitleByName('معلم',function(result){
+                var jobtitle_id = 0;
+                if (Object.keys(result).length){
+                    jobtitle_id = result[0].id;
+                    return new Promise(function (resolve, reject) {
+                        Upload.upload({
+                            url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
+                            data: {
+                                file: file,
+                                type: 'studentsDegrees',
+                                jobtitle_id:jobtitle_id,
+								schoolId:model.schoolId,
+                            } //pass file as data, should be user ng-model
+                        }).then(function (resp) { //upload function returns a promise
+                            console.log(resp);
+                            if (resp.status === 200) { //validate success
+                                toastr.success("تم رفع الملف بنجاح");
+                            } else {
+                                toastr.error('هناك مشكلة في رفع الملف');
+                            }
+                        }, function (resp) { //catch error
+                            toastr.error('Error status: ' + resp.status);
+                        }, function (evt) {
+                            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                            console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                            model.progress = progressPercentage; // capture upload progress
+
+                            StudentsService.getAllStudents().then(function (student) {
+                                resolve(student);
+                            });
+
+                        });
                     });
+                } else{
+                    var jobTitleObj = {name:'معلم'};
+                    manageJobTitleService.saveJobTitleData(jobTitleObj,function(result){
+                        jobtitle_id = result.insertId;
+                        return new Promise(function (resolve, reject) {
+                            Upload.upload({
+                                url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
+                                data: {
+                                    file: file,
+                                    type: 'studentsDegrees',
+                                    jobtitle_id:jobtitle_id,
+									schoolId:model.schoolId,
+                                } //pass file as data, should be user ng-model
+                            }).then(function (resp) { //upload function returns a promise
+                                console.log(resp);
+                                if (resp.status === 200) { //validate success
+                                    toastr.success("تم رفع الملف بنجاح");
+                                } else {
+                                    toastr.error('هناك مشكلة في رفع الملف');
+                                }
+                            }, function (resp) { //catch error
+                                toastr.error('Error status: ' + resp.status);
+                            }, function (evt) {
+                                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                                console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                                model.progress = progressPercentage; // capture upload progress
 
-                });
+                                StudentsService.getAllStudents().then(function (student) {
+                                    resolve(student);
+                                });
+
+                            });
+                        });
+                    });
+                }
             });
+         
         };
 
         $scope.$on('$viewContentLoaded', function () {
@@ -252,7 +311,7 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
     }]);
 
 angular.module('MetronicApp').controller('StudentsLateController',
-    function (DTOptionsBuilder, DTColumnBuilder, $q, $stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter, manageEmployeeService , StudentsService) {
+    function ($moment,DTOptionsBuilder, DTColumnBuilder, $q, $stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter, manageEmployeeService , StudentsService,studentsAttendanceService ) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -265,15 +324,20 @@ angular.module('MetronicApp').controller('StudentsLateController',
                 schoolId = $stateParams.schoolId;
             }
         }
-
+        var attendance_day = $moment().format('MM/DD/YYYY');
+        var statusList = ['غائب','متأخر','حاضر'];
         var model = {
             schoolId: schoolId,
+            selectedStudentStatus:'',
             record: [],
             employeeList: [],
             getActivityByEmployeeId: getActivityByEmployeeId,
+            getAttendanceBasedDate:getAttendanceBasedDate,
             getStudentsByActivityId: getStudentsByActivityId,
+            attendance_day: attendance_day,
             selectedEmployee: 0,
             activityList: [],
+            statusList:statusList,
             selectedActivity : 0,
             studentsList  : [],
             options:DTOptionsBuilder.fromFnPromise(function () {
@@ -284,11 +348,10 @@ angular.module('MetronicApp').controller('StudentsLateController',
                 return defer.promise
             }),
             columns: [
-                DTColumnBuilder.newColumn('Name').withTitle(' اسم الطالب'),
+                DTColumnBuilder.newColumn('student_name').withTitle(' اسم الطالب'),
                 DTColumnBuilder.newColumn(null).withTitle('الحالة').notSortable()
                     .renderWith(actionsHtml),
-                DTColumnBuilder.newColumn(null).withTitle('مدة التأخير').notSortable()
-                    .renderWith(actionsHtml2)
+                DTColumnBuilder.newColumn('late_min').withTitle('مدة التأخير')
             ],
             dtInstance: {},
         };
@@ -305,8 +368,18 @@ angular.module('MetronicApp').controller('StudentsLateController',
 
         function actionsHtml(data, type, full, meta) {
 
-            return '<span>متأخر</span>'
-                ;
+           if(data.is_absent != null) {
+               if (data.is_absent == 0 && (data.late_min == null || data.late_min == '')) {
+                   return '<span>حاضر</span>';
+               }
+               if (data.is_absent == 0 && (data.late_min != null || data.late_min != '')) {
+                   return '<span>متأخر</span>';
+               }
+               if (data.is_absent == 1) {
+                   return '<span>غائب</span>';
+               }
+           }
+           return '';
         }
         function actionsHtml2(data, type, full, meta) {
 
@@ -314,20 +387,36 @@ angular.module('MetronicApp').controller('StudentsLateController',
                 ;
         }
 
+        function getAttendanceBasedDate(){
+            model.getActivityByEmployeeId();
+        }
+
         function getActivityByEmployeeId() {
-            manageEmployeeService.getActivityByEmployeeId(model.selectedEmployee).then(activites => {
+            manageEmployeeService.getActivityByEmployeeId(model.selectedEmployee,model.attendance_day).then(activites => {
                 model.activityList = activites;
                 $scope.$apply();
             });
         }
         function getStudentsByActivityId() {
-            var defer = $q.defer();
-            StudentsService.getStudentsByActivityId(model.selectedActivity).then(students => {
-                model.studentsList = students;
-                defer.resolve(students);
-                $scope.$apply();
-            });
-            model.dtInstance.changeData(defer.promise);
+
+            if(model.selectedStudentStatus != ''){
+                var defer = $q.defer();
+
+                studentsAttendanceService.getAllStudentsAttendanceByActivityAndStatus(model.schoolId, model.selectedEmployee, model.selectedActivity,model.attendance_day,model.statusList[model.selectedStudentStatus]).then(function (studentsList) {
+                    defer.resolve(studentsList);
+                    model.dtInstance.changeData(defer.promise);
+                    model.studentsList = studentsList;
+                });
+            }else{
+                var defer = $q.defer();
+
+                studentsAttendanceService.getAllStudentsAttendanceByActivity(model.schoolId, model.selectedEmployee, model.selectedActivity,model.attendance_day).then(function (studentsList) {
+                    defer.resolve(studentsList);
+                    model.dtInstance.changeData(defer.promise);
+                    model.studentsList = studentsList;
+                });
+            }
+
         }
 
         $scope.$on('$viewContentLoaded', function () {

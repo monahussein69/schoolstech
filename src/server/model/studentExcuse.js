@@ -5,16 +5,17 @@ var appSettingsMethods = require('../model/appSettings.js');
 var studentExcuseMethods = {
 
     sendStudentExcuseRequest: function (req, res, callback) {
-        //var current_date = moment().format('MM-DD-YYYY');
-        var current_date = '03-18-2018';
+
+       // var current_date = '03-18-2018';
         var ExcuseObj = req.body.ExcuseObj;
         var response = {};
+        var current_date = moment(ExcuseObj.currentDate).format('MM-DD-YYYY');
         req.body.date = current_date;
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 ExcuseObj.Calender_id = calendarObj.Id;
-                con.query('insert into SCH_ATT_STDEXCUSE set ?',
+                con.query('insert into sch_att_stdexcuse set ?',
                     [ExcuseObj], function (err, result) {
                         if (err)
                             throw err

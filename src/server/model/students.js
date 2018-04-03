@@ -97,11 +97,14 @@ var studentsMethods = {
             let data = {};
             let standards = [];
             let counter = 0;
+			let finalStudents = [];
             workbook.xlsx.readFile('./src/client/app/uploads/' + req.body.filename)
                 .then(function () {
                         let allCells = [];
                         var message = '';
+						console.log('before if');
                         if (req.body.type == 'students') {
+						console.log('in if');
                             workbook.eachSheet(function (worksheet, sheetId) {
                                 // var worksheet = workbook.getWorksheet();
                                 worksheet.eachRow(function (row, rowNumber) {
@@ -126,6 +129,7 @@ var studentsMethods = {
                                                 attending_date: worksheet.getCell('D' + rowNumber).value,
                                                 notes: worksheet.getCell('C' + rowNumber).value,
                                             };
+											console.log(data);
                                             req.body.studentsData = data;
                                             studentsMethods.saveStudent(req, res, function (result) {
                                                 if (result.success) {
@@ -141,8 +145,10 @@ var studentsMethods = {
                             });
                             callback({status: true, message: message, data: finalStudents});
                         } else if (req.body.type == 'studentsDegrees') {
+						    var jobtitle_id = req.body.jobtitle_id;
                             workbook.eachSheet(function (worksheet, sheetId) {
                                 // var worksheet = workbook.getWorksheet();
+                               
                                 worksheet.eachRow(function (row, rowNumber) {
                                     if (rowNumber > 19) {
                                         row.eachCell(function (cell, ColNumber) {
@@ -166,7 +172,8 @@ var studentsMethods = {
                                 });
                             });
 
-                            function addToDB(allCells) {
+                            function addToDB(allCells,jobtitle_id,schoolId) {
+                            
                                 if (allCells[counter]) {
                                     let sectionPromise = new Promise(function (resolve, reject) {
                                         sequelizeConfig.sectionsTable.findOrCreate({
@@ -187,7 +194,7 @@ var studentsMethods = {
                                         if (allCells[counter].teacher_name) {
                                             sequelizeConfig.teachersTable.findOrCreate({
                                                 where: {name: allCells[counter].teacher_name.trim()},
-                                                defaults: {School_Id: schoolId}
+                                                defaults: {school_id: schoolId,jobtitle_id:jobtitle_id}
                                             }).spread((teacher, created) => {
                                                 resolve(teacher.id);
                                             });
@@ -227,14 +234,14 @@ var studentsMethods = {
                                         })
                                             .then(studentsSections => {
                                                 counter++;
-                                                addToDB(allCells);
+                                                addToDB(allCells,jobtitle_id,schoolId);
                                                 console.log("YEEEEEEEEEEEEEEES");
                                             })
                                     });
                                 }
                             }
 
-                            addToDB(allCells);
+                            addToDB(allCells,jobtitle_id,schoolId);
 
                         }
                     }

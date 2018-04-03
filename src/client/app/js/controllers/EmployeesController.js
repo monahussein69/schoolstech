@@ -238,7 +238,7 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
             }
             return new Promise(function (resolve, reject) {
                 Upload.upload({
-                    url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
+                    url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
                     data: {
                         file: file,
                         type: 'employee',
@@ -365,7 +365,7 @@ angular.module('MetronicApp').controller('ManageEmployeeController', function (C
 
                 if (response.success) {
                     //model.success = response.msg;
-                    $window.location.href = '#/manageEmployees';
+                    $window.location.href = '#/manageEmployees/';
                     toastr.success(response.msg);
                 } else {
                     //model.error = response.msg;

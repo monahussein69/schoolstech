@@ -10,20 +10,21 @@ var studentAttendanceMethods = {
 
     getAllStudentsAttendanceByActivity: function (req, res, callback) {
 
-        var current_date = moment().format('MM-DD-YYYY');
+        var current_date = moment(req.body.date).format('MM-DD-YYYY');
         req.body.date = current_date;
-        req.body.date = '03-18-2018';
+        //req.body.date = '03-18-2018';
         var schoolId = req.body.schoolId;
         var teacherId = req.body.teacherId;
         var lecture_name = req.body.lecture_name;
+        var status = req.body.status;
         var breaks = [  'طابور','صلاه', 'فسحه (1)' ,'فسحه (2)'];
         var response = [];
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
-                var currentDay = workingSettingsMethods.getArabicDay(new Date().getDay());
-                currentDay = 'الاحد';
+                var currentDay = workingSettingsMethods.getArabicDay(new Date(current_date).getDay());
+                //currentDay = 'الاحد';
                 var currentDay1 = currentDay;
                 if(currentDay ==  'الاحد'){
                     currentDay1 = 'الأحد';
@@ -34,15 +35,25 @@ var studentAttendanceMethods = {
                 if(currentDay ==  'الاربعاء'){
                     currentDay1 = 'الأربعاء';
                 }
+                var condition = '';
+                if(status == 'حاضر'){
+                    condition = 'and sch_att_stdatt.is_absent = 0 and (sch_att_stdatt.late_min = "" OR sch_att_stdatt.late_min IS  NULL)';
+                }else  if(status == 'متأخر'){
+                    condition = 'and sch_att_stdatt.is_absent = 0 and (sch_att_stdatt.late_min != "" OR sch_att_stdatt.late_min IS NOT NULL)';
+                }else if(status == 'غائب'){
+                    condition = 'and sch_att_stdatt.is_absent = 1';
+                }
+
+
 
                 if(breaks.indexOf(lecture_name)  > -1){
 
-                    var query  = con.query('SELECT SCH_ATT_STDEXCUSE.Start_Date as excuse_date, sch_str_student.student_id as main_student_id , sch_str_student.Name as student_name , SCH_ATT_STDATT.* FROM `sch_str_student` ' +
-                        ' left join SCH_ATT_STDATT on ' +
-                        '(sch_str_student.student_id = SCH_ATT_STDATT.Student_id and  SCH_ATT_STDATT.Event_Name = ? ) ' +
-                        'left join SCH_ATT_STDEXCUSE on SCH_ATT_STDEXCUSE.Student_id = sch_str_student.student_id '+
-                        ' where sch_acd_lecturestables.School_Id = ? and ' +
-                        ' (SCH_ATT_STDATT.Calender_id = ? or SCH_ATT_STDATT.Calender_id IS NULL) group by sch_str_student.student_id', [lecture_name,schoolId,calendarId], function (err, result) {
+                    var query  = con.query('SELECT sch_att_stdexcuse.Start_Date as excuse_date, sch_str_student.student_id as main_student_id , sch_str_student.Name as student_name , sch_att_stdatt.* FROM `sch_str_student` ' +
+                        ' left join sch_att_stdatt on ' +
+                        '(sch_str_student.student_id = sch_att_stdatt.Student_id and  sch_att_stdatt.Event_Name = ? and (sch_att_stdatt.Calender_id = ? ) ) ' +
+                        'left join sch_att_stdexcuse on sch_att_stdexcuse.Student_id = sch_str_student.student_id '+
+                        ' where sch_acd_lecturestables.School_Id = ?  ' + condition + ' '+
+                        '  group by sch_str_student.student_id', [lecture_name,calendarId,schoolId], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err
@@ -51,18 +62,18 @@ var studentAttendanceMethods = {
                     );
 
                 }else{
-                    var query  = con.query('SELECT SCH_ATT_STDEXCUSE.Start_Date as excuse_date, sch_str_student.student_id as main_student_id , sch_str_student.Name as student_name , SCH_ATT_STDATT.* FROM `sch_str_student` ' +
+                    var query  = con.query('SELECT sch_att_stdexcuse.Start_Date as excuse_date, sch_str_student.student_id as main_student_id , sch_str_student.Name as student_name , sch_att_stdatt.* FROM `sch_str_student` ' +
                         ' join sch_acd_studentsections on sch_str_student.student_id = sch_acd_studentsections.Student_Id ' +
                         ' join sch_acd_lecturestables on ' +
                         ' (sch_acd_lecturestables.Section_Id = sch_acd_studentsections.Section_Id and sch_acd_lecturestables.Course_Id = sch_acd_studentsections.Course_Id) ' +
                         ' join sch_acd_lectures on sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO ' +
-                        ' left join SCH_ATT_STDATT on ' +
-                        '(sch_str_student.student_id = SCH_ATT_STDATT.Student_id and sch_acd_lectures.name = SCH_ATT_STDATT.Event_Name) ' +
-                        'left join SCH_ATT_STDEXCUSE on SCH_ATT_STDEXCUSE.Student_id = sch_str_student.student_id '+
+                        ' left join sch_att_stdatt on ' +
+                        '(sch_str_student.student_id = sch_att_stdatt.Student_id and sch_acd_lectures.name = sch_att_stdatt.Event_Name and sch_att_stdatt.Calender_id = ? )' +
+                        'left join sch_att_stdexcuse on sch_att_stdexcuse.Student_id = sch_str_student.student_id '+
                         ' where sch_acd_lecturestables.School_Id = ? and ' +
                         ' (sch_acd_lecturestables.Day = ? or sch_acd_lecturestables.Day = ?) ' +
-                        ' and sch_acd_lecturestables.Teacher_Id = ? and sch_acd_lectures.name = ? and ' +
-                        ' (SCH_ATT_STDATT.Calender_id = ? or SCH_ATT_STDATT.Calender_id IS NULL) group by sch_str_student.student_id', [schoolId,currentDay,currentDay1,teacherId,lecture_name,calendarId], function (err, result) {
+                        ' and sch_acd_lecturestables.Teacher_Id = ? and sch_acd_lectures.name = ?  ' + condition + ' '+
+                        '  group by sch_str_student.student_id', [calendarId,schoolId,currentDay,currentDay1,teacherId,lecture_name], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err
@@ -86,9 +97,9 @@ var studentAttendanceMethods = {
         var response = {};
         attendanceObj.late_min = '';
 
-        var current_date = moment().format('MM-DD-YYYY');
-        //req.body.date = current_date;
-        req.body.date = '03-18-2018';
+        var current_date = moment(attendanceObj.attendance_day).format('MM-DD-YYYY');
+        req.body.date = current_date;
+        //req.body.date = '03-18-2018';
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
@@ -104,11 +115,14 @@ var studentAttendanceMethods = {
                             console.log(result);
                             if (Object.keys(result).length) {
                                 attendanceObj.Event_type_id = result[0].Id;
+                                attendanceObj.Begining_Time = result[0].Begining_Time;
                                 if (attendanceObj.is_absent == 0) {
                                     var begining_time = moment(attendanceObj.Begining_Time, 'HH:mm').format('HH:mm');
                                     //var current_time = moment().format('HH:mm');
                                     var current_time = attendanceObj.time_in;
                                     attendanceObj.time_in = current_time;
+
+                                    console.log(begining_time);
 
                                     var ms = moment(current_time, "HH:mm").diff(moment(begining_time, "HH:mm"));
 
@@ -152,15 +166,17 @@ var studentAttendanceMethods = {
     },
     addStudentAttendance: function (req, res, callback) {
         var attendanceObj = req.body.attendanceObj;
+        delete attendanceObj.attendance_day;
+        delete attendanceObj.Begining_Time;
         var response = {};
 
-        con.query('select * from SCH_ATT_STDATT where Calender_id = ? and Student_id = ? and Event_Name = ?', [attendanceObj.Calender_id, attendanceObj.Student_id , attendanceObj.Event_Name], function (err, result) {
+        con.query('select * from sch_att_stdatt where Calender_id = ? and Student_id = ? and Event_Name = ?', [attendanceObj.Calender_id, attendanceObj.Student_id , attendanceObj.Event_Name], function (err, result) {
             if (err)
                 throw err;
 
             if (Object.keys(result).length) {
 
-                con.query('update SCH_ATT_STDATT set  school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?, Event_type_id = ? where Calender_id = ? and Student_id = ? and Event_Name = ?',
+                con.query('update sch_att_stdatt set  school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?, Event_type_id = ? where Calender_id = ? and Student_id = ? and Event_Name = ?',
                     [
                         attendanceObj.school_id,
                         attendanceObj.Event_Name,
@@ -193,7 +209,7 @@ var studentAttendanceMethods = {
                 );
 
             } else {
-                con.query('insert into SCH_ATT_STDATT set ?',
+                con.query('insert into sch_att_stdatt set ?',
                     [attendanceObj], function (err, result) {
                         if (err)
                             throw err

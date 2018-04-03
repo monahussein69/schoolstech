@@ -16,24 +16,48 @@ angular.module('MetronicApp').controller('activityAttendanceController',
             }
         }
 
+        var attendance_day = $moment().format('MM/DD/YYYY');
+        var titleHtml = '<input type="checkbox" ng-model="model.selectAll" ng-click="model.toggleAll(model.selectAll, model.selected)">';
+
         var model = {
             schoolId: schoolId,
             teacherId: teacherId,
             studentAttendance: [],
             recordAttendance: recordAttendance,
+            recordAttendanceAll:recordAttendanceAll,
             getAllStudentsByActivity: getAllStudentsByActivity,
             ExcuseRequest: ExcuseRequest,
+            attendance_day:attendance_day,
             activeProfile: {},
             listOfActivity: {},
+            selected : {},
+            selectAll : false,
+            toggleAll : toggleAll,
+            toggleOne : toggleOne,
+            headerCompiled:false,
+            ids:[],
             activity: '',
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                 defer.resolve(model.studentAttendance);
 
                 return defer.promise
-            }).withOption('createdRow', createdRow),
+            }).withOption('createdRow', createdRow).withOption('createdRow', createdRow)
+                .withOption('headerCallback', function(header) {
+                    //if (!model.headerCompiled) {
+                    // Use this headerCompiled field to only compile header once
+                    // model.headerCompiled = true;
+                    $compile(angular.element(header).contents())($scope);
+                    //}
+                }),
             columns: [
+                DTColumnBuilder.newColumn(null).withTitle(titleHtml).notSortable()
+                    .renderWith(function(data, type, full, meta) {
+                        model.selected[full.main_student_id] = false;
+                        return '<input type="checkbox" ng-model="model.selected[' + data.main_student_id + ']" ng-click="model.toggleOne(date.selected)">';
+                    }),
                 DTColumnBuilder.newColumn('student_name').withTitle('اسم الطالب'),
+                DTColumnBuilder.newColumn('late_min').withTitle('مده التأخير'),
                 DTColumnBuilder.newColumn(null).withTitle('الحضور').notSortable()
                     .renderWith(actionsHtml)
             ],
@@ -41,7 +65,12 @@ angular.module('MetronicApp').controller('activityAttendanceController',
             employeeList: [],
             selectedEmployee: 0,
             getActivityByEmployeeId: getActivityByEmployeeId,
+            getAttendanceBasedDate:getAttendanceBasedDate
         };
+
+        function getAttendanceBasedDate(){
+            model.getActivityByEmployeeId();
+        }
 
 
         manageEmployeeService.getAllTeachers(schoolId).then(employees => {
@@ -51,7 +80,7 @@ angular.module('MetronicApp').controller('activityAttendanceController',
         });
 
         function getActivityByEmployeeId() {
-            manageEmployeeService.getActivityByEmployeeId(model.teacherId).then(activites => {
+            manageEmployeeService.getActivityByEmployeeId(model.teacherId,model.attendance_day).then(activites => {
                 model.listOfActivity = activites;
                 $scope.$apply();
             });
@@ -63,7 +92,7 @@ angular.module('MetronicApp').controller('activityAttendanceController',
         }
 
         function actionsHtml(data, type, full, meta) {
-            var current_date = $moment().format('MM/DD/YYYY');
+            var current_date = $moment(model.attendance_day).format('MM/DD/YYYY');
 
             return '' +
                 '<button class="btn btn-primary color-grey" ng-click="model.recordAttendance(' + data.main_student_id + ',$event,\'حضور\')" ng-class="{\'color-green\': 0 ==' + data.is_absent + '}"> حاضر</button>\n' +
@@ -72,9 +101,76 @@ angular.module('MetronicApp').controller('activityAttendanceController',
                 ;
         }
 
+        function recordAttendanceAll(type){
+
+            var ids = model.selected;
+            var results = [];
+            if(Object.keys(ids).length > 0) {
+                var requests = Object.keys(ids).map(function (key, item) {
+                    if (ids[key]) {
+                        return new Promise(function (resolve) {
+                            var attendanceObj = {};
+                            attendanceObj.school_id = model.schoolId;
+                            attendanceObj.Student_id = key;
+                            attendanceObj.Event_Name = model.activity;
+                            attendanceObj.time_in = $moment().format('HH:mm');
+                            attendanceObj.is_absent = 1;
+                            attendanceObj.attendance_day = model.attendance_day;
+
+                            if (type == 'حضور') {
+                                attendanceObj.is_absent = 0;
+                            }
+
+                            studentsAttendanceService.setStudentAttendance(attendanceObj, function (result) {
+                                if (result.success) {
+                                    results.push(1);
+                                }
+                                resolve(result);
+                            });
+                        });
+                    }
+                });
+
+                Promise.all(requests).then(function (result) {
+                    if (results.includes(1)) {
+                    model.getAllStudentsByActivity();
+                    toastr.success('تم تسجيل '+type+' بنجاح');
+                    }else{
+                        toastr.error('الرجاء اختيار الطلاب');
+                    }
+                    //callback(response);
+                });
+            }else{
+                toastr.error('الرجاء اختيار الطلاب');
+            }
+
+
+        }
+
+
+        function toggleAll (selectAll, selectedItems) {
+            console.log('in click');
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    selectedItems[id] = selectAll;
+                }
+            }
+        }
+        function toggleOne (selectedItems) {
+            for (var id in selectedItems) {
+                if (selectedItems.hasOwnProperty(id)) {
+                    if(!selectedItems[id]) {
+                        model.selectAll = false;
+                        return;
+                    }
+                }
+            }
+            model.selectAll = true;
+        }
+
         function getAllStudentsByActivity() {
             var defer = $q.defer();
-            studentsAttendanceService.getAllStudentsAttendanceByActivity(schoolId, model.teacherId, model.activity).then(function (studentAttendance) {
+            studentsAttendanceService.getAllStudentsAttendanceByActivity(schoolId, model.teacherId, model.activity,model.attendance_day).then(function (studentAttendance) {
                 defer.resolve(studentAttendance);
                 model.dtInstance.changeData(defer.promise);
                 model.studentAttendance = studentAttendance;
@@ -86,10 +182,6 @@ angular.module('MetronicApp').controller('activityAttendanceController',
         $scope.model = model;
 
 
-        manageEmployeeService.getActivityByEmployeeId(model.teacherId).then(function (data) {
-            model.listOfActivity = data;
-        });
-
 
         function recordAttendance(student_id, $event, type) {
 
@@ -100,20 +192,23 @@ angular.module('MetronicApp').controller('activityAttendanceController',
             attendanceObj.Event_Name = model.activity;
             attendanceObj.time_in = $moment().format('HH:mm');
             attendanceObj.is_absent = 1;
+            attendanceObj.attendance_day = model.attendance_day;
+
             if (type == 'حضور') {
                 attendanceObj.is_absent = 0;
             }
 
             studentsAttendanceService.setStudentAttendance(attendanceObj, function (result) {
                 if (result.success) {
+                    model.getAllStudentsByActivity();
                     toastr.success(result.msg);
-                    angular.element($event.target).removeClass('color-grey');
+                    /*angular.element($event.target).removeClass('color-grey');
                     if (type == 'حضور') {
                         angular.element($event.target).addClass('color-green');
                         angular.element($event.target).parent().children('.excuse').attr('disabled', false);
                     } else if (type == 'غياب') {
                         angular.element($event.target).parent().children('.excuse').attr('disabled', true);
-                    }
+                    }*/
 
                 } else {
                     toastr.error(result.msg);
@@ -133,6 +228,9 @@ angular.module('MetronicApp').controller('activityAttendanceController',
                     },
                     schoolId: function () {
                         return model.schoolId;
+                    },
+                    selectedDate: function () {
+                        return model.attendance_day;
                     }
                 }
             });
@@ -161,9 +259,11 @@ angular.module('MetronicApp').controller('activityAttendanceController',
     });
 
 
-angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, studentExcuseService, $moment, $scope, $uibModalInstance, selectedStudent, schoolId, $log) {
+angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, studentExcuseService, $moment, $scope, $uibModalInstance, selectedStudent,selectedDate, schoolId, $log) {
     var currentTime = $moment().format('HH:mm');
-    var currentDate = $moment().format('MM/DD/YYYY');
+    var currentDate = $moment(selectedDate).format('MM/DD/YYYY');
+
+    console.log(selectedDate);
 
     var ExcuseObj = {};
     ExcuseObj.school_id = schoolId;

@@ -7,14 +7,14 @@ angular.module('MetronicApp').factory('manageSubJobTitleService', function ($htt
     fac.getSubJobTitles = function (jobTitleId,callback) {
         console.log('jobTitleId');
         console.log(jobTitleId);
-        $http.post("http://localhost:3000/getAllSubJobTitles/", {'jobTitleId':jobTitleId
+        $http.post("http://138.197.175.116:3000/getAllSubJobTitles/", {'jobTitleId':jobTitleId
         }).success(function (response) {
             callback(response);
         });
     };
 
     fac.saveSubJobTitleData = function (subjobTitleObj, callback) {
-        $http.post("http://localhost:3000/saveSubJobTitle",{'SubjobTitleData':subjobTitleObj}).success(function (response) {
+        $http.post("http://138.197.175.116:3000/saveSubJobTitle",{'SubjobTitleData':subjobTitleObj}).success(function (response) {
             callback(response);
         });
 
