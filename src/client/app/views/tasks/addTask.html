@@ -12,7 +12,7 @@
 <h3 class="page-title">اضافه مهمه </h3>
 
 <div>
-    <form method="post" ng-submit="model.saveTask()" name="addtaskForm" ng-model="schoolForm" enctype="multipart/form-data">
+    <form method="post" ng-submit="model.saveTask()" name="addtaskForm" ng-model="addtaskForm" enctype="multipart/form-data">
         <div class="alert alert-success" ng-if="model.success != null">
             <button class="close" data-close="alert"></button>
             <span>{{model.success}}</span>
@@ -82,14 +82,13 @@
                     <div class="form-group row">
                         <label class="col-sm-2 control-label"> مشرف المهمه : </label>
                         <div class="col-sm-6">
-                            <select name="Suppervisor_Emp_id" class="form-control" ng-model="model.taskObj.Suppervisor_Emp_id">
+                            <select name="Suppervisor_Emp_id" ng-options="employee.id as employee.name for employee in model.employees" class="form-control" ng-model="model.taskObj.Suppervisor_Emp_id">
                                 <option value=""> اختر مشرف المهمه</option>
-                                <option ng-repeat="employee in model.employees track by $index" value="{{employee.id}}">{{employee.name}} </option>
                             </select>
                         </div>
                         <div class="col-sm-4">
                             <label>
-                                <input type="checkbox" name=""> تكليف بتشكيل فريق العمل </label>
+                                <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="model.taskObj.buildTaskMember"> تكليف بتشكيل فريق العمل </label>
                         </div>
                     </div>
 
@@ -137,9 +136,8 @@
                     <div class="form-group row">
                         <label class="col-sm-2 control-label"> تم انشاء المهمه بواسطة: </label>
                         <div class="col-sm-6">
-                            <select name="Issued_By" class="form-control" ng-model="model.taskObj.Issued_By" >
+                            <select name="Issued_By" class="form-control" ng-model="model.taskObj.Issued_By" ng-options="employee.id as employee.name for employee in model.employees">
                                 <option value="">اختر الموظف</option>
-                                <option ng-repeat="employee in model.employees track by $index" value="{{employee.id}}">{{employee.name}} </option>
                             </select>
                         </div>
                     </div>
@@ -170,7 +168,6 @@
                 </fieldset>
 
                 <button class="btn btn-primary" type="submit" ng-disabled="addtaskForm.$invalid">حفظ</button>
-                <button class="btn btn-danger">تشكيل فريق العمل</button>
                 <button class="btn btn-default">الغاء</button>
 
             </div>

@@ -17,6 +17,7 @@ var employeesExcuseMethods = require('../model/employeesExcuse.js');
 var employeesVacationMethods = require('../model/employeeVacation.js');
 var studentAttendanceMethods = require('../model/studentAttendance.js');
 var studentExcuseMethods = require('../model/studentExcuse.js');
+var taskMethods = require('../model/tasks.js');
 
 var app = express();
 var multer = require('multer');
@@ -84,6 +85,38 @@ router.post('/saveSchoolData', function (req, res, next) {
         res.send(result);
     });
 });
+
+
+router.get('/deleteTask/:taskId', function (req, res, next) {
+    taskMethods.deleteTask(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getTask/:taskId', function (req, res, next) {
+    taskMethods.getTask(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllTasks', function (req, res, next) {
+    taskMethods.getAllTasks(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/saveTaskData', function (req, res, next) {
+    taskMethods.saveTaskData(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/getTaskByEmpId', function (req, res, next) {
+    taskMethods.getTaskByEmpId(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 
 
 router.get('/getSchool/:schoolId', function (req, res, next) {

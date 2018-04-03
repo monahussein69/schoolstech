@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('schooltech', 'root', 'salimquta', {
+const sequelize = new Sequelize('schooltech', 'root', '', {
     host: 'localhost',
     dialect: 'mysql',
     operatorsAliases: false,
@@ -67,6 +67,28 @@ const sequelizeConfig = {
         Academic_No: Sequelize.INTEGER,
         School_Id: Sequelize.INTEGER,
         Name: Sequelize.STRING
-    })
+    }),
+    tasksTable:sequelize.define('sch_att_tasks', {
+        id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        Calender_id: Sequelize.INTEGER,
+        school_id: Sequelize.INTEGER,
+        Task_Tittle: Sequelize.STRING,
+        Suppervisor_Emp_id: Sequelize.INTEGER,
+        Task_InOut_Type: Sequelize.INTEGER,
+        Task_Place:Sequelize.STRING,
+        Start_Date:Sequelize.STRING,
+        start_time:Sequelize.STRING,
+        End_Date:Sequelize.STRING,
+        End_time:Sequelize.STRING,
+        Issued_By:Sequelize.INTEGER,
+        Issued_Date:Sequelize.STRING,
+        Task_Staus:Sequelize.INTEGER,
+        Task_Description:Sequelize.STRING,
+        Order_Id:Sequelize.INTEGER,
+        InComing_No:Sequelize.STRING,
+        Task_Report:Sequelize.STRING,
+        Task_Evaluation:Sequelize.STRING,
+        buildTaskMember:Sequelize.INTEGER
+    }),
 }
 module.exports = sequelizeConfig;

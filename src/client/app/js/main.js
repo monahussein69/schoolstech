@@ -826,8 +826,32 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             }
         })
 
+        .state('Master.tasks', {
+            url: "/Tasks",
+            templateUrl: "views/tasks/tasks.html",
+            data: {pageTitle: ' اداره المهام'},
+            controller: "ManageTaskController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/Tasks/TasksController.js',
+                            '../assets/bower_components/moment/moment.js',
+                            'js/services/taskFactory.js',
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
         .state('Master.addTask', {
-            url: "/addTask",
+            url: "/addTask/:taskId",
             templateUrl: "views/tasks/addTask.html",
             data: {pageTitle: 'اضافة مهمه'},
             controller: "AddTaskController",
@@ -852,6 +876,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             'js/controllers/Tasks/TasksController.js',
                             '../assets/bower_components/moment/moment.js',
                             'js/services/EmployeesFactory.js',
+                            'js/services/taskFactory.js',
 
                         ]
                     });
