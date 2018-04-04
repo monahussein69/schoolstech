@@ -99,7 +99,7 @@ router.get('/getTask/:taskId', function (req, res, next) {
     });
 });
 
-router.get('/getAllTasks', function (req, res, next) {
+router.get('/getAllTasks/:schoolId', function (req, res, next) {
     taskMethods.getAllTasks(req, res, function (result) {
         res.send(result);
     });

@@ -143,8 +143,6 @@ angular.module('MetronicApp').controller('activityAttendanceController',
             }else{
                 toastr.error('الرجاء اختيار الطلاب');
             }
-
-
         }
 
 

@@ -34,7 +34,8 @@ angular.module('MetronicApp').controller('AddTaskController',
         getDay:getDay,
         saveTask:saveTask,
         schoolId:schoolId,
-        getTask:getTask
+        getTask:getTask,
+        added:0
     }
 
     $scope.model = model;
@@ -75,6 +76,7 @@ angular.module('MetronicApp').controller('AddTaskController',
                 if (response.success) {
                     $window.location.href = '#/Tasks';
                     toastr.success(response.msg);
+                    model.added = 1;
                 } else {
                     toastr.error(response.msg);
                 }
@@ -103,7 +105,7 @@ angular.module('MetronicApp').controller('ManageTaskController',
             var userType = userObject[0].userType;
             var userId = userObject[0].id;
             var schoolId = 0;
-            if (userType == 2) {
+            if (userType == 2 || userType == 3) {
                 schoolId = userObject[0].schoolId;
             } else {
                 schoolId = $stateParams.schoolId;
@@ -115,13 +117,23 @@ angular.module('MetronicApp').controller('ManageTaskController',
             deleteTask:deleteTask,
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
+                if (userType == 2){
+                    taskService.getAllTasks(schoolId).then(function (tasks) {
+                        model.tasks = tasks;
+                        defer.resolve(tasks);
+                        console.log(tasks);
+                        $scope.$apply();
+                    });
+                }
+                if (userType == 3){
+                    taskService.getTaskByEmpId().then(function (tasks) {
+                        model.tasks = tasks;
+                        defer.resolve(tasks);
+                        console.log(tasks);
+                        $scope.$apply();
+                    });
+                }
 
-                taskService.getAllTasks().then(function (tasks) {
-                    model.tasks = tasks;
-                    defer.resolve(tasks);
-                    console.log(tasks);
-                    $scope.$apply();
-                });
                 return defer.promise
             }).withOption('createdRow', createdRow),
             columns: [
@@ -169,7 +181,7 @@ angular.module('MetronicApp').controller('ManageTaskController',
                 '</li>'+
                 '<li>'+
                 '<a ui-sref="#">'+
-                '<i class="icon-pencil"></i>&nbsp; تشكيل فريق العمل </a>'+
+                '<i class="icon-pencil"></i>&nbsp;  فريق العمل </a>'+
                 '</li>'+
 
                 '<li class="divider"> </li>'+

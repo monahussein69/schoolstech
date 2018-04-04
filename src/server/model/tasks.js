@@ -7,9 +7,14 @@ var taskMethods = {
 
     getTask:function(req,res,callback){
         var taskId = req.params.taskId;
-        sequelizeConfig.tasksTable.find({where: {id: taskId}}).then(function (task) {
-            callback(task);
+
+        con.query('select sch_att_tasks.*,app_def_calender.Date as CurrentDate  from sch_att_tasks join app_def_calender on app_def_calender.Id = sch_att_tasks.Calender_id where id = ?',[taskId],function(err,result){
+            callback(result);
         });
+
+        /*sequelizeConfig.tasksTable.find({where: {id: taskId}}).then(function (task) {
+            callback(task);
+        });*/
     },
 
     saveTaskData: function(req,res,callback) {
@@ -75,7 +80,8 @@ var taskMethods = {
         });
     },
     getAllTasks:function(req,res,callback){
-        con.query('select sch_att_tasks.*,sch_str_employees.name as supervisor_name from sch_att_tasks join sch_str_employees on sch_str_employees.id = sch_att_tasks.Suppervisor_Emp_id',function(err,result){
+        var schoolId = req.params.schoolId;
+        con.query('select sch_att_tasks.*,sch_str_employees.name as supervisor_name from sch_att_tasks join sch_str_employees on sch_str_employees.id = sch_att_tasks.Suppervisor_Emp_id where school_id = ?',[schoolId],function(err,result){
          callback(result);
         });
     },

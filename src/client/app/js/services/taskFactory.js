@@ -4,9 +4,9 @@ angular.module('MetronicApp').factory('taskService', function ($http, Upload) {
 
     };
 
-    fac.getAllTasks = function () {
+    fac.getAllTasks = function (schoolId) {
         return new Promise(function (resolve, reject) {
-            $http.get("http://localhost:3000/getAllTasks").success(function (response) {
+            $http.get("http://localhost:3000/getAllTasks/"+schoolId).success(function (response) {
                 resolve(response);
             });
         });
