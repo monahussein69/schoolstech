@@ -77,6 +77,7 @@ angular.module('MetronicApp').controller('AddTaskController',
                     $window.location.href = '#/Tasks';
                     toastr.success(response.msg);
                     model.added = 1;
+                    model.taskObj = response.result;
                 } else {
                     toastr.error(response.msg);
                 }

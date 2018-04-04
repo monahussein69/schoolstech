@@ -36,6 +36,7 @@ var taskMethods = {
                                response.success = true;
                                response.msg = 'تم الحفظ بنجاح';
                                response.insertId = task.id;
+                               response.result = task;
                                callback(response);
                            })
                        } else{
@@ -44,6 +45,7 @@ var taskMethods = {
                                response.success = true;
                                response.msg = 'تم الحفظ بنجاح';
                                response.insertId = task.id;
+                               response.result = task;
                                callback(response);
                            });
 
