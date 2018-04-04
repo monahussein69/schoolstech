@@ -873,6 +873,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
                             '../assets/pages/scripts/components-date-time-pickers.min.js',
 
+
+
                             'js/controllers/Tasks/TasksController.js',
                             '../assets/bower_components/moment/moment.js',
                             'js/services/EmployeesFactory.js',
@@ -884,6 +886,46 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             }
         })
 
+
+
+        .state('Master.addTaskMember', {
+            url: "/addTaskMember/:taskId/:subTaskId",
+            templateUrl: "views/tasks/addTaskMemeber.html",
+            data: {pageTitle: 'اضافة فريق العمل'},
+            controller: "TaskMembersController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/clockface/css/clockface.css',
+                            '../assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
+                            '../assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css',
+                            '../assets/global/plugins/bootstrap-colorpicker/css/colorpicker.css',
+                            '../assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css',
+                            '../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+                            '../assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js',
+                            '../assets/global/plugins/clockface/js/clockface.js',
+                            '../assets/global/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js',
+                            '../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
+                            '../assets/pages/scripts/components-date-time-pickers.min.js',
+
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+
+                            'js/controllers/Tasks/TasksController.js',
+                            '../assets/bower_components/moment/moment.js',
+                            'js/services/EmployeesFactory.js',
+                            'js/services/taskFactory.js',
+
+                        ]
+                    });
+                }]
+            }
+        })
 
         // Blank Page
         .state('Master.blank', {
