@@ -338,7 +338,7 @@ angular.module('MetronicApp').controller('TaskMembersController',
 
 
 angular.module('MetronicApp').controller('ManageSubTaskController',
-    function ($stateParams,$compile,DTOptionsBuilder, DTColumnBuilder,$q,$moment,$rootScope, $scope, $http, $window,subTaskService, localStorageService,toastr) {
+    function ($stateParams,$compile,DTOptionsBuilder, DTColumnBuilder,$q,$moment,$uibModal,$rootScope, $scope, $http, $window,subTaskService, localStorageService,toastr) {
 
         var taskId = $stateParams.taskId;
         var userObject = localStorageService.get('UserObject');
@@ -350,6 +350,7 @@ angular.module('MetronicApp').controller('ManageSubTaskController',
         var model = {
             tasks:[],
             taskId:taskId,
+            viewStudentsTask:viewStudentsTask,
             deleteSubTask:deleteSubTask,
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
@@ -408,9 +409,28 @@ angular.module('MetronicApp').controller('ManageSubTaskController',
 
         function stdTaskHtml(data, type, full, meta) {
             return ''+
-                '<a href="javascript:;">'+
+                '<a href="javascript:;" ng-click="model.viewStudentsTask('+data.id+')">'+
                 '&nbsp; عرض الطلاب </a>';
 
+        }
+
+        function viewStudentsTask(subTaskId) {
+            var dialogInst = $uibModal.open({
+                templateUrl: 'views/tasks/viewStudentsTask.html',
+                controller: 'StudentTaskDialogCtrl',
+                size: 'md',
+                resolve: {
+                    subTaskId: function () {
+                        return subTaskId;
+                    },
+
+                }
+            });
+            dialogInst.result.then(function (result) {
+            }, function () {
+                console.log('close');
+                //$log.info('Modal dismissed at: ' + new Date());
+            });
         }
 
         function actionsHtml(data, type, full, meta) {
@@ -596,3 +616,66 @@ angular.module('MetronicApp').controller('addTaskStudentsController',
             $rootScope.settings.layout.pageSidebarClosed = false;
         });
     });
+
+
+angular.module('MetronicApp').controller('StudentTaskDialogCtrl', function ($compile,DTOptionsBuilder, DTColumnBuilder,$q,toastr, studentTaskService, $moment, $scope, $uibModalInstance, subTaskId, $log) {
+
+
+    var model = {
+        studentsTask : [],
+        deleteStudentTask:deleteStudentTask,
+        options: DTOptionsBuilder.fromFnPromise(function () {
+            var defer = $q.defer();
+            studentTaskService.getAllStudentTask(subTaskId).then(function (students) {
+                model.studentsTask = students;
+                defer.resolve(students);
+                $scope.$apply();
+            });
+
+
+            return defer.promise
+        }).withOption('createdRow', createdRow),
+        columns: [
+
+            DTColumnBuilder.newColumn('student_name').withTitle('اسم الطالب'),
+            DTColumnBuilder.newColumn(null).withTitle('العمليات').notSortable()
+                .renderWith(actionsHtml)
+
+        ],
+        dtInstance: {},
+    }
+
+    $scope.model = model;
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+
+    function createdRow(row, data, dataIndex) {
+        // Recompiling so we can bind Angular directive to the DT
+        $compile(angular.element(row).contents())($scope);
+    }
+
+    function actionsHtml(data, type, full, meta) {
+
+        return ''+
+            '<a href="javascript:;" ng-confirm-click="هل تريد تأكيد حذف الطالب ؟  " confirmed-click="model.deleteStudentTask('+data.Id+')">'+
+            '<i class="fa fa-trash"></i>&nbsp; حذف </a>';
+
+    }
+
+    function deleteStudentTask(id){
+        studentTaskService.deleteStudentTask(id, function (response) {
+            if (response.success) {
+                model.dtInstance.reloadData();
+
+                toastr.success(response.msg);
+            } else {
+                toastr.error(response.msg);
+            }
+
+        });
+    }
+
+});

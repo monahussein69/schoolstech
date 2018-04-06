@@ -939,6 +939,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             'js/controllers/Tasks/TasksController.js',
                             '../assets/bower_components/moment/moment.js',
                             'js/services/subTaskFactory.js',
+                            'js/services/studentTaskFactory.js',
                             '../assets/global/plugins/datatables/datatables.min.css',
                             '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
                             '../assets/global/plugins/datatables/datatables.all.min.js',
