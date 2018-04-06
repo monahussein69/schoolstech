@@ -877,6 +877,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
 
                             'js/controllers/Tasks/TasksController.js',
                             '../assets/bower_components/moment/moment.js',
+                            'js/services/taskStatusFactory.js',
                             'js/services/EmployeesFactory.js',
                             'js/services/taskFactory.js',
 
@@ -911,16 +912,84 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
                             '../assets/pages/scripts/components-date-time-pickers.min.js',
 
+                            'js/controllers/Tasks/TasksController.js',
+                            '../assets/bower_components/moment/moment.js',
+                            'js/services/taskStatusFactory.js',
+                            'js/services/EmployeesFactory.js',
+                            'js/services/taskFactory.js',
+                            'js/services/subTaskFactory.js',
+
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.subTasks', {
+            url: "/subTasks/:taskId",
+            templateUrl: "views/tasks/subTasks.html",
+            data: {pageTitle: ' اداره المهام'},
+            controller: "ManageSubTaskController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/Tasks/TasksController.js',
+                            '../assets/bower_components/moment/moment.js',
+                            'js/services/subTaskFactory.js',
                             '../assets/global/plugins/datatables/datatables.min.css',
                             '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
                             '../assets/global/plugins/datatables/datatables.all.min.js',
                             '../assets/pages/scripts/table-datatables-managed.min.js',
+                        ]
+                    });
+                }]
+            }
+        })
 
+        .state('Master.addTaskStudents', {
+            url: "/addTaskStudents/:subTaskId/:taskId",
+            templateUrl: "views/tasks/addTaskStudent.html",
+            data: {pageTitle: ' اداره مهام الطلاب'},
+            controller: "addTaskStudentsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
                             'js/controllers/Tasks/TasksController.js',
-                            '../assets/bower_components/moment/moment.js',
-                            'js/services/EmployeesFactory.js',
-                            'js/services/taskFactory.js',
+                            'js/services/StudentsService.js',
+                            'js/services/studentTaskFactory.js',
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                        ]
+                    });
+                }]
+            }
+        })
 
+        .state('Master.manageTaskStatus', {
+            url: "/manageTaskStatus",
+            templateUrl: "views/settings/taskStatus.html",
+            data: {pageTitle: ' اداره حاله المهمه'},
+            controller: "taskStatusSettingsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/Settings/taskStatusSettingsController.js',
+                            'js/services/taskStatusFactory.js',
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
                         ]
                     });
                 }]

@@ -90,5 +90,33 @@ const sequelizeConfig = {
         Task_Evaluation:Sequelize.STRING,
         buildTaskMember:Sequelize.INTEGER
     }),
+    subtasksTable:sequelize.define('sch_att_subtasks', {
+        id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        Task_id: Sequelize.INTEGER,
+        SUBTask_Tittle: Sequelize.STRING,
+        Member_Emp_id: Sequelize.INTEGER,
+        SUBTask_InOut_Type: Sequelize.INTEGER,
+        SUBTask_Place:Sequelize.STRING,
+        Start_Date:Sequelize.STRING,
+        start_time:Sequelize.STRING,
+        End_Date:Sequelize.STRING,
+        End_time:Sequelize.STRING,
+        Departure_time:Sequelize.STRING,
+        Return_time:Sequelize.STRING,
+        AceualReturn_time:Sequelize.STRING,
+        SUBTask_Staus:Sequelize.INTEGER,
+        SUBTask_Description:Sequelize.STRING,
+    }),
+    taskStatusTable:sequelize.define('app_def_taskstatus', {
+        Id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        Status_Codee: Sequelize.STRING,
+        Name: Sequelize.STRING
+    }),
+    studenttasksTable:sequelize.define('sch_att_studenttasks', {
+        Id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        SubTask_Id: Sequelize.INTEGER,
+        Serial_No: Sequelize.INTEGER,
+        Student_Id: Sequelize.INTEGER
+    }),
 }
 module.exports = sequelizeConfig;

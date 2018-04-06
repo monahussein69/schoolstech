@@ -7,11 +7,15 @@
             <i class="fa fa-angle-left"></i>
         </li>
         <li>
-            <a ui-sref="Master.tasks">ادارة المهام</a>
+            <a ui-sref="Master.tasks">ادارة الهام</a>
+            <i class="fa fa-angle-left"></i>
+        </li>
+        <li>
+            <a ui-sref="#">ادارة فريق العمل</a>
         </li>
     </ul>
 </div>
-<h3 class="page-title"> ادارة المهام </h3>
+<h3 class="page-title"> ادارة فريق العمل </h3>
 <!-- END PAGE HEADER-->
 <!-- BEGIN MAIN CONTENT -->
 <div class="row">
@@ -21,7 +25,7 @@
             <div class="portlet-title">
                 <div class="caption font-dark">
                     <i class="icon-graduation font-dark"></i>
-                    <span class="caption-subject bold uppercase"> المهام</span>
+                    <span class="caption-subject bold uppercase"> فريق العمل</span>
                 </div>
             </div>
             <div class="portlet-body">
@@ -29,7 +33,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="btn-group">
-                                <a ui-sref="Master.addTask" id="sample_editable_1_new" class="btn sbold green">
+                                <a ui-sref="Master.addTaskMember({taskId:{{model.taskId}} })" id="sample_editable_1_new" class="btn sbold green">
                                     <i class="fa fa-plus"></i> جديد </a>
                             </div>
                         </div>

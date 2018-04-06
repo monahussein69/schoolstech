@@ -8,7 +8,7 @@ var taskMethods = {
     getTask:function(req,res,callback){
         var taskId = req.params.taskId;
 
-        con.query('select sch_att_tasks.*,app_def_calender.Date as CurrentDate  from sch_att_tasks join app_def_calender on app_def_calender.Id = sch_att_tasks.Calender_id where id = ?',[taskId],function(err,result){
+        con.query('select sch_att_tasks.*,app_def_calender.Date as CurrentDate  from sch_att_tasks join app_def_calender on app_def_calender.Id = sch_att_tasks.Calender_id where sch_att_tasks.id = ?',[taskId],function(err,result){
             callback(result);
         });
 
@@ -83,13 +83,14 @@ var taskMethods = {
     },
     getAllTasks:function(req,res,callback){
         var schoolId = req.params.schoolId;
-        con.query('select sch_att_tasks.*,sch_str_employees.name as supervisor_name from sch_att_tasks join sch_str_employees on sch_str_employees.id = sch_att_tasks.Suppervisor_Emp_id where school_id = ?',[schoolId],function(err,result){
-         callback(result);
+        var query = con.query('select sch_att_tasks.*,sch_str_employees.name as supervisor_name,app_def_taskstatus.Name as status_name from sch_att_tasks join sch_str_employees on sch_str_employees.id = sch_att_tasks.Suppervisor_Emp_id join app_def_taskstatus on app_def_taskstatus.Id = sch_att_tasks.Task_Staus where sch_att_tasks.school_id = ?',[schoolId],function(err,result){
+            console.log(query.sql);
+            callback(result);
         });
     },
     getTaskByEmpId:function(req,res,callback){
         var empId = req.body.empId;
-        con.query('select sch_att_tasks.*,sch_str_employees.name as supervisor_name from sch_att_tasks join sch_str_employees on sch_str_employees.id = sch_att_tasks.Suppervisor_Emp_id where Suppervisor_Emp_id =?',[empId],function(err,result){
+        con.query('select sch_att_tasks.*,sch_str_employees.name as supervisor_name,app_def_taskstatus.Name as status_name from sch_att_tasks join sch_str_employees on sch_str_employees.id = sch_att_tasks.Suppervisor_Emp_id join app_def_taskstatus on app_def_taskstatus.Id = sch_att_tasks.Task_Staus where Suppervisor_Emp_id =?',[empId],function(err,result){
             callback(result);
         });
     }
