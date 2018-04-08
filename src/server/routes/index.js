@@ -21,6 +21,7 @@ var taskMethods = require('../model/tasks.js');
 var subTaskMethods = require('../model/subTask.js');
 var taskStatusMethods = require('../model/taskStatus.js');
 var studentTaskMethods = require('../model/studentTask.js');
+var studentGroupsMethods = require('../model/studentGroups.js');
 
 var app = express();
 var multer = require('multer');
@@ -201,6 +202,12 @@ router.get('/getLectursTable/:schoolId', function (req, res, next) {
 });
 router.get('/getAllStudents/:schoolId', function (req, res, next) {
     studentsMethods.getAllStudents(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllStudentsByGroup/:schoolId/:group', function (req, res, next) {
+    studentsMethods.getAllStudentsByGroup(req, res, function (result) {
         res.send(result);
     });
 });
@@ -605,6 +612,12 @@ router.post('/sendAbsentRequest/', function (req, res, next) {
 
 router.get('/getAllSettingsProfiles/:schoolId', function (req, res, next) {
     workingSettingsMethods.getAllSettingsProfiles(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllStudentsGroups/:schoolId', function (req, res, next) {
+    studentGroupsMethods.getAllStudentsGroups(req, res, function (result) {
         res.send(result);
     });
 });

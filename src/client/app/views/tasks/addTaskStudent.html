@@ -30,7 +30,7 @@
                         <div class="col-md-8">
                             <form class="form-inline" name="filterStudentsForm" ng-model="filterStudentsForm" ng-submit="model.getStudents()">
                                 <div class="form-group mb-2">
-                                    <select ng-model="model.filterType" class="form-control">
+                                    <select ng-model="model.filterType" class="form-control" ng-options="group.group_num as group.group_num for group in model.groups" ng-change="model.getStudentsBasedGroup()">
                                         <option value="all">عرض الكل</option>
                                     </select>
                                 </div>

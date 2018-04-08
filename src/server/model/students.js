@@ -212,7 +212,15 @@ var studentsMethods = {
                                                         Academic_No: allCells[counter].student_number
                                                     }).then(function () {
                                                         resolve(student.student_id);
-                                                    })
+                                                    });
+                                                    var student_number = allCells[counter].student_number;
+                                                    var group_num = student_number.toString().substring(0, 2);
+                                                    sequelizeConfig.studentgroupsTable.findOrCreate({
+                                                        where: {group_num: group_num},
+                                                        defaults: {schoolId: schoolId,group_num:group_num}
+                                                    }).then(group => {
+                                                        resolve(group.id);
+                                                    });
                                                 } else {
                                                     console.log('New Name', allCells[counter].student_name);
                                                     sequelizeConfig.studentTable.create({
@@ -253,6 +261,18 @@ var studentsMethods = {
     getAllStudents: function (req, res, callback) {
         var schoolId = req.params.schoolId;
         con.query('SELECT * FROM sch_str_student where School_Id = ?', [schoolId], function (err, result) {
+                if (err)
+                    throw err
+
+                callback(result);
+            }
+        );
+    },
+
+    getAllStudentsByGroup: function (req, res, callback) {
+        var schoolId = req.params.schoolId;
+        var group = req.params.group+'%';
+        con.query("SELECT * FROM sch_str_student where School_Id = ? and Academic_No like ?", [schoolId,group], function (err, result) {
                 if (err)
                     throw err
 

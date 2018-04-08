@@ -117,6 +117,10 @@ const sequelizeConfig = {
         SubTask_Id: Sequelize.INTEGER,
         Serial_No: Sequelize.INTEGER,
         Student_Id: Sequelize.INTEGER
+    }),studentgroupsTable:sequelize.define('sch_str_student_groups', {
+        id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        group_num: Sequelize.INTEGER,
+        schoolId: Sequelize.INTEGER,
     }),
 }
 module.exports = sequelizeConfig;

@@ -515,7 +515,9 @@ angular.module('MetronicApp').controller('addTaskStudentsController',
             toggleAll : toggleAll,
             toggleOne : toggleOne,
             filterType:'all',
+            getStudentsBasedGroup:getStudentsBasedGroup,
             ids:[],
+            groups : [],
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                     StudentsService.getAllStudents(schoolId).then(function (students) {
@@ -544,6 +546,23 @@ angular.module('MetronicApp').controller('addTaskStudentsController',
         };
 
         $scope.model = model;
+
+        StudentsService.getAllStudentsGroups(schoolId).then(function (groups) {
+            model.groups = groups;
+            $scope.$apply();
+        });
+
+        function getStudentsBasedGroup(){
+            var group = model.filterType;
+            var defer = $q.defer();
+            StudentsService.getAllStudentsByGroup(group,schoolId).then(function (students) {
+                model.students = students;
+                defer.resolve(students);
+                model.dtInstance.changeData(defer.promise);
+                $scope.$apply();
+            });
+        }
+
         function createdRow(row, data, dataIndex) {
             // Recompiling so we can bind Angular directive to the DT
             $compile(angular.element(row).contents())($scope);
