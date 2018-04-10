@@ -7,7 +7,6 @@ let config = {
 };
 let con;
 
-
 function handleDisconnect() {
     con = mysql.createConnection(config); // Recreate the connection, since
     // the old one cannot be reused.

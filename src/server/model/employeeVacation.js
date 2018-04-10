@@ -5,9 +5,10 @@ var appSettingsMethods = require('../model/appSettings.js');
 var employeesVacationMethods = {
 
     sendAbsentRequest: function (req, res, callback) {
+        console.log('sendAbsentRequest : ' , req.body);
         var AbsentObj = req.body.AbsentObj;
-        //var current_date = moment().format('MM-DD-YYYY');
-        var current_date = '03-18-2018';
+        var current_date = moment().format('MM-DD-YYYY');
+        // var current_date = '03-18-2018';
 
         var response = {};
         req.body.date = current_date;
@@ -17,7 +18,7 @@ var employeesVacationMethods = {
                 AbsentObj.Calender_id = calendarObj.Id;
                 var query = con.query('insert into sch_att_empvacation set ?',
                     [AbsentObj], function (err, result) {
-                    console.log(query.sql);
+                        console.log(query.sql);
                         if (err)
                             throw err
 
