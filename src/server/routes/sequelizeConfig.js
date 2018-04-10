@@ -121,6 +121,25 @@ const sequelizeConfig = {
         id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
         group_num: Sequelize.INTEGER,
         schoolId: Sequelize.INTEGER,
+    }),actionsTable:sequelize.define('app_def_actions', {
+        Id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        action_name: Sequelize.STRING,
+        action_type: Sequelize.INTEGER,
+        action_body: Sequelize.STRING,
+        Descripton: Sequelize.STRING,
+        teacher_reply_body: Sequelize.STRING,
+        leader_reply_body: Sequelize.STRING,
+    })
+    ,takenActionsTable:sequelize.define('sch_att_takenaction', {
+        id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        Calender_id: Sequelize.INTEGER,
+        School_id: Sequelize.INTEGER,
+        ACTION_id: Sequelize.INTEGER,
+        Emp_id: Sequelize.INTEGER,
+        ACTION_Status: Sequelize.STRING,
+        TAKEN_BY: Sequelize.INTEGER,
+        ACTION_body: Sequelize.STRING,
+        issue_date: Sequelize.INTEGER,
     }),
 }
 module.exports = sequelizeConfig;

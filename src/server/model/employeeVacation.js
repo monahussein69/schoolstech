@@ -43,6 +43,14 @@ var employeesVacationMethods = {
         });
 
     },
+    getLastEmployeeVaction:function(req,res,callback){
+        var emp_id = req.params.emp_id;
+        var query = con.query('select * from sch_att_empvacation where Emp_id = ? order by id desc limit 1',[emp_id], function (err, result) {
+            if (err)
+                throw err
+            callback(result);
+        });
+    }
 }
 
 module.exports = employeesVacationMethods;

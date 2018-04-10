@@ -4,6 +4,7 @@ var workingSettingsMethods = require('../model/schedualProfile.js');
 var appSettingsMethods = require('../model/appSettings.js');
 var attScheduleMethods = require('../model/sch_att_schedule.js');
 var employeesVacationMethods = require('../model/employeeVacation.js');
+var takenActionsMethods = require('../model/takenActions.js');
 
 var employeesAttendanceMethods = {
 
@@ -400,6 +401,7 @@ var employeesAttendanceMethods = {
                                             var d = moment.duration(ms);
                                             var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
                                             attendanceObj.late_min = hours;
+
                                         }
                                     }
 
@@ -580,6 +582,11 @@ var employeesAttendanceMethods = {
                                         var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
                                         attendanceObj.late_min = hours;
                                     }
+                                    if(attendanceObj.late_min){
+                                        req.body.actionType = 'تنبيه على تأخر /انصراف';
+                                        takenActionsMethods.sendActionToEmp(req,res,callback);
+                                    }
+                                    employeesAttendanceMethods.checkEmployeeVacation(req,res,function(result){});
                                 }else if(attendanceObj.is_absent == 2){
                                     var ending_time = moment(attendanceObj.Ending_Time, 'HH:mm').format('HH:mm');
                                     //var current_time = moment().format('HH:mm');
@@ -708,7 +715,18 @@ var employeesAttendanceMethods = {
     },
 
 
-
+  checkEmployeeVacation:function(req,res,callback){
+      req.params.emp_id = req.body.employee_id;
+      var current_date = req.body.current_date;
+      employeesVacationMethods.getLastEmployeeVaction(req,res,function(response){
+          var VacationEndDate = response[0].End_Date;
+          var VacationEndDateplus = moment(VacationEndDate, "MM-DD-YYYY").add(1, 'days');;
+          if(current_date == VacationEndDateplus){
+              req.body.actionType = 'مساءله غياب';
+              takenActionsMethods.sendActionToEmp(req,res,callback);
+          }
+      });
+  },
 
 };
 
