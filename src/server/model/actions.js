@@ -3,10 +3,7 @@ var sequelizeConfig = require('../routes/sequelizeConfig.js');
 var moment = require('moment');
 
 var actionsMethods = {
-
-    getActionByName:function(req,res,callback){
-        var actionName = req.params.actionName;
-
+    getActionByName:function(actionName,callback){
         sequelizeConfig.actionsTable.find({where: {action_name: actionName}}).then(function (action) {
             callback(action);
         });
@@ -16,4 +13,4 @@ var actionsMethods = {
 
 
 
-module.exports = taskMethods;
+module.exports = actionsMethods;

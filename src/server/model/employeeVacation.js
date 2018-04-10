@@ -5,7 +5,7 @@ var appSettingsMethods = require('../model/appSettings.js');
 var employeesVacationMethods = {
 
     sendAbsentRequest: function (req, res, callback) {
-        console.log('sendAbsentRequest : ' , req.body);
+        console.log('sendAbsentRequest : ', req.body);
         var AbsentObj = req.body.AbsentObj;
         var current_date = moment().format('MM-DD-YYYY');
         // var current_date = '03-18-2018';
@@ -44,9 +44,8 @@ var employeesVacationMethods = {
         });
 
     },
-    getLastEmployeeVaction:function(req,res,callback){
-        var emp_id = req.params.emp_id;
-        var query = con.query('select * from sch_att_empvacation where Emp_id = ? order by id desc limit 1',[emp_id], function (err, result) {
+    getLastEmployeeVaction: function (emp_id, callback) {
+        var query = con.query('select * from sch_att_empvacation where Emp_id = ? order by id desc limit 1', [emp_id], function (err, result) {
             if (err)
                 throw err
             callback(result);

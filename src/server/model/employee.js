@@ -229,6 +229,20 @@ var employeeMethods = {
         );
     },
 
+    getEmployeeForActions: function (employee_id, callback) {
+
+        con.query('select sch_str_employees.* , sch_school.name as school_name , job_title.name as job_name from sch_str_employees ' +
+            'join sch_school on sch_str_employees.school_id = sch_school.id' +
+            ' join job_title on sch_str_employees.jobtitle_id = job_title.id' +
+            ' where sch_str_employees.id = ?', [employee_id], function (err, result) {
+                if (err)
+                    throw err
+
+                callback(result);
+            }
+        );
+    },
+
     getEmployeeByUserId: function (req, res, callback) {
         var userId = req.params.userId;
         con.query('select * from sch_str_employees where userId = ?', [userId], function (err, result) {
@@ -315,13 +329,13 @@ var employeeMethods = {
                                                 if (data.job_no) {
                                                     finalEmployees.push(data);
                                                 }
-                                               /* req.body.empData = data;
+                                                /* req.body.empData = data;
 
-                                                employeeMethods.saveEmployee(req, res, function (result) {
-                                                    if (result.success) {
-                                                        finalEmployees.push(data);
-                                                    }
-                                                });*/
+                                                 employeeMethods.saveEmployee(req, res, function (result) {
+                                                     if (result.success) {
+                                                         finalEmployees.push(data);
+                                                     }
+                                                 });*/
 
                                             }
                                         } else {
@@ -446,8 +460,8 @@ var employeeMethods = {
                             console.log(finalEmployees);
 
 
-                            var requests = finalEmployees.map(function(item) {
-                                return new Promise(function(resolve) {
+                            var requests = finalEmployees.map(function (item) {
+                                return new Promise(function (resolve) {
                                     req.body.empData = item;
                                     employeeMethods.saveEmployee(req, res, function (result) {
                                         if (result.success) {
@@ -502,8 +516,6 @@ var employeeMethods = {
 
                                 callback(response);
                             });
-
-
 
 
                             //callback(finalEmployees);
@@ -602,19 +614,19 @@ var employeeMethods = {
     },
 
     getActivityByEmployeeId: function (req, res, callback) {
-         var currentDay = employeeMethods.getArabicDay(new Date(req.body.date).getDay());
+        var currentDay = employeeMethods.getArabicDay(new Date(req.body.date).getDay());
         var currentDay1 = currentDay;
-        if(currentDay ==  'الاحد'){
+        if (currentDay == 'الاحد') {
             currentDay1 = 'الأحد';
         }
-        if(currentDay ==  'الاثنين'){
+        if (currentDay == 'الاثنين') {
             currentDay1 = 'الأثنين';
         }
-        if(currentDay ==  'الاربعاء'){
+        if (currentDay == 'الاربعاء') {
             currentDay1 = 'الأربعاء';
         }
         var employeeId = req.body.employeeId;
-        var query = con.query('SELECT * FROM sch_acd_lectures JOIN sch_acd_lecturestables ON sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO WHERE sch_acd_lecturestables.Teacher_Id = ? AND (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) ', [employeeId, currentDay,currentDay1], function (err, result) {
+        var query = con.query('SELECT * FROM sch_acd_lectures JOIN sch_acd_lecturestables ON sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO WHERE sch_acd_lecturestables.Teacher_Id = ? AND (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) ', [employeeId, currentDay, currentDay1], function (err, result) {
                 console.log(query.sql);
                 if (err)
                     throw err
