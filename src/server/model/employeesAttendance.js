@@ -36,7 +36,7 @@ var employeesAttendanceMethods = {
                 }
 
                 if (breaks.indexOf(lecture_name) > -1) {
-                    var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date,sch_att_empvacation.Start_Date as vacation_date from sch_str_employees  left join sch_att_empatt  on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Event_Name = ?) left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id where (sch_att_empatt.Event_Name = ? or sch_att_empatt.Event_Name IS NULL ) and sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL) order by main_employee_id asc', [lecture_name, lecture_name, schoolId, calendarId], function (err, result) {
+                    var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date,sch_att_empvacation.Start_Date as vacation_date from sch_str_employees  left join sch_att_empatt  on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Event_Name = ?) left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id where (sch_att_empatt.Event_Name = ? or sch_att_empatt.Event_Name IS NULL ) and sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL) order by sch_str_employees.name asc', [lecture_name, lecture_name, schoolId, calendarId], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err
@@ -51,7 +51,7 @@ var employeesAttendanceMethods = {
                         ' on (sch_att_empatt.Calender_id = ? and sch_str_employees.id = sch_att_empatt.employee_id and sch_acd_lectures.name = sch_att_empatt.Event_Name)' +
                         'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id ' +
                         'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id ' +
-                        'where sch_acd_lectures.name = ? and (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) and sch_str_employees.school_id = ? group by main_employee_id', [calendarId, lecture_name, currentDay, currentDay1, schoolId], function (err, result) {
+                        'where sch_acd_lectures.name = ? and (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) and sch_str_employees.school_id = ? group by main_employee_id order by sch_str_employees.name asc', [calendarId, lecture_name, currentDay, currentDay1, schoolId], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err
@@ -78,7 +78,7 @@ var employeesAttendanceMethods = {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
                 var schoolId = req.params.schoolId;
-                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date , emp_vacation.Start_Date as vacation_date_start ,emp_vacation.End_Date as vacation_date_end from sch_str_employees left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join (SELECT s1.* FROM sch_att_empvacation as s1 LEFT JOIN sch_att_empvacation AS s2 ON s1.Emp_id = s2.Emp_id AND s1.Start_Date < s2.Start_Date WHERE s2.Emp_id IS NULL) as emp_vacation on emp_vacation.Emp_id = sch_str_employees.id where sch_str_employees.school_id = ?  group by main_employee_id', [calendarId, schoolId], function (err, result) {
+                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date , emp_vacation.Start_Date as vacation_date_start ,emp_vacation.End_Date as vacation_date_end from sch_str_employees left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join (SELECT s1.* FROM sch_att_empvacation as s1 LEFT JOIN sch_att_empvacation AS s2 ON s1.Emp_id = s2.Emp_id AND s1.Start_Date < s2.Start_Date WHERE s2.Emp_id IS NULL) as emp_vacation on emp_vacation.Emp_id = sch_str_employees.id where sch_str_employees.school_id = ?  group by main_employee_id order by sch_str_employees.name asc', [calendarId, schoolId], function (err, result) {
                         console.log(query.sql);
                         if (err)
                             throw err
@@ -105,7 +105,8 @@ var employeesAttendanceMethods = {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
                 var schoolId = req.body.schoolId;
-                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date , emp_vacation.Start_Date as vacation_date_start ,emp_vacation.End_Date as vacation_date_end from sch_str_employees left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join (SELECT s1.* FROM sch_att_empvacation as s1 LEFT JOIN sch_att_empvacation AS s2 ON s1.Emp_id = s2.Emp_id AND s1.Start_Date < s2.Start_Date WHERE s2.Emp_id IS NULL) as emp_vacation on emp_vacation.Emp_id = sch_str_employees.id where sch_str_employees.school_id = ?  group by main_employee_id', [calendarId, schoolId], function (err, result) {
+                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date , emp_vacation.Start_Date as vacation_date_start ,emp_vacation.End_Date as vacation_date_end from sch_str_employees ' +
+                    'left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join (SELECT s1.* FROM sch_att_empvacation as s1 LEFT JOIN sch_att_empvacation AS s2 ON s1.Emp_id = s2.Emp_id AND s1.Start_Date < s2.Start_Date WHERE s2.Emp_id IS NULL) as emp_vacation on emp_vacation.Emp_id = sch_str_employees.id where sch_str_employees.school_id = ?  group by main_employee_id order by sch_str_employees.name ASC', [calendarId, schoolId], function (err, result) {
                         console.log(query.sql);
                         if (err)
                             throw err

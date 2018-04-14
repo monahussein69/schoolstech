@@ -444,7 +444,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js',
                             '../assets/global/plugins/clockface/js/clockface.js',
                             '../assets/global/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js',
-                            '../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
+                            '../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js',
 
                             '../assets/pages/scripts/components-date-time-pickers.min.js',
 

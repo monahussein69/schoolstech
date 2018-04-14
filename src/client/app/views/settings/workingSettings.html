@@ -41,7 +41,7 @@
                             <label class="col-sm-2 control-label"> بدايه الطابور </label>
                             <div class="col-sm-8">
                                 <div class="col-md-6" style="padding: 0px">
-                                    <input type="text" class="form-control timepicker timepicker-24 " ng-model="model.working_settingsObj.queue_Begining" /> </div>
+                                    <input type="text" class="form-control timepicker timepicker-no-seconds " data-minute-step="1" ng-model="model.working_settingsObj.queue_Begining" /> </div>
                                 <div class="col-md-6" style="padding: 0px">
                                     <label class="col-sm-3 control-label"> الزمن </label>
                                     <div class="col-sm-9" style="padding: 0px">
@@ -63,7 +63,7 @@
                         </div>
                     </fieldset>
                     <fieldset>
-                        <legend>اعدادات الاستراحه </legend>
+                        <legend>اعدادات الاستراحه</legend>
                         <div class="form-group row">
                             <label class="col-sm-2 control-label">الاستراحه </label>
                             <div class="col-sm-8">
@@ -95,7 +95,7 @@
                                         <label class="col-sm-5 control-label"> بعد الحصه </label>
                                         <div class="col-sm-7" style="padding: 0px">
                                             <select class="form-control" ng-options="o as o for o in model.lectures" ng-model="model.working_settingsObj.First_Break_Order">
-                                                <option value=""> اختر الحصه </option>
+                                                <option value=""> اختر الحصه</option>
                                             </select>
                                         </div>
                                     </div>
@@ -114,7 +114,7 @@
                                         <label class="col-sm-5 control-label"> بعد الحصه </label>
                                         <div class="col-sm-7" style="padding: 0px">
                                             <select ng-model="model.working_settingsObj.Second_Break_Order" class="form-control" ng-options="o as o for o in model.lectures" ng-model="model.working_settingsObj.space_lect">
-                                                <option value=""> اختر الحصه </option>
+                                                <option value=""> اختر الحصه</option>
                                             </select>
                                         </div>
                                     </div>
@@ -128,7 +128,7 @@
                                     <input type="text" class="form-control" placeholder="الزمن" ng-model="model.working_settingsObj.Pray_Break_Duration" /> </div>
                                 <div class="col-md-6">
                                     <select class="form-control" ng-options="o as o for o in model.lectures" ng-model="model.working_settingsObj.Pray_Break_Order">
-                                        <option value=""> اختر بعد الحصه </option>
+                                        <option value=""> اختر بعد الحصه</option>
                                     </select>
                                 </div>
                             </div>
@@ -173,14 +173,14 @@
                                     <input type="text" class="form-control" placeholder="الزمن" ng-model="model.working_settingsObj.Activity_Period_Duration" /> </div>
                                 <div class="col-md-6">
                                     <select class="form-control" ng-options="o as o for o in model.lectures" ng-model="model.working_settingsObj.Activity_Period_Order">
-                                        <option value=""> اختر بعد الحصه </option>
+                                        <option value=""> اختر بعد الحصه</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                     </fieldset>
-                    <button class="btn btn-primary" type="button" ng-disabled="schoolSettingsForm.$invalid" ng-click="model.saveWorkingSettings('normal')">حفظ</button>
-                    <button class="btn btn-primary" type="button" ng-disabled="schoolSettingsForm.$invalid" ng-click="model.saveWorkingSettings('new')">حفظ باسم</button>
+                    <button class="btn btn-primary" type="button" ng-disabled="schoolSettingsForm.$invalid" ng-click="model.saveWorkingSettings('normal')">حفظ </button>
+                    <button class="btn btn-primary" type="button" ng-disabled="schoolSettingsForm.$invalid" ng-click="model.saveWorkingSettings('new')">حفظ باسم </button>
                     <button class="btn btn-danger">الغاء</button>
                 </div>
             </div>

@@ -141,5 +141,26 @@ const sequelizeConfig = {
         ACTION_body: Sequelize.STRING,
         issue_date: Sequelize.INTEGER,
     }),
+    employeeAttandaceTable:sequelize.define('sch_att_empatt', {
+        id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        Calender_id: Sequelize.INTEGER,
+        school_id: Sequelize.INTEGER,
+        employee_id: Sequelize.INTEGER,
+        serial_no: Sequelize.INTEGER,
+        Event_type_id: Sequelize.INTEGER,
+        Event_Name: Sequelize.STRING,
+        time_in: Sequelize.STRING,
+        time_out: Sequelize.STRING,
+        late_min: Sequelize.STRING,
+        short_min: Sequelize.STRING,
+        is_absent: Sequelize.INTEGER,
+        Total_min: Sequelize.STRING,
+        is_excused: Sequelize.INTEGER,
+        on_vacation: Sequelize.INTEGER,
+        on_task: Sequelize.INTEGER,
+        working_status: Sequelize.STRING,
+        entered_by: Sequelize.INTEGER,
+        entery_date: Sequelize.STRING,
+    })
 }
 module.exports = sequelizeConfig;
