@@ -997,6 +997,24 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             }
         })
 
+        .state('Master.Attention', {
+            url: "/lateAttention",
+            templateUrl: "views/actions/lateAction.html",
+            data: {pageTitle: 'تنبيه على تأخر/ انصراف'},
+            controller: "actionsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/Actions/actionsController.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
         // Blank Page
         .state('Master.blank', {
             url: "/blank",

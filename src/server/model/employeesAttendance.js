@@ -4,6 +4,7 @@ var workingSettingsMethods = require('../model/schedualProfile.js');
 var appSettingsMethods = require('../model/appSettings.js');
 var attScheduleMethods = require('../model/sch_att_schedule.js');
 var employeesVacationMethods = require('../model/employeeVacation.js');
+var sequelizeConfig = require('../routes/sequelizeConfig.js');
 
 var employeesAttendanceMethods = {
 
@@ -544,10 +545,11 @@ var employeesAttendanceMethods = {
         var attendanceObj = req.body.attendanceObj;
         req.params.SchoolId = attendanceObj.school_id;
         var response = {};
-        attendanceObj.late_min = '';
+        //attendanceObj.late_min = '';
 
         var current_date = moment(attendanceObj.Attendance_Day).format('MM-DD-YYYY');
         req.body.date = current_date;
+
         //req.body.date = '03-18-2018';
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {
@@ -561,42 +563,42 @@ var employeesAttendanceMethods = {
                         req.body.eventname = attendanceObj.Event_Name;
                         req.body.SCHEDULE_Id = schoolProfile.Id;
                         attScheduleMethods.getAttScheduleByEventNameAndDay(req, res, function (result) {
-                            console.log(result);
+
                             if (Object.keys(result).length) {
                                 attendanceObj.Event_type_id = result[0].Id;
-                                if (attendanceObj.is_absent == 0) {
-                                    var begining_time = moment(attendanceObj.Begining_Time, 'HH:mm').format('HH:mm');
-                                    //var current_time = moment().format('HH:mm');
-                                    var current_time = attendanceObj.time_in;
-                                    attendanceObj.time_in = current_time;
-
-                                    var ms = moment(current_time, "HH:mm").diff(moment(begining_time, "HH:mm"));
-
-                                    if (ms <= 0) {
-                                        // ms = moment(current_time, "HH:mm").diff(moment(begining_time, "HH:mm"));
-                                        attendanceObj.late_min = '';
-                                    }else{
-                                        var d = moment.duration(ms);
-                                        var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
-                                        attendanceObj.late_min = hours;
-                                    }
-                                }else if(attendanceObj.is_absent == 2){
+                                 if(attendanceObj.is_absent == 2){
                                     var ending_time = moment(attendanceObj.Ending_Time, 'HH:mm').format('HH:mm');
                                     //var current_time = moment().format('HH:mm');
-                                    var current_time = attendanceObj.time_in;
-                                    attendanceObj.time_in = current_time;
+                                    var current_time = attendanceObj.time_out;
+                                    //attendanceObj.time_in = current_time;
 
                                     var ms = moment(ending_time, "HH:mm").diff(moment(current_time, "HH:mm"));
 
                                     if (ms <= 0) {
                                         // ms = moment(current_time, "HH:mm").diff(moment(begining_time, "HH:mm"));
-                                        attendanceObj.late_min = '';
+                                        attendanceObj.short_min = '';
                                     }else{
                                         var d = moment.duration(ms);
                                         var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
-                                        attendanceObj.late_min = hours;
+                                        attendanceObj.short_min = hours;
                                     }
-                                }
+                                }else{
+                                     var begining_time = moment(attendanceObj.Begining_Time, 'HH:mm').format('HH:mm');
+                                     //var current_time = moment().format('HH:mm');
+                                     var current_time = attendanceObj.time_in;
+                                     attendanceObj.time_in = current_time;
+
+                                     var ms = moment(current_time, "HH:mm").diff(moment(begining_time, "HH:mm"));
+
+                                     if (ms <= 0) {
+                                         // ms = moment(current_time, "HH:mm").diff(moment(begining_time, "HH:mm"));
+                                         attendanceObj.late_min = '';
+                                     }else{
+                                         var d = moment.duration(ms);
+                                         var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
+                                         attendanceObj.late_min = hours;
+                                     }
+                                 }
 
                                 req.body.attendanceObj = attendanceObj;
                                 console.log(attendanceObj);
@@ -626,85 +628,81 @@ var employeesAttendanceMethods = {
             }
         });
     },
+
+
     addEmployeeActivityAttendance: function (req, res, callback) {
         var attendanceObj = req.body.attendanceObj;
-        console.log('eventtype');
-        console.log(attendanceObj.Event_type_id);
         var response = {};
 
-        con.query('select * from sch_att_empatt where Calender_id = ? and employee_id = ? and Event_Name = ?', [attendanceObj.Calender_id, attendanceObj.employee_id , attendanceObj.Event_Name], function (err, result) {
-            if (err)
-                throw err;
+        if(attendanceObj.is_absent == 1){
+            delete attendanceObj.time_in;
+        }
 
-            if (Object.keys(result).length) {
-                
-                con.query('update sch_att_empatt set  school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?, Event_type_id = ? where Calender_id = ? and employee_id = ? and Event_Name = ? ',
-                    [
-                        attendanceObj.school_id,
-                        attendanceObj.Event_Name,
-                        attendanceObj.time_in,
-                        attendanceObj.late_min,
-                        attendanceObj.is_absent,
-                        attendanceObj.Event_type_id,
-                        attendanceObj.Calender_id,
-                        attendanceObj.employee_id,
-                        attendanceObj.Event_Name,
-                    ], function (err, result) {
-                        if (err)
-                            throw err
+        sequelizeConfig.employeeAttandaceTable.find({where: {Calender_id: attendanceObj.Calender_id,employee_id:attendanceObj.employee_id,Event_Name:attendanceObj.Event_Name}}).then(function (attendance) {
+            if (attendance) {
+                delete attendanceObj.entery_date;
+                delete attendanceObj.entered_by;
+                var ms = 0;
+                var total_min = attendance.Total_min;
+                if(!total_min){
+                    total_min = '00:00';
+                }
 
-                        if (result.affectedRows) {
-                            response.success = true;
-                            if (attendanceObj.is_absent == 0)
-                                response.msg = 'تم تسجيل الحضور بنجاح';
-                            if (attendanceObj.is_absent == 1)
-                                response.msg = 'تم تسجيل الغياب بنجاح';
-								if (attendanceObj.is_absent == 2)
-                                response.msg = 'تم تسجيل خروج مبكر بنجاح';
-                            response.id = result.insertId;
-                            callback(response);
-                        } else {
-                            response.success = false;
-                            response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
-                            callback(response);
-                        }
+                var total_min = moment(total_min, 'HH:mm').format('HH:mm');
+                console.log('total_min');
+                console.log(total_min);
 
-                    }
-                );
 
+
+                if(attendanceObj.is_absent == 2){
+                    var shortTimeAsSeconds = moment.duration(attendanceObj.short_min).asSeconds();
+                    ms = moment(total_min, "HH:mm").add(shortTimeAsSeconds,'seconds');
+                }else{
+                    var lateTimeAsSeconds = moment.duration(attendanceObj.late_min).asSeconds();
+                    ms = moment(total_min, "HH:mm").add(lateTimeAsSeconds,'seconds');
+                }
+                console.log('lateTimeAsSeconds');
+                console.log(lateTimeAsSeconds);
+                console.log(ms);
+                var d = moment.duration(ms);
+                var total_min = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
+                console.log(total_min);
+                attendanceObj.Total_min = total_min;
+                attendance.updateAttributes(attendanceObj).then(function () {
+                    response.success = true;
+                    if (attendanceObj.is_absent == 0)
+                        response.msg = 'تم تسجيل الحضور بنجاح';
+                    if (attendanceObj.is_absent == 1)
+                        response.msg = 'تم تسجيل الغياب بنجاح';
+                    if (attendanceObj.is_absent == 2)
+                        response.msg = 'تم تسجيل خروج مبكر بنجاح';
+                    response.insertId = attendanceObj.id;
+                    callback(response);
+                })
             } else {
-                con.query('insert into sch_att_empatt (Calender_id,school_id,employee_id,Event_Name,time_in,late_min,is_absent,Event_type_id) values (?,?,?,?,?,?,?,?) ',
-                    [attendanceObj.Calender_id,
-                        attendanceObj.school_id,
-                        attendanceObj.employee_id,
-                        attendanceObj.Event_Name,
-                        attendanceObj.time_in,
-                        attendanceObj.late_min,
-                        attendanceObj.is_absent,
-                        attendanceObj.Event_type_id,
-                    ], function (err, result) {
-                        if (err)
-                            throw err
+                var total_min = '';
+                if(attendanceObj.is_absent == 2){
+                    total_min = attendanceObj.short_min;
+                }else{
+                    total_min = attendanceObj.late_min;
+                }
+                attendanceObj.Total_min = total_min;
+                sequelizeConfig.employeeAttandaceTable.create(attendanceObj).then(attendance => {
+                    response.success = true;
+                    response.insertId = attendance.id;
+                    if (attendanceObj.is_absent == 0)
+                        response.msg = 'تم تسجيل الحضور بنجاح';
+                    if (attendanceObj.is_absent == 1)
+                        response.msg = 'تم تسجيل الغياب بنجاح';
+                    if (attendanceObj.is_absent == 2)
+                        response.msg = 'تم تسجيل خروج مبكر بنجاح';
+                    callback(response);
+                });
 
-                        if (result.affectedRows) {
-                            response.success = true;
-                            if (attendanceObj.is_absent == 0)
-                                response.msg = 'تم تسجيل التأخر بنجاح';
-                            if (attendanceObj.is_absent == 1)
-                                response.msg = 'تم تسجيل الغياب بنجاح';
-								if (attendanceObj.is_absent == 2)
-                                response.msg = 'تم تسجيل خروج مبكر بنجاح';
-                            response.id = result.insertId;
-                            callback(response);
-                        } else {
-                            response.success = false;
-                            response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
-                            callback(response);
-                        }
-                    }
-                );
             }
         });
+
+
     },
 
 
