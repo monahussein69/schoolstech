@@ -99,12 +99,10 @@ var studentAttendanceMethods = {
 
         var current_date = moment(attendanceObj.attendance_day).format('MM-DD-YYYY');
         req.body.date = current_date;
-        //req.body.date = '03-18-2018';
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 attendanceObj.Calender_id = calendarObj.Id;
-
                 workingSettingsMethods.getActiveAttSchedule(req, res, function (result) {
                     if (Object.keys(result).length) {
                         var schoolProfile = result[0];
@@ -116,18 +114,15 @@ var studentAttendanceMethods = {
                             if (Object.keys(result).length) {
                                 attendanceObj.Event_type_id = result[0].Id;
                                 attendanceObj.Begining_Time = result[0].Begining_Time;
+
                                 if (attendanceObj.is_absent == 0) {
                                     var begining_time = moment(attendanceObj.Begining_Time, 'HH:mm').format('HH:mm');
-                                    //var current_time = moment().format('HH:mm');
                                     var current_time = attendanceObj.time_in;
                                     attendanceObj.time_in = current_time;
-
-                                    console.log(begining_time);
-
                                     var ms = moment(current_time, "HH:mm").diff(moment(begining_time, "HH:mm"));
-
+                                    console.log('mmmmms');
+                                    console.log(ms);
                                     if (ms <= 0) {
-                                        // ms = moment(current_time, "HH:mm").diff(moment(begining_time, "HH:mm"));
                                         attendanceObj.late_min = '';
                                     }else{
                                         var d = moment.duration(ms);
@@ -136,8 +131,8 @@ var studentAttendanceMethods = {
                                     }
                                 }
 
+                                attendanceObj.Total_min = attendanceObj.late_min;
                                 req.body.attendanceObj = attendanceObj;
-                                console.log(attendanceObj);
                                 studentAttendanceMethods.addStudentAttendance(req, res, function (result) {
                                     callback(result);
                                 });
@@ -169,6 +164,9 @@ var studentAttendanceMethods = {
         delete attendanceObj.attendance_day;
         delete attendanceObj.Begining_Time;
         var response = {};
+        if(attendanceObj.is_absent == 1){
+            attendanceObj.time_in = '';
+        }
 
         con.query('select * from sch_att_stdatt where Calender_id = ? and Student_id = ? and Event_Name = ?', [attendanceObj.Calender_id, attendanceObj.Student_id , attendanceObj.Event_Name], function (err, result) {
             if (err)
@@ -176,7 +174,7 @@ var studentAttendanceMethods = {
 
             if (Object.keys(result).length) {
 
-                con.query('update sch_att_stdatt set  school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?, Event_type_id = ? where Calender_id = ? and Student_id = ? and Event_Name = ?',
+                con.query('update sch_att_stdatt set  school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?, Event_type_id = ?,Total_min =? where Calender_id = ? and Student_id = ? and Event_Name = ?',
                     [
                         attendanceObj.school_id,
                         attendanceObj.Event_Name,
@@ -184,6 +182,7 @@ var studentAttendanceMethods = {
                         attendanceObj.late_min,
                         attendanceObj.is_absent,
                         attendanceObj.Event_type_id,
+                        attendanceObj.Total_min,
                         attendanceObj.Calender_id,
                         attendanceObj.Student_id,
                         attendanceObj.Event_Name,

@@ -614,7 +614,7 @@ var employeeMethods = {
             currentDay1 = 'الأربعاء';
         }
         var employeeId = req.body.employeeId;
-        var query = con.query('SELECT * FROM sch_acd_lectures JOIN sch_acd_lecturestables ON sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO WHERE sch_acd_lecturestables.Teacher_Id = ? AND (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) ', [employeeId, currentDay,currentDay1], function (err, result) {
+        var query = con.query('SELECT * FROM sch_acd_lectures JOIN sch_acd_lecturestables ON sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO  join sch_att_schedule on sch_att_schedule.event_Nam = sch_acd_lectures.name  WHERE sch_acd_lecturestables.Teacher_Id = ? AND (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?)  AND (sch_att_schedule.Day = ? OR sch_att_schedule.Day = ?)', [employeeId, currentDay,currentDay1, currentDay,currentDay1], function (err, result) {
                 console.log(query.sql);
                 if (err)
                     throw err

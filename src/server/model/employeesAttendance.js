@@ -635,7 +635,7 @@ var employeesAttendanceMethods = {
         var response = {};
 
         if(attendanceObj.is_absent == 1){
-            delete attendanceObj.time_in;
+            attendanceObj.time_in = '';
         }
 
         sequelizeConfig.employeeAttandaceTable.find({where: {Calender_id: attendanceObj.Calender_id,employee_id:attendanceObj.employee_id,Event_Name:attendanceObj.Event_Name}}).then(function (attendance) {
