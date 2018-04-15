@@ -55,7 +55,7 @@ var studentAttendanceMethods = {
                         '(sch_str_student.student_id = sch_att_stdatt.Student_id and  sch_att_stdatt.Event_Name = ? and (sch_att_stdatt.Calender_id = ? ) ) ' +
                         'left join sch_att_stdexcuse on sch_att_stdexcuse.Student_id = sch_str_student.student_id '+
                         ' where sch_acd_lecturestables.School_Id = ?  ' + condition + ' '+
-                        '  group by sch_str_student.student_id', [lecture_name,calendarId,schoolId], function (err, result) {
+                        '  group by sch_str_student.student_id order by sch_str_student.name asc', [lecture_name,calendarId,schoolId], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err
@@ -75,7 +75,7 @@ var studentAttendanceMethods = {
                         ' where sch_acd_lecturestables.School_Id = ? and ' +
                         ' (sch_acd_lecturestables.Day = ? or sch_acd_lecturestables.Day = ?) ' +
                         ' and sch_acd_lecturestables.Teacher_Id = ? and sch_acd_lectures.name = ?  ' + condition + ' '+
-                        '  group by sch_str_student.student_id', [calendarId,schoolId,currentDay,currentDay1,teacherId,lecture_name], function (err, result) {
+                        '  group by sch_str_student.student_id order by sch_str_student.name asc', [calendarId,schoolId,currentDay,currentDay1,teacherId,lecture_name], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err

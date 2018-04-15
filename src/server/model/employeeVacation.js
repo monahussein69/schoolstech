@@ -1,13 +1,14 @@
 var con = require('../routes/dbConfig.js');
+var sequelizeConfig = require('../routes/sequelizeConfig.js');
 var moment = require('moment');
 var appSettingsMethods = require('../model/appSettings.js');
 
 var employeesVacationMethods = {
 
     sendAbsentRequest: function (req, res, callback) {
-        console.log('sendAbsentRequest : ' , req.body);
+        console.log('sendAbsentRequest : ', req.body);
         var AbsentObj = req.body.AbsentObj;
-        var current_date = moment().format('MM-DD-YYYY');
+        var current_date = moment(AbsentObj.Start_Date).format('MM-DD-YYYY');
         // var current_date = '03-18-2018';
 
         var response = {};
@@ -16,6 +17,7 @@ var employeesVacationMethods = {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 AbsentObj.Calender_id = calendarObj.Id;
+                console.log("AbsentObj : ", AbsentObj);
                 var query = con.query('insert into sch_att_empvacation set ?',
                     [AbsentObj], function (err, result) {
                         console.log(query.sql);
@@ -23,6 +25,9 @@ var employeesVacationMethods = {
                             throw err
 
                         if (result.affectedRows) {
+                            for (var i = 1; i <= AbsentObj.No_Of_Days; i++) {
+
+                            }
                             response.success = true;
                             response.msg = 'تم تسجيل الغياب بنجاح';
                             response.id = result.insertId;
@@ -44,9 +49,8 @@ var employeesVacationMethods = {
         });
 
     },
-    getLastEmployeeVaction:function(req,res,callback){
-        var emp_id = req.params.emp_id;
-        var query = con.query('select * from sch_att_empvacation where Emp_id = ? order by id desc limit 1',[emp_id], function (err, result) {
+    getLastEmployeeVaction: function (emp_id, callback) {
+        var query = con.query('select * from sch_att_empvacation where Emp_id = ? order by id desc limit 1', [emp_id], function (err, result) {
             if (err)
                 throw err
             callback(result);

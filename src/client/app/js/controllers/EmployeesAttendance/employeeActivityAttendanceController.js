@@ -1,9 +1,9 @@
 angular.module('MetronicApp').controller('employeeActivityAttendanceController',
-    function ($moment,$compile,DTOptionsBuilder, DTColumnBuilder,$q,$uibModal,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceService,manageEmployeeService,WorkingSettingsService) {
+    function ($moment, $compile, DTOptionsBuilder, DTColumnBuilder, $q, $uibModal, $stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter, employeesAttendanceService, manageEmployeeService, WorkingSettingsService) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
-        if(userObject){
+        if (userObject) {
             var userType = userObject[0].userType;
             var userId = userObject[0].id;
             var schoolId = 0;
@@ -18,31 +18,31 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
         //var titleHtml = '<input type="checkbox" ng-model="model.selectAll" ng-click="model.toggleAll(model.selectAll, model.selected)">';
 
         var model = {
-            schoolId:schoolId,
-            emp_atts:[],
+            schoolId: schoolId,
+            emp_atts: [],
             attendance_day: attendance_day,
-            getAllEmployeesByActivity:getAllEmployeesByActivity,
-            activeProfile : {},
-            getAttendanceBasedDate:getAttendanceBasedDate,
+            getAllEmployeesByActivity: getAllEmployeesByActivity,
+            activeProfile: {},
+            getAttendanceBasedDate: getAttendanceBasedDate,
             employeeActivity: employeeActivity,
-            recordAttendanceAll:recordAttendanceAll,
+            recordAttendanceAll: recordAttendanceAll,
             listOfActivity: {},
             selected : {},
             selectAll : false,
             toggleAll : toggleAll,
             toggleOne : toggleOne,
             headerCompiled:false,
-            userId:userId,
-            entryDate:entryDate,
             ids:[],
             activity:'',
+            userId:userId,
+            entryDate:entryDate,
             options:DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                 defer.resolve(model.emp_atts);
 
 
                 return defer.promise
-            }).withOption('createdRow', createdRow)
+            }).withOption('createdRow', createdRow).withOption('paging', false)
                 //.withOption('headerCallback', function(header) {
                 //if (!model.headerCompiled) {
                     // Use this headerCompiled field to only compile header once
@@ -67,19 +67,19 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
         function lateHtml(data, type, full, meta) {
             var time_in = data.time_in;
-            if(data.time_in) {
+            if (data.time_in) {
 
                 return '' +
-                    '<div class="confirm_late">'+
-                    '<div class="col-md-2">'+
+                    '<div class="confirm_late">' +
+                    '<div class="col-md-2">' +
                     '<label class="late_label">' + time_in + '</label>' +
-                    '</div>'+
-                    '<div class="col-md-4">'+
-                    '<button class="btn btn-primary" ng-click="confirmLateMin(' + data.main_employee_id + ',$event,\''+ data.time_in +'\')" > تعديل</button>'+
-                    '</div>'+
+                    '</div>' +
+                    '<div class="col-md-4">' +
+                    '<button class="btn btn-primary" ng-click="confirmLateMin(' + data.main_employee_id + ',$event,\'' + data.time_in + '\')" > تعديل</button>' +
+                    '</div>' +
                     '</div>';
 
-            }else{
+            } else {
                 return '';
             }
         }
@@ -152,7 +152,7 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
         }
 
-        $scope.confirmLateMin = function(employee_id,$event,time_in) {
+        $scope.confirmLateMin = function (employee_id, $event, time_in) {
             var confirmLateMinInst = $uibModal.open({
                 templateUrl: 'views/employees_attendance/ConfirmInTime.html',
                 controller: 'confirmLateMinCtrl',
@@ -187,7 +187,7 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
         };
 
-        function toggleAll (selectAll, selectedItems) {
+        function toggleAll(selectAll, selectedItems) {
             console.log('in click');
             for (var id in selectedItems) {
                 if (selectedItems.hasOwnProperty(id)) {
@@ -195,10 +195,11 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
                 }
             }
         }
-        function toggleOne (selectedItems) {
+
+        function toggleOne(selectedItems) {
             for (var id in selectedItems) {
                 if (selectedItems.hasOwnProperty(id)) {
-                    if(!selectedItems[id]) {
+                    if (!selectedItems[id]) {
                         model.selectAll = false;
                         return;
                     }
@@ -206,9 +207,6 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
             }
             model.selectAll = true;
         }
-
-
-
 
 
         function createdRow(row, data, dataIndex) {
@@ -226,11 +224,11 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
         }
 
 
-        function getAttendanceBasedDate(){
+        function getAttendanceBasedDate() {
             var defer = $q.defer();
-            if(model.attendance_day){
+            if (model.attendance_day) {
 
-                employeesAttendanceService.getActivityByDayAndSchoolId(model.schoolId,model.attendance_day, function (data) {
+                employeesAttendanceService.getActivityByDayAndSchoolId(model.schoolId, model.attendance_day, function (data) {
                     model.listOfActivity = data;
                     console.log('data');
                     console.log(data);
@@ -238,9 +236,9 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
             }
         }
 
-        function getAllEmployeesByActivity(){
+        function getAllEmployeesByActivity() {
             var defer = $q.defer();
-            employeesAttendanceService.getAllEmployeesAttendanceByActivity(schoolId,model.listOfActivity[model.activity].event_Nam,model.attendance_day).then(function (employees) {
+            employeesAttendanceService.getAllEmployeesAttendanceByActivity(schoolId, model.listOfActivity[model.activity].event_Nam, model.attendance_day).then(function (employees) {
                 defer.resolve(employees);
                 model.dtInstance.changeData(defer.promise);
                 model.employees = employees;
@@ -248,7 +246,7 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
         }
 
-        employeesAttendanceService.getActivityByDayAndSchoolId(model.schoolId,model.attendance_day, function (data) {
+        employeesAttendanceService.getActivityByDayAndSchoolId(model.schoolId, model.attendance_day, function (data) {
             model.listOfActivity = data;
             console.log('data');
             console.log(data);
@@ -258,9 +256,7 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
         $scope.model = model;
 
 
-
-
-        function employeeActivity(employee_id,status_id,$event) {
+        function employeeActivity(employee_id, status_id, $event) {
             var status_names = [];
             status_names[0] = 'تأخر';
             status_names[1] = 'غياب';
@@ -294,8 +290,8 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
             });
             dialogInst.result.then(function (result) {
 
-                if(result.success){
-                  model.getAllEmployeesByActivity();
+                if (result.success) {
+                    model.getAllEmployeesByActivity();
                 }
 
                 //$scope.usrs.push(newusr);
@@ -337,7 +333,6 @@ angular.module('MetronicApp').controller('confirmLateMinCtrl', function (localSt
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
-
 
 
     $scope.recordAttendance = function () {
@@ -393,7 +388,7 @@ angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (
         activities: getActivityByDayAndSchoolId,
         activity: selectedActivity,
         status: status_id,
-        status_name : status_name,
+        status_name: status_name,
         userId:userId,
         entryDate:entryDate
     };
