@@ -527,7 +527,7 @@ var employeesAttendanceMethods = {
                 var total_min = attendanceObj.late_min;
                 attendanceObj.Total_min = total_min;
                 con.query('insert into sch_att_empatt (entered_by,Total_min,on_vacation,Calender_id,school_id,employee_id,Event_Name,Event_type_id,time_in,late_min,is_absent) values (?,?,?,?,?,?,?,?,?,?,?) ',
-                    [   attendanceObj.Total_min,
+                    [   attendanceObj.entered_by,
                        attendanceObj.Total_min,
                         attendanceObj.on_vacation,
                         attendanceObj.Calender_id,
