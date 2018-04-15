@@ -99,9 +99,8 @@ angular.module('MetronicApp').controller('activityAttendanceController',
             var current_date = $moment(model.attendance_day).format('MM/DD/YYYY');
 
             return '' +
-                '<button class="btn btn-primary color-grey" ng-click="model.recordAttendance(' + data.main_student_id + ',$event,\'حضور\')" ng-class="{\'color-green\': (0 ==' + data.is_absent + ' && !('+data.late_min+')) }"> حاضر</button>\n' +
-                '<button class="btn btn-primary color-grey" ng-click="model.recordAttendance(' + data.main_student_id + ',$event,\'متأخر\')" ng-class="{\'color-orange\': (0 ==' + data.is_absent + ') && ('+data.late_min+') }"> متأخر</button>\n'+
-
+                '<button class="btn btn-primary color-grey" ng-click="model.recordAttendance(' + data.main_student_id + ',$event,\'حضور\')" ng-class="{\'color-green\': (0 ==' + data.is_absent + ' && (\''+data.late_min+'\' == \'\')) }"> حاضر</button>\n' +
+                '<button class="btn btn-primary color-grey" ng-click="model.recordAttendance(' + data.main_student_id + ',$event,\'متأخر\')" ng-class="{\'color-orange\': (0 ==' + data.is_absent + ') && !(\''+data.late_min+'\' == \'\') }"> متأخر</button>\n'+
                 '<button class="btn btn-danger" ng-class="{\'color-grey\':!' + data.is_absent + '}" ng-click="model.recordAttendance(' + data.main_student_id + ',$event,\'غياب\')">غائب</button>' +
                 '<button ng-disabled = "' + data.is_absent + ' != 0" class="btn btn-primary excuse" ng-class="{\'color-grey\':!(' + data.excuse_date + ' == ' + current_date + ')}" ng-click="model.ExcuseRequest(' + data.main_student_id + ',$event)">استئذان</button> '
                 ;
@@ -205,6 +204,13 @@ angular.module('MetronicApp').controller('activityAttendanceController',
             attendanceObj.entered_by = model.userId;
             attendanceObj.entery_date = model.entryDate;
 
+            var currentTime = $moment().format('H:mm');
+            if((($moment(currentTime,'HH:mm').isBefore( $moment(model.listOfActivity[model.activity].Begining_Time,'HH:mm'))) ||  ($moment(model.listOfActivity[model.activity].Ending_Time,'HH:mm').isBefore($moment(currentTime,'HH:mm')))) && type == 'متأخر'){
+                toastr.error('الوقت المدخل خارج وقت النشاط');
+                return;
+            }
+
+
             if (type == 'حضور' ){
                 attendanceObj.time_in = model.listOfActivity[model.activity].Begining_Time;
             }
@@ -214,8 +220,10 @@ angular.module('MetronicApp').controller('activityAttendanceController',
             }
 
             if(attendanceObj.is_absent == 1){
-                attendanceObj.time_in = attendanceObj.Ending_Time;
+                attendanceObj.time_in = model.listOfActivity[model.activity].Ending_Time;
             }
+
+            console.log(attendanceObj);
 
             studentsAttendanceService.setStudentAttendance(attendanceObj, function (result) {
                 if (result.success) {
@@ -250,7 +258,11 @@ angular.module('MetronicApp').controller('activityAttendanceController',
                     },
                     selectedDate: function () {
                         return model.attendance_day;
+                    },
+                    Event_Name:function(){
+                        return model.listOfActivity[model.activity].name;
                     }
+
                 }
             });
             dialogInst.result.then(function (result) {
@@ -278,11 +290,9 @@ angular.module('MetronicApp').controller('activityAttendanceController',
     });
 
 
-angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, studentExcuseService, $moment, $scope, $uibModalInstance, selectedStudent,selectedDate, schoolId, $log) {
+angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, studentExcuseService, $moment, $scope, $uibModalInstance,Event_Name, selectedStudent,selectedDate, schoolId, $log) {
     var currentTime = $moment().format('HH:mm');
     var currentDate = $moment(selectedDate).format('MM/DD/YYYY');
-
-    console.log(selectedDate);
 
     var ExcuseObj = {};
     ExcuseObj.school_id = schoolId;
@@ -298,11 +308,9 @@ angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, s
     };
 
     $scope.ExcuseRequest = function () {
-
-        studentExcuseService.sendStudentExcuseRequest(ExcuseObj, function (result) {
+        studentExcuseService.sendStudentExcuseRequest(ExcuseObj,Event_Name, function (result) {
             if (result.success) {
                 toastr.success(result.msg);
-
             } else {
                 toastr.error(result.msg);
             }

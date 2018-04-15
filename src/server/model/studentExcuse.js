@@ -1,15 +1,17 @@
 var con = require('../routes/dbConfig.js');
 var moment = require('moment');
 var appSettingsMethods = require('../model/appSettings.js');
+var studentAttendanceMethods = require('../model/studentAttendance.js');
+
 
 var studentExcuseMethods = {
 
     sendStudentExcuseRequest: function (req, res, callback) {
-
        // var current_date = '03-18-2018';
         var ExcuseObj = req.body.ExcuseObj;
+        var Event_Name = req.body.Event_Name;
         var response = {};
-        var current_date = moment(ExcuseObj.currentDate).format('MM-DD-YYYY');
+        var current_date = moment(ExcuseObj.Start_Date).format('MM-DD-YYYY');
         req.body.date = current_date;
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {
@@ -24,6 +26,14 @@ var studentExcuseMethods = {
                             response.success = true;
                             response.msg = 'تم تقديم الطلب بنجاح';
                             response.id = result.insertId;
+                            req.body.attendanceObj = {
+                                Calender_id:calendarObj.Id,
+                                School_id:ExcuseObj.School_id,
+                                Student_id:ExcuseObj.Student_id,
+                                is_excused:1,
+                                Event_Name:Event_Name
+                            };
+                            studentAttendanceMethods.addStudentAttendance(req,res,function(){});
                             callback(response);
                         } else {
                             response.success = false;

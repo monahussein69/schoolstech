@@ -5,6 +5,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
         var userObject = localStorageService.get('UserObject');
         if(userObject){
             var userType = userObject[0].userType;
+            var userId = userObject[0].id;
             var schoolId = 0;
             if (userType == 2) {
                 schoolId = userObject[0].schoolId;
@@ -36,6 +37,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             listOfActivity: {},
             headerCompiled:false,
             ids:[],
+            userId:userId,
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                 employeesAttendanceService.getAllEmployeesAttendance(schoolId).then(function (employees) {
@@ -45,19 +47,20 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
 
                 return defer.promise
             }).withOption('createdRow', createdRow)
-            .withOption('headerCallback', function(header) {
+            //.withOption('headerCallback', function(header) {
                 //if (!model.headerCompiled) {
                     // Use this headerCompiled field to only compile header once
                    // model.headerCompiled = true;
-                    $compile(angular.element(header).contents())($scope);
+                  //  $compile(angular.element(header).contents())($scope);
                 //}
-            }).withOption('autoWidth', false),
+           // })
+            .withOption('autoWidth', false),
             columns: [
-                DTColumnBuilder.newColumn(null).withTitle(titleHtml).notSortable()
+                /*DTColumnBuilder.newColumn(null).withTitle(titleHtml).notSortable()
                     .renderWith(function(data, type, full, meta) {
                         model.selected[full.main_employee_id] = false;
                         return '<input type="checkbox" ng-model="model.selected[' + data.main_employee_id + ']" ng-click="model.toggleOne(date.selected)">';
-                    }),
+                    }),*/
                // DTColumnBuilder.newColumn(null).withTitle('<input type="checkbox" ng-click="model.checkAll()" ng-model="model.selectAllButton"/>').renderWith(selectAll),
                 DTColumnBuilder.newColumn('name').withTitle(' اسم الموظف'),
                 DTColumnBuilder.newColumn(null).withTitle('وقت الحضور').notSortable()
@@ -101,10 +104,10 @@ function createdRow(row, data, dataIndex) {
             var current_date = $moment(model.attendance_day).format('MM-DD-YYYY');
             console.log(current_date);
             return ''+
-                '<button class="btn btn-primary color-grey attendance_'+data.main_employee_id+'" ng-click="confirmTimeIn('+data.main_employee_id+',$event)" ng-class="{\'color-green\': 0 =='+data.is_absent+' }"> حاضر</button>\n'+
+                '<button class="btn btn-primary color-grey attendance_'+data.main_employee_id+'" ng-click="confirmTimeIn('+data.main_employee_id+',$event)" ng-class="{\'color-green\': 0 =='+data.is_absent+' , \'color-orange\':  (\'null\' != \''+data.late_min+'\')  }"> حاضر</button>\n'+
                 '<button class="btn btn-danger absent_'+data.main_employee_id+'" ng-class="{\'color-grey\':!'+data.is_absent+'}" ng-click="model.recordAttendance('+data.main_employee_id+',$event,\'غياب\')">غائب</button>'+
                 '<button ng-disabled = "'+data.is_absent+' != 0" class="btn btn-primary excuse" ng-class="{\'color-grey\':!('+data.excuse_date+' == '+current_date+')}" ng-click="model.ExcuseRequest('+data.main_employee_id+',$event)">استئذان</button> '+
-                '<button class="btn btn-warning" ng-class="{\'color-grey\':(\''+data.vacation_date_start+'\' == null) || !(\''+data.vacation_date_start+' \' <= \''+current_date+'\' && \''+data.vacation_date_end+'\' >= \''+current_date+'\')}" ng-click="model.AbsentRequest('+data.main_employee_id+',$event,\'غياب بعذر\')">غياب بعذر</button>'
+                '<button class="btn btn-warning" ng-class="{\'color-grey\':!('+data.on_vacation+' == 1)}" ng-click="model.AbsentRequest('+data.main_employee_id+',$event,\'غياب بعذر\')">غياب بعذر</button>'
                 ;
         }
 
@@ -132,34 +135,36 @@ function createdRow(row, data, dataIndex) {
            console.log(model.selected);
            var ids = model.selected;
             var results = [];
-            if(Object.keys(ids).length > 0) {
-            var requests = Object.keys(ids).map(function(key,item) {
+            employeesAttendanceService.getAllEmployeesAttendance(schoolId).then(function (employees) {
 
-                if (ids[key]){
-                    return new Promise(function (resolve) {
-                        var attendanceObj = {};
-                        attendanceObj.school_id = model.schoolId;
-                        attendanceObj.employee_id = key;
-                        attendanceObj.Event_Name = 'طابور';
-                        attendanceObj.time_in = $moment().format('H:m');
-                        attendanceObj.attendance_day = model.attendance_day;
-                        attendanceObj.is_absent = 1;
-                        if (type == 'حضور') {
-                            attendanceObj.is_absent = 0;
-                        } else if (type == 'غياب') {
-                            attendanceObj.on_vacation = 1;
-                        }
-
-                        employeesAttendanceService.setEmployeeAttendance(attendanceObj, function (result) {
-                            if(result.success){
-                                results.push(1);
+                if (Object.keys(employees).length > 0) {
+                    var requests = Object.keys(employees).map(function (key, item) {
+                        return new Promise(function (resolve) {
+                            var attendanceObj = {};
+                            attendanceObj.school_id = model.schoolId;
+                            attendanceObj.employee_id = employees[key].main_employee_id;
+                            attendanceObj.Event_Name = 'طابور';
+                            attendanceObj.time_in = $moment().format('H:m');
+                            attendanceObj.attendance_day = model.attendance_day;
+                            attendanceObj.is_absent = 1;
+                            attendanceObj.entered_by = model.userId;
+                            if (type == 'حضور') {
+                                attendanceObj.is_absent = 0;
+                            } else if (type == 'غياب') {
+                                attendanceObj.on_vacation = 1;
                             }
-                            resolve(result);
-                        });
-                    });
-             }
-            });
 
+                            employeesAttendanceService.setEmployeeAttendance(attendanceObj, function (result) {
+                                if (result.success) {
+                                    results.push(1);
+                                }
+                                resolve(result);
+                            });
+                        });
+
+                    });
+                }
+            });
             Promise.all(requests).then(function (result) {
                 if (results.includes(1)) {
                     model.getAttendanceBasedDate();
@@ -169,12 +174,6 @@ function createdRow(row, data, dataIndex) {
                 }
                 //callback(response);
             });
-
-            }else{
-                toastr.error('الرجاء اختيار الموظفين');
-            }
-
-
 
         }
 
@@ -234,14 +233,15 @@ function createdRow(row, data, dataIndex) {
                     },
                     selectedDate: function () {
                         return model.attendance_day;
+                    },
+                    userId: function () {
+                        return model.userId;
                     }
 
                 }
             });
             dialogInst.result.then(function (newusr) {
-                angular.element($event.target).removeClass('color-grey');
-                angular.element($event.target).addClass('color-green');
-                angular.element($event.target).parent().children('.excuse').attr('disabled',false)
+                model.dtInstance.reloadData();
             }, function () {
                 console.log('close');
                 //$log.info('Modal dismissed at: ' + new Date());
@@ -408,6 +408,7 @@ function createdRow(row, data, dataIndex) {
             attendanceObj.time_in = $moment().format('H:m');
             attendanceObj.attendance_day = model.attendance_day;
             attendanceObj.is_absent = 1;
+           attendanceObj.entered_by = model.userId;
             if(type == 'حضور') {
                 attendanceObj.is_absent = 0;
             }else if(type == 'غياب بعذر'){
@@ -416,6 +417,7 @@ function createdRow(row, data, dataIndex) {
 
             employeesAttendanceService.setEmployeeAttendance(attendanceObj, function (result) {
                 if (result.success) {
+                    model.dtInstance.reloadData();
                     toastr.success(result.msg);
                     angular.element($event.target).removeClass('color-grey');
                     if(type == 'حضور') {
@@ -449,7 +451,7 @@ function createdRow(row, data, dataIndex) {
         $rootScope.settings.layout.pageSidebarClosed = false;
     });
 
-angular.module('MetronicApp').controller('DialogInstCtrl', function (toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedEmployee,selectedDate,employee_data, schoolId, $log) {
+angular.module('MetronicApp').controller('DialogInstCtrl', function (userId,toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedEmployee,selectedDate,employee_data, schoolId, $log) {
     $scope.selectedEmployee = selectedEmployee;
     $scope.currentTime = $moment().format('H:m');
     $scope.late_min = employee_data.late_min;
@@ -477,6 +479,7 @@ angular.module('MetronicApp').controller('DialogInstCtrl', function (toastr, emp
         attendanceObj.Event_Name = 'طابور';
         attendanceObj.is_absent = 0;
         attendanceObj.attendance_day = selectedDate;
+        attendanceObj.entered_by = userId;
 
 
         employeesAttendanceService.setEmployeeAttendance(attendanceObj, function (result) {

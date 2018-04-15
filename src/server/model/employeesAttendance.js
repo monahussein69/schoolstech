@@ -53,7 +53,7 @@ var employeesAttendanceMethods = {
                         ' on (sch_att_empatt.Calender_id = ? and sch_str_employees.id = sch_att_empatt.employee_id and sch_acd_lectures.name = sch_att_empatt.Event_Name)'+
                         'left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id '+
                         'left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id '+
-                        'where sch_acd_lectures.name = ? and (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) and sch_str_employees.school_id = ? group by main_employee_id', [calendarId,lecture_name,currentDay,currentDay1,schoolId], function (err, result) {
+                        'where sch_acd_lectures.name = ? and (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) and sch_str_employees.school_id = ?  and sch_str_employees.id not in (select employee_id from sch_att_empatt where Calender_id = ? and school_id = ? and Event_Name = "طابور" and is_absent = 1) group by main_employee_id', [calendarId,lecture_name,currentDay,currentDay1,schoolId,calendarId,schoolId], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err
@@ -61,7 +61,6 @@ var employeesAttendanceMethods = {
                         }
                     );
                 }
-
 
             }else{
                 callback(response);
@@ -395,12 +394,15 @@ var employeesAttendanceMethods = {
                                             console.log('ms');
                                             console.log(ms);
                                             if (ms <= 0) {
-                                                ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));
+                                                //ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));
+                                                attendanceObj.late_min = '';
+                                                //attendanceObj.Total_min = '';
                                             }
 
                                             var d = moment.duration(ms);
                                             var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
                                             attendanceObj.late_min = hours;
+                                            //attendanceObj.Total_min = attendanceObj.late_min;
                                         }
                                     }
 
@@ -462,14 +464,34 @@ var employeesAttendanceMethods = {
       var attendanceObj = req.body.attendanceObj;
         var response = {};
 
+        if(attendanceObj.is_absent == 1){
+            attendanceObj.time_in = '';
+        }
+
         con.query('select * from sch_att_empatt where Calender_id = ? and employee_id = ? and Event_Name = ?',[attendanceObj.Calender_id,attendanceObj.employee_id,attendanceObj.Event_Name], function (err, result1) {
             if(err)
                 throw err;
 
             if (Object.keys(result1).length) {
+                if(attendanceObj.is_absent == 0) {
+                    var ms = 0;
+                    var total_min = result1[0].Total_min;
+                    if (!total_min) {
+                        total_min = '00:00';
+                    }
 
-                var query = con.query('update sch_att_empatt set on_vacation = ?, school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?,Event_type_id = ? where Calender_id = ? and employee_id = ? and Event_Name=?',
+                    var total_min = moment(total_min, 'HH:mm').format('HH:mm');
+                    var lateTimeAsSeconds = moment.duration(attendanceObj.late_min).asSeconds();
+                    ms = moment(total_min, "HH:mm").add(lateTimeAsSeconds, 'seconds');
+
+                    var d = moment.duration(ms);
+                    var total_min = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
+                    attendanceObj.Total_min = total_min;
+                }
+
+                var query = con.query('update sch_att_empatt set Total_min = ? ,on_vacation = ?, school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?,Event_type_id = ? where Calender_id = ? and employee_id = ? and Event_Name=?',
                     [
+                        attendanceObj.Total_min,
                         attendanceObj.on_vacation,
                         attendanceObj.school_id,
                         attendanceObj.Event_Name ,
@@ -507,8 +529,13 @@ var employeesAttendanceMethods = {
                 );
 
             }else{
-                con.query('insert into sch_att_empatt (on_vacation,Calender_id,school_id,employee_id,Event_Name,Event_type_id,time_in,late_min,is_absent) values (?,?,?,?,?,?,?,?,?) ',
-                    [   attendanceObj.on_vacation,
+
+                var total_min = attendanceObj.late_min;
+                attendanceObj.Total_min = total_min;
+                con.query('insert into sch_att_empatt (entered_by,Total_min,on_vacation,Calender_id,school_id,employee_id,Event_Name,Event_type_id,time_in,late_min,is_absent) values (?,?,?,?,?,?,?,?,?,?,?) ',
+                    [   attendanceObj.Total_min,
+                       attendanceObj.Total_min,
+                        attendanceObj.on_vacation,
                         attendanceObj.Calender_id,
                         attendanceObj.school_id,
                         attendanceObj.employee_id,
@@ -649,9 +676,6 @@ var employeesAttendanceMethods = {
                 }
 
                 var total_min = moment(total_min, 'HH:mm').format('HH:mm');
-                console.log('total_min');
-                console.log(total_min);
-
 
 
                 if(attendanceObj.is_absent == 2){

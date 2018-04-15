@@ -108,7 +108,6 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
                                 attendanceObj.employee_id = allEmployees[key].main_employee_id;
                                 attendanceObj.Event_Name = model.listOfActivity[model.activity].event_Nam;
                                 attendanceObj.time_in = $moment().format('H:mm');
-
                                 attendanceObj.Attendance_Day = model.attendance_day;
                                 attendanceObj.is_absent = 1;
                                 attendanceObj.entered_by = model.userId;
@@ -220,9 +219,9 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
         function actionsHtml(data, type, full, meta) {
 
             return ''+
-                '<button class="btn btn-primary" ng-class="{\'color-grey\':!('+data.is_absent+' == 0)}"  ng-click="model.employeeActivity('+data.main_employee_id+',0,$event)"> تأخر</button>' +
+                '<button class="btn btn-primary" ng-class="{\'color-grey\':(\''+data.time_in+'\' == \'\') || (\''+data.time_in+'\' == \'null\')}"  ng-click="model.employeeActivity('+data.main_employee_id+',0,$event)"> تأخر</button>' +
                 '<button class="btn btn-danger" ng-class="{\'color-grey\':!('+data.is_absent+' == 1)}"  ng-click="model.employeeActivity('+data.main_employee_id+',1,$event)">غياب</button>' +
-                '<button class="btn btn-warning" ng-class="{\'color-grey\':'+data.is_absent+' != 2}" ng-click="model.employeeActivity('+data.main_employee_id+',2,$event)">خروج مبكر</button>'
+                '<button class="btn btn-warning" ng-class="{\'color-grey\':(\''+data.short_min+'\' == \'\') || (\''+data.short_min+'\' == \'null\')}" ng-click="model.employeeActivity('+data.main_employee_id+',2,$event)">خروج مبكر</button>'
                 ;
         }
 
@@ -353,6 +352,8 @@ angular.module('MetronicApp').controller('confirmLateMinCtrl', function (localSt
         attendanceObj.Ending_Time = selectedEvent.Ending_Time;
         attendanceObj.entered_by = userId;
         attendanceObj.entery_date = entryDate;
+
+
 
 
         employeesAttendanceService.setEmployeeActivityAttendance(attendanceObj, function (result) {
