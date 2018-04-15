@@ -26,7 +26,10 @@ var employeesVacationMethods = {
 
                         if (result.affectedRows) {
                             for (var i = 1; i <= AbsentObj.No_Of_Days; i++) {
-
+                                req.body.AbsentObj = AbsentObj;
+                                req.body.date = moment(AbsentObj.Start_Date, "MM-DD-YYYY").add(i, 'days').format('MM-DD-YYYY');
+                                employeesVacationMethods.setVactionIntoEmpAttendence(req, res, function (result) {
+                                });
                             }
                             response.success = true;
                             response.msg = 'تم تسجيل الغياب بنجاح';
@@ -54,6 +57,26 @@ var employeesVacationMethods = {
             if (err)
                 throw err
             callback(result);
+        });
+    },
+    setVactionIntoEmpAttendence:function(req, res, callback) {
+        var data = {
+            school_id: req.body.AbsentObj.school_id,
+            employee_id: req.body.AbsentObj.Emp_id,
+            is_absent: 1,
+            on_vacation: 1,
+            working_status: 0,
+            Event_Name:'طابور'
+        };
+        appSettingsMethods.getCalenderByDate(req, res, function (calendar) {
+            if (Object.keys(calendar).length) {
+                console.log("calender id : ", calendar);
+                data.Calender_id = calendar[0].Id;
+                sequelizeConfig.employeeAttandaceTable.create(data).then(employeeAttendece => {
+                    callback(employeeAttendece);
+                });
+            }
+
         });
     }
 }
