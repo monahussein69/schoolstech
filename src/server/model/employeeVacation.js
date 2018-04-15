@@ -25,7 +25,7 @@ var employeesVacationMethods = {
                             throw err
 
                         if (result.affectedRows) {
-                            for (var i = 1; i <= AbsentObj.No_Of_Days; i++) {
+                            for (var i = 0; i < AbsentObj.No_Of_Days; i++) {
                                 req.body.AbsentObj = AbsentObj;
                                 req.body.date = moment(AbsentObj.Start_Date, "MM-DD-YYYY").add(i, 'days').format('MM-DD-YYYY');
                                 employeesVacationMethods.setVactionIntoEmpAttendence(req, res, function (result) {
