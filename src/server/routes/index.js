@@ -17,6 +17,11 @@ var employeesExcuseMethods = require('../model/employeesExcuse.js');
 var employeesVacationMethods = require('../model/employeeVacation.js');
 var studentAttendanceMethods = require('../model/studentAttendance.js');
 var studentExcuseMethods = require('../model/studentExcuse.js');
+var taskMethods = require('../model/tasks.js');
+var subTaskMethods = require('../model/subTask.js');
+var taskStatusMethods = require('../model/taskStatus.js');
+var studentTaskMethods = require('../model/studentTask.js');
+var studentGroupsMethods = require('../model/studentGroups.js');
 
 var app = express();
 var multer = require('multer');
@@ -86,6 +91,105 @@ router.post('/saveSchoolData', function (req, res, next) {
 });
 
 
+router.get('/deleteTask/:taskId', function (req, res, next) {
+    taskMethods.deleteTask(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+
+router.get('/getTaskStatus/:statusId', function (req, res, next) {
+    taskStatusMethods.getTaskStatus(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllTaskStatus', function (req, res, next) {
+    taskStatusMethods.getAllTaskStatus(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/saveTaskStatusData', function (req, res, next) {
+    taskStatusMethods.saveTaskStatusData(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getTask/:taskId', function (req, res, next) {
+    taskMethods.getTask(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+
+router.post('/saveStudentsTask', function (req, res, next) {
+    studentTaskMethods.saveStudentsTask(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllStudentTask/:subTaskId', function (req, res, next) {
+    studentTaskMethods.getAllStudentTask(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/deleteStudentTask/:id', function (req, res, next) {
+    studentTaskMethods.deleteStudentTask(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllTasks/:schoolId', function (req, res, next) {
+    taskMethods.getAllTasks(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/saveTaskData', function (req, res, next) {
+    taskMethods.saveTaskData(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/getTaskByEmpId', function (req, res, next) {
+    taskMethods.getTaskByEmpId(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/deleteSubTask/:subTaskId', function (req, res, next) {
+    subTaskMethods.deleteSubTask(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getSubTask/:subTaskId', function (req, res, next) {
+    subTaskMethods.getSubTask(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllSubTasks/:taskId', function (req, res, next) {
+    subTaskMethods.getAllSubTasks(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/saveSubTaskData', function (req, res, next) {
+    subTaskMethods.saveSubTaskData(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/getSubTaskByEmpId', function (req, res, next) {
+    subTaskMethods.getSubTaskByEmpId(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+
 router.get('/getSchool/:schoolId', function (req, res, next) {
     schoolMethods.getSchool(req, res, function (result) {
         res.send(result);
@@ -98,6 +202,12 @@ router.get('/getLectursTable/:schoolId', function (req, res, next) {
 });
 router.get('/getAllStudents/:schoolId', function (req, res, next) {
     studentsMethods.getAllStudents(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllStudentsByGroup/:schoolId/:group', function (req, res, next) {
+    studentsMethods.getAllStudentsByGroup(req, res, function (result) {
         res.send(result);
     });
 });
@@ -502,6 +612,12 @@ router.post('/sendAbsentRequest/', function (req, res, next) {
 
 router.get('/getAllSettingsProfiles/:schoolId', function (req, res, next) {
     workingSettingsMethods.getAllSettingsProfiles(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllStudentsGroups/:schoolId', function (req, res, next) {
+    studentGroupsMethods.getAllStudentsGroups(req, res, function (result) {
         res.send(result);
     });
 });

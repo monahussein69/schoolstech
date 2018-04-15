@@ -28,6 +28,15 @@ angular.module('MetronicApp').factory('StudentsService', function ($http, Upload
         });
     };
 
+    service.getAllStudentsByGroup = function (group,schoolId) {
+        return new Promise(function (resolve, reject) {
+            $http.get("http://138.197.175.116:3000/getAllStudentsByGroup/"+schoolId+'/'+group).success(function (response) {
+                console.log(response);
+                resolve(response);
+            });
+        });
+    };
+
     service.deleteStudentData = function (studentId, callback) {
         $http.get("http://138.197.175.116:3000/deleteStudent/" + studentId).success(function (response) {
             callback(response);
@@ -60,6 +69,15 @@ angular.module('MetronicApp').factory('StudentsService', function ($http, Upload
     service.getStudentsByActivityId = function (activityId) {
         return new Promise(function (resolve, reject) {
             $http.get("http://138.197.175.116:3000/getStudentsByActivityId/" + activityId).success(function (response) {
+                console.log(response);
+                resolve(response);
+            });
+        });
+    };
+
+    service.getAllStudentsGroups = function (schoolId) {
+        return new Promise(function (resolve, reject) {
+            $http.get("http://138.197.175.116:3000/getAllStudentsGroups/" + schoolId).success(function (response) {
                 console.log(response);
                 resolve(response);
             });

@@ -1,12 +1,11 @@
 var mysql = require('mysql');
 let config = {
-    host: "localhost",
+    host: "138.197.175.116",
     user: "root",
     password: "salimquta",
     database: "schooltech"
 };
 let con;
-
 
 function handleDisconnect() {
     con = mysql.createConnection(config); // Recreate the connection, since

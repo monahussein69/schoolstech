@@ -44,7 +44,7 @@
                                     <div class="col-sm-6">
                                         <select name="activity" class="form-control" ng-model="model.activity" ng-change="model.getAllStudentsByActivity()">
                                             <option selected disabled value="">اختر الفعالية </option>
-                                            <option ng-repeat="activity in model.listOfActivity track by $index" value="{{activity.name}}">{{activity.name}} </option>
+                                            <option ng-repeat="activity in model.listOfActivity track by $index" value="{{$index}}">{{activity.name}} </option>
                                         </select>
                                     </div>
                                 </div>

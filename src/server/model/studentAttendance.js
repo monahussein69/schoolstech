@@ -3,6 +3,8 @@ var moment = require('moment');
 var workingSettingsMethods = require('../model/schedualProfile.js');
 var appSettingsMethods = require('../model/appSettings.js');
 var attScheduleMethods = require('../model/sch_att_schedule.js');
+var sequelizeConfig = require('../routes/sequelizeConfig.js');
+
 
 var studentAttendanceMethods = {
 
@@ -53,7 +55,7 @@ var studentAttendanceMethods = {
                         '(sch_str_student.student_id = sch_att_stdatt.Student_id and  sch_att_stdatt.Event_Name = ? and (sch_att_stdatt.Calender_id = ? ) ) ' +
                         'left join sch_att_stdexcuse on sch_att_stdexcuse.Student_id = sch_str_student.student_id '+
                         ' where sch_acd_lecturestables.School_Id = ?  ' + condition + ' '+
-                        '  group by sch_str_student.student_id', [lecture_name,calendarId,schoolId], function (err, result) {
+                        '  group by sch_str_student.student_id order by sch_str_student.name asc', [lecture_name,calendarId,schoolId], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err
@@ -73,7 +75,7 @@ var studentAttendanceMethods = {
                         ' where sch_acd_lecturestables.School_Id = ? and ' +
                         ' (sch_acd_lecturestables.Day = ? or sch_acd_lecturestables.Day = ?) ' +
                         ' and sch_acd_lecturestables.Teacher_Id = ? and sch_acd_lectures.name = ?  ' + condition + ' '+
-                        '  group by sch_str_student.student_id', [calendarId,schoolId,currentDay,currentDay1,teacherId,lecture_name], function (err, result) {
+                        '  group by sch_str_student.student_id order by sch_str_student.name asc', [calendarId,schoolId,currentDay,currentDay1,teacherId,lecture_name], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err
@@ -99,12 +101,10 @@ var studentAttendanceMethods = {
 
         var current_date = moment(attendanceObj.attendance_day).format('MM-DD-YYYY');
         req.body.date = current_date;
-        //req.body.date = '03-18-2018';
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 attendanceObj.Calender_id = calendarObj.Id;
-
                 workingSettingsMethods.getActiveAttSchedule(req, res, function (result) {
                     if (Object.keys(result).length) {
                         var schoolProfile = result[0];
@@ -116,28 +116,25 @@ var studentAttendanceMethods = {
                             if (Object.keys(result).length) {
                                 attendanceObj.Event_type_id = result[0].Id;
                                 attendanceObj.Begining_Time = result[0].Begining_Time;
-                                if (attendanceObj.is_absent == 0) {
+
+                                //if (attendanceObj.is_absent == 0) {
                                     var begining_time = moment(attendanceObj.Begining_Time, 'HH:mm').format('HH:mm');
-                                    //var current_time = moment().format('HH:mm');
                                     var current_time = attendanceObj.time_in;
                                     attendanceObj.time_in = current_time;
-
-                                    console.log(begining_time);
-
                                     var ms = moment(current_time, "HH:mm").diff(moment(begining_time, "HH:mm"));
-
+                                    console.log('mmmmms');
+                                    console.log(ms);
                                     if (ms <= 0) {
-                                        // ms = moment(current_time, "HH:mm").diff(moment(begining_time, "HH:mm"));
                                         attendanceObj.late_min = '';
                                     }else{
                                         var d = moment.duration(ms);
                                         var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
                                         attendanceObj.late_min = hours;
                                     }
-                                }
+                                //}
 
+                                attendanceObj.Total_min = attendanceObj.late_min;
                                 req.body.attendanceObj = attendanceObj;
-                                console.log(attendanceObj);
                                 studentAttendanceMethods.addStudentAttendance(req, res, function (result) {
                                     callback(result);
                                 });
@@ -151,11 +148,8 @@ var studentAttendanceMethods = {
                         response.success = false;
                         response.msg = 'لا يوجد حساب مفعل الرجاء التفعيل';
                         callback(response);
-
                     }
                 });
-
-
 
             } else {
                 response.success = false;
@@ -164,76 +158,41 @@ var studentAttendanceMethods = {
             }
         });
     },
+
     addStudentAttendance: function (req, res, callback) {
         var attendanceObj = req.body.attendanceObj;
         delete attendanceObj.attendance_day;
         delete attendanceObj.Begining_Time;
         var response = {};
+        if(attendanceObj.is_absent == 1){
+            attendanceObj.time_in = '';
+        }
 
-        con.query('select * from sch_att_stdatt where Calender_id = ? and Student_id = ? and Event_Name = ?', [attendanceObj.Calender_id, attendanceObj.Student_id , attendanceObj.Event_Name], function (err, result) {
-            if (err)
-                throw err;
-
-            if (Object.keys(result).length) {
-
-                con.query('update sch_att_stdatt set  school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?, Event_type_id = ? where Calender_id = ? and Student_id = ? and Event_Name = ?',
-                    [
-                        attendanceObj.school_id,
-                        attendanceObj.Event_Name,
-                        attendanceObj.time_in,
-                        attendanceObj.late_min,
-                        attendanceObj.is_absent,
-                        attendanceObj.Event_type_id,
-                        attendanceObj.Calender_id,
-                        attendanceObj.Student_id,
-                        attendanceObj.Event_Name,
-                    ], function (err, result) {
-                        if (err)
-                            throw err
-
-                        if (result.affectedRows) {
+        sequelizeConfig.studentAttandaceTable.find({where: {Calender_id: attendanceObj.Calender_id,Student_id:attendanceObj.Student_id,Event_Name:attendanceObj.Event_Name}}).then(function (attendance) {
+            if (attendance) {
+                attendance.updateAttributes(attendanceObj).then(function () {
+                    response.success = true;
+                    if (attendanceObj.is_absent == 0)
+                        response.msg = 'تم تسجيل الحضور بنجاح';
+                    if (attendanceObj.is_absent == 1)
+                        response.msg = 'تم تسجيل الغياب بنجاح';
+                        response.id = attendanceObj.insertId;
+                        callback(response);
+                    });
+            }else{
+                sequelizeConfig.studentAttandaceTable.create(attendanceObj).then(attendance => {
                             response.success = true;
-                            if (attendanceObj.is_absent == 0)
+                            if (attendance.is_absent == 0)
                                 response.msg = 'تم تسجيل الحضور بنجاح';
-                            if (attendanceObj.is_absent == 1)
+                            if (attendance.is_absent == 1)
                                 response.msg = 'تم تسجيل الغياب بنجاح';
-                            response.id = result.insertId;
-                            callback(response);
-                        } else {
-                            response.success = false;
-                            response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
-                            callback(response);
-                        }
 
-                    }
-                );
-
-            } else {
-                con.query('insert into sch_att_stdatt set ?',
-                    [attendanceObj], function (err, result) {
-                        if (err)
-                            throw err
-
-                        if (result.affectedRows) {
-                            response.success = true;
-                            if (attendanceObj.is_absent == 0)
-                                response.msg = 'تم تسجيل الحضور بنجاح';
-                            if (attendanceObj.is_absent == 1)
-                                response.msg = 'تم تسجيل الغياب بنجاح';
-                            response.id = result.insertId;
+                            response.id = attendance.insertId;
                             callback(response);
-                        } else {
-                            response.success = false;
-                            response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
-                            callback(response);
-                        }
-                    }
-                );
+                        });
             }
         });
     },
-
-
 };
 
 module.exports = studentAttendanceMethods;

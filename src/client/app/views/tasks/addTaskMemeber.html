@@ -1,0 +1,110 @@
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a ui-sref="dashboard">الصفحه الرئيسيه</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a ui-sref="Master.appSettings"> اضافه مهمه فرعيه</a>
+        </li>
+    </ul>
+</div>
+<h3 class="page-title">اضافه مهمه فرغيه </h3>
+<div>
+    <form method="post" ng-submit="model.savesubTask()" name="addsubtaskForm" ng-model="addsubtaskForm" enctype="multipart/form-data">
+        <div class="alert alert-success" ng-if="model.success != null">
+            <button class="close" data-close="alert"></button>
+            <span>{{model.success}}</span>
+        </div>
+        <div class="alert alert-danger" ng-if="model.error != null">
+            <button class="close" data-close="alert"></button>
+            <span>{{model.error}}</span>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <fieldset>
+                    <legend>بيانات المهمه :</legend>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">
+                            <span style="color:red;font-family: sans-serif !important;"> * </span> اسم المهمه : </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="Task_Tittle" class="form-control" ng-model="model.subTaskObj.SUBTask_Tittle" required/> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">
+                            <span style="color:red;font-family: sans-serif !important;"> * </span> الموظف : </label>
+                        <div class="col-sm-6">
+                            <select required name="Suppervisor_Emp_id" ng-options="employee.id as employee.name for employee in model.employees" class="form-control" ng-model="model.subTaskObj.Member_Emp_id">
+                                <option value=""> اختر الموظف</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> نوع المهمه : </label>
+                        <div class="col-sm-6">
+                            <select name="Task_InOut_Type" class="form-control" ng-model="model.subTaskObj.	SUBTask_InOut_Type">
+                                <option value=""> اختر نوع المهمه</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">
+                            <span style="color:red;font-family: sans-serif !important;"> * </span> مكان المهمه : </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="Task_Place" class="form-control" ng-model="model.subTaskObj.SUBTask_Place" required/> </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> وقت المهمه : </label>
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" name="Start_Date" class="form-control date-picker" ng-model="model.subTaskObj.Start_Date" placeholder="تاريخ البدايه" /> </div>
+                                <div class="col-md-6">
+                                    <input type="text" name="start_time" class="form-control timepicker timepicker-24" ng-model="model.subTaskObj.start_time" placeholder="وقت البدايه" /> </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6 col-sm-offset-2">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" name="End_Date" class="form-control date-picker" ng-model="model.subTaskObj.End_Date" placeholder="تاريخ النهايه" /> </div>
+                                <div class="col-md-6">
+                                    <input type="text" name="End_time" class="form-control timepicker timepicker-24" ng-model="model.subTaskObj.End_time" placeholder="وقت النهايه" /> </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6 col-sm-offset-2">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" name="Departure_time" class="form-control timepicker timepicker-24" ng-model="model.subTaskObj.Departure_time" placeholder=" وقت المغادره" /> </div>
+                                <div class="col-md-6">
+                                    <input type="text" name="Return_time" class="form-control timepicker timepicker-24" ng-model="model.subTaskObj.Return_time" placeholder="وقت العوده" /> </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> حالة المهمه : </label>
+                        <div class="col-sm-6">
+                            <select name="Task_Staus" class="form-control" ng-model="model.subTaskObj.SUBTask_Staus" ng-options="status.Id as status.Name for status in model.taskStatus">
+                                <option value=""> اختر حالة المهمه</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label"> وصف المهمه : </label>
+                        <div class="col-sm-6">
+                            <div class="col-sm-12" simditor ng-model="model.subTaskObj.SUBTask_Description" style="padding:0px "></div>
+                        </div>
+                    </div>
+                </fieldset>
+                <button class="btn btn-primary" type="submit" ng-disabled="addsubtaskForm.$invalid">حفظ</button>
+                <button class="btn btn-default">الغاء</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    ComponentsDateTimePickers.init(); // init todo page
+</script>

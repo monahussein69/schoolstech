@@ -229,6 +229,20 @@ var employeeMethods = {
         );
     },
 
+    getEmployeeForActions: function (employee_id, callback) {
+
+        con.query('select sch_str_employees.* , sch_school.name as school_name , job_title.name as job_name from sch_str_employees ' +
+            'join sch_school on sch_str_employees.school_id = sch_school.id' +
+            ' join job_title on sch_str_employees.jobtitle_id = job_title.id' +
+            ' where sch_str_employees.id = ?', [employee_id], function (err, result) {
+                if (err)
+                    throw err
+
+                callback(result);
+            }
+        );
+    },
+
     getEmployeeByUserId: function (req, res, callback) {
         var userId = req.params.userId;
         con.query('select * from sch_str_employees where userId = ?', [userId], function (err, result) {
@@ -446,8 +460,8 @@ var employeeMethods = {
                             console.log(finalEmployees);
 
 
-                            var requests = finalEmployees.map(function(item) {
-                                return new Promise(function(resolve) {
+                            var requests = finalEmployees.map(function (item) {
+                                return new Promise(function (resolve) {
                                     req.body.empData = item;
                                     employeeMethods.saveEmployee(req, res, function (result) {
                                         if (result.success) {
@@ -523,7 +537,9 @@ var employeeMethods = {
     },
     getEmployees: function (req, res, callback) {
         var schoolId = req.params.schoolId;
-        con.query('select sch_str_employees.*,sys_users.is_active,job_title.name as job_title_name from sch_str_employees left join sys_users on sch_str_employees.userId = sys_users.id  left join job_title on sch_str_employees.jobtitle_id = job_title.id  where school_id = ?', [schoolId], function (err, result) {
+        con.query('select sch_str_employees.*,sys_users.is_active,job_title.name as job_title_name from sch_str_employees ' +
+            'left join sys_users on sch_str_employees.userId = sys_users.id  left join job_title on sch_str_employees.jobtitle_id = job_title.id' +
+            ' where school_id = ? order by sch_str_employees.name ASC', [schoolId], function (err, result) {
                 if (err)
                     throw err
                 callback(result);
@@ -532,7 +548,7 @@ var employeeMethods = {
     },
     getAllTeachers: function (req, res, callback) {
         var schoolId = req.params.schoolId;
-        con.query('select sch_str_employees.*,sys_users.is_active,job_title.name as job_title_name from sch_str_employees left join sys_users on sch_str_employees.userId = sys_users.id  left join job_title on sch_str_employees.jobtitle_id = job_title.id  where school_id = ? AND job_title.name = "معلم" ', [schoolId], function (err, result) {
+        con.query('select sch_str_employees.*,sys_users.is_active,job_title.name as job_title_name from sch_str_employees left join sys_users on sch_str_employees.userId = sys_users.id  left join job_title on sch_str_employees.jobtitle_id = job_title.id  where school_id = ? AND job_title.name = "معلم" order by sch_str_employees.name asc', [schoolId], function (err, result) {
                 if (err)
                     throw err
                 callback(result);
@@ -602,19 +618,19 @@ var employeeMethods = {
     },
 
     getActivityByEmployeeId: function (req, res, callback) {
-         var currentDay = employeeMethods.getArabicDay(new Date(req.body.date).getDay());
+        var currentDay = employeeMethods.getArabicDay(new Date(req.body.date).getDay());
         var currentDay1 = currentDay;
-        if(currentDay ==  'الاحد'){
+        if (currentDay == 'الاحد') {
             currentDay1 = 'الأحد';
         }
-        if(currentDay ==  'الاثنين'){
+        if (currentDay == 'الاثنين') {
             currentDay1 = 'الأثنين';
         }
-        if(currentDay ==  'الاربعاء'){
+        if (currentDay == 'الاربعاء') {
             currentDay1 = 'الأربعاء';
         }
         var employeeId = req.body.employeeId;
-        var query = con.query('SELECT * FROM sch_acd_lectures JOIN sch_acd_lecturestables ON sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO WHERE sch_acd_lecturestables.Teacher_Id = ? AND (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) ', [employeeId, currentDay,currentDay1], function (err, result) {
+        var query = con.query('SELECT * FROM sch_acd_lectures JOIN sch_acd_lecturestables ON sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO  join sch_att_schedule on sch_att_schedule.event_Nam = sch_acd_lectures.name  WHERE sch_acd_lecturestables.Teacher_Id = ? AND (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?)  AND (sch_att_schedule.Day = ? OR sch_att_schedule.Day = ?) group by sch_acd_lectures.name order by sch_acd_lectures.id asc', [employeeId, currentDay,currentDay1, currentDay,currentDay1], function (err, result) {
                 console.log(query.sql);
                 if (err)
                     throw err

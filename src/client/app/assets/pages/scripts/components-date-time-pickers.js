@@ -1,11 +1,11 @@
 var ComponentsDateTimePickers = function () {
-
+console.log("Data Time Picker Salim");
     var handleDatePickers = function () {
 
         if (jQuery().datepicker) {
             $('.date-picker').datepicker({
                 rtl: App.isRTL(),
-                orientation: "left",
+                orientation: "right",
                 autoclose: true
             });
             //$('body').removeClass("modal-open"); // fix bug when inline picker is used in modal
@@ -30,13 +30,13 @@ var ComponentsDateTimePickers = function () {
 
             $('.timepicker-no-seconds').timepicker({
                 autoclose: true,
-                minuteStep: 5,
-                defaultTime: false
+                minuteStep: 1,
+                defaultTime: 'current'
             });
 
             $('.timepicker-24').timepicker({
                 autoclose: true,
-                minuteStep: 5,
+                minuteStep: 1,
                 showSeconds: false,
                 showMeridian: false
             });
