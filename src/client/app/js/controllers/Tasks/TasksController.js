@@ -1,6 +1,6 @@
 /* Setup general page controller */
 angular.module('MetronicApp').controller('AddTaskController',
-    function (manageTaskStatusService,$stateParams,$moment,$rootScope, $scope, $http, $window,taskService, localStorageService,toastr,CommonService,manageEmployeeService) {
+    function (CommonService,manageTaskStatusService,$stateParams,$moment,$rootScope, $scope, $http, $window,taskService, localStorageService,toastr,CommonService,manageEmployeeService) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -31,6 +31,7 @@ angular.module('MetronicApp').controller('AddTaskController',
 
     var model={
         taskObj:{},
+        supervisor_emp : 0,
         popObj:{},
         CurrentDay:CurrentDay,
         employees : [],
@@ -53,6 +54,8 @@ angular.module('MetronicApp').controller('AddTaskController',
         if ($stateParams.taskId) {
             taskService.getTask($stateParams.taskId,function(result){
                 model.taskObj = result[0];
+                console.log(result[0]);
+                model.supervisor_emp = result[0].Suppervisor_Emp_id;
                 model.added = 1;
                 manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
                     model.employees = employees;
@@ -89,14 +92,21 @@ angular.module('MetronicApp').controller('AddTaskController',
         if (Object.keys(model.taskObj).length) {
             taskService.saveTaskData(model.taskObj, function (response) {
 
-                if (response.success) {
+                if (response.success){
                     //$window.location.href = '#/Tasks';
+                    console.log(response.result.Suppervisor_Emp_id);
+                    console.log(model.supervisor_emp);
+                    if(response.added || (response.updated && (model.taskObj.Suppervisor_Emp_id != model.supervisor_emp) )){
+                        CommonService.sendNotification('تم تعيينك كمشرف على مهمه',model.taskObj.Suppervisor_Emp_id);
+                    }
+                    if(response.updated && (model.taskObj.Suppervisor_Emp_id != model.supervisor_emp)){
+                        CommonService.sendNotification('تم الغاء اشرافك على مهمه',model.supervisor_emp);
+                    }
                     toastr.success(response.msg);
                     model.added = 1;
                     var date = model.taskObj.CurrentDate;
                     //model.taskObj = response.result;
                     model.taskObj.CurrentDate = date;
-
                 } else {
                     toastr.error(response.msg);
                 }
@@ -146,7 +156,7 @@ angular.module('MetronicApp').controller('ManageTaskController',
                     });
                 }
                 if (userType == 3){
-                    var empId = userObject.employeeData.id;
+                    var empId = userObject[0].employeeData[0].id;
                     taskService.getTaskByEmpId(empId).then(function (tasks) {
                         model.tasks = tasks;
                         defer.resolve(tasks);
@@ -246,9 +256,7 @@ angular.module('MetronicApp').controller('ManageTaskController',
 
 
 angular.module('MetronicApp').controller('TaskMembersController',
-    function (manageTaskStatusService,manageEmployeeService,$stateParams,$rootScope, $scope, $http, $window,subTaskService, localStorageService,toastr) {
-
-
+    function (CommonService,manageTaskStatusService,manageEmployeeService,$stateParams,$rootScope, $scope, $http, $window,subTaskService, localStorageService,toastr) {
 
         var taskId = $stateParams.taskId;
         var schoolId = 0;
@@ -267,6 +275,7 @@ angular.module('MetronicApp').controller('TaskMembersController',
         var model={
             subTaskObj:{},
             employees : [],
+            member_id:0,
             savesubTask:savesubTask,
             getsubTask:getsubTask,
             taskId:taskId,
@@ -282,6 +291,8 @@ angular.module('MetronicApp').controller('TaskMembersController',
             if ($stateParams.subTaskId) {
                 subTaskService.getSubTask($stateParams.subTaskId,function(result){
                     model.subTaskObj = result;
+                    console.log(result);
+                    model.member_id = result.Member_Emp_id;
                     manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
                         model.employees = employees;
                         $scope.$apply();
@@ -311,8 +322,16 @@ angular.module('MetronicApp').controller('TaskMembersController',
             if (Object.keys(model.subTaskObj).length) {
                 model.subTaskObj.Task_id = parseInt(model.taskId);
                 subTaskService.saveSubTaskData(model.subTaskObj, function (response) {
-
+                     console.log(model.subTaskObj.Member_Emp_id);
+                     console.log(model.member_id);
                     if (response.success) {
+                        if(response.added || (response.updated && (model.subTaskObj.Member_Emp_id != model.member_id) )){
+                            CommonService.sendNotification('تمت اضافه مهمه لك',model.subTaskObj.Member_Emp_id);
+                        }
+                        if(response.updated && (model.subTaskObj.Member_Emp_id != model.member_id)){
+                            CommonService.sendNotification('تم الغاءك من مهمه',model.member_id);
+                        }
+
                         $window.location.href = '#/subTasks/'+model.taskId;
                         toastr.success(response.msg);
 
@@ -338,7 +357,7 @@ angular.module('MetronicApp').controller('TaskMembersController',
 
 
 angular.module('MetronicApp').controller('ManageSubTaskController',
-    function ($stateParams,$compile,DTOptionsBuilder, DTColumnBuilder,$q,$moment,$uibModal,$rootScope, $scope, $http, $window,subTaskService, localStorageService,toastr) {
+    function ($stateParams,$compile,DTOptionsBuilder, DTColumnBuilder,$q,$moment,$uibModal,$rootScope, $scope, $http, $window,subTaskService,taskService, localStorageService,toastr) {
 
         var taskId = $stateParams.taskId;
         var userObject = localStorageService.get('UserObject');
@@ -346,31 +365,43 @@ angular.module('MetronicApp').controller('ManageSubTaskController',
             var userType = userObject[0].userType;
             var userId = userObject[0].id;
         }
+        if(!taskId){
+            taskId = 0;
+        }
 
         var model = {
             tasks:[],
             taskId:taskId,
+            mainTask:[],
             viewStudentsTask:viewStudentsTask,
             deleteSubTask:deleteSubTask,
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
-                if (userType == 2){
-                    subTaskService.getAllSubTasks(taskId).then(function (tasks) {
-                        model.tasks = tasks;
-                        defer.resolve(tasks);
-                        console.log(tasks);
-                        $scope.$apply();
+                if(taskId){
+                    taskService.getTask(taskId,function (task) {
+                        model.mainTask = task[0];
+                        if (userType == 2 || (model.mainTask.Suppervisor_Emp_id == userObject[0].employeeData[0].id )){
+                            subTaskService.getAllSubTasks(taskId).then(function (tasks) {
+                                model.tasks = tasks;
+                                defer.resolve(tasks);
+                                $scope.$apply();
+                            });
+                        }
+
                     });
+
+                }else{
+                    if (userType == 3) {
+                        var empId = userObject[0].employeeData[0].id;
+                        subTaskService.getSubTaskByEmpId(empId).then(function (tasks) {
+                            model.tasks = tasks;
+                            defer.resolve(tasks);
+                            console.log(tasks);
+                            $scope.$apply();
+                        });
+                    }
                 }
-                if (userType == 3){
-                    var empId = userObject.employeeData.id;
-                    subTaskService.getSubTaskByEmpId(empId,taskId).then(function (tasks) {
-                        model.tasks = tasks;
-                        defer.resolve(tasks);
-                        console.log(tasks);
-                        $scope.$apply();
-                    });
-                }
+
 
                 return defer.promise
             }).withOption('createdRow', createdRow),
@@ -385,6 +416,9 @@ angular.module('MetronicApp').controller('ManageSubTaskController',
             dtInstance: {},
         };
         $scope.model = model;
+
+
+
 
         function deleteSubTask(subTaskId) {
             subTaskService.deleteSubTask(subTaskId, function (response) {
@@ -556,6 +590,7 @@ angular.module('MetronicApp').controller('addTaskStudentsController',
             var group = model.filterType;
             var defer = $q.defer();
             StudentsService.getAllStudentsByGroup(group,schoolId).then(function (students) {
+                model.selected = [];
                 model.students = students;
                 defer.resolve(students);
                 model.dtInstance.changeData(defer.promise);
@@ -590,6 +625,7 @@ angular.module('MetronicApp').controller('addTaskStudentsController',
         function assignStudentsToTask(){
 
             var ids = model.selected;
+            console.log(ids);
             var results = [];
             if(Object.keys(ids).length > 0) {
                 var requests = Object.keys(ids).map(function (key, item) {

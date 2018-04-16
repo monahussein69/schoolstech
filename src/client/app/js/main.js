@@ -940,6 +940,33 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/bower_components/moment/moment.js',
                             'js/services/subTaskFactory.js',
                             'js/services/studentTaskFactory.js',
+                            'js/services/taskFactory.js',
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.myTasks', {
+            url: "/myTasks",
+            templateUrl: "views/tasks/subTasks.html",
+            data: {pageTitle: ' اداره المهام'},
+            controller: "ManageSubTaskController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/Tasks/TasksController.js',
+                            '../assets/bower_components/moment/moment.js',
+                            'js/services/subTaskFactory.js',
+                            'js/services/studentTaskFactory.js',
+                            'js/services/taskFactory.js',
                             '../assets/global/plugins/datatables/datatables.min.css',
                             '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
                             '../assets/global/plugins/datatables/datatables.all.min.js',

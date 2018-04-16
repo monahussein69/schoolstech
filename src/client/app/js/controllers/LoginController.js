@@ -12,7 +12,7 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
 
         model.error = null;
         if ($scope.model.username && $scope.model.password){
-            $http.post("http://138.197.175.116:3000/login", {
+            $http.post("http://localhost:3000/login", {
                 'name': $scope.model.username,
                 'password': $scope.model.password
             })
@@ -47,9 +47,11 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
                             var userId = userObj[0].id;
                             manageEmployeeService.getEmployeeByUserId(userId, function (response) {
                                 userObj[0].employeeData = response;
+                                console.log(userObj)
+                                localStorageService.set('UserObject', userObj);
                             });
                         }
-                        localStorageService.set('UserObject', response.data.user);
+
                         $window.location.href = '#/dashboard.html';
                     } else {
                         model.error = "خطأ في اسم المستخدم او كلمه المرور";

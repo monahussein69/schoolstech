@@ -36,6 +36,7 @@ var taskMethods = {
                                response.success = true;
                                response.msg = 'تم الحفظ بنجاح';
                                response.insertId = task.id;
+                               response.updated = 1;
                                response.result = task;
                                callback(response);
                            })
@@ -46,6 +47,7 @@ var taskMethods = {
                                response.msg = 'تم الحفظ بنجاح';
                                response.insertId = task.id;
                                response.result = task;
+                               response.added = 1;
                                callback(response);
                            });
 
@@ -90,7 +92,9 @@ var taskMethods = {
     },
     getTaskByEmpId:function(req,res,callback){
         var empId = req.body.empId;
-        con.query('select sch_att_tasks.*,sch_str_employees.name as supervisor_name,app_def_taskstatus.Name as status_name from sch_att_tasks join sch_str_employees on sch_str_employees.id = sch_att_tasks.Suppervisor_Emp_id join app_def_taskstatus on app_def_taskstatus.Id = sch_att_tasks.Task_Staus where Suppervisor_Emp_id =?',[empId],function(err,result){
+        var query = con.query('select sch_att_tasks.*,sch_str_employees.name as supervisor_name,app_def_taskstatus.Name as status_name from sch_att_tasks join sch_str_employees on sch_str_employees.id = sch_att_tasks.Suppervisor_Emp_id join app_def_taskstatus on app_def_taskstatus.Id = sch_att_tasks.Task_Staus where Suppervisor_Emp_id =?',[empId],function(err,result){
+            console.log(result);
+            console.log('result');
             callback(result);
         });
     }

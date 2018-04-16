@@ -73,6 +73,7 @@
                 </li>
             </ul>
         </li>
+
         <li class="nav-item" ng-show="model.userType == 2">
             <a href="#" class="nav-link nav-toggle">
                 <i class="icon-graduation"></i>
@@ -108,6 +109,13 @@
                     <a ui-sref="Master.studentsDegrees">
                         <i class="fa fa-list"></i>
                         <span>كشف رصد درجات الطلاب </span>
+                    </a>
+                </li>
+
+                <li>
+                    <a ui-sref="Master.Attention">
+                        <i class="fa fa-list"></i>
+                        <span>اجراءات </span>
                     </a>
                 </li>
 
@@ -156,6 +164,18 @@
                     </a>
                 </li>
             </ul>
+        </li>
+        <li>
+            <a ui-sref="Master.tasks">
+                <i class="fa fa-list"></i>
+                <span>المهام </span>
+            </a>
+        </li>
+        <li  ng-show="model.userType == 3">
+            <a ui-sref="Master.myTasks">
+                <i class="fa fa-list"></i>
+                <span>مهامي </span>
+            </a>
         </li>
     </ul>
     <!-- END SIDEBAR MENU -->

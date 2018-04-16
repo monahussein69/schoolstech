@@ -52,6 +52,23 @@ License: You must have a valid license purchased only from themeforest(the above
         <link rel="stylesheet" type="text/css" href="../assets/bower_components/angular-datatables/dist/css/angular-datatables.min.css" />
         <!-- END THEME STYLES -->
         <link rel="shortcut icon" href="favicon.ico" />
+
+        <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyCW0e_k36oouITM6rW_hSBqcZvWVnCWu_8",
+                authDomain: "schoolstech-b4413.firebaseapp.com",
+                databaseURL: "https://schoolstech-b4413.firebaseio.com",
+                projectId: "schoolstech-b4413",
+                storageBucket: "schoolstech-b4413.appspot.com",
+                messagingSenderId: "921913451306"
+            };
+            firebase.initializeApp(config);
+            var database = firebase.database();
+
+     </script>
+
         <!-- END HEAD -->
         <!-- BEGIN BODY -->
         <!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->

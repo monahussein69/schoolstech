@@ -28,6 +28,7 @@ var taskMethods = {
                             response.msg = 'تم الحفظ بنجاح';
                             response.insertId = subTask.id;
                             response.result = subTask;
+                            response.updated = 1;
                             callback(response);
                         })
                     } else{
@@ -35,6 +36,7 @@ var taskMethods = {
                         sequelizeConfig.subtasksTable.create(subTaskObj).then(subTask => {
                             response.success = true;
                             response.msg = 'تم الحفظ بنجاح';
+                            response.added = 1;
                             response.insertId = subTask.id;
                             response.result = subTask;
                             callback(response);

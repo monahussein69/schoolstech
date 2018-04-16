@@ -64,6 +64,19 @@ angular.module('MetronicApp').factory('CommonService', function ($http, Upload,m
     };
 
 
+    fac.sendNotification = function(msg,user_id){
+        var notifiy_id = database.ref('notifications/' + user_id).push().key;
+        var current_time = Date.now();
+
+        database.ref('notifications/' + user_id+'/'+notifiy_id).set({
+            "message" : msg,
+            "status":"unread",
+            "notfied" : "false",
+            "notifiy_id" : notifiy_id,
+            "notify_time" :current_time
+        });
+    }
+
 
     return fac;
 
