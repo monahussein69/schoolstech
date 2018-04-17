@@ -2,6 +2,8 @@ var con = require('../routes/dbConfig.js');
 var sequelizeConfig = require('../routes/sequelizeConfig.js');
 var appSettingsMethods = require('../model/appSettings.js');
 var moment = require('moment');
+var fireBaseConn = require('../routes/fireBaseConfig.js');
+
 
 var taskMethods = {
 
@@ -23,12 +25,24 @@ var taskMethods = {
 
                 sequelizeConfig.subtasksTable.find({where: {id: subTaskObj.id}}).then(function (subTask) {
                     if(subTask){
+                        var current_memeber = subTask.Member_Emp_id;
                         subTask.updateAttributes(subTaskObj).then(function () {
                             response.success = true;
                             response.msg = 'تم الحفظ بنجاح';
                             response.insertId = subTask.id;
                             response.result = subTask;
                             response.updated = 1;
+                            if(response.updated && (current_memeber != subTaskObj.Member_Emp_id)){
+                                var msg = 'تم الغاءك من مهمه';
+                                req.body.msg = '<li><a href="javascript:;"><span class="time">Today</span><span class="details"><span class="label label-sm label-icon label-danger"><i class="fa fa-bolt"></i></span> '+msg+' </span> </a></li>';
+                                req.body.user_id = current_memeber;
+                                fireBaseConn.sendNotification(req,res,function(result){});
+                                var msg =  'تمت اضافه مهمه لك';
+                                req.body.msg = '<li><a href="javascript:;"><span class="time">Today</span><span class="details"><span class="label label-sm label-icon label-success"><i class="fa fa-plus"></i></span> '+msg+'</span></a></li>';
+
+                                req.body.user_id = subTaskObj.Member_Emp_id;
+                                fireBaseConn.sendNotification(req,res,function(result){});
+                            }
                             callback(response);
                         })
                     } else{
@@ -39,6 +53,11 @@ var taskMethods = {
                             response.added = 1;
                             response.insertId = subTask.id;
                             response.result = subTask;
+                            var msg = 'تمت اضافه مهمه لك';
+                            req.body.msg = '<li><a href="javascript:;"><span class="time">Today</span><span class="details"><span class="label label-sm label-icon label-success"><i class="fa fa-plus"></i></span> '+msg+'</span></a></li>';
+
+                            req.body.user_id = subTaskObj.Member_Emp_id;
+                            fireBaseConn.sendNotification(req,res,function(result){})
                             callback(response);
                         });
 

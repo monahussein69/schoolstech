@@ -22,7 +22,7 @@ var subTaskMethods = require('../model/subTask.js');
 var taskStatusMethods = require('../model/taskStatus.js');
 var studentTaskMethods = require('../model/studentTask.js');
 var studentGroupsMethods = require('../model/studentGroups.js');
-
+var fireBaseConn= require('../routes/fireBaseConfig.js');
 var app = express();
 var multer = require('multer');
 var filename = '';
@@ -624,6 +624,23 @@ router.get('/getAllStudentsGroups/:schoolId', function (req, res, next) {
 
 router.get('/deleteSettingsProfile/:profileId/:schoolId', function (req, res, next) {
     workingSettingsMethods.deleteSettingProfile(req, res, function (result) {
+        res.send(result);
+    });
+});
+router.get('/countUnreadNotifications/:user_id', function (req, res, next) {
+    fireBaseConn.countUnreadNotifications(req,res,function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getUserNotifications/:user_id', function (req, res, next) {
+    fireBaseConn.getUserNotifications(req,res,function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/sendNotification', function (req, res, next) {
+    fireBaseConn.sendNotification(req,res,function (result) {
         res.send(result);
     });
 });

@@ -80,7 +80,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', function ($scop
  ***/
 
 /* Setup Layout Part - Header */
-MetronicApp.controller('HeaderController', ['localStorageService', '$scope', '$window', function (localStorageService, $scope, $window) {
+MetronicApp.controller('HeaderController', ['CommonService','localStorageService', '$scope', '$window', function (CommonService,localStorageService, $scope, $window) {
     $scope.$on('$includeContentLoaded', function () {
         var userObject = localStorageService.get('UserObject');
 
@@ -88,10 +88,35 @@ MetronicApp.controller('HeaderController', ['localStorageService', '$scope', '$w
             $window.location.href = '#/login';
         }
 
+        var userType = userObject[0].userType;
+        var empId = 0;
+        if (userType == 3) {
+            empId = userObject[0].employeeData[0].id;
+        }
 
-        var model = {username: ''};
+        var unread = 0;
+        var model = {username: '',
+            unread:unread,
+            notifications:[]
+        };
+
         $scope.model = model;
         $scope.model.username = userObject[0].loginName;
+        $scope.model.empId = empId;
+       if(empId){
+           CommonService.countUnreadNotifications(empId,function(result){
+               model.unread = result.unread;
+           });
+
+           CommonService.getUserNotifications(empId,function(result){
+               model.notifications = result.notifications;
+               console.log(model.notifications);
+           });
+       }
+
+
+
+
         Layout.initHeader(); // init header
     });
 

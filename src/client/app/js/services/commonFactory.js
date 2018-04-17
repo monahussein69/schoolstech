@@ -63,19 +63,27 @@ angular.module('MetronicApp').factory('CommonService', function ($http, Upload,m
 
     };
 
+                fac.sendNotification = function(msg,user_id,callback){
+                $http.post("http://localhost:3000/sendNotification", {
+                    'msg': msg,
+                    'userId':user_id
+                }).success(function (response) {
+                    callback(response);
+                });
+            };
 
-    fac.sendNotification = function(msg,user_id){
-        var notifiy_id = database.ref('notifications/' + user_id).push().key;
-        var current_time = Date.now();
+                fac.getUserNotifications = function(user_id,callback){
+                $http.get("http://localhost:3000/getUserNotifications/"+user_id).success(function (response) {
+                    callback(response);
+                });
+            };
 
-        database.ref('notifications/' + user_id+'/'+notifiy_id).set({
-            "message" : msg,
-            "status":"unread",
-            "notfied" : "false",
-            "notifiy_id" : notifiy_id,
-            "notify_time" :current_time
-        });
-    }
+                fac.countUnreadNotifications = function(user_id,callback){
+                $http.get("http://localhost:3000/countUnreadNotifications/"+user_id).success(function (response) {
+                    callback(response);
+                });
+            };
+
 
 
     return fac;

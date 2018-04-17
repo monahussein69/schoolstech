@@ -97,10 +97,10 @@ angular.module('MetronicApp').controller('AddTaskController',
                     console.log(response.result.Suppervisor_Emp_id);
                     console.log(model.supervisor_emp);
                     if(response.added || (response.updated && (model.taskObj.Suppervisor_Emp_id != model.supervisor_emp) )){
-                        CommonService.sendNotification('تم تعيينك كمشرف على مهمه',model.taskObj.Suppervisor_Emp_id);
+                        //CommonService.sendNotification('تم تعيينك كمشرف على مهمه',model.taskObj.Suppervisor_Emp_id);
                     }
                     if(response.updated && (model.taskObj.Suppervisor_Emp_id != model.supervisor_emp)){
-                        CommonService.sendNotification('تم الغاء اشرافك على مهمه',model.supervisor_emp);
+                        //CommonService.sendNotification('تم الغاء اشرافك على مهمه',model.supervisor_emp);
                     }
                     toastr.success(response.msg);
                     model.added = 1;
@@ -326,10 +326,10 @@ angular.module('MetronicApp').controller('TaskMembersController',
                      console.log(model.member_id);
                     if (response.success) {
                         if(response.added || (response.updated && (model.subTaskObj.Member_Emp_id != model.member_id) )){
-                            CommonService.sendNotification('تمت اضافه مهمه لك',model.subTaskObj.Member_Emp_id);
+                           // CommonService.sendNotification('تمت اضافه مهمه لك',model.subTaskObj.Member_Emp_id);
                         }
                         if(response.updated && (model.subTaskObj.Member_Emp_id != model.member_id)){
-                            CommonService.sendNotification('تم الغاءك من مهمه',model.member_id);
+                            //CommonService.sendNotification('تم الغاءك من مهمه',model.member_id);
                         }
 
                         $window.location.href = '#/subTasks/'+model.taskId;
