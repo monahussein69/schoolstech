@@ -1,5 +1,6 @@
 <!-- BEGIN HEADER INNER -->
 <div class="page-header-inner">
+
     <!-- BEGIN LOGO -->
     <div class="page-logo">
         <div class="menu-toggler sidebar-toggler">
@@ -18,18 +19,20 @@
         <ul class="nav navbar-nav pull-right">
             <!-- BEGIN USER LOGIN DROPDOWN -->
             <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+            <li class="dropdown dropdown-extended dropdown-notification open" id="header_notification_bar">
                 <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
                     <i class="icon-bell notify-item"></i>
                     <span class="count badge badge-default" ng-show="model.unread > 0">{{model.unread}}</span>
                 </a>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu" style="width:333px;max-width:333px">
 
                     <li>
                         <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283" >
-                            <li ng-repeat=" opt in opts" >
-                                {{ opt.text }}
+                            <li ng-repeat =" notification in model.notifications">
+                                <a ng-bind-html="notification.message" style="display: inline-block"></a>
+                                <span am-time-ago="notification.notify_time" class="time" style="position: absolute;padding:17px 25px 18px;border-bottom: 1px solid #EFF2F6!important;color: #888;"></span>
                             </li>
+
                         </ul>
                     </li>
                 </ul>

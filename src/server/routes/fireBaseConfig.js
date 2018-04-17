@@ -15,7 +15,7 @@ let fireBaseConn = {
 
  sendNotification : function (req,res,callback) {
      var msg = req.body.msg;
-     var msg = req.body.user_id;
+     var user_id = req.body.user_id;
     var notifiy_id = database.ref('notifications/' + user_id).push().key;
     var current_time = Date.now();
      var result = {};

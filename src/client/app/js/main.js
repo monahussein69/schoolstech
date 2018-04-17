@@ -16,7 +16,9 @@ var MetronicApp = angular.module("MetronicApp", [
     'datatables',
     'mgo-angular-wizard',
     'checklist-model',
-    'angular-momentjs'
+    'angular-momentjs',
+    'ngSanitize',
+    'angularMoment'
 ]);
 
 
@@ -111,6 +113,9 @@ MetronicApp.controller('HeaderController', ['CommonService','localStorageService
            CommonService.getUserNotifications(empId,function(result){
                model.notifications = result.notifications;
                console.log(model.notifications);
+               angular.forEach(model.notifications, function (value, key) {
+
+               });
            });
        }
 
