@@ -99,7 +99,8 @@ MetronicApp.controller('HeaderController', ['CommonService','localStorageService
         var unread = 0;
         var model = {username: '',
             unread:unread,
-            notifications:[]
+            notifications:[],
+            readNotifications:readNotifications,
         };
 
         $scope.model = model;
@@ -123,17 +124,40 @@ MetronicApp.controller('HeaderController', ['CommonService','localStorageService
                console.log(unread);
                model.unread = unread;
                console.log(model.unread);
-               $scope.$apply();
+               //$scope.$apply();
+               $scope.safeApply();
            });
 
            database.ref('notifications/' + empId).on('value', function (snapshot) {
                model.notifications = snapshot.val();
-               $scope.$apply();
+              // $scope.$apply();
+               $scope.safeApply();
                console.log(model.notifications);
            });
        }
 
 
+
+       function readNotifications(){
+           database.ref('notifications/'+ model.empId).orderByChild("notfied").equalTo("false").on('value',function(snapshot) {
+               if(snapshot.val()){
+                   angular.forEach(Object.values(snapshot.val()), function (value,index ) {
+                       database.ref('notifications/'+ model.empId+'/'+value.notifiy_id).update({notfied:"true"});
+                   });
+               }
+           });
+       }
+
+        $scope.safeApply = function(fn) {
+            var phase = this.$root.$$phase;
+            if(phase == '$apply' || phase == '$digest') {
+                if(fn && (typeof(fn) === 'function')) {
+                    fn();
+                }
+            } else {
+                this.$apply(fn);
+            }
+        };
 
 
         Layout.initHeader(); // init header
