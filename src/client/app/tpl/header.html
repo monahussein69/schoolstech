@@ -19,11 +19,11 @@
             <!-- BEGIN USER LOGIN DROPDOWN -->
             <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
             <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
+                <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true" ng-click="model.readNotifications()">
                     <i class="icon-bell notify-item"></i>
                     <span class="count badge badge-default" ng-show="model.unread > 0">{{model.unread}}</span>
                 </a>
-                <ul class="dropdown-menu" style="width:333px;max-width:333px">
+                <ul class="dropdown-menu" style="width:350px;max-width:500px">
                     <li>
                         <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
                             <li ng-repeat=" notification in model.notifications" style="border-bottom:1px solid #EFF2F6!important">
@@ -38,7 +38,7 @@
                 <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
                     <img alt="" class="img-circle" src="{{settings.layoutPath}}/img/avatar3_small.jpg" />
                     <span class="username username-hide-on-mobile"> {{model.username}} </span>
-                    <input type="hidden" ng-model="model.empId" id="EmpId" ng-value="mode.EmpId"/>
+                    <input type="hidden" ng-model="model.empId" id="EmpId" ng-value="mode.EmpId" />
                     <i class="fa fa-angle-down"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-default">
@@ -65,5 +65,4 @@
     {
         height: '250px'
     });
-
 </script>
