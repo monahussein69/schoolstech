@@ -64,7 +64,7 @@ angular.module('MetronicApp').factory('CommonService', function ($http, Upload,m
     };
 
                 fac.sendNotification = function(msg,user_id,callback){
-                $http.post("http://138.197.175.116:3000/sendNotification", {
+                $http.post("http://localhost:3000/sendNotification", {
                     'msg': msg,
                     'userId':user_id
                 }).success(function (response) {
@@ -73,13 +73,13 @@ angular.module('MetronicApp').factory('CommonService', function ($http, Upload,m
             };
 
                 fac.getUserNotifications = function(user_id,callback){
-                $http.get("http://138.197.175.116:3000/getUserNotifications/"+user_id).success(function (response) {
+                $http.get("http://localhost:3000/getUserNotifications/"+user_id).success(function (response) {
                     callback(response);
                 });
             };
 
                 fac.countUnreadNotifications = function(user_id,callback){
-                $http.get("http://138.197.175.116:3000/countUnreadNotifications/"+user_id).success(function (response) {
+                $http.get("http://localhost:3000/countUnreadNotifications/"+user_id).success(function (response) {
                     callback(response);
                 });
             };

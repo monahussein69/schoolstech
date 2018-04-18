@@ -6,14 +6,14 @@ angular.module('MetronicApp').factory('taskService', function ($http, Upload) {
 
     fac.getAllTasks = function (schoolId) {
         return new Promise(function (resolve, reject) {
-            $http.get("http://138.197.175.116:3000/getAllTasks/"+schoolId).success(function (response) {
+            $http.get("http://localhost:3000/getAllTasks/"+schoolId).success(function (response) {
                 resolve(response);
             });
         });
     };
 
     fac.saveTaskData = function (taskObj, callback) {
-        $http.post("http://138.197.175.116:3000/saveTaskData",{'taskObj':taskObj}).success(function (response) {
+        $http.post("http://localhost:3000/saveTaskData",{'taskObj':taskObj}).success(function (response) {
             callback(response);
         });
 
@@ -22,7 +22,7 @@ angular.module('MetronicApp').factory('taskService', function ($http, Upload) {
 
     fac.getTaskByEmpId = function(empId){
         return new Promise(function (resolve, reject) {
-            $http.post("http://138.197.175.116:3000/getTaskByEmpId",{'empId':empId}).success(function (response) {
+            $http.post("http://localhost:3000/getTaskByEmpId",{'empId':empId}).success(function (response) {
                 console.log('dddddddddd');
                 console.log(response);
                 resolve(response);
@@ -31,13 +31,13 @@ angular.module('MetronicApp').factory('taskService', function ($http, Upload) {
     };
 
     fac.deleteTask = function(taskId,callback){
-        $http.get("http://138.197.175.116:3000/deleteTask/"+taskId).success(function (response) {
+        $http.get("http://localhost:3000/deleteTask/"+taskId).success(function (response) {
             callback(response);
         });
     };
 
     fac.getTask = function(taskId,callback){
-        $http.get("http://138.197.175.116:3000/getTask/"+taskId).success(function (response) {
+        $http.get("http://localhost:3000/getTask/"+taskId).success(function (response) {
             callback(response);
         });
     };

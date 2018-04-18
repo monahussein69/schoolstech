@@ -269,7 +269,7 @@ angular.module('MetronicApp').controller('activityAttendanceController',
                 console.log('open');
 
                 if (result.success) {
-                    angular.element($event.target).attr('disabled', 'disabled');
+                    //angular.element($event.target).attr('disabled', 'disabled');
                     angular.element($event.target).removeClass('color-grey');
                 }
             }, function () {

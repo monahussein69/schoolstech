@@ -52,7 +52,9 @@ var attScheduleMethods = {
 
             for (var Day = 0; Day < Day_Begining.length; Day++) {
                 if (Day_Begining[Day]) {
-                    var queue_Begining_time = moment(queue_Begining, 'HH:mm').format('HH:mm');
+                    var queue_Begining_time = moment(queue_Begining, "h:mm A").format('HH:mm');
+                    console.log('queue_Begining_time');
+                    console.log(queue_Begining_time);
                     var Ending_Time = moment(queue_Begining_time, 'HH:mm').add(queue_Begining_Duration, 'm').format('HH:mm');
                     activityObj.SCHEDULE_Id = profile_id;
                     activityObj.Day = Day_Begining[Day];
@@ -73,7 +75,7 @@ var attScheduleMethods = {
                         var rest_count = 0;
                         var breaks = 0;
                         if (i == 1) {
-                            var queue_Begining_time = moment(queue_Begining, 'HH:mm');
+                            var queue_Begining_time = moment(queue_Begining, "h:mm A").format('HH:mm');
                             lecture_Begining_time = moment(queue_Begining_time, 'HH:mm').add(queue_Begining_Duration, 'm').format('HH:mm');
                             first_lecture_time = lecture_Begining_time;
                             lecture_end_time = moment(lecture_Begining_time, 'HH:mm').add(Lecture_Duration, 'm').format('HH:mm');
@@ -214,8 +216,9 @@ var attScheduleMethods = {
 
     getAttSchedule: function (req, res, callback) {
         var profileId = req.params.profileId;
-        con.query('select * from sch_att_schedule where SCHEDULE_Id = ? order by Day_no,Begining_Time asc', [profileId], function (err, result) {
-                if (err)
+        var query = con.query('select *, TIME_FORMAT(Begining_Time, "%h:%i %p") as Begining_Time_formated, TIME_FORMAT(Ending_Time, "%h:%i %p") as Ending_Time_formated  from sch_att_schedule where SCHEDULE_Id = ? order by Day_no,Begining_Time asc', [profileId], function (err, result) {
+            console.log(query.sql);
+            if (err)
                     throw err
 
                 callback(result);

@@ -172,7 +172,7 @@ cd examples
 python -m SimpleHTTPServer
 ```
 
-And go to [138.197.175.116:8000](http://138.197.175.116:8000).
+And go to [localhost:8000](http://localhost:8000).
 
 Alternatively, you can check-out the examples in a [hosted demo](https://cdn.rawgit.com/ablanco/jquery.pwstrength.bootstrap/master/examples/index.html).
 
