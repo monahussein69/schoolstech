@@ -94,7 +94,7 @@ angular.module('MetronicApp').controller('StudentsController',
         function upload(file) {
             return new Promise(function (resolve, reject) {
                 Upload.upload({
-                    url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
+                    url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
                     data: {
                         file: file,
                         type: 'students',
@@ -220,7 +220,7 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
                     jobtitle_id = result[0].id;
                     return new Promise(function (resolve, reject) {
                         Upload.upload({
-                            url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
+                            url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
                             data: {
                                 file: file,
                                 type: 'studentsDegrees',
@@ -253,7 +253,7 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
                         jobtitle_id = result.insertId;
                         return new Promise(function (resolve, reject) {
                             Upload.upload({
-                                url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
+                                url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
                                 data: {
                                     file: file,
                                     type: 'studentsDegrees',
