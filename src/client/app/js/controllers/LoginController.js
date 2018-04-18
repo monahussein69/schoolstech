@@ -47,9 +47,11 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
                             var userId = userObj[0].id;
                             manageEmployeeService.getEmployeeByUserId(userId, function (response) {
                                 userObj[0].employeeData = response;
+                                console.log(userObj)
+                                localStorageService.set('UserObject', userObj);
                             });
                         }
-                        localStorageService.set('UserObject', response.data.user);
+
                         $window.location.href = '#/dashboard.html';
                     } else {
                         model.error = "خطأ في اسم المستخدم او كلمه المرور";

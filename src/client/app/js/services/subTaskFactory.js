@@ -20,10 +20,13 @@ angular.module('MetronicApp').factory('subTaskService', function ($http, Upload)
     };
 
 
-    fac.getSubTaskByEmpId = function(empId,taskId,callback){
-        $http.post("http://138.197.175.116:3000/getSubTaskByEmpId",{'empId':empId,'taskId':taskId}).success(function (response) {
-            callback(response);
+    fac.getSubTaskByEmpId = function(empId){
+        return new Promise(function (resolve, reject) {
+            $http.post("http://138.197.175.116:3000/getSubTaskByEmpId",{'empId':empId}).success(function (response) {
+                resolve(response);
+            });
         });
+
     };
 
     fac.deleteSubTask = function(subTaskId,callback){

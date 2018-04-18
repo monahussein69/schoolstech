@@ -272,8 +272,9 @@ var studentsMethods = {
     getAllStudentsByGroup: function (req, res, callback) {
         var schoolId = req.params.schoolId;
         var group = req.params.group+'%';
-        con.query("SELECT * FROM sch_str_student where School_Id = ? and Academic_No like ?", [schoolId,group], function (err, result) {
-                if (err)
+        var query = con.query("SELECT * FROM sch_str_student where School_Id = ? and Academic_No like ?", [schoolId,group], function (err, result) {
+            console.log(query.sql);
+            if (err)
                     throw err
 
                 callback(result);

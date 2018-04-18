@@ -1,5 +1,6 @@
 var con = require('../routes/dbConfig.js');
 var sequelizeConfig = require('../routes/sequelizeConfig.js');
+var fireBaseConn = require('../routes/fireBaseConfig.js');
 var appSettingsMethods = require('../model/appSettings.js');
 var moment = require('moment');
 
@@ -32,11 +33,26 @@ var taskMethods = {
                 taskObj.Calender_id = calendarId;
                     sequelizeConfig.tasksTable.find({where: {id: taskObj.id}}).then(function (task) {
                        if(task){
+                           var current_superVisor = task.Suppervisor_Emp_id;
                            task.updateAttributes(taskObj).then(function () {
                                response.success = true;
                                response.msg = 'تم الحفظ بنجاح';
                                response.insertId = task.id;
+                               response.updated = 1;
                                response.result = task;
+                               if(response.updated && (current_superVisor != taskObj.Suppervisor_Emp_id)){
+                                    var msg = 'تم الغاء اشرافك على مهمه';
+                                   req.body.msg = '<a href="javascript:;" style="border-bottom: none !important;"><span class="details"><span class="label label-sm label-icon label-danger"><i class="fa fa-bolt"></i></span> '+msg+' </span> </a>';
+                                    req.body.user_id = current_superVisor;
+                                   fireBaseConn.sendNotification(req,res,function(result){});
+                                   var msg = 'تم تعيينك كمشرف على مهمه';
+                                   req.body.msg = '<a href="javascript:;" style="border-bottom: none !important;"><span class="details"><span class="label label-sm label-icon label-success"><i class="fa fa-plus"></i></span> '+msg+'</span></a>';
+
+                                   req.body.user_id = taskObj.Suppervisor_Emp_id;
+                                   fireBaseConn.sendNotification(req,res,function(result){});
+                               }
+
+
                                callback(response);
                            })
                        } else{
@@ -46,6 +62,12 @@ var taskMethods = {
                                response.msg = 'تم الحفظ بنجاح';
                                response.insertId = task.id;
                                response.result = task;
+                               response.added = 1;
+                               var msg = 'تم تعيينك كمشرف على مهمه';
+                               req.body.msg = '<a href="javascript:;" style="border-bottom: none !important;"><span class="details"><span class="label label-sm label-icon label-success"><i class="fa fa-plus"></i></span> '+msg+'</span></a>';
+
+                               req.body.user_id = taskObj.Suppervisor_Emp_id;
+                               fireBaseConn.sendNotification(req,res,function(result){});
                                callback(response);
                            });
 
@@ -90,7 +112,9 @@ var taskMethods = {
     },
     getTaskByEmpId:function(req,res,callback){
         var empId = req.body.empId;
-        con.query('select sch_att_tasks.*,sch_str_employees.name as supervisor_name,app_def_taskstatus.Name as status_name from sch_att_tasks join sch_str_employees on sch_str_employees.id = sch_att_tasks.Suppervisor_Emp_id join app_def_taskstatus on app_def_taskstatus.Id = sch_att_tasks.Task_Staus where Suppervisor_Emp_id =?',[empId],function(err,result){
+        var query = con.query('select sch_att_tasks.*,sch_str_employees.name as supervisor_name,app_def_taskstatus.Name as status_name from sch_att_tasks join sch_str_employees on sch_str_employees.id = sch_att_tasks.Suppervisor_Emp_id join app_def_taskstatus on app_def_taskstatus.Id = sch_att_tasks.Task_Staus where Suppervisor_Emp_id =?',[empId],function(err,result){
+            console.log(result);
+            console.log('result');
             callback(result);
         });
     }

@@ -16,7 +16,9 @@ var MetronicApp = angular.module("MetronicApp", [
     'datatables',
     'mgo-angular-wizard',
     'checklist-model',
-    'angular-momentjs'
+    'angular-momentjs',
+    'ngSanitize',
+    'angularMoment'
 ]);
 
 
@@ -80,7 +82,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', function ($scop
  ***/
 
 /* Setup Layout Part - Header */
-MetronicApp.controller('HeaderController', ['localStorageService', '$scope', '$window', function (localStorageService, $scope, $window) {
+MetronicApp.controller('HeaderController', ['CommonService','localStorageService', '$scope', '$window', function (CommonService,localStorageService, $scope, $window) {
     $scope.$on('$includeContentLoaded', function () {
         var userObject = localStorageService.get('UserObject');
 
@@ -88,10 +90,52 @@ MetronicApp.controller('HeaderController', ['localStorageService', '$scope', '$w
             $window.location.href = '#/login';
         }
 
+        var userType = userObject[0].userType;
+        var empId = 0;
+        if (userType == 3) {
+            empId = userObject[0].employeeData[0].id;
+        }
 
-        var model = {username: ''};
+        var unread = 0;
+        var model = {username: '',
+            unread:unread,
+            notifications:[]
+        };
+
         $scope.model = model;
         $scope.model.username = userObject[0].loginName;
+        $scope.model.empId = empId;
+       if(empId){
+           CommonService.countUnreadNotifications(empId,function(result){
+               model.unread = result.unread;
+           });
+
+           CommonService.getUserNotifications(empId,function(result){
+               model.notifications = result.notifications;
+               console.log(model.notifications);
+               angular.forEach(model.notifications, function (value, key) {
+
+               });
+           });
+
+           database.ref('notifications/' + empId).orderByChild("notfied").equalTo("false").on('value', function (snapshot) {
+               var unread = snapshot.numChildren();
+               console.log(unread);
+               model.unread = unread;
+               console.log(model.unread);
+               $scope.$apply();
+           });
+
+           database.ref('notifications/' + empId).on('value', function (snapshot) {
+               model.notifications = snapshot.val();
+               $scope.$apply();
+               console.log(model.notifications);
+           });
+       }
+
+
+
+
         Layout.initHeader(); // init header
     });
 
@@ -940,6 +984,33 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/bower_components/moment/moment.js',
                             'js/services/subTaskFactory.js',
                             'js/services/studentTaskFactory.js',
+                            'js/services/taskFactory.js',
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.myTasks', {
+            url: "/myTasks",
+            templateUrl: "views/tasks/subTasks.html",
+            data: {pageTitle: ' اداره المهام'},
+            controller: "ManageSubTaskController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/Tasks/TasksController.js',
+                            '../assets/bower_components/moment/moment.js',
+                            'js/services/subTaskFactory.js',
+                            'js/services/studentTaskFactory.js',
+                            'js/services/taskFactory.js',
                             '../assets/global/plugins/datatables/datatables.min.css',
                             '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
                             '../assets/global/plugins/datatables/datatables.all.min.js',

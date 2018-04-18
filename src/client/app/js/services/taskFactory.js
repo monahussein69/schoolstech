@@ -20,9 +20,13 @@ angular.module('MetronicApp').factory('taskService', function ($http, Upload) {
     };
 
 
-    fac.getTaskByEmpId = function(empId,callback){
-        $http.post("http://138.197.175.116:3000/getTaskByEmpId",{'empId':empId}).success(function (response) {
-            callback(response);
+    fac.getTaskByEmpId = function(empId){
+        return new Promise(function (resolve, reject) {
+            $http.post("http://138.197.175.116:3000/getTaskByEmpId",{'empId':empId}).success(function (response) {
+                console.log('dddddddddd');
+                console.log(response);
+                resolve(response);
+            });
         });
     };
 
