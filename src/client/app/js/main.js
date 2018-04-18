@@ -117,6 +117,18 @@ MetronicApp.controller('HeaderController', ['CommonService','localStorageService
 
                });
            });
+
+           database.ref('notifications/' + empId).orderByChild("notfied").equalTo("false").on('value', function (snapshot) {
+               var unread = snapshot.numChildren();
+               console.log(unread);
+               model.unread = unread;
+               console.log(model.unread);
+           });
+
+           database.ref('notifications/' + empId).on('value', function (snapshot) {
+               model.notifications = snapshot.val();
+               console.log(model.notifications);
+           });
        }
 
 

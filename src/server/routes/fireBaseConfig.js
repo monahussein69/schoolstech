@@ -13,7 +13,7 @@ var database = Firebase.database();
 
 let fireBaseConn = {
 
- sendNotification : function (req,res,callback) {
+ sendNotification : function (req,res) {
      var msg = req.body.msg;
      var user_id = req.body.user_id;
     var notifiy_id = database.ref('notifications/' + user_id).push().key;
@@ -27,14 +27,13 @@ let fireBaseConn = {
         "notify_time": current_time
     });
     result.status = 'sent';
-    callback(result);
  },
 
  countUnreadNotifications : function(req,res,callback){
      var user_id = req.params.user_id;
      var result = {};
      console.log(user_id);
-     database.ref('notifications/' + user_id).orderByChild("notfied").equalTo("false").on('value', function (snapshot) {
+     database.ref('notifications/' + user_id).orderByChild("notfied").equalTo("false").once('value', function (snapshot) {
          var unread = snapshot.numChildren();
          result.unread = unread;
          callback(result);
@@ -46,7 +45,7 @@ let fireBaseConn = {
         var user_id = req.params.user_id;
         console.log(user_id);
         var result = {};
-        database.ref('notifications/' + user_id).on('value', function (snapshot) {
+        database.ref('notifications/' + user_id).once('value', function (snapshot) {
             var notifications = snapshot.val();
             result.notifications = notifications;
             callback(result);

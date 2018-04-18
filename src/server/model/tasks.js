@@ -42,11 +42,11 @@ var taskMethods = {
                                response.result = task;
                                if(response.updated && (current_superVisor != taskObj.Suppervisor_Emp_id)){
                                     var msg = 'تم الغاء اشرافك على مهمه';
-                                   req.body.msg = '<a href="javascript:;"><span class="time" am-time-ago="'+Date.now()+'">Today</span><span class="details"><span class="label label-sm label-icon label-danger"><i class="fa fa-bolt"></i></span> '+msg+' </span> </a>';
+                                   req.body.msg = '<a href="javascript:;" style="border-bottom: none !important;"><span class="details"><span class="label label-sm label-icon label-danger"><i class="fa fa-bolt"></i></span> '+msg+' </span> </a>';
                                     req.body.user_id = current_superVisor;
                                    fireBaseConn.sendNotification(req,res,function(result){});
                                    var msg = 'تم تعيينك كمشرف على مهمه';
-                                   req.body.msg = '<a href="javascript:;"><span class="time" am-time-ago="'+Date.now()+'">Today</span><span class="details"><span class="label label-sm label-icon label-success"><i class="fa fa-plus"></i></span> '+msg+'</span></a>';
+                                   req.body.msg = '<a href="javascript:;" style="border-bottom: none !important;"><span class="details"><span class="label label-sm label-icon label-success"><i class="fa fa-plus"></i></span> '+msg+'</span></a>';
 
                                    req.body.user_id = taskObj.Suppervisor_Emp_id;
                                    fireBaseConn.sendNotification(req,res,function(result){});
@@ -64,7 +64,7 @@ var taskMethods = {
                                response.result = task;
                                response.added = 1;
                                var msg = 'تم تعيينك كمشرف على مهمه';
-                               req.body.msg = '<a href="javascript:;"><span class="time" am-time-ago="'+Date.now()+'">Today</span><span class="details"><span class="label label-sm label-icon label-success"><i class="fa fa-plus"></i></span> '+msg+'</span></a>';
+                               req.body.msg = '<a href="javascript:;" style="border-bottom: none !important;"><span class="details"><span class="label label-sm label-icon label-success"><i class="fa fa-plus"></i></span> '+msg+'</span></a>';
 
                                req.body.user_id = taskObj.Suppervisor_Emp_id;
                                fireBaseConn.sendNotification(req,res,function(result){});

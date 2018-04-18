@@ -34,11 +34,11 @@ var taskMethods = {
                             response.updated = 1;
                             if(response.updated && (current_memeber != subTaskObj.Member_Emp_id)){
                                 var msg = 'تم الغاءك من مهمه';
-                                req.body.msg = '<a href="javascript:;"><span class="time" am-time-ago="'+Date.now()+'">Today</span><span class="details"><span class="label label-sm label-icon label-danger"><i class="fa fa-bolt"></i></span> '+msg+' </span> </a>';
+                                req.body.msg = '<a href="javascript:;" style="border-bottom: none !important;"><span class="details"><span class="label label-sm label-icon label-danger"><i class="fa fa-bolt"></i></span> '+msg+' </span> </a>';
                                 req.body.user_id = current_memeber;
-                                fireBaseConn.sendNotification(req,res,function(result){});
+                                fireBaseConn.sendNotification(req,res);
                                 var msg =  'تمت اضافه مهمه لك';
-                                req.body.msg = '<a href="javascript:;"><span class="time" am-time-ago="'+Date.now()+'">Today</span><span class="details"><span class="label label-sm label-icon label-success"><i class="fa fa-plus"></i></span> '+msg+'</span></a>';
+                                req.body.msg = '<a href="javascript:;" style="border-bottom: none !important;"><span class="details"><span class="label label-sm label-icon label-success"><i class="fa fa-plus"></i></span> '+msg+'</span></a>';
 
                                 req.body.user_id = subTaskObj.Member_Emp_id;
                                 fireBaseConn.sendNotification(req,res,function(result){});
@@ -54,7 +54,7 @@ var taskMethods = {
                             response.insertId = subTask.id;
                             response.result = subTask;
                             var msg = 'تمت اضافه مهمه لك';
-                            req.body.msg = '<a href="javascript:;"><span class="time" am-time-ago="'+Date.now()+'">Today</span><span class="details"><span class="label label-sm label-icon label-success"><i class="fa fa-plus"></i></span> '+msg+'</span></a>';
+                            req.body.msg = '<a href="javascript:;" style="border-bottom: none !important;"><span class="details"><span class="label label-sm label-icon label-success"><i class="fa fa-plus"></i></span> '+msg+'</span></a>';
 
                             req.body.user_id = subTaskObj.Member_Emp_id;
                             fireBaseConn.sendNotification(req,res,function(result){})
