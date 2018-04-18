@@ -398,7 +398,7 @@ var employeesAttendanceMethods = {
                                         var d = moment.duration(ms);
                                         var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
                                         attendanceObj.late_min = hours;
-                                        employeesAttendanceMethods.checkEmployeeVacation(attendanceObj);
+                                        //employeesAttendanceMethods.checkEmployeeVacation(attendanceObj);
                                     }
                                 }
 
