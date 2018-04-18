@@ -123,10 +123,12 @@ MetronicApp.controller('HeaderController', ['CommonService','localStorageService
                console.log(unread);
                model.unread = unread;
                console.log(model.unread);
+               $scope.$apply();
            });
 
            database.ref('notifications/' + empId).on('value', function (snapshot) {
                model.notifications = snapshot.val();
+               $scope.$apply();
                console.log(model.notifications);
            });
        }
