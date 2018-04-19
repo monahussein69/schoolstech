@@ -1,6 +1,6 @@
 var mysql = require('mysql');
 let config = {
-    host: "138.197.175.116",
+    host: "localhost",
     user: "root",
     password: "salimquta",
     database: "schooltech"

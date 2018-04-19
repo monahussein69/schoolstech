@@ -222,14 +222,18 @@ var workingSettingsMethods = {
         );
     },
     getArabicDay: function (dayNo) {
+		console.log(dayNo);
+		//var dayNo = parseInt(dayNo);
         var array = [];
-        array[0] = 'الاحد';
-        array[1] = 'الاثنين';
-        array[2] = 'الثلاثاء';
-        array[3] = 'الاربعاء';
-        array[4] = 'الخميس';
-        array[5] = 'الجمعة';
-        array[6] = 'السبت';
+        array['0'] = 'الاحد';
+        array['1'] = 'الاثنين';
+        array['2'] = 'الثلاثاء';
+        array['3'] = 'الاربعاء';
+        array['4'] = 'الخميس';
+        array['5'] = 'الجمعة';
+        array['6'] = 'السبت';
+		console.log('array[dayNo]');
+		console.log(array[dayNo]);
         return array[dayNo];
     },
 
