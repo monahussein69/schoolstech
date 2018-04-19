@@ -37,7 +37,7 @@ var employeesAttendanceMethods = {
                 }
 
                 if (breaks.indexOf(lecture_name) > -1) {
-                    var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date,sch_att_empvacation.Start_Date as vacation_date from sch_str_employees  left join sch_att_empatt  on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Event_Name = ?) left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id where (sch_att_empatt.Event_Name = ? or sch_att_empatt.Event_Name IS NULL ) and sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL) order by sch_str_employees.name asc', [lecture_name, lecture_name, schoolId, calendarId], function (err, result) {
+                    var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date,sch_att_empvacation.Start_Date as vacation_date from sch_str_employees  left join sch_att_empatt  on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Event_Name = ?) left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id where (sch_att_empatt.Event_Name = ? or sch_att_empatt.Event_Name IS NULL ) and sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL) group by main_employee_id order by sch_str_employees.name asc', [lecture_name, lecture_name, schoolId, calendarId], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err
@@ -383,22 +383,25 @@ var employeesAttendanceMethods = {
                                 attendanceObj.Event_type_id = result[0].Id;
                                 if (!( attendanceObj.late_min)) {
                                     if (attendanceObj.is_absent == 0) {
-                                        var queue_Begining_time = moment(schoolProfile.queue_Begining, 'HH:mm').format('HH:mm');
+                                        var queue_Begining_time = moment(schoolProfile.queue_Begining, "h:mm A", 'HH:mm').format('HH:mm');
                                         //var current_time = moment().format('HH:mm');
-                                        var current_time = attendanceObj.time_in;
+                                        var current_time = moment(attendanceObj.time_in, "h:mm A", "HH:mm").format('HH:mm');
                                         attendanceObj.time_in = current_time;
                                         console.log('attendanceObj : ', attendanceObj);
-                                        var ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));
+                                        var ms = moment(current_time, "h:mm A", "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));
                                         console.log('ms');
                                         console.log(ms);
                                         if (ms <= 0) {
-                                            ms = moment(current_time, "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));
+                                           // ms = moment(current_time, "h:mm A", "HH:mm").diff(moment(queue_Begining_time, "HH:mm"));
+                                            attendanceObj.late_min = 0;
+                                        }else{
+                                            var d = moment.duration(ms);
+                                            var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
+                                            attendanceObj.late_min = hours;
                                         }
 
-                                        var d = moment.duration(ms);
-                                        var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
-                                        attendanceObj.late_min = hours;
-                                        employeesAttendanceMethods.checkEmployeeVacation(attendanceObj);
+
+                                        //employeesAttendanceMethods.checkEmployeeVacation(attendanceObj);
                                     }
                                 }
 
@@ -607,7 +610,7 @@ var employeesAttendanceMethods = {
                                      var begining_time = moment(attendanceObj.Begining_Time, 'HH:mm').format('HH:mm');
                                      //var current_time = moment().format('HH:mm');
                                      var current_time = attendanceObj.time_in;
-                                     attendanceObj.time_in = current_time;
+                                     attendanceObj.time_in = moment(current_time,"h:mm A", "HH:mm").format('HH:mm');
 
                                      var ms = moment(current_time, "HH:mm").diff(moment(begining_time, "HH:mm"));
 
@@ -658,25 +661,42 @@ var employeesAttendanceMethods = {
             attendanceObj.time_in = '';
         }
 
+        console.log('attendanceObj in total');
+        console.log(attendanceObj);
+
         sequelizeConfig.employeeAttandaceTable.find({where: {Calender_id: attendanceObj.Calender_id,employee_id:attendanceObj.employee_id,Event_Name:attendanceObj.Event_Name}}).then(function (attendance) {
+            console.log(attendance);
             if (attendance) {
                 delete attendanceObj.entery_date;
                 delete attendanceObj.entered_by;
                 var ms = 0;
-                var total_min = attendance.Total_min;
-                if(!total_min){
-                    total_min = '00:00';
-                }
+                var total_min = '00:00';
+                /*if(!(attendanceObj.is_absent == 1) && (attendance.is_absent == 2 || attendance.is_absent == 1) && (attendance.is_absent != attendanceObj.is_absent)){
+                        total_min = attendance.Total_min;
+                    if(!total_min ){
+                        total_min = '00:00';
+                    }
+                }*/
+
+
+                console.log('total_min');
+                console.log(total_min);
 
                 var total_min = moment(total_min, 'HH:mm').format('HH:mm');
 
 
                 if(attendanceObj.is_absent == 2){
+                    var late_min = '00:00';
+                    if(attendance.late_min)
+                        late_min = attendance.late_min;
                     var shortTimeAsSeconds = moment.duration(attendanceObj.short_min).asSeconds();
-                    ms = moment(total_min, "HH:mm").add(shortTimeAsSeconds,'seconds');
-                }else{
+                    ms = moment(late_min, "HH:mm").add(shortTimeAsSeconds,'seconds');
+                }else if(attendanceObj.is_absent == 0){
+                    var short_min = '00:00';
+                    if(attendance.short_min)
+                        short_min = attendance.short_min;
                     var lateTimeAsSeconds = moment.duration(attendanceObj.late_min).asSeconds();
-                    ms = moment(total_min, "HH:mm").add(lateTimeAsSeconds,'seconds');
+                    ms = moment(short_min, "HH:mm").add(lateTimeAsSeconds,'seconds');
                 }
                 console.log('lateTimeAsSeconds');
                 console.log(lateTimeAsSeconds);

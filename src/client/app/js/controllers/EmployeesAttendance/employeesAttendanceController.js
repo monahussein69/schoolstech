@@ -241,7 +241,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                 }
             });
             dialogInst.result.then(function (newusr) {
-                model.dtInstance.reloadData();
+                model.getAttendanceBasedDate();
             }, function () {
                 console.log('close');
                 //$log.info('Modal dismissed at: ' + new Date());
@@ -335,7 +335,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                 console.log('open');
 
                 if (result.success) {
-                    angular.element($event.target).attr('disabled', 'disabled');
+                    //angular.element($event.target).attr('disabled', 'disabled');
                     angular.element($event.target).removeClass('color-grey');
                 }
             }, function () {
@@ -417,7 +417,8 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
 
             employeesAttendanceService.setEmployeeAttendance(attendanceObj, function (result) {
                 if (result.success) {
-                    model.dtInstance.reloadData();
+                    model.getAttendanceBasedDate();
+
                     toastr.success(result.msg);
                     angular.element($event.target).removeClass('color-grey');
                     if (type == 'حضور') {
@@ -449,13 +450,12 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
         $rootScope.settings.layout.pageSidebarClosed = false;
     });
 
-angular.module('MetronicApp').controller('DialogInstCtrl', function (userId,toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedEmployee,selectedDate,employee_data, schoolId, $log) {
+angular.module('MetronicApp').controller('DialogInstCtrl', function (userId,toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedEmployee,selectedDate, schoolId, $log) {
     $scope.selectedEmployee = selectedEmployee;
-    $scope.currentTime = $moment().format('H:m');
-    $scope.late_min = employee_data.late_min;
+    $scope.late_min_modified = $moment().format('H:m');
+    //$scope.late_min = employee_data.late_min;
 
     $scope.submitAttendance = function () {
-
         //	$scope.usr = {name: '', job: '', age: '', sal: '', addr:''};
     };
     $scope.cancel = function () {
@@ -465,12 +465,8 @@ angular.module('MetronicApp').controller('DialogInstCtrl', function (userId,toas
 
     $scope.recordAttendance = function () {
         var attendanceObj = {};
-        if (employee_data) {
-            attendanceObj.late_min = $scope.late_min;
-        } else {
-            attendanceObj.time_in = employee_data.currentTime;
-        }
 
+        attendanceObj.time_in = $scope.late_min_modified;
         attendanceObj.school_id = schoolId;
         attendanceObj.employee_id = selectedEmployee;
         attendanceObj.Event_Name = 'طابور';
