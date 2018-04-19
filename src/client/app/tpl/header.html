@@ -18,10 +18,27 @@
         <ul class="nav navbar-nav pull-right">
             <!-- BEGIN USER LOGIN DROPDOWN -->
             <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
+            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+                <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true" ng-click="model.readNotifications()">
+                    <i class="icon-bell notify-item"></i>
+                    <span class="count badge badge-default" ng-show="model.unread > 0">{{model.unread}}</span>
+                </a>
+                <ul class="dropdown-menu" style="width:350px;max-width:500px">
+                    <li>
+                        <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
+                            <li ng-repeat=" notification in model.notifications" style="border-bottom:1px solid #EFF2F6!important">
+                                <a ng-bind-html="notification.message" style="display: inline-block" style="border-bottom: none !important;"></a>
+                                <span am-time-ago="notification.notify_time" class="time" style="float:left;padding:17px 18px 18px;color: #888;"></span>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
             <li class="dropdown dropdown-user">
                 <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
                     <img alt="" class="img-circle" src="{{settings.layoutPath}}/img/avatar3_small.jpg" />
                     <span class="username username-hide-on-mobile"> {{model.username}} </span>
+                    <input type="hidden" ng-model="model.empId" id="EmpId" ng-value="mode.EmpId" />
                     <i class="fa fa-angle-down"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-default">
@@ -43,3 +60,9 @@
     <!-- END TOP NAVIGATION MENU -->
 </div>
 <!-- END HEADER INNER -->
+<script>
+    $('.scroller').slimScroll(
+    {
+        height: '250px'
+    });
+</script>
