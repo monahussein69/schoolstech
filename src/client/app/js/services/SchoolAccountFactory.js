@@ -3,7 +3,7 @@ angular.module('MetronicApp').factory('manageSchoolAccountService', function($ht
     var fac = {};
 
     fac.saveSchoolAccountData = function (schoolAccountObj, callback) {
-        $http.post("http://138.197.175.116:3000/saveSchoolAccountData", {
+        $http.post("http://localhost:3000/saveSchoolAccountData", {
             'schoolAccountData':schoolAccountObj
         }).success(function (response) {
             callback(response);
@@ -12,7 +12,7 @@ angular.module('MetronicApp').factory('manageSchoolAccountService', function($ht
 
     fac.getSchoolAccountData = function (schoolId, callback) {
 
-        $http.get("http://138.197.175.116:3000/getSchoolAccount/"+schoolId).success(function (response) {
+        $http.get("http://localhost:3000/getSchoolAccount/"+schoolId).success(function (response) {
             callback(response);
         });
 
@@ -20,7 +20,7 @@ angular.module('MetronicApp').factory('manageSchoolAccountService', function($ht
 
     fac.deleteSchoolAccountData = function (schoolId, callback) {
 
-        $http.get("http://138.197.175.116:3000/deleteSchoolAccount/"+schoolId).success(function (response) {
+        $http.get("http://localhost:3000/deleteSchoolAccount/"+schoolId).success(function (response) {
             callback(response);
         });
 
