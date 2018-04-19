@@ -37,7 +37,7 @@ var employeesAttendanceMethods = {
                 }
 
                 if (breaks.indexOf(lecture_name) > -1) {
-                    var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date,sch_att_empvacation.Start_Date as vacation_date from sch_str_employees  left join sch_att_empatt  on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Event_Name = ?) left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id where (sch_att_empatt.Event_Name = ? or sch_att_empatt.Event_Name IS NULL ) and sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL) group by main_employee_id order by sch_str_employees.name asc', [lecture_name, lecture_name, schoolId, calendarId], function (err, result) {
+                    var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,TIME_FORMAT(sch_att_empatt.time_in, "%h:%i %p") as time_in_formmated,sch_att_empexcuse.Start_Date as excuse_date,sch_att_empvacation.Start_Date as vacation_date from sch_str_employees  left join sch_att_empatt  on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Event_Name = ?) left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join sch_att_empvacation on sch_att_empvacation.Emp_id = sch_str_employees.id where (sch_att_empatt.Event_Name = ? or sch_att_empatt.Event_Name IS NULL ) and sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL) group by main_employee_id order by sch_str_employees.name asc', [lecture_name, lecture_name, schoolId, calendarId], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err
@@ -45,7 +45,7 @@ var employeesAttendanceMethods = {
                         }
                     );
                 }else{
-                    var query  = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date,sch_att_empvacation.Start_Date as vacation_date from sch_str_employees join sch_acd_lecturestables '+
+                    var query  = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,TIME_FORMAT(sch_att_empatt.time_in, "%h:%i %p") as time_in_formmated,sch_att_empexcuse.Start_Date as excuse_date,sch_att_empvacation.Start_Date as vacation_date from sch_str_employees join sch_acd_lecturestables '+
                         'on sch_acd_lecturestables.Teacher_Id = sch_str_employees.id '+
                         'join sch_acd_lectures on sch_acd_lecturestables.Lecture_NO = sch_acd_lectures.id '+
                         ' left join sch_att_empatt '+
@@ -79,7 +79,7 @@ var employeesAttendanceMethods = {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
                 var schoolId = req.params.schoolId;
-                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date , emp_vacation.Start_Date as vacation_date_start ,emp_vacation.End_Date as vacation_date_end from sch_str_employees left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join (SELECT s1.* FROM sch_att_empvacation as s1 LEFT JOIN sch_att_empvacation AS s2 ON s1.Emp_id = s2.Emp_id AND s1.Start_Date < s2.Start_Date WHERE s2.Emp_id IS NULL) as emp_vacation on emp_vacation.Emp_id = sch_str_employees.id where sch_str_employees.school_id = ?  group by main_employee_id order by sch_str_employees.name asc', [calendarId, schoolId], function (err, result) {
+                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,TIME_FORMAT(sch_att_empatt.time_in, "%h:%i %p") as time_in_formmated,sch_att_empexcuse.Start_Date as excuse_date , emp_vacation.Start_Date as vacation_date_start ,emp_vacation.End_Date as vacation_date_end from sch_str_employees left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join (SELECT s1.* FROM sch_att_empvacation as s1 LEFT JOIN sch_att_empvacation AS s2 ON s1.Emp_id = s2.Emp_id AND s1.Start_Date < s2.Start_Date WHERE s2.Emp_id IS NULL) as emp_vacation on emp_vacation.Emp_id = sch_str_employees.id where sch_str_employees.school_id = ?  group by main_employee_id order by sch_str_employees.name asc', [calendarId, schoolId], function (err, result) {
                         console.log(query.sql);
                         if (err)
                             throw err
@@ -106,7 +106,7 @@ var employeesAttendanceMethods = {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
                 var schoolId = req.body.schoolId;
-                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,sch_att_empexcuse.Start_Date as excuse_date , emp_vacation.Start_Date as vacation_date_start ,emp_vacation.End_Date as vacation_date_end from sch_str_employees ' +
+                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,TIME_FORMAT(sch_att_empatt.time_in, "%h:%i %p") as time_in_formmated,sch_att_empexcuse.Start_Date as excuse_date , emp_vacation.Start_Date as vacation_date_start ,emp_vacation.End_Date as vacation_date_end from sch_str_employees ' +
                     'left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join (SELECT s1.* FROM sch_att_empvacation as s1 LEFT JOIN sch_att_empvacation AS s2 ON s1.Emp_id = s2.Emp_id AND s1.Start_Date < s2.Start_Date WHERE s2.Emp_id IS NULL) as emp_vacation on emp_vacation.Emp_id = sch_str_employees.id where sch_str_employees.school_id = ?  group by main_employee_id order by sch_str_employees.name ASC', [calendarId, schoolId], function (err, result) {
                         console.log(query.sql);
                         if (err)
@@ -569,7 +569,7 @@ var employeesAttendanceMethods = {
         var attendanceObj = req.body.attendanceObj;
         req.params.SchoolId = attendanceObj.school_id;
         var response = {};
-        //attendanceObj.late_min = '';
+
 
         var current_date = moment(attendanceObj.Attendance_Day).format('MM-DD-YYYY');
         req.body.date = current_date;
@@ -591,10 +591,17 @@ var employeesAttendanceMethods = {
                             if (Object.keys(result).length) {
                                 attendanceObj.Event_type_id = result[0].Id;
                                  if(attendanceObj.is_absent == 2){
-                                    var ending_time = moment(attendanceObj.Ending_Time, 'HH:mm').format('HH:mm');
+                                    var ending_time = moment(attendanceObj.Ending_Time,"h:mm A", 'HH:mm').format('HH:mm');
                                     //var current_time = moment().format('HH:mm');
                                     var current_time = attendanceObj.time_out;
+                                    var current_time = moment(current_time,"h:mm A", 'HH:mm').format('HH:mm');
+                                     attendanceObj.time_out = current_time;
+
                                     //attendanceObj.time_in = current_time;
+                                     console.log('ending_time');
+                                     console.log(ending_time);
+                                     console.log('current_time');
+                                     console.log(current_time);
 
                                     var ms = moment(ending_time, "HH:mm").diff(moment(current_time, "HH:mm"));
 
@@ -607,13 +614,15 @@ var employeesAttendanceMethods = {
                                         attendanceObj.short_min = hours;
                                     }
                                 }else{
-                                     var begining_time = moment(attendanceObj.Begining_Time, 'HH:mm').format('HH:mm');
+                                     var begining_time = moment(attendanceObj.Begining_Time, "h:mm A", 'HH:mm').format('HH:mm');
+                                     console.log(begining_time)
                                      //var current_time = moment().format('HH:mm');
                                      var current_time = attendanceObj.time_in;
                                      attendanceObj.time_in = moment(current_time,"h:mm A", "HH:mm").format('HH:mm');
 
-                                     var ms = moment(current_time, "HH:mm").diff(moment(begining_time, "HH:mm"));
-
+                                     var ms = moment(attendanceObj.time_in, "HH:mm").diff(moment(begining_time, "HH:mm"));
+                                     console.log(ms);
+                                     console.log('ms');
                                      if (ms <= 0) {
                                          // ms = moment(current_time, "HH:mm").diff(moment(begining_time, "HH:mm"));
                                          attendanceObj.late_min = '';
@@ -657,9 +666,7 @@ var employeesAttendanceMethods = {
         var attendanceObj = req.body.attendanceObj;
         var response = {};
 
-        if(attendanceObj.is_absent == 1){
-            attendanceObj.time_in = '';
-        }
+
 
         console.log('attendanceObj in total');
         console.log(attendanceObj);
@@ -671,18 +678,6 @@ var employeesAttendanceMethods = {
                 delete attendanceObj.entered_by;
                 var ms = 0;
                 var total_min = '00:00';
-                /*if(!(attendanceObj.is_absent == 1) && (attendance.is_absent == 2 || attendance.is_absent == 1) && (attendance.is_absent != attendanceObj.is_absent)){
-                        total_min = attendance.Total_min;
-                    if(!total_min ){
-                        total_min = '00:00';
-                    }
-                }*/
-
-
-                console.log('total_min');
-                console.log(total_min);
-
-                var total_min = moment(total_min, 'HH:mm').format('HH:mm');
 
 
                 if(attendanceObj.is_absent == 2){
@@ -702,8 +697,15 @@ var employeesAttendanceMethods = {
                 console.log(lateTimeAsSeconds);
                 console.log(ms);
                 var d = moment.duration(ms);
-                var total_min = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
+                 total_min = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
                 console.log(total_min);
+                if(attendanceObj.is_absent == 1){
+                    total_min = attendanceObj.late_min;
+                    attendanceObj.time_in = '';
+                    attendanceObj.time_out = '';
+                    attendanceObj.short_min = '';
+
+                }
                 attendanceObj.Total_min = total_min;
                 attendance.updateAttributes(attendanceObj).then(function () {
                     response.success = true;

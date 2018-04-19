@@ -43,19 +43,19 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
                 return defer.promise
             }).withOption('createdRow', createdRow).withOption('paging', false)
-                //.withOption('headerCallback', function(header) {
-                //if (!model.headerCompiled) {
-                    // Use this headerCompiled field to only compile header once
-                   // model.headerCompiled = true;
-                  //  $compile(angular.element(header).contents())($scope);
-                //}
+            //.withOption('headerCallback', function(header) {
+            //if (!model.headerCompiled) {
+            // Use this headerCompiled field to only compile header once
+            // model.headerCompiled = true;
+            //  $compile(angular.element(header).contents())($scope);
+            //}
             //})
             ,columns: [
-               /* DTColumnBuilder.newColumn(null).withTitle(titleHtml).notSortable()
-                    .renderWith(function(data, type, full, meta) {
-                        model.selected[full.main_employee_id] = false;
-                        return '<input type="checkbox" ng-model="model.selected[' + data.main_employee_id + ']" ng-click="model.toggleOne(date.selected)">';
-                    }),*/
+                /* DTColumnBuilder.newColumn(null).withTitle(titleHtml).notSortable()
+                     .renderWith(function(data, type, full, meta) {
+                         model.selected[full.main_employee_id] = false;
+                         return '<input type="checkbox" ng-model="model.selected[' + data.main_employee_id + ']" ng-click="model.toggleOne(date.selected)">';
+                     }),*/
                 DTColumnBuilder.newColumn('name').withTitle(' اسم الموظف'),
                 DTColumnBuilder.newColumn(null).withTitle('وقت الحضور').notSortable()
                     .renderWith(lateHtml),
@@ -66,7 +66,7 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
         };
 
         function lateHtml(data, type, full, meta) {
-            var time_in = data.time_in;
+            var time_in = data.time_in_formmated;
             if (data.time_in) {
 
                 return '' +
@@ -85,9 +85,9 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
         }
 
         function recordAttendanceAll(type){
-                var allEmployees = [];
-                var results = [];
-                var currentTime = $moment().format('H:mm');
+            var allEmployees = [];
+            var results = [];
+            var currentTime = $moment().format('H:mm');
 
             if((($moment(currentTime,'HH:mm').isBefore( $moment(model.listOfActivity[model.activity].Begining_Time,'HH:mm'))) ||  ($moment(model.listOfActivity[model.activity].Ending_Time,'HH:mm').isBefore($moment(currentTime,'HH:mm')))) && type != 'غياب'){
                 toastr.error('الوقت المدخل خارج وقت النشاط');
@@ -100,38 +100,38 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
                     var requests = Object.keys(allEmployees).map(function (key, item) {
                         console.log('item');
                         console.log(item);
-                            return new Promise(function (resolve) {
-                                var attendanceObj = {};
-                                attendanceObj.Begining_Time = model.listOfActivity[model.activity].Begining_Time,
-                                    attendanceObj.Ending_Time = model.listOfActivity[model.activity].Ending_Time,
-                                    attendanceObj.school_id = model.schoolId;
-                                attendanceObj.employee_id = allEmployees[key].main_employee_id;
-                                attendanceObj.Event_Name = model.listOfActivity[model.activity].event_Nam;
-                                attendanceObj.time_in = $moment().format('H:mm');
-                                attendanceObj.Attendance_Day = model.attendance_day;
-                                attendanceObj.is_absent = 1;
-                                attendanceObj.entered_by = model.userId;
-                                attendanceObj.entery_date = model.entryDate;
-                                if (type == 'تأخر') {
-                                    attendanceObj.is_absent = 0;
-                                } else if (type == 'خروج مبكر') {
-                                    attendanceObj.is_absent = 2;
+                        return new Promise(function (resolve) {
+                            var attendanceObj = {};
+                            attendanceObj.Begining_Time = model.listOfActivity[model.activity].Begining_Time,
+                                attendanceObj.Ending_Time = model.listOfActivity[model.activity].Ending_Time,
+                                attendanceObj.school_id = model.schoolId;
+                            attendanceObj.employee_id = allEmployees[key].main_employee_id;
+                            attendanceObj.Event_Name = model.listOfActivity[model.activity].event_Nam;
+                            attendanceObj.time_in = $moment().format('H:mm');
+                            attendanceObj.Attendance_Day = model.attendance_day;
+                            attendanceObj.is_absent = 1;
+                            attendanceObj.entered_by = model.userId;
+                            attendanceObj.entery_date = model.entryDate;
+                            if (type == 'تأخر') {
+                                attendanceObj.is_absent = 0;
+                            } else if (type == 'خروج مبكر') {
+                                attendanceObj.is_absent = 2;
+                            }
+
+                            if(attendanceObj.is_absent == 1){
+                                attendanceObj.time_in = attendanceObj.Ending_Time;
+                            }
+
+                            console.log('attendanceObj');
+                            console.log(attendanceObj);
+
+                            employeesAttendanceService.setEmployeeActivityAttendance(attendanceObj, function (result) {
+                                if (result.success) {
+                                    results.push(1);
                                 }
-
-                                if(attendanceObj.is_absent == 1){
-                                    attendanceObj.time_in = attendanceObj.Ending_Time;
-                                }
-
-                                console.log('attendanceObj');
-                                console.log(attendanceObj);
-
-                                employeesAttendanceService.setEmployeeActivityAttendance(attendanceObj, function (result) {
-                                    if (result.success) {
-                                        results.push(1);
-                                    }
-                                    resolve(result);
-                                });
+                                resolve(result);
                             });
+                        });
 
                     });
                 }
@@ -177,8 +177,9 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
                 }
             });
             confirmLateMinInst.result.then(function (result) {
-                console.log(angular.element($event.target).parent().parent().find('.late_label').text(result.time_in));
-                angular.element($event.target).parent('.confirm_late').children('.late_label').text(result.time_in);
+                //console.log(angular.element($event.target).parent().parent().find('.late_label').text(result.time_in));
+                //angular.element($event.target).parent('.confirm_late').children('.late_label').text(result.time_in);
+                model.getAllEmployeesByActivity();
             }, function () {
                 console.log('close');
                 //$log.info('Modal dismissed at: ' + new Date());
@@ -400,9 +401,10 @@ angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (
     }
 
     function onSave() {
-         console.log(model.currentTime);
-         console.log(model.activities[model.activity].Begining_Time);
-        if((($moment(model.currentTime,"h:mm A",'HH:mm').isBefore( $moment(model.activities[model.activity].Begining_Time,'HH:mm'))) ||  ($moment(model.activities[model.activity].Ending_Time,'HH:mm').isBefore($moment(model.currentTime,'HH:mm')))) && model.status != 1){
+        console.log(model.currentTime);
+        console.log(model.activities[model.activity].Begining_Time);
+        var currentTime = $moment(model.currentTime,"h:mm A",'en').format('HH:mm');
+        if((($moment(currentTime).isBefore( $moment(model.activities[model.activity].Begining_Time,'HH:mm'))) ||  ($moment(model.activities[model.activity].Ending_Time,'HH:mm').isBefore($moment(model.currentTime,'HH:mm')))) && model.status != 1){
             toastr.error('الوقت المدخل خارج وقت النشاط');
             return;
         }

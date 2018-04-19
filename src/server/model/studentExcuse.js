@@ -13,6 +13,7 @@ var studentExcuseMethods = {
         var response = {};
         var current_date = moment(ExcuseObj.Start_Date).format('MM-DD-YYYY');
         req.body.date = current_date;
+		console.log(ExcuseObj);
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
