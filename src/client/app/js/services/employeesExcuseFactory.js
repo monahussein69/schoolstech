@@ -4,7 +4,7 @@ angular.module('MetronicApp').factory('employeesExcuseService', function ($http)
 
 
     fac.sendExcuseRequest = function(ExcuseObj,callback) {
-        $http.post("http://localhost:3000/sendExcuseRequest", {
+        $http.post("http://138.197.175.116:3000/sendExcuseRequest", {
             'ExcuseObj': ExcuseObj
         }).success(function (response) {
             callback(response);

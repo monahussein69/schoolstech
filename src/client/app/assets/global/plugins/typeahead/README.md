@@ -146,7 +146,7 @@ Grunt tasks that'll be useful in development.
 * `grunt build` – Builds *typeahead.js* from source.
 * `grunt lint` – Runs source and test files through JSHint.
 * `grunt watch` – Rebuilds *typeahead.js* whenever a source file is modified.
-* `grunt server` – Serves files from the root of typeahead.js on localhost:8888.
+* `grunt server` – Serves files from the root of typeahead.js on 138.197.175.116:8888.
   Useful for using *test/playground.html* for debugging/testing.
 * `grunt dev` – Runs `grunt watch` and `grunt server` in parallel.
 

@@ -12,7 +12,7 @@ var TableDatatablesManaged = function () {
             "bSort" : false,
             "processing": true,
             "serverSide": true,
-            "ajax": "http://localhost:3000/getAllEmployees/10",
+            "ajax": "http://138.197.175.116:3000/getAllEmployees/10",
 
             // Internationalisation. For more info refer to http://datatables.net/manual/i18n
             "language": {
