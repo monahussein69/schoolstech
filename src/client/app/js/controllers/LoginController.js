@@ -12,7 +12,7 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
 
         model.error = null;
         if ($scope.model.username && $scope.model.password){
-            $http.post("http://localhost:3000/login", {
+            $http.post("http://138.197.175.116:3000/login", {
                 'name': $scope.model.username,
                 'password': $scope.model.password
             })

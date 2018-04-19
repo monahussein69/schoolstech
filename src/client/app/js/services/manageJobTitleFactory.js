@@ -5,7 +5,7 @@ angular.module('MetronicApp').factory('manageJobTitleService', function ($http, 
     };
 
     fac.getJobTitles = function (callback) {
-        $http.get("http://localhost:3000/getAllJobTitles", {
+        $http.get("http://138.197.175.116:3000/getAllJobTitles", {
         }).success(function (response) {
             callback(response);
         });
@@ -13,7 +13,7 @@ angular.module('MetronicApp').factory('manageJobTitleService', function ($http, 
 
     fac.saveJobTitleData = function (jobTitleObj, callback) {
        console.log(jobTitleObj);
-        $http.post("http://localhost:3000/saveJobTitle",{'jobTitleData':jobTitleObj}).success(function (response) {
+        $http.post("http://138.197.175.116:3000/saveJobTitle",{'jobTitleData':jobTitleObj}).success(function (response) {
             callback(response);
         });
 
@@ -21,7 +21,7 @@ angular.module('MetronicApp').factory('manageJobTitleService', function ($http, 
     
     
     fac.getJobTitleByName = function(name,callback){
-        $http.post("http://localhost:3000/getjobTitleByName",{'name':name}).success(function (response) {
+        $http.post("http://138.197.175.116:3000/getjobTitleByName",{'name':name}).success(function (response) {
             callback(response);
         });
     };
