@@ -52,7 +52,7 @@
                         <label class="col-sm-2 control-label"> بدايه العام المالي </label>
                         <div class="col-sm-6">
                             <input type="text" name="start_f_year" calendarType="ummalqura" language="ar" date-format="YYYY-MM-DD" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.start_f_year | kdate: '' : 'ar' : 'ummalqura'}}"
-                                ng-model="model.appSettingsObj.start_f_year" />
+                                   ng-model="model.appSettingsObj.start_f_year" />
                             <b>{{model.appSettingsObj.start_f_year | kdate: '' : 'ar' : 'Gregorian'}}</b>
                         </div>
                     </div>
@@ -60,98 +60,12 @@
                         <label class="col-sm-2 control-label"> نهايه العام المالي </label>
                         <div class="col-sm-6">
                             <input type="text" name="end_f_year" calendarType="ummalqura" language="ar" date-format="YYYY-MM-DD" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.end_f_year | kdate: '' : 'ar' : 'ummalqura'}}"
-                                ng-model="model.appSettingsObj.end_f_year" />
+                                   ng-model="model.appSettingsObj.end_f_year" />
                             <b>{{model.appSettingsObj.end_f_year | kdate: '' : 'ar' : 'Gregorian'}}</b>
                         </div>
                     </div>
                 </fieldset>
-                <fieldset>
-                    <legend>العام الدراسي الحالي :</legend>
-                    <div class="form-group row">
-                        <label class="col-sm-2 control-label">بدايه العام الدراسي الحالي </label>
-                        <div class="col-sm-6">
-                            <input type="text" name="academic_start_date" calendarType="ummalqura" language="ar" date-format="YYYY-MM-DD" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.academic_start_date | kdate: '' : 'ar' : 'ummalqura'}}"
-                                ng-model="model.appSettingsObj.academic_start_date" />
-                            <b>{{model.appSettingsObj.academic_start_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 control-label">نهايه العام الدراسي الحالي </label>
-                        <div class="col-sm-6">
-                            <input type="text" name="academic_end_date" calendarType="ummalqura" language="ar" date-format="yyyy-MM-dd" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.academic_end_date | kdate: '' : 'ar' : 'ummalqura'}}"
-                                ng-model="model.appSettingsObj.academic_end_date" />
-                            <b>{{model.appSettingsObj.academic_end_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 control-label">الفصل الدراسي الحالي </label>
-                        <div class="col-sm-6">
-                            <label class="radio">
-                                <input type="radio" name="active_term" ng-model="model.appSettingsObj.active_term" ng-value="'first'">الفصل الدراسي الاول</label>
-                            <label class="radio">
-                                <input type="radio" name="active_term" ng-model="model.appSettingsObj.active_term" ng-value="'second'">الفصل الدراسي الثاني</label>
-                            <label class="radio">
-                                <input type="radio" name="active_term" ng-model="model.appSettingsObj.active_term" ng-value="'summer'">الفصل الدراسي الصيفي</label>
-                        </div>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <legend> الفصل الدراسي الاول :</legend>
-                    <div class="form-group row">
-                        <label class="col-sm-2 control-label">بدايه الفصل الدراسي الاول </label>
-                        <div class="col-sm-6">
-                            <input type="text" name="first_term_start_date" calendarType="ummalqura" language="ar" date-format="YYYY-MM-dd" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.first_term_start_date | kdate: '' : 'ar' : 'ummalqura'}}"
-                                ng-model="model.appSettingsObj.first_term_start_date" />
-                            <b>{{model.appSettingsObj.first_term_start_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 control-label">نهايه الفصل الدراسي الاول </label>
-                        <div class="col-sm-6">
-                            <input type="text" name="first_term_end_date" calendarType="ummalqura" language="ar" date-format="YYYY-MM-DD" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.first_term_end_date | kdate: '' : 'ar' : 'ummalqura'}}"
-                                ng-model="model.appSettingsObj.first_term_end_date" />
-                            <b>{{model.appSettingsObj.first_term_end_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
-                        </div>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <legend> الفصل الدراسي الثاني :</legend>
-                    <div class="form-group row">
-                        <label class="col-sm-2 control-label">بدايه الفصل الدراسي الثاني </label>
-                        <div class="col-sm-6">
-                            <input type="text" name="second_term_start_date" calendarType="ummalqura" language="ar" date-format="YYYY-MM-DD" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.second_term_start_date | kdate: '' : 'ar' : 'ummalqura'}}"
-                                ng-model="model.appSettingsObj.second_term_start_date" />
-                            <b>{{model.appSettingsObj.second_term_start_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 control-label">نهايه الفصل الدراسي الثاني </label>
-                        <div class="col-sm-6">
-                            <input type="text" name="second_term_end_date" calendarType="ummalqura" language="ar" date-format="YYYY-MM-DD" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.second_term_end_date | kdate: '' : 'ar' : 'ummalqura'}}"
-                                ng-model="model.appSettingsObj.second_term_end_date" />
-                            <b>{{model.appSettingsObj.second_term_end_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
-                        </div>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <legend> الفصل الدراسي الصيفي :</legend>
-                    <div class="form-group row">
-                        <label class="col-sm-2 control-label">بدايه الفصل الدراسي الصيفي </label>
-                        <div class="col-sm-6">
-                            <input type="text" id="popupDatePicker" name="summer_term_start_date" calendarType="ummalqura" language="ar" date-format="YYYY-MM-DD" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.summer_term_start_date | kdate: '' : 'ar' : 'ummalqura'}}"
-                                ng-model="model.appSettingsObj.summer_term_start_date" />
-                            <b>{{model.appSettingsObj.summer_term_start_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 control-label">نهايه الفصل الدراسي الصيفي </label>
-                        <div class="col-sm-6">
-                            <input type="text" name="summer_term_end_date" calendarType="ummalqura" language="ar" date-format="YYYY-MM-DD" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.appSettingsObj.summer_term_end_date | kdate: '' : 'ar' : 'ummalqura'}}"
-                                ng-model="model.appSettingsObj.summer_term_end_date" />
-                            <b>{{model.appSettingsObj.summer_term_end_date | kdate: '' : 'ar' : 'Gregorian'}}</b>
-                        </div>
-                    </div>
-                </fieldset>
+
                 <fieldset>
                     <legend> اعلانات البرنامج في الصفحه الرئيسيه :</legend>
                     <div class="form-group row">

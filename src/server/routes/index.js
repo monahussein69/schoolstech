@@ -556,7 +556,7 @@ router.get('/getEmployeeExcuseRecord/:schoolId/:employeeId', function (req, res,
 });
 
 router.get('/getStudentExcuseRecord/:schoolId/:studentId', function (req, res, next) {
-    studentExcuseMethods.getStudentExcuseRecord(req, res, function (result) {
+    employeeAttendanceRecordMethods.getStudentExcuseRecord(req, res, function (result) {
         res.send(result);
     });
 });

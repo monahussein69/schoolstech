@@ -338,7 +338,7 @@ angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, s
     var currentDate = $moment(selectedDate).format('MM/DD/YYYY');
 
     var ExcuseObj = {};
-    ExcuseObj.school_id = schoolId;
+    ExcuseObj.School_id = schoolId;
     ExcuseObj.Student_id = selectedStudent;
     ExcuseObj.Departure_time = currentTime;
     ExcuseObj.Return_time = currentTime;

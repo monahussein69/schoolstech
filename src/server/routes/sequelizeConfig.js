@@ -210,6 +210,25 @@ const sequelizeConfig = {
         AceualReturn_time: Sequelize.STRING,
         Request_id: Sequelize.STRING,
         Notes: Sequelize.STRING,
+ }),
+    mainsTable:sequelize.define('app_def_mains', {
+    id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        country_name: Sequelize.STRING,
+        ministry_name: Sequelize.STRING,
+        ministry_logo: Sequelize.STRING,
+        vision_logo: Sequelize.STRING,
+        start_f_year: Sequelize.INTEGER,
+        end_f_year: Sequelize.INTEGER,
+        academic_start_date: Sequelize.INTEGER,
+        academic_end_date: Sequelize.INTEGER,
+        first_term_start_date: Sequelize.INTEGER,
+        first_term_end_date	: Sequelize.INTEGER,
+        second_term_start_date: Sequelize.INTEGER,
+        second_term_end_date: Sequelize.INTEGER,
+        summer_term_start_date: Sequelize.INTEGER,
+        summer_term_end_date: Sequelize.INTEGER,
+        active_term: Sequelize.STRING,
+        marketing: Sequelize.STRING,
  })
 }
 module.exports = sequelizeConfig;

@@ -672,6 +672,14 @@ var employeesAttendanceMethods = {
 
         console.log('attendanceObj in total');
         console.log(attendanceObj);
+        if(attendanceObj.is_absent == 1){
+            attendanceObj.time_in = '';
+            attendanceObj.time_out = '';
+            attendanceObj.short_min = '';
+        }
+
+        console.log('attendanceObj in total222');
+        console.log(attendanceObj);
 
         sequelizeConfig.employeeAttandaceTable.find({where: {Calender_id: attendanceObj.Calender_id,employee_id:attendanceObj.employee_id,Event_Name:attendanceObj.Event_Name}}).then(function (attendance) {
             console.log(attendance);
@@ -704,10 +712,6 @@ var employeesAttendanceMethods = {
                 console.log(total_min);
                 if(attendanceObj.is_absent == 1){
                     total_min = attendanceObj.late_min;
-                    attendanceObj.time_in = '';
-                    attendanceObj.time_out = '';
-                    attendanceObj.short_min = '';
-
                 }
                 attendanceObj.Total_min = total_min;
                 attendance.updateAttributes(attendanceObj).then(function () {
@@ -723,6 +727,7 @@ var employeesAttendanceMethods = {
                 })
             } else {
                 var total_min = '';
+
                 if(attendanceObj.is_absent == 2){
                     total_min = attendanceObj.short_min;
                     attendanceObj.is_absent = 0;
@@ -730,6 +735,7 @@ var employeesAttendanceMethods = {
                     total_min = attendanceObj.late_min;
                 }
                 attendanceObj.Total_min = total_min;
+                console.log(attendanceObj);
                 sequelizeConfig.employeeAttandaceTable.create(attendanceObj).then(attendance => {
                     response.success = true;
                     response.insertId = attendance.id;

@@ -403,8 +403,9 @@ angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (
     function onSave() {
         console.log(model.currentTime);
         console.log(model.activities[model.activity].Begining_Time);
-        var currentTime = $moment(model.currentTime,"h:mm A",'en').format('HH:mm');
-        if((($moment(currentTime).isBefore( $moment(model.activities[model.activity].Begining_Time,'HH:mm'))) ||  ($moment(model.activities[model.activity].Ending_Time,'HH:mm').isBefore($moment(model.currentTime,'HH:mm')))) && model.status != 1){
+        var currentTime = $moment(model.currentTime,"h:mm A").format('HH:mm');
+        console.log(currentTime);
+        if((($moment(currentTime).isBefore( $moment(model.activities[model.activity].Begining_Time,'HH:mm'))) ||  ($moment(model.activities[model.activity].Ending_Time,'HH:mm').isBefore($moment(currentTime,'HH:mm')))) && model.status != 1){
             toastr.error('الوقت المدخل خارج وقت النشاط');
             return;
         }

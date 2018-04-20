@@ -355,8 +355,9 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                 console.log('open');
 
                 if (result.success) {
+                    model.getAttendanceBasedDate();
                     //angular.element($event.target).attr('disabled', 'disabled');
-                    angular.element($event.target).removeClass('color-grey');
+                    //angular.element($event.target).removeClass('color-grey');
                 }
             }, function () {
                 console.log('close');
@@ -475,6 +476,7 @@ angular.module('MetronicApp').controller('DialogInstCtrl', function (userId,toas
     $scope.late_min_modified = $moment().format('h:m A');
     //$scope.late_min = employee_data.late_min;
 
+
     $scope.submitAttendance = function () {
         //	$scope.usr = {name: '', job: '', age: '', sal: '', addr:''};
     };
@@ -484,6 +486,9 @@ angular.module('MetronicApp').controller('DialogInstCtrl', function (userId,toas
 
 
     $scope.recordAttendance = function () {
+
+        console.log($moment($scope.late_min_modified, "h:mm A").format("HH:mm"));
+
         var attendanceObj = {};
 
         attendanceObj.time_in = $scope.late_min_modified;
@@ -591,7 +596,7 @@ angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, e
     var currentDate = selectedDate;
 
     var ExcuseObj = {};
-    ExcuseObj.school_id = schoolId;
+    ExcuseObj.School_id = schoolId;
     ExcuseObj.Emp_id = selectedEmployee;
     ExcuseObj.Departure_time = currentTime;
     ExcuseObj.Return_time = currentTime;
