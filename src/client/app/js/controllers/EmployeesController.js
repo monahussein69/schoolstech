@@ -132,6 +132,10 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
                 '<a ui-sref="Master.employeeAbsentRecord({employeeId:{{'+data.id+'}}})">'+
                 '<i class="fa fa-bars"></i>&nbsp; سجل الغياب </a>'+
                 '</li>'+
+                '<li>'+
+                '<a ui-sref="Master.employeeExcuseRecord({employeeId:{{'+data.id+'}}})">'+
+                '<i class="fa fa-bars"></i>&nbsp; سجل الاستئذان </a>'+
+                '</li>'+
             '</ul>'+
                 '</div>';
 
@@ -238,7 +242,7 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
             }
             return new Promise(function (resolve, reject) {
                 Upload.upload({
-                    url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
+                    url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
                     data: {
                         file: file,
                         type: 'employee',

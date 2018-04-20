@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('schooltech', 'root', 'salimquta', {
+const sequelize = new Sequelize('schooltech', 'root', '', {
     host: 'localhost',
     dialect: 'mysql',
     operatorsAliases: false,
@@ -178,6 +178,38 @@ const sequelizeConfig = {
     Study_status: Sequelize.STRING,
     Entered_by: Sequelize.INTEGER,
     entery_date: Sequelize.STRING,
+ }),
+    employeeExcuseTable:sequelize.define('sch_att_empexcuse', {
+    id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        Calender_id: Sequelize.INTEGER,
+        School_id: Sequelize.INTEGER,
+        Emp_id: Sequelize.INTEGER,
+        ExcuseType: Sequelize.INTEGER,
+        Start_Date: Sequelize.STRING,
+        End_Date: Sequelize.STRING,
+        Departure_time: Sequelize.STRING,
+        Return_time: Sequelize.STRING,
+        Excuse_Reasons: Sequelize.STRING,
+        AceualReturn_time_time	: Sequelize.STRING,
+        AceualReturn_time: Sequelize.STRING,
+        Request_id: Sequelize.STRING,
+        Notes: Sequelize.STRING,
+ }),
+    studentExcuseTable:sequelize.define('sch_att_stdexcuse', {
+    id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        Calender_id: Sequelize.INTEGER,
+        School_id: Sequelize.INTEGER,
+        Student_id: Sequelize.INTEGER,
+        ExcuseType: Sequelize.INTEGER,
+        Start_Date: Sequelize.STRING,
+        End_Date: Sequelize.STRING,
+        Departure_time: Sequelize.STRING,
+        Return_time: Sequelize.STRING,
+        Excuse_Reasons: Sequelize.STRING,
+        AceualReturn_time_time	: Sequelize.STRING,
+        AceualReturn_time: Sequelize.STRING,
+        Request_id: Sequelize.STRING,
+        Notes: Sequelize.STRING,
  })
 }
 module.exports = sequelizeConfig;

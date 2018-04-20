@@ -80,6 +80,7 @@ var employeesAttendanceMethods = {
                 var calendarId = calendarObj.Id;
                 var schoolId = req.params.schoolId;
                 var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,TIME_FORMAT(sch_att_empatt.time_in, "%h:%i %p") as time_in_formmated,sch_att_empexcuse.Start_Date as excuse_date , emp_vacation.Start_Date as vacation_date_start ,emp_vacation.End_Date as vacation_date_end from sch_str_employees left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ?)left join sch_att_empexcuse on sch_str_employees.id = sch_att_empexcuse.Emp_id left join (SELECT s1.* FROM sch_att_empvacation as s1 LEFT JOIN sch_att_empvacation AS s2 ON s1.Emp_id = s2.Emp_id AND s1.Start_Date < s2.Start_Date WHERE s2.Emp_id IS NULL) as emp_vacation on emp_vacation.Emp_id = sch_str_employees.id where sch_str_employees.school_id = ?  group by main_employee_id order by sch_str_employees.name asc', [calendarId, schoolId], function (err, result) {
+                        console.log('query');
                         console.log(query.sql);
                         if (err)
                             throw err
@@ -421,6 +422,7 @@ var employeesAttendanceMethods = {
                                         AbsentObj.No_Of_Days = 1;
                                         console.log(AbsentObj);
                                         req.body.AbsentObj = AbsentObj;
+                                        req.body.fromAttendance = 1;
                                         employeesVacationMethods.sendAbsentRequest(req, res, function (result) {
                                         });
                                     }
@@ -682,6 +684,7 @@ var employeesAttendanceMethods = {
 
                 if(attendanceObj.is_absent == 2){
                     var late_min = '00:00';
+                    attendanceObj.is_absent = 0;
                     if(attendance.late_min)
                         late_min = attendance.late_min;
                     var shortTimeAsSeconds = moment.duration(attendanceObj.short_min).asSeconds();
@@ -722,6 +725,7 @@ var employeesAttendanceMethods = {
                 var total_min = '';
                 if(attendanceObj.is_absent == 2){
                     total_min = attendanceObj.short_min;
+                    attendanceObj.is_absent = 0;
                 }else{
                     total_min = attendanceObj.late_min;
                 }

@@ -3,6 +3,7 @@ var sequelizeConfig = require('../routes/sequelizeConfig.js');
 var moment = require('moment');
 var appSettingsMethods = require('../model/appSettings.js');
 
+
 var employeesExcuseMethods = {
     sendExcuseRequest: function (req, res, callback) {
         var ExcuseObj = req.body.ExcuseObj;
@@ -13,15 +14,18 @@ var employeesExcuseMethods = {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 ExcuseObj.Calender_id = calendarObj.Id;
-                con.query('insert into sch_att_empexcuse set ?',
-                    [ExcuseObj], function (err, result) {
-                        if (err)
-                            throw err
+                ExcuseObj.Start_Date = moment(ExcuseObj.Start_Date).format('MM-DD-YYYY');
+                ExcuseObj.End_Date = moment(ExcuseObj.End_Date).format('MM-DD-YYYY');
 
-                        if (result.affectedRows) {
-                            console.log(result);
-                            console.log('calendarObj : ',ExcuseObj);
-                            sequelizeConfig.employeeAttandaceTable.find({where: {employee_id: ExcuseObj.Emp_id , Calender_id : ExcuseObj.Calender_id}})
+                sequelizeConfig.employeeExcuseTable.find({where: {id: ExcuseObj.Calender_id}}).then(function (Excuse) {
+                    if (Excuse) {
+                        Excuse.updateAttributes(ExcuseObj).then(function () {
+                            sequelizeConfig.employeeAttandaceTable.find({
+                                where: {
+                                    employee_id: ExcuseObj.Emp_id,
+                                    Calender_id: ExcuseObj.Calender_id
+                                }
+                            })
                                 .then(function (employeeAttendence) {
                                     // Check if record exists in db
                                     if (employeeAttendence) {
@@ -34,17 +38,37 @@ var employeesExcuseMethods = {
                                 })
                             response.success = true;
                             response.msg = 'تم تقديم الطلب بنجاح';
-                            response.id = result.insertId;
                             callback(response);
-                        } else {
-                            response.success = false;
-                            response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
+                        })
+                    } else {
+
+                        sequelizeConfig.employeeExcuseTable.create(ExcuseObj).then(result => {
+                            sequelizeConfig.employeeAttandaceTable.find({
+                                where: {
+                                    employee_id: ExcuseObj.Emp_id,
+                                    Calender_id: ExcuseObj.Calender_id
+                                }
+                            })
+                                .then(function (employeeAttendence) {
+                                    // Check if record exists in db
+                                    if (employeeAttendence) {
+                                        employeeAttendence.updateAttributes({
+                                            is_excused: 1
+                                        }).then(function () {
+                                            console.log("yes");
+                                        })
+                                    }
+                                })
+                            response.success = true;
+                            response.msg = 'تم تقديم الطلب بنجاح';
                             callback(response);
-                        }
+                        });
 
                     }
-                );
-            } else {
+
+                });
+            }
+            else {
                 response.success = false;
                 response.msg = 'اليوم غير موجود';
                 callback(response);

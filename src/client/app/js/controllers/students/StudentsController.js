@@ -1,5 +1,5 @@
 angular.module('MetronicApp').controller('StudentsController',
-    function ($rootScope, $scope, $http, $window, localStorageService, StudentsService, Upload, toastr, DTOptionsBuilder, DTColumnBuilder, $q, CommonService) {
+    function ($compile,$rootScope, $scope, $http, $window, localStorageService, StudentsService, Upload, toastr, DTOptionsBuilder, DTColumnBuilder, $q, CommonService) {
 
         var schoolId = 0;
         var config_step = -1;
@@ -37,7 +37,7 @@ angular.module('MetronicApp').controller('StudentsController',
                     model.students = students;
                 });
                 return defer.promise
-            }),
+            }).withOption('createdRow', createdRow),
             columns: [
                 DTColumnBuilder.newColumn('Name').withTitle('اسم الطالب').withOption('defaultContent', 'غير مدخل'),
                 DTColumnBuilder.newColumn('Nationality').withTitle('الجنسية').withOption('defaultContent', 'غير مدخل'),
@@ -45,6 +45,8 @@ angular.module('MetronicApp').controller('StudentsController',
                 DTColumnBuilder.newColumn('Identity_No').withTitle('رقم الهوية').withOption('defaultContent', 'غير مدخل'),
                 DTColumnBuilder.newColumn('student_record').withTitle('سجل الطالب').withOption('defaultContent', 'غير مدخل'),
                 DTColumnBuilder.newColumn('status').withTitle('الحالة').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn(null).withTitle('العمليات').notSortable()
+                    .renderWith(actionsHtml)
             ],
             dtInstance: {},
             students: {}
@@ -59,6 +61,29 @@ angular.module('MetronicApp').controller('StudentsController',
 
         CommonService.checkPage(schoolId);
 
+
+
+        function createdRow(row, data, dataIndex) {
+            // Recompiling so we can bind Angular directive to the DT
+            $compile(angular.element(row).contents())($scope);
+        }
+
+        function actionsHtml(data, type, full, meta) {
+
+            return '<div class="btn-group">'+
+                '<button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> العمليات'+
+                '<i class="fa fa-angle-down"></i>'+
+                '</button>'+
+                '<ul class="dropdown-menu pull-right">'+
+                '<li>'+
+                '<a ui-sref="Master.studentExcuseRecord({studentId:{{'+data.student_id+'}}})">'+
+                '<i class="fa fa-bars"></i>&nbsp; سجل الاستئذان </a>'+
+                '</li>'+
+                '</ul>'+
+                '</div>';
+
+
+        }
 
         function deleteStudent(studentId) {
             manageSchoolService.deleteStudentData(studentId, function (response) {
@@ -94,7 +119,7 @@ angular.module('MetronicApp').controller('StudentsController',
         function upload(file) {
             return new Promise(function (resolve, reject) {
                 Upload.upload({
-                    url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
+                    url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
                     data: {
                         file: file,
                         type: 'students',
@@ -220,7 +245,7 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
                     jobtitle_id = result[0].id;
                     return new Promise(function (resolve, reject) {
                         Upload.upload({
-                            url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
+                            url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
                             data: {
                                 file: file,
                                 type: 'studentsDegrees',
@@ -253,7 +278,7 @@ angular.module('MetronicApp').controller('StudentsDegreesController',
                         jobtitle_id = result.insertId;
                         return new Promise(function (resolve, reject) {
                             Upload.upload({
-                                url: 'http://138.197.175.116:3000/upload', //webAPI exposed to upload the file
+                                url: 'http://localhost:3000/upload', //webAPI exposed to upload the file
                                 data: {
                                     file: file,
                                     type: 'studentsDegrees',
