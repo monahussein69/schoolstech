@@ -73,6 +73,20 @@
                 </li>
             </ul>
         </li>
+        <li class="nav-item" ng-show="model.userType == 2 || model.userType == 3">
+            <a href="#" class="nav-link nav-toggle">
+                <i class="icon-graduation"></i>
+                <span class="title">المسائلات</span>
+                <span class="arrow"></span>
+            </a>
+            <ul class="sub-menu">
+                <li>
+                    <a ui-sref="Master.actions">
+                        <i class="fa fa-list"></i>كشف المسائلات</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
         <li class="nav-item" ng-show="model.userType == 2">
             <a href="#" class="nav-link nav-toggle">
                 <i class="icon-graduation"></i>
