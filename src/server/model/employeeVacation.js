@@ -8,6 +8,7 @@ var employeesVacationMethods = {
     sendAbsentRequest: function (req, res, callback) {
         console.log('sendAbsentRequest : ', req.body);
         var AbsentObj = req.body.AbsentObj;
+        var fromAttendance = req.body.fromAttendance;
         var current_date = moment(AbsentObj.Start_Date).format('MM-DD-YYYY');
         // var current_date = '03-18-2018';
 
@@ -28,8 +29,10 @@ var employeesVacationMethods = {
                             for (var i = 0; i < AbsentObj.No_Of_Days; i++) {
                                 req.body.AbsentObj = AbsentObj;
                                 req.body.date = moment(AbsentObj.Start_Date, "MM-DD-YYYY").add(i, 'days').format('MM-DD-YYYY');
-                                employeesVacationMethods.setVactionIntoEmpAttendence(req, res, function (result) {
-                                });
+                                if(!fromAttendance) {
+                                    employeesVacationMethods.setVactionIntoEmpAttendence(req, res, function (result) {
+                                    });
+                                }
                             }
                             response.success = true;
                             response.msg = 'تم تسجيل الغياب بنجاح';

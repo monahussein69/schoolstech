@@ -9,7 +9,6 @@ angular.module('MetronicApp').factory('employeesAttendanceService', function ($h
                 resolve(response);
             });
         });
-
     };
 
     fac.getAllEmployeesAttendanceByDate = function (schoolId,date) {

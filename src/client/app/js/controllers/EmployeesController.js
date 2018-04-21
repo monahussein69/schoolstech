@@ -132,6 +132,10 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
                 '<a ui-sref="Master.employeeAbsentRecord({employeeId:{{'+data.id+'}}})">'+
                 '<i class="fa fa-bars"></i>&nbsp; سجل الغياب </a>'+
                 '</li>'+
+                '<li>'+
+                '<a ui-sref="Master.employeeExcuseRecord({employeeId:{{'+data.id+'}}})">'+
+                '<i class="fa fa-bars"></i>&nbsp; سجل الاستئذان </a>'+
+                '</li>'+
             '</ul>'+
                 '</div>';
 

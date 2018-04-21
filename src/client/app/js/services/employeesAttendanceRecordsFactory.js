@@ -18,6 +18,15 @@ angular.module('MetronicApp').factory('employeesAttendanceRecordsService', funct
             });
         });
 
+    } ;
+
+    fac.getEmployeeExcuseRecord = function (schoolId,employeeId) {
+        return new Promise(function (resolve, reject) {
+            $http.get("http://138.197.175.116:3000/getEmployeeExcuseRecord/"+schoolId+"/"+employeeId).success(function (response) {
+                resolve(response);
+            });
+        });
+
     };
 
     return fac;

@@ -19,19 +19,7 @@ angular.module('MetronicApp')
                 }
 
 
-            manageAppSettingsService.getCalender(function (response) {
-                var days = [];
-                var weeks = [];
-                model.calender = response.data;
 
-                response.data.forEach(function (item, day_index) {
-                    if(!weeks.includes(item.Week_Name)){
-                        weeks.push(item.Week_Name);
-                    }
-                });
-
-               $scope.weeks = weeks;
-            });
             model.loggedUser = LoggedUserData[0].LoginName
         }
 

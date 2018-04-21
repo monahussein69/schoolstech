@@ -43,12 +43,24 @@
                 <div class="form-group row">
                     <label class="col-sm-2 control-label">جنس المدرسه</label>
                     <div class="col-sm-6">
-                        <input type="text" name="gender" class="form-control" ng-model="model.SchoolObj.gender" /> </div>
+                        <select  name="gender" class="form-control" ng-model="model.SchoolObj.gender">
+                            <option value=""> اختار جنس المدرسه </option>
+                            <option value="بنين"> بنين </option>
+                            <option value=" بنات"> بنات</option>
+                        </select>
+                </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 control-label">المرحله التعليميه</label>
                     <div class="col-sm-6">
-                        <input type="text" name="educationLevel" class="form-control" ng-model="model.SchoolObj.educationLevel" /> </div>
+                        <select  name="educationLevel" class="form-control" ng-model="model.SchoolObj.educationLevel">
+                            <option value=""> اختار المرحله التعليميه </option>
+                            <option value="المرحلة الابتدائيه"> المرحلة الابتدائيه </option>
+                            <option value="المرحلة الاعدادية"> المرحلة الاعدادية </option>
+                            <option value="المرحلة الثانوية"> المرحلة الثانوية </option>
+                        </select>
+
+                </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 control-label">المكتب</label>
@@ -110,7 +122,7 @@
                 <div class="form-group row">
                     <label class="col-sm-2 control-label">شعار المدرسة </label>
                     <div class="col-sm-6">
-                        <input type="file" ngf-select ng-model="model.SchoolObj.logoFile" name="logoFile" id="file-upload" />
+                        <input type="file" ngf-select ng-model="model.SchoolObj.logoFile" name="logoFile" id="file-upload" accept="image/x-png,image/gif,image/jpeg" ngf-pattern="'.jpeg,.jpg,.png,.gif"  />
                         <div class="col-sm-10" ng-if="model.SchoolObj.logoFile |  isValidObject">
                             <img src="../../uploads/{{model.SchoolObj.logoFile}}" style="width:100%;" /> </div>
                     </div>

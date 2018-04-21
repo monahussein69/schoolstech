@@ -10,7 +10,16 @@ angular.module('MetronicApp').factory('studentExcuseService', function ($http) {
         }).success(function (response) {
             callback(response);
         });
-    }
+    },
+
+    fac.getStudentExcuseRecord = function (schoolId,studentId) {
+            return new Promise(function (resolve, reject) {
+                $http.get("http://138.197.175.116:3000/getStudentExcuseRecord/"+schoolId+"/"+studentId).success(function (response) {
+                    resolve(response);
+                });
+            });
+
+        };
 
 
     return fac;

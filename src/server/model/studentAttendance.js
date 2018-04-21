@@ -97,8 +97,7 @@ var studentAttendanceMethods = {
         var attendanceObj = req.body.attendanceObj;
         req.params.SchoolId = attendanceObj.school_id;
         var response = {};
-        attendanceObj.late_min = '';
-
+        //attendanceObj.late_min = '';
         var current_date = moment(attendanceObj.attendance_day).format('MM-DD-YYYY');
         req.body.date = current_date;
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
@@ -117,7 +116,25 @@ var studentAttendanceMethods = {
                                 attendanceObj.Event_type_id = result[0].Id;
                                 attendanceObj.Begining_Time = result[0].Begining_Time;
 
-                                //if (attendanceObj.is_absent == 0) {
+                                if(attendanceObj.is_absent == 2){
+                                    var ending_time = moment(attendanceObj.Ending_Time,"h:mm A", 'HH:mm').format('HH:mm');
+                                    //var current_time = moment().format('HH:mm');
+                                    var current_time = attendanceObj.time_out;
+                                    var current_time = moment(current_time,"h:mm A", 'HH:mm').format('HH:mm');
+                                    attendanceObj.time_out = current_time;
+
+                                    //attendanceObj.time_in = current_time;
+                                    var ms = moment(ending_time, "HH:mm").diff(moment(current_time, "HH:mm"));
+
+                                    if (ms <= 0) {
+                                        // ms = moment(current_time, "HH:mm").diff(moment(begining_time, "HH:mm"));
+                                        attendanceObj.short_min = '';
+                                    }else{
+                                        var d = moment.duration(ms);
+                                        var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
+                                        attendanceObj.short_min = hours;
+                                    }
+                                }else{
                                     var begining_time = moment(attendanceObj.Begining_Time, 'HH:mm').format('HH:mm');
                                     var current_time = attendanceObj.time_in;
                                     attendanceObj.time_in = current_time;
@@ -131,9 +148,13 @@ var studentAttendanceMethods = {
                                         var hours = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
                                         attendanceObj.late_min = hours;
                                     }
+                                }
+
+                                //if (attendanceObj.is_absent == 0) {
+
                                 //}
 
-                                attendanceObj.Total_min = attendanceObj.late_min;
+                                //attendanceObj.Total_min = attendanceObj.late_min;
                                 req.body.attendanceObj = attendanceObj;
                                 studentAttendanceMethods.addStudentAttendance(req, res, function (result) {
                                     callback(result);
@@ -170,6 +191,34 @@ var studentAttendanceMethods = {
 
         sequelizeConfig.studentAttandaceTable.find({where: {Calender_id: attendanceObj.Calender_id,Student_id:attendanceObj.Student_id,Event_Name:attendanceObj.Event_Name}}).then(function (attendance) {
             if (attendance) {
+                delete attendanceObj.entery_date;
+                delete attendanceObj.entered_by;
+                var ms = 0;
+                var total_min = '00:00';
+                if(attendanceObj.is_absent == 2){
+                    var late_min = '00:00';
+                    attendanceObj.is_absent = 0;
+                    if(attendance.late_min)
+                        late_min = attendance.late_min;
+                    var shortTimeAsSeconds = moment.duration(attendanceObj.short_min).asSeconds();
+                    ms = moment(late_min, "HH:mm").add(shortTimeAsSeconds,'seconds');
+                }else if(attendanceObj.is_absent == 0){
+                    var short_min = '00:00';
+                    if(attendance.short_min)
+                        short_min = attendance.short_min;
+                    var lateTimeAsSeconds = moment.duration(attendanceObj.late_min).asSeconds();
+                    ms = moment(short_min, "HH:mm").add(lateTimeAsSeconds,'seconds');
+                }
+                var d = moment.duration(ms);
+                total_min = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
+                if(attendanceObj.is_absent == 1){
+                    total_min = attendanceObj.late_min;
+                    attendanceObj.time_in = '';
+                    attendanceObj.time_out = '';
+                    attendanceObj.short_min = '';
+
+                }
+                attendanceObj.Total_min = total_min;
                 attendance.updateAttributes(attendanceObj).then(function () {
                     response.success = true;
                     if (attendanceObj.is_absent == 0)
@@ -180,6 +229,15 @@ var studentAttendanceMethods = {
                         callback(response);
                     });
             }else{
+                var total_min = '';
+                if(attendanceObj.is_absent == 2){
+                    total_min = attendanceObj.short_min;
+                    attendanceObj.is_absent = 0;
+                }else{
+                    total_min = attendanceObj.late_min;
+                }
+                attendanceObj.Total_min = total_min;
+
                 sequelizeConfig.studentAttandaceTable.create(attendanceObj).then(attendance => {
                             response.success = true;
                             if (attendance.is_absent == 0)

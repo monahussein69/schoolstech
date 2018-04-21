@@ -549,6 +549,17 @@ router.get('/getEmployeeAbsentRecord/:schoolId/:employeeId', function (req, res,
         res.send(result);
     });
 });
+router.get('/getEmployeeExcuseRecord/:schoolId/:employeeId', function (req, res, next) {
+    employeeAttendanceRecordMethods.getEmployeeExcuseRecord(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getStudentExcuseRecord/:schoolId/:studentId', function (req, res, next) {
+    employeeAttendanceRecordMethods.getStudentExcuseRecord(req, res, function (result) {
+        res.send(result);
+    });
+});
 
 router.post('/setEmployeeAttendance/', function (req, res, next) {
     employeesAttendanceMethods.setEmployeeAttendance(req, res, function (result) {

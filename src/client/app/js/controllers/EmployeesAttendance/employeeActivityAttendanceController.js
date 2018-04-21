@@ -87,7 +87,7 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
         function recordAttendanceAll(type){
             var allEmployees = [];
             var results = [];
-            var currentTime = $moment().format('H:mm');
+            var currentTime = $moment().format('h:mm A');
 
             if((($moment(currentTime,'HH:mm').isBefore( $moment(model.listOfActivity[model.activity].Begining_Time,'HH:mm'))) ||  ($moment(model.listOfActivity[model.activity].Ending_Time,'HH:mm').isBefore($moment(currentTime,'HH:mm')))) && type != 'غياب'){
                 toastr.error('الوقت المدخل خارج وقت النشاط');
@@ -318,8 +318,8 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
 angular.module('MetronicApp').controller('confirmLateMinCtrl', function (localStorageService, toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedEmployee,selectedDate,time_in,selectedEvent, schoolId, $log) {
     $scope.selectedEmployee = selectedEmployee;
-    $scope.currentTime = $moment().format('H:m');
-    $scope.late_min_modified = time_in;
+    $scope.currentTime = $moment().format('h:m A');
+    $scope.late_min_modified = $moment(time_in,'h:m A').format('h:mm A') ;
 
     var entryDate = $moment().format('YYYY-MM-DD- hh:mm');
     var userObject = localStorageService.get('UserObject');
@@ -343,7 +343,7 @@ angular.module('MetronicApp').controller('confirmLateMinCtrl', function (localSt
         attendanceObj.employee_id = selectedEmployee;
         attendanceObj.Event_Name = selectedEvent.event_Nam;
         attendanceObj.is_absent = 0;
-        attendanceObj.attendance_day = selectedDate;
+        attendanceObj.Attendance_Day = selectedDate;
         attendanceObj.Begining_Time = selectedEvent.Begining_Time;
         attendanceObj.Ending_Time = selectedEvent.Ending_Time;
         attendanceObj.entered_by = userId;
@@ -383,7 +383,7 @@ angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (
 
     var model = {
         selectedEmployee: selectedEmployee,
-        currentTime: $moment().format('HH:mm'),
+        currentTime: $moment().format('h:mm A'),
         onCancel: onCancel,
         onSave: onSave,
         activities: getActivityByDayAndSchoolId,
@@ -403,8 +403,9 @@ angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (
     function onSave() {
         console.log(model.currentTime);
         console.log(model.activities[model.activity].Begining_Time);
-        var currentTime = $moment(model.currentTime,"h:mm A",'en').format('HH:mm');
-        if((($moment(currentTime).isBefore( $moment(model.activities[model.activity].Begining_Time,'HH:mm'))) ||  ($moment(model.activities[model.activity].Ending_Time,'HH:mm').isBefore($moment(model.currentTime,'HH:mm')))) && model.status != 1){
+        var currentTime = $moment(model.currentTime,"h:mm A").format('HH:mm');
+        console.log(currentTime);
+        if((($moment(currentTime).isBefore( $moment(model.activities[model.activity].Begining_Time,'HH:mm'))) ||  ($moment(model.activities[model.activity].Ending_Time,'HH:mm').isBefore($moment(currentTime,'HH:mm')))) && model.status != 1){
             toastr.error('الوقت المدخل خارج وقت النشاط');
             return;
         }

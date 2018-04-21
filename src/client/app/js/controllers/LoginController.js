@@ -19,6 +19,7 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
                 .then(function (response) {
                     if (response.data.success) {
                         var userObj = response.data.user;
+                        console.log(userObj);
                         userObj[0].config_flag = false;
                         if (userObj[0].userType == 2){
                             var schoolId = userObj[0].schoolId;
@@ -50,6 +51,8 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
                                 console.log(userObj)
                                 localStorageService.set('UserObject', userObj);
                             });
+                        }else{
+                            localStorageService.set('UserObject', userObj);
                         }
 
                         $window.location.href = '#/dashboard.html';

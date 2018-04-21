@@ -73,64 +73,7 @@
         </div>
     </div>
     <!-- END DASHBOARD STATS -->
-    <div class="row">
-        <div class="col-md-12 col-sm-12">
-            <!-- BEGIN PORTLET-->
-            <div class="portlet light bordered ">
-                <div class="portlet-title">
-                    <div class="caption caption-md">
-                        <i class="icon-settings font-green"></i>
-                        <span class="caption-subject font-green bold uppercase">التقويم المدرسي</span>
-                        <span class="caption-helper hide">weekly stats...</span>
-                    </div>
-                </div>
-                <style>
-                    .weeks h4 {
-                        text-align: center;
-                        background: #0f8c7a;
-                        padding: 10px;
-                        color: white;
-                    }
 
-                    .weeks ul {
-                        list-style: none;
-                        padding-right: 0px;
-                    }
-
-                    .weeks ul li span {
-                        display: inline-block;
-                        padding: 2px;
-                        background: gray;
-                        color: white;
-                        margin-left: 10px;
-                        width: 50px;
-                        text-align: center;
-                    }
-
-                    .weeks ul li p {
-                        display: inline-block;
-                        padding: 2px;
-                        border: 1px solid gray;
-                        margin-bottom: 0px;
-                        width: 160px;
-                        text-align: center;
-                    }
-                </style>
-                <div class="portlet-body">
-                    <div class="weeks col-md-3" ng-repeat="week in weeks track by $index">
-                        <h4 style="">الاسبوع {{week}}</h4>
-                        <ul ng-repeat="calender2 in model.calender track by $index">
-                            <li ng-if="week == calender2.Week_Name">
-                                <span>{{calender2.Day }}</span>
-                                <p>{{calender2.Date | kdate: '' : 'ar' : 'ummalqura'}} هـ</p>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!-- END PORTLET-->
-        </div>
-    </div>
 </div>
 <!-- END MAIN CONTENT -->
 <!-- BEGIN MAIN JS & CSS -->
