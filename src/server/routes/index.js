@@ -428,7 +428,7 @@ router.post('/saveCalender', function (req, res, next) {
 });
 
 
-router.get('/getCalender', function (req, res, next) {
+router.get('/getCalender/:first_Academic_Year/:end_Academic_Year/:Term_Id', function (req, res, next) {
     appSettingsMethods.getCalender(req, res, function (result) {
         res.send(result);
     });

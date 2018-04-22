@@ -4,7 +4,7 @@ angular.module('MetronicApp').factory('employeesAttendanceRecordsService', funct
 
     fac.getEmployeeLateRecord = function (schoolId,employeeId) {
         return new Promise(function (resolve, reject) {
-            $http.get("http://localhost:3000/getEmployeeLateRecord/"+schoolId+"/"+employeeId).success(function (response) {
+            $http.get("http://138.197.175.116:3000/getEmployeeLateRecord/"+schoolId+"/"+employeeId).success(function (response) {
                 resolve(response);
             });
         });
@@ -13,7 +13,7 @@ angular.module('MetronicApp').factory('employeesAttendanceRecordsService', funct
 
     fac.getEmployeeAbsentRecord = function (schoolId,employeeId) {
         return new Promise(function (resolve, reject) {
-            $http.get("http://localhost:3000/getEmployeeAbsentRecord/"+schoolId+"/"+employeeId).success(function (response) {
+            $http.get("http://138.197.175.116:3000/getEmployeeAbsentRecord/"+schoolId+"/"+employeeId).success(function (response) {
                 resolve(response);
             });
         });

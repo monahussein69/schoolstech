@@ -48,6 +48,7 @@ angular.module('MetronicApp').controller('activityAttendanceController',
                 return defer.promise
             }).withOption('createdRow', createdRow).withOption('createdRow', createdRow)
                 .withOption('autoWidth', false)
+                .withOption('paging', false)
                 //.withOption('headerCallback', function(header) {
                     //if (!model.headerCompiled) {
                     // Use this headerCompiled field to only compile header once

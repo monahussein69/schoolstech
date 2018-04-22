@@ -177,13 +177,7 @@ var userMethods = {
 
         }else if(type == 'school'){
             var schoolId = req.body.schoolId;
-            req.params.schoolId = schoolId
-            schoolMethods.getSchool(req, res, function (result) {
-                if (Object.keys(result).length) {
-
-                    if( result[0].userId){
-                        var user_id = result[0].userId;
-                        con.query("update sys_users set is_active = 0 where id = ?", [user_id], function (err, result) {
+                        con.query("update sys_users set is_active = 0 where schoolId = ?", [schoolId], function (err, result) {
                             if(err)
                                 throw err;
                             if(result.affectedRows){
@@ -193,18 +187,6 @@ var userMethods = {
                             }
                             callback(response);
                         });
-                    }else{
-                        response.success = false;
-                        response.msg = 'المستخدم غير موجود';
-                        callback(response);
-                    }
-                }else{
-                    response.success = false;
-                    response.msg = 'المستخدم غير موجود , الرجاء المحاوله مره اخرى';
-                    callback(response);
-                }
-
-            });
 
         }
     }

@@ -10,7 +10,6 @@
         </li>
     </ul>
 </div>
-
 <div class="row" style="margin-top:15px">
     <div class="col-md-12 col-sm-12">
         <!-- BEGIN PORTLET-->
@@ -56,6 +55,29 @@
             </style>
             <div class="portlet-body">
                 <div class="row">
+                    <div class="col-md-12">
+                        <form>
+                            <div class="form-group row ">
+                                <label class="col-sm-2 control-label ">العام الدراسي</label>
+                                <div class="col-sm-4 ">
+                                    <input type="text " name="name " class="form-control date-picker " ng-model="model.Academic_Year " ng-change="model.getAttendanceBasedDate() " data-date-format="yyyy" data-date-viewmode="years"/> </div>
+                            </div>
+                            <div class="form-group row ">
+                                <label class="col-sm-2 control-label ">الفصل الدراسي</label>
+                                <div class="col-sm-4 ">
+                                    <select class="form-control" ng-model="model.Term_Id">
+                                        <option value="">اختر الفصل الدراسي</option>
+                                        <option value="first">الفصل الدراسي الاول</option>
+                                        <option value="second">الفصل الدراسي الثاني</option>
+                                        <option value="summer">الفصل الدراسي الصيفي</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="button" ng-click="model.getCalender()" class="btn btn-primary" value="عرض التقويم" /> </form>
+                    </div>
+                    <div class="col-md-12"></div>
+                </div>
+                <div class="row">
                     <div class="weeks col-md-3" ng-repeat="week in weeks track by $index">
                         <h4 style="">الاسبوع {{week}}</h4>
                         <ul ng-repeat="calender2 in model.calender track by $index">
@@ -66,9 +88,11 @@
                         </ul>
                     </div>
                 </div>
-
             </div>
         </div>
         <!-- END PORTLET-->
     </div>
 </div>
+<script>
+    ComponentsDateTimePickers.init(); // init todo page
+</script>

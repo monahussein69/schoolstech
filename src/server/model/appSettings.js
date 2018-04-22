@@ -109,30 +109,23 @@ var appSettingsMethods = {
 
     getCalender: function (req, res, callback) {
         var daysByweeks = [];
-
-        appSettingsMethods.getappSettingsData(req,res,function(result){
-            console.log(result);
-            if (Object.keys(result).length) {
-                var first_Academic_Year = moment.unix(result.data[0].academic_start_date).format('YYYY');
-                var end_Academic_Year = moment.unix(result.data[0].academic_end_date).format('YYYY');
-                var active_term  =  result.data[0].active_term;
-                con.query('select * from app_def_calender where (Academic_Year = ? or Academic_Year = ?) and Term_Id = ?',[first_Academic_Year,end_Academic_Year,active_term], function (err, result) {
-                        if (err)
-                            throw err
-                        var response = {};
-                        if (Object.keys(result).length) {
-                            response.success = true;
-                            response.data = result;
-                        } else {
-                            response.success = false;
+        var Term_Id = req.params.Term_Id;
+        var first_Academic_Year = req.params.first_Academic_Year;
+        var end_Academic_Year = req.params.end_Academic_Year;
+        con.query('select * from app_def_calender where (Academic_Year = ? or Academic_Year = ?) and Term_Id = ?',[first_Academic_Year,end_Academic_Year,Term_Id], function (err, result) {
+                            if (err)
+                                throw err
+                            var response = {};
+                            if (Object.keys(result).length) {
+                                response.success = true;
+                                response.data = result;
+                            } else {
+                                response.success = false;
+                            }
+                            callback(response);
                         }
-                        callback(response);
-                    }
-                );
-            }
-        });
-
-    },
+                    );
+                },
 
     getCalenderByDate: function (req, res, callback) {
         var date = req.body.date;

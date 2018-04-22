@@ -217,8 +217,13 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
 
         function actionsHtml(data, type, full, meta) {
 
+            var late = false;
+            if(data.late_min && data.late_min != 0){
+                late = true;
+            }
+
             return ''+
-                '<button class="btn btn-primary" ng-class="{\'color-grey\':(\''+data.time_in+'\' == \'\') || (\''+data.time_in+'\' == \'null\')}"  ng-click="model.employeeActivity('+data.main_employee_id+',0,$event)"> تأخر</button>' +
+                '<button class="btn btn-primary" ng-class="{\'color-grey\':!('+late+')}"  ng-click="model.employeeActivity('+data.main_employee_id+',0,$event)"> تأخر</button>' +
                 '<button class="btn btn-danger" ng-class="{\'color-grey\':!('+data.is_absent+' == 1)}"  ng-click="model.employeeActivity('+data.main_employee_id+',1,$event)">غياب</button>' +
                 '<button class="btn btn-warning" ng-class="{\'color-grey\':(\''+data.short_min+'\' == \'\') || (\''+data.short_min+'\' == \'null\')}" ng-click="model.employeeActivity('+data.main_employee_id+',2,$event)">خروج مبكر</button>'
                 ;
