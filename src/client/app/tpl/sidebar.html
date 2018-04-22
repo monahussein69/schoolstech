@@ -129,7 +129,7 @@
         <li class="nav-item" ng-show="model.userType == 1">
             <a href="#" class="nav-link nav-toggle">
                 <i class="icon-graduation"></i>
-                <span class="title">ادارة المدارس</span>
+                <span class="title"> المدارس و الاشتراكات </span>
                 <span class="arrow"></span>
             </a>
             <ul class="sub-menu">
@@ -149,7 +149,7 @@
         <li class="nav-item" ng-show="model.userType == 1">
             <a href="#" class="nav-link nav-toggle">
                 <i class="icon-graduation"></i>
-                <span class="title">الاعدادات</span>
+                <span class="title"> الاعدادات العامه</span>
                 <span class="arrow"></span>
             </a>
             <ul class="sub-menu">
@@ -175,13 +175,20 @@
                 </li>
             </ul>
         </li>
+        <li class="nav-item" ng-show="model.userType == 1">
+            <a href="#" class="nav-link nav-toggle">
+                <i class="icon-graduation"></i>
+                <span class="title"> اعدادات الدوام المدرسي </span>
+                <span class="arrow"></span>
+            </a>
+        </li>
         <li>
             <a ui-sref="Master.getCalender">
                 <i class="fa fa-list"></i>
                 <span>التقويم المدرسي </span>
             </a>
         </li>
-        <li>
+        <li ng-show="model.userType != 1">
             <a ui-sref="Master.tasks">
                 <i class="fa fa-list"></i>
                 <span>المهام </span>

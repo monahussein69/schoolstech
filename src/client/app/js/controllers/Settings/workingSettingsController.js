@@ -110,12 +110,12 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
             console.log( model.working_settingsObj);
             if(type == 'new'){
                 model.working_settingsObj.Id = '';
+                model.working_settingsObj.Profile_Active_status = 0;
             }
             if (Object.keys(model.working_settingsObj).length) {
                 model.working_settingsObj.schoolId = model.schoolId;
                 var Day_Begining = model.working_settingsObj.Day_Begining;
                 model.working_settingsObj.Day_Begining = Day_Begining.toString();
-
                 var Activity_Day = model.working_settingsObj.Activity_Day;
                 model.working_settingsObj.Activity_Day = Activity_Day.toString();
 

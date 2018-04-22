@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('schooltech', 'root', 'salimquta', {
-    host: 'localhost',
+    host: '138.197.175.116',
     dialect: 'mysql',
     operatorsAliases: false,
     pool: {
@@ -199,7 +199,7 @@ const sequelizeConfig = {
         ACTION_body: Sequelize.STRING,
         issue_date: Sequelize.STRING,
         action_reply: Sequelize.STRING,
-    })
+    }),
     employeeExcuseTable:sequelize.define('sch_att_empexcuse', {
         id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
         Calender_id: Sequelize.INTEGER,

@@ -248,25 +248,47 @@ angular.module('MetronicApp').controller('calenderSettingsController',
 
 
 angular.module('MetronicApp').controller('getCalenderController',
-    function ($stateParams, $rootScope, $scope, $http, $window, localStorageService, manageAppSettingsService, toastr, $filter) {
+    function ($moment,$stateParams, $rootScope, $scope, $http, $window, localStorageService, manageAppSettingsService, toastr, $filter) {
         var model = {
-            calender:[]
+            calender:[],
+            getCalender:getCalender,
+            Term_Id:'',
+            first_Academic_Year:'',
+            end_Academic_Year:'',
+            Academic_Year:''
         };
+
         $scope.model = model;
-
-        manageAppSettingsService.getCalender(function (response) {
-            var days = [];
-            var weeks = [];
-            model.calender = response.data;
-
-            response.data.forEach(function (item, day_index) {
-                if(!weeks.includes(item.Week_Name)){
-                    weeks.push(item.Week_Name);
-                }
-            });
-
-            $scope.weeks = weeks;
+        manageAppSettingsService.getappSettingsData(function(result){
+            model.first_Academic_Year = $moment.unix(result.data[0].academic_start_date).format('YYYY');
+            model.end_Academic_Year = $moment.unix(result.data[0].academic_end_date).format('YYYY');
+            console.log(model.first_Academic_Year);
+            console.log(model.end_Academic_Year);
+            model.Term_Id  =  result.data[0].active_term;
+            getCalender();
         });
+
+        function getCalender(){
+            if(model.Academic_Year) {
+                model.first_Academic_Year = model.Academic_Year;
+                model.end_Academic_Year = model.Academic_Year;
+            }
+            manageAppSettingsService.getCalender(model.first_Academic_Year,model.end_Academic_Year,model.Term_Id,function (response) {
+                var days = [];
+                var weeks = [];
+                model.calender = response.data;
+
+                response.data.forEach(function (item, day_index) {
+                    if(!weeks.includes(item.Week_Name)){
+                        weeks.push(item.Week_Name);
+                    }
+                });
+
+                $scope.weeks = weeks;
+            });
+        }
+
+
         $scope.$on('$viewContentLoaded', function () {
             // initialize core components
             // App.initAjax();
