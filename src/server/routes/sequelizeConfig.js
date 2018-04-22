@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('schooltech', 'root', 'salimquta', {
-    host: 'localhost',
+    host: '138.197.175.116',
     dialect: 'mysql',
     operatorsAliases: false,
     pool: {
@@ -179,8 +179,29 @@ const sequelizeConfig = {
     Entered_by: Sequelize.INTEGER,
     entery_date: Sequelize.STRING,
  }),
+    actionsTable: sequelize.define('app_def_actions', {
+        Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+        action_name: Sequelize.STRING,
+        action_type: Sequelize.INTEGER,
+        action_body: Sequelize.STRING,
+        Descripton: Sequelize.STRING,
+        teacher_reply_body: Sequelize.STRING,
+        leader_reply_body: Sequelize.STRING,
+    }),
+    takenActionsTable: sequelize.define('sch_att_takenaction', {
+        id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+        Calender_id: Sequelize.INTEGER,
+        School_id: Sequelize.INTEGER,
+        ACTION_id: Sequelize.INTEGER,
+        Emp_id: Sequelize.INTEGER,
+        ACTION_Status: Sequelize.STRING,
+        TAKEN_BY: Sequelize.STRING,
+        ACTION_body: Sequelize.STRING,
+        issue_date: Sequelize.STRING,
+        action_reply: Sequelize.STRING,
+    }),
     employeeExcuseTable:sequelize.define('sch_att_empexcuse', {
-    id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
         Calender_id: Sequelize.INTEGER,
         School_id: Sequelize.INTEGER,
         Emp_id: Sequelize.INTEGER,
@@ -194,9 +215,9 @@ const sequelizeConfig = {
         AceualReturn_time: Sequelize.STRING,
         Request_id: Sequelize.STRING,
         Notes: Sequelize.STRING,
- }),
+    }),
     studentExcuseTable:sequelize.define('sch_att_stdexcuse', {
-    id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
         Calender_id: Sequelize.INTEGER,
         School_id: Sequelize.INTEGER,
         Student_id: Sequelize.INTEGER,
@@ -210,9 +231,9 @@ const sequelizeConfig = {
         AceualReturn_time: Sequelize.STRING,
         Request_id: Sequelize.STRING,
         Notes: Sequelize.STRING,
- }),
+    }),
     mainsTable:sequelize.define('app_def_mains', {
-    id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
         country_name: Sequelize.STRING,
         ministry_name: Sequelize.STRING,
         ministry_logo: Sequelize.STRING,
@@ -229,6 +250,6 @@ const sequelizeConfig = {
         summer_term_end_date: Sequelize.INTEGER,
         active_term: Sequelize.STRING,
         marketing: Sequelize.STRING,
- })
+    })
 }
 module.exports = sequelizeConfig;

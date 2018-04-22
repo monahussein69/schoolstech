@@ -22,6 +22,8 @@ var subTaskMethods = require('../model/subTask.js');
 var taskStatusMethods = require('../model/taskStatus.js');
 var studentTaskMethods = require('../model/studentTask.js');
 var studentGroupsMethods = require('../model/studentGroups.js');
+var takenActionsMethods = require('../model/takenActions');
+
 var fireBaseConn= require('../routes/fireBaseConfig.js');
 var app = express();
 var multer = require('multer');
@@ -426,7 +428,7 @@ router.post('/saveCalender', function (req, res, next) {
 });
 
 
-router.get('/getCalender', function (req, res, next) {
+router.get('/getCalender/:first_Academic_Year/:end_Academic_Year/:Term_Id', function (req, res, next) {
     appSettingsMethods.getCalender(req, res, function (result) {
         res.send(result);
     });
@@ -635,6 +637,26 @@ router.get('/getAllStudentsGroups/:schoolId', function (req, res, next) {
 
 router.get('/deleteSettingsProfile/:profileId/:schoolId', function (req, res, next) {
     workingSettingsMethods.deleteSettingProfile(req, res, function (result) {
+        res.send(result);
+    });
+});
+router.get('/getEmployeeActions/:userId', function (req, res, next) {
+    takenActionsMethods.getEmployeeActions(req, res, function (result) {
+        res.send(result);
+    });
+});
+router.get('/getSchoolActions/:schoolId', function (req, res, next) {
+    takenActionsMethods.getSchoolActions(req, res, function (result) {
+        res.send(result);
+    });
+});
+router.post('/setActionReply', function (req, res, next) {
+    takenActionsMethods.setActionReply(req, res, function (result) {
+        res.send(result);
+    });
+});
+router.post('/doAction', function (req, res, next) {
+    takenActionsMethods.doAction(req, res, function (result) {
         res.send(result);
     });
 });

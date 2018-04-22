@@ -18,8 +18,8 @@ angular.module('MetronicApp').factory('manageAppSettingsService', function ($htt
 
     };
 
-    fac.getCalender = function (callback) {
-        $http.get("http://138.197.175.116:3000/getCalender").success(function (response) {
+    fac.getCalender = function (first_Academic_Year,end_Academic_Year,Term_Id,callback) {
+        $http.get("http://138.197.175.116:3000/getCalender/"+first_Academic_Year+"/"+end_Academic_Year+"/"+Term_Id).success(function (response) {
             callback(response);
         });
 

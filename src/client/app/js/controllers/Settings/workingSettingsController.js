@@ -116,7 +116,6 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
                 model.working_settingsObj.schoolId = model.schoolId;
                 var Day_Begining = model.working_settingsObj.Day_Begining;
                 model.working_settingsObj.Day_Begining = Day_Begining.toString();
-
                 var Activity_Day = model.working_settingsObj.Activity_Day;
                 model.working_settingsObj.Activity_Day = Activity_Day.toString();
 

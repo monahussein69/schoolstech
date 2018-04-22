@@ -296,6 +296,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/global/plugins/morris/morris.min.js',
                             '../assets/global/plugins/morris/raphael-min.js',
                             '../assets/global/plugins/jquery.sparkline.min.js',
+                            '../assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css',
+                            '../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+                            '../assets/pages/scripts/components-date-time-pickers.min.js',
+                            '../assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css',
+                            '../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
                             'js/services/manageAppSettingsFactory.js',
                             'js/controllers/Settings/SettingsController.js',
                         ]
@@ -888,6 +893,30 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
             }
         })
 
+        .state('Master.actions', {
+            url: "/actions",
+            templateUrl: "views/actions/actions.html",
+            data: {pageTitle: 'كشف المسائلات'},
+            controller: "ActionsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/Actions/actionsController.js',
+                            'js/services/ActionsService.js',
+                            'js/services/EmployeesFactory.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
         .state('Master.studentsDegrees', {
             url: "/studentsDegrees",
             templateUrl: "views/students/studentsDegrees.html",
@@ -905,7 +934,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/pages/scripts/table-datatables-managed.min.js',
                             'js/controllers/students/StudentsController.js',
                             'js/services/StudentsService.js',
-							'js/services/manageJobTitleFactory.js',
+                            'js/services/manageJobTitleFactory.js',
                         ]
                     });
                 }]
@@ -945,7 +974,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             'js/services/studentsAttendanceFactory.js'
                         ]
                     });
-                }] ,
+                }],
             }
         })
         .state('Master.studentsAbsent', {
@@ -1037,7 +1066,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/pages/scripts/components-date-time-pickers.min.js',
 
 
-
                             'js/controllers/Tasks/TasksController.js',
                             '../assets/bower_components/moment/moment.js',
                             'js/services/taskStatusFactory.js',
@@ -1049,7 +1077,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                 }]
             }
         })
-
 
 
         .state('Master.addTaskMember', {
