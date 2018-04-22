@@ -2,7 +2,7 @@ var mysql = require('mysql');
 let config = {
     host: "localhost",
     user: "root",
-    password: "salimquta",
+    password: "",
     database: "schooltech"
 };
 let con;

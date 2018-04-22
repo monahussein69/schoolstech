@@ -4,7 +4,7 @@ angular.module('MetronicApp').factory('manageSchoolService', function ($http, Up
 
     fac.saveSchoolData = function (schoolObj, callback) {
         console.log(schoolObj);
-        $http.post("http://138.197.175.116:3000/saveSchoolData", {
+        $http.post("http://localhost:3000/saveSchoolData", {
             'schoolData': schoolObj
         }).success(function (response) {
             console.log("response : " , typeof schoolObj.logoFile);
@@ -18,14 +18,14 @@ angular.module('MetronicApp').factory('manageSchoolService', function ($http, Up
 
 
     fac.getSchoolData = function (schoolId, callback) {
-        $http.get("http://138.197.175.116:3000/getSchool/" + schoolId).success(function (response) {
+        $http.get("http://localhost:3000/getSchool/" + schoolId).success(function (response) {
             callback(response);
         });
     };
 
     fac.getAllSchools = function () {
         return new Promise(function (resolve, reject) {
-            $http.get("http://138.197.175.116:3000/getAllSchools").success(function (response) {
+            $http.get("http://localhost:3000/getAllSchools").success(function (response) {
                 console.log(response);
                 resolve(response);
             });
@@ -34,7 +34,7 @@ angular.module('MetronicApp').factory('manageSchoolService', function ($http, Up
     };
 
     fac.deleteSchoolData = function (schoolId, callback) {
-        $http.get("http://138.197.175.116:3000/deleteSchool/" + schoolId).success(function (response) {
+        $http.get("http://localhost:3000/deleteSchool/" + schoolId).success(function (response) {
             callback(response);
         });
     };
@@ -42,7 +42,7 @@ angular.module('MetronicApp').factory('manageSchoolService', function ($http, Up
     fac.uploadPhoto = function (file , id) {
         return new Promise(function (resolve) {
             Upload.upload({
-                url: 'http://138.197.175.116:3000/upload-photo', //webAPI exposed to upload the file
+                url: 'http://localhost:3000/upload-photo', //webAPI exposed to upload the file
                 data: {files: file , id : id,type:'school_logo'} //pass file as data, should be user ng-model
             }).then(function (resp) { //upload function returns a promise
                 console.log(resp);
@@ -65,7 +65,7 @@ angular.module('MetronicApp').factory('manageSchoolService', function ($http, Up
 
     fac.getSchoolSchedule = function(schoolId , callback){
         console.log(schoolId);
-        $http.get("http://138.197.175.116:3000/getLectursTable/" + schoolId).success(function (response) {
+        $http.get("http://localhost:3000/getLectursTable/" + schoolId).success(function (response) {
             callback(response);
         });
     };
