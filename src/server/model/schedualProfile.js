@@ -213,7 +213,7 @@ var workingSettingsMethods = {
     getActivityByDayAndSchoolId : function (req , res, callback) {
         var currentDay = workingSettingsMethods.getArabicDay(new Date(req.body.date).getDay());
         var schoolId = req.body.schoolId;
-        var query = con.query('SELECT * FROM sch_att_schedule JOIN sch_att_scheduleprofile ON sch_att_scheduleprofile.Id = sch_att_schedule.SCHEDULE_Id WHERE sch_att_scheduleprofile.SchoolId = ? AND sch_att_scheduleprofile.Profile_Active_status = 1 AND sch_att_schedule.Day = ? order by sch_att_schedule.Begining_Time asc', [schoolId , currentDay], function (err, result) {
+        var query = con.query('SELECT * FROM sch_att_schedule JOIN sch_att_scheduleprofile ON sch_att_scheduleprofile.Id = sch_att_schedule.SCHEDULE_Id WHERE sch_att_scheduleprofile.SchoolId = ? AND sch_att_scheduleprofile.Profile_Active_status = 1 AND sch_att_schedule.Day = ? order by  TIME_FORMAT(sch_att_schedule.Begining_Time, "%h:%i %p") asc', [schoolId , currentDay], function (err, result) {
             console.log(query.sql);
             if (err)
                     throw err

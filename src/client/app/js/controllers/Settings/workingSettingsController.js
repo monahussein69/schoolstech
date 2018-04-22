@@ -110,6 +110,7 @@ angular.module('MetronicApp').controller('WorkingSettingsController',
             console.log( model.working_settingsObj);
             if(type == 'new'){
                 model.working_settingsObj.Id = '';
+                model.working_settingsObj.Profile_Active_status = 0;
             }
             if (Object.keys(model.working_settingsObj).length) {
                 model.working_settingsObj.schoolId = model.schoolId;

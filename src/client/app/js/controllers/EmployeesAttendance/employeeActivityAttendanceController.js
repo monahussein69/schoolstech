@@ -401,6 +401,7 @@ angular.module('MetronicApp').controller('EmployeeActivityPopupCtrl', function (
     }
 
     function onSave() {
+        console.log(selectedActivity);
         console.log(model.currentTime);
         console.log(model.activities[model.activity].Begining_Time);
         var currentTime = $moment(model.currentTime,"h:mm A").format('HH:mm');

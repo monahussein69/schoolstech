@@ -513,7 +513,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
         })
         .state('Master.calenderSettings', {
             url: "/calenderSettings",
-            templateUrl: "views/settings/calenderSettings.html",
+            templateUrl: "views/settings/CalenderSettings.html",
             data: {pageTitle: 'المدارس'},
             controller: "calenderSettingsController",
             resolve: {

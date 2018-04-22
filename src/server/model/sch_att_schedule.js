@@ -216,7 +216,7 @@ var attScheduleMethods = {
 
     getAttSchedule: function (req, res, callback) {
         var profileId = req.params.profileId;
-        var query = con.query('select *, TIME_FORMAT(Begining_Time, "%h:%i %p") as Begining_Time_formated, TIME_FORMAT(Ending_Time, "%h:%i %p") as Ending_Time_formated  from sch_att_schedule where SCHEDULE_Id = ? order by Day_no,Begining_Time asc', [profileId], function (err, result) {
+        var query = con.query('select *, TIME_FORMAT(Begining_Time, "%h:%i %p") as Begining_Time_formated, TIME_FORMAT(Ending_Time, "%h:%i %p") as Ending_Time_formated  from sch_att_schedule where SCHEDULE_Id = ? order by Day_no,TIME_FORMAT(Begining_Time, "%h:%i %p") asc', [profileId], function (err, result) {
             console.log(query.sql);
             if (err)
                     throw err

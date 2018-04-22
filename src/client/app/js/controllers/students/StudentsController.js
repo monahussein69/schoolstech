@@ -39,7 +39,7 @@ angular.module('MetronicApp').controller('StudentsController',
                 return defer.promise
             }).withOption('createdRow', createdRow),
             columns: [
-                DTColumnBuilder.newColumn('Name').withTitle('اسم الطالب').withOption('defaultContent', 'غير مدخل'),
+                DTColumnBuilder.newColumn('name').withTitle('اسم الطالب').withOption('defaultContent', 'غير مدخل'),
                 DTColumnBuilder.newColumn('Nationality').withTitle('الجنسية').withOption('defaultContent', 'غير مدخل'),
                 DTColumnBuilder.newColumn('Specialization').withTitle('التخصص').withOption('defaultContent', 'غير مدخل'),
                 DTColumnBuilder.newColumn('Identity_No').withTitle('رقم الهوية').withOption('defaultContent', 'غير مدخل'),

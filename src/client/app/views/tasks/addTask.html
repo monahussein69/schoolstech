@@ -89,6 +89,8 @@
                         <div class="col-sm-6">
                             <select name="Task_InOut_Type" class="form-control" ng-model="model.taskObj.Task_InOut_Type">
                                 <option value=""> اختر نوع المهمه</option>
+								 <option value="داخل المدرسه"> داخل المدرسه</option>
+                                <option value="خارج المدرسه"> خارج المدرسه </option>
                             </select>
                         </div>
                     </div>
@@ -121,18 +123,6 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-2 control-label"> تم انشاء المهمه بواسطة: </label>
-                        <div class="col-sm-6">
-                            <select name="Issued_By" class="form-control" ng-model="model.taskObj.Issued_By" ng-options="employee.id as employee.name for employee in model.employees">
-                                <option value="">اختر الموظف</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 control-label"> تاريخ انشاء المهمه : </label>
-                        <div class="col-sm-6">
-                            <input type="text" name="Issued_Date" class="form-control date-picker" ng-model="model.taskObj.Issued_Date" /> </div>
-                    </div>
                     <div class="form-group row">
                         <label class="col-sm-2 control-label"> حالة المهمه : </label>
                         <div class="col-sm-6">
