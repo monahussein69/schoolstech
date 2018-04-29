@@ -4,6 +4,8 @@ angular.module('MetronicApp').controller('SchoolsController',
             upload: upload,
             doUpload: doUpload,
             progress: 0,
+			success:'',
+			error:'',
             deleteSchool: deleteSchool,
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
@@ -99,10 +101,18 @@ angular.module('MetronicApp').controller('SchoolsController',
             }).then(function (resp) { //upload function returns a promise
                 console.log(resp);
                 if (resp.status === 200) { //validate success
+                    //toastr.success("تم رفع الملف بنجاح");
                     toastr.success("تم رفع الملف بنجاح");
+					
+					//model.success = resp.data.msg;
+				    //$scope.$apply();
+						
                     model.dtInstance.reloadData();
                 } else {
                     toastr.error('هناك مشكلة في رفع الملف');
+					
+					//model.error = 'هناك مشكلة في رفع الملف';
+					//$scope.$apply();
                 }
             }, function (resp) { //catch error
                 toastr.error('Error status: ' + resp.status);

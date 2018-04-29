@@ -40,7 +40,7 @@ var studentExcuseMethods = {
                         })
                     } else {
 
-                        sequelizeConfig.employeeExcuseTable.create(ExcuseObj).then(result => {
+                        sequelizeConfig.studentExcuseTable.create(ExcuseObj).then(result => {
                             response.success = true;
                             response.msg = 'تم تقديم الطلب بنجاح';
                             response.id = result.insertId;

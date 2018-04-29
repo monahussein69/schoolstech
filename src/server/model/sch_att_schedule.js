@@ -216,7 +216,7 @@ var attScheduleMethods = {
 
     getAttSchedule: function (req, res, callback) {
         var profileId = req.params.profileId;
-        var query = con.query('select *, TIME_FORMAT(Begining_Time, "%h:%i %p") as Begining_Time_formated, TIME_FORMAT(Ending_Time, "%h:%i %p") as Ending_Time_formated  from sch_att_schedule where SCHEDULE_Id = ? order by Day_no,TIME_FORMAT(Begining_Time, "%h:%i %p") asc', [profileId], function (err, result) {
+        var query = con.query('select *, TIME_FORMAT(Begining_Time, "%h:%i %p") as Begining_Time_formated, TIME_FORMAT(Ending_Time, "%h:%i %p") as Ending_Time_formated  from sch_att_schedule where SCHEDULE_Id = ? order by Day_no,Begining_TimeStamp asc', [profileId], function (err, result) {
             console.log(query.sql);
             if (err)
                     throw err
@@ -244,15 +244,26 @@ var attScheduleMethods = {
     addAttSchedule: function (req, res, callback) {
         var activityObj = req.body.activityObj;
         var response = {};
-        con.query('insert into sch_att_schedule (SCHEDULE_Id,Day,eventtype,event_Nam,Begining_Time,Ending_Time,Day_no) values (?,?,?,?,?,?,?) ',
+		var current_date = moment().format('MM-DD-YYYY');
+		var current_date_time1 = current_date + ' '+activityObj.Begining_Time;
+		var current_date_time2 = current_date + ' '+activityObj.Ending_Time;
+		var Begining_timestamp = moment(current_date_time1).format('MM-DD-YYYY HH:mm');
+		var ending_timestamp =  moment(current_date_time2).format('MM-DD-YYYY HH:mm');
+	
+		
+
+        var query = con.query('insert into sch_att_schedule (SCHEDULE_Id,Day,eventtype,event_Nam,Begining_Time,Ending_Time,Day_no,Begining_TimeStamp,Ending_TimeStamp) values (?,?,?,?,?,?,?,?,?) ',
             [   activityObj.SCHEDULE_Id,
                 activityObj.Day,
                 activityObj.eventtype ,
                 activityObj.event_Nam,
                 activityObj.Begining_Time,
                 activityObj.Ending_Time ,
-                activityObj.Day_no ,
-            ], function (err, result) {
+                activityObj.Day_no,
+				moment(Begining_timestamp).unix(),
+				moment(ending_timestamp).unix()
+			], function (err, result) {
+				console.log(query.sql);
                 if (err)
                     throw err
 
@@ -285,6 +296,21 @@ var attScheduleMethods = {
                 callback(response);
             }
         );
+    },
+	getStartEndAttendance : function(req,res,callback){
+
+        var schoolId = req.body.schoolId;
+        var currentDay = workingSettingsMethods.getArabicDay(new Date(req.body.date).getDay());
+
+        con.query('SELECT * FROM sch_att_schedule WHERE Id = (SELECT sch_att_schedule.Id FROM sch_att_schedule JOIN sch_att_scheduleprofile ON sch_att_scheduleprofile.Id = sch_att_schedule.SCHEDULE_Id WHERE sch_att_scheduleprofile.SchoolId = ? AND sch_att_scheduleprofile.Profile_Active_status = 1 AND sch_att_schedule.Day = ? order by  TIME_FORMAT(sch_att_schedule.Begining_Time, "%h:%i %p") asc limit 1) ' +
+            ' UNION ' +
+            'SELECT * FROM sch_att_schedule WHERE Id = (SELECT sch_att_schedule.Id FROM sch_att_schedule JOIN sch_att_scheduleprofile ON sch_att_scheduleprofile.Id = sch_att_schedule.SCHEDULE_Id WHERE sch_att_scheduleprofile.SchoolId = ? AND sch_att_scheduleprofile.Profile_Active_status = 1 AND sch_att_schedule.Day = ? order by  TIME_FORMAT(sch_att_schedule.Begining_Time, "%h:%i %p") desc limit 1)',
+            [schoolId,currentDay,schoolId,currentDay], function (err, result) {
+                if (err)
+                    throw err
+
+                callback(result);
+            });
     }
 
 

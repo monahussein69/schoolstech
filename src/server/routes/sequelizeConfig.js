@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('schooltech', 'root', 'salimquta', {
-    host: '138.197.175.116',
+    host: 'localhost',
     dialect: 'mysql',
     operatorsAliases: false,
     pool: {
@@ -250,6 +250,14 @@ const sequelizeConfig = {
         summer_term_end_date: Sequelize.INTEGER,
         active_term: Sequelize.STRING,
         marketing: Sequelize.STRING,
+    }),
+    vacationTypesTable:sequelize.define('App_Def_VacationTypes', {
+        Id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        Name_A: Sequelize.STRING,
+        Name_E: Sequelize.STRING,
+        MinLength: Sequelize.INTEGER,
+        MaxAnount: Sequelize.INTEGER,
+        Notes: Sequelize.STRING,
     })
 }
 module.exports = sequelizeConfig;

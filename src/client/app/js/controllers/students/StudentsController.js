@@ -371,7 +371,7 @@ angular.module('MetronicApp').controller('StudentsLateController',
 
 
                 return defer.promise
-            }),
+            }).withOption('paging',false),
             columns: [
                 DTColumnBuilder.newColumn('student_name').withTitle(' اسم الطالب'),
                 DTColumnBuilder.newColumn(null).withTitle('الحالة').notSortable()
@@ -417,7 +417,7 @@ angular.module('MetronicApp').controller('StudentsLateController',
         }
 
         function getActivityByEmployeeId() {
-            manageEmployeeService.getActivityByEmployeeId(model.selectedEmployee,model.attendance_day).then(activites => {
+            manageEmployeeService.getActivityByEmployeeId(model.selectedEmployee,model.schoolId,model.attendance_day).then(activites => {
                 model.activityList = activites;
                 $scope.$apply();
             });

@@ -41,7 +41,7 @@ var studentAttendanceMethods = {
                 if(status == 'حاضر'){
                     condition = 'and sch_att_stdatt.is_absent = 0 and (sch_att_stdatt.late_min = "" OR sch_att_stdatt.late_min IS  NULL)';
                 }else  if(status == 'متأخر'){
-                    condition = 'and sch_att_stdatt.is_absent = 0 and (sch_att_stdatt.late_min != "" OR sch_att_stdatt.late_min IS NOT NULL)';
+                    condition = 'and sch_att_stdatt.is_absent = 0 and (sch_att_stdatt.late_min != "" OR sch_att_stdatt.late_min != 0)';
                 }else if(status == 'غائب'){
                     condition = 'and sch_att_stdatt.is_absent = 1';
                 }

@@ -18,6 +18,8 @@ var employeesVacationMethods = {
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 AbsentObj.Calender_id = calendarObj.Id;
+				var absentType = AbsentObj.absentType;
+				delete  AbsentObj.absentType;
                 console.log("AbsentObj : ", AbsentObj);
                 var query = con.query('insert into sch_att_empvacation set ?',
                     [AbsentObj], function (err, result) {
@@ -27,6 +29,7 @@ var employeesVacationMethods = {
 
                         if (result.affectedRows) {
                             for (var i = 0; i < AbsentObj.No_Of_Days; i++) {
+								AbsentObj.absentType = absentType;
                                 req.body.AbsentObj = AbsentObj;
                                 req.body.date = moment(AbsentObj.Start_Date, "MM-DD-YYYY").add(i, 'days').format('MM-DD-YYYY');
                                 if(!fromAttendance) {
@@ -63,11 +66,17 @@ var employeesVacationMethods = {
         });
     },
     setVactionIntoEmpAttendence:function(req, res, callback) {
-        var data = {
+       
+	   var on_vacation = 0;
+	   if(req.body.AbsentObj.absentType == 'غياب بعذر'){
+		   on_vacation = 1;
+	   }
+	   
+	   var data = {
             school_id: req.body.AbsentObj.school_id,
             employee_id: req.body.AbsentObj.Emp_id,
             is_absent: 1,
-            on_vacation: 1,
+            on_vacation: on_vacation,
             working_status: 0,
             Event_Name:'طابور'
         };

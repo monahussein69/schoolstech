@@ -7,11 +7,11 @@
             <i class="fa fa-angle-left"></i>
         </li>
         <li>
-            <a ui-sref="datatablesmanaged">سجل التأخير </a>
+            <a ui-sref="datatablesmanaged">سجل حضور </a>
         </li>
     </ul>
 </div>
-<h3 class="page-title"> سجل التأخير </h3>
+<h3 class="page-title">سجل حضور </h3>
 <div class="row">
     <div class="col-md-12">
         <!-- BEGIN EXAMPLE TABLE PORTLET-->
@@ -42,7 +42,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-2 control-label"> الفعاليه </label>
                                     <div class="col-sm-6">
-                                        <select name="activity" class="form-control" ng-model="model.selectedActivity" ng-change="model.getStudentsByActivityId()">
+                                        <select name="activity" class="form-control" ng-model="model.selectedActivity" >
                                             <option selected disabled value="">اختر الفعالية </option>
                                             <option ng-repeat="activity in model.activityList track by $index" value="{{activity.name}}">{{activity.name}} </option>
                                         </select>

@@ -478,7 +478,17 @@ var schoolMethods = {
                     }
                 });
             }
-        }
+        },
+		
+		countSchools:function(req,res,callback){
+		var response = {};
+		 con.query('select count(*) as schools from sch_school ',function(err,result){
+                if(err)
+                    throw err
+                response.count = result[0].schools;
+                callback(response);
+            });
+	   }
     }
 ;
 

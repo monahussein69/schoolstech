@@ -25,6 +25,16 @@ angular.module('MetronicApp').factory('manageSchoolAccountService', function($ht
         });
 
     };
+	
+	
+	
+	fac.countSchoolsAccounts = function (callback) {
+            $http.get("http://138.197.175.116:3000/countSchoolsAccounts").success(function (response) {
+                console.log(response);
+                callback(response);
+        });
+
+    };
 
     return fac;
 
