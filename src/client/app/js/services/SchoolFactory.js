@@ -32,6 +32,14 @@ angular.module('MetronicApp').factory('manageSchoolService', function ($http, Up
         });
 
     };
+	
+	fac.countSchools = function (callback) {
+            $http.get("http://138.197.175.116:3000/countSchools").success(function (response) {
+                console.log(response);
+                callback(response);
+            });
+
+    };
 
     fac.deleteSchoolData = function (schoolId, callback) {
         $http.get("http://138.197.175.116:3000/deleteSchool/" + schoolId).success(function (response) {

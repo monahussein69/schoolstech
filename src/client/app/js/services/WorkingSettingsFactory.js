@@ -45,6 +45,12 @@ angular.module('MetronicApp').factory('WorkingSettingsService', function ($http,
             callback(response);
         });
     };
+	
+	 fac.getStartEndAttendance = function (SchoolId,date,callback) {
+        $http.post("http://138.197.175.116:3000/getStartEndAttendance",{'schoolId':SchoolId,'date':date}).success(function (response) {
+            callback(response);
+        });
+    };
 
 
 

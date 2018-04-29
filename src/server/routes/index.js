@@ -92,6 +92,18 @@ router.post('/saveSchoolData', function (req, res, next) {
     });
 });
 
+router.get('/countSchools', function (req, res, next) {
+    schoolMethods.countSchools(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/countSchoolsAccounts', function (req, res, next) {
+    schoolAccountMethods.countSchoolsAccounts(req, res, function (result) {
+        res.send(result);
+    });
+});
+
 
 router.get('/deleteTask/:taskId', function (req, res, next) {
     taskMethods.deleteTask(req, res, function (result) {
@@ -674,6 +686,12 @@ router.get('/getUserNotifications/:user_id', function (req, res, next) {
 
 router.post('/sendNotification', function (req, res, next) {
     fireBaseConn.sendNotification(req,res,function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/getStartEndAttendance', function (req, res, next) {
+    attScheduleMethods.getStartEndAttendance(req, res, function (result) {
         res.send(result);
     });
 });

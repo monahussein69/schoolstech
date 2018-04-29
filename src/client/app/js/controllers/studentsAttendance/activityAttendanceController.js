@@ -86,7 +86,7 @@ angular.module('MetronicApp').controller('activityAttendanceController',
         });
 
         function getActivityByEmployeeId() {
-            manageEmployeeService.getActivityByEmployeeId(model.teacherId,model.attendance_day).then(activites => {
+            manageEmployeeService.getActivityByEmployeeId(model.teacherId,model.schoolId,model.attendance_day).then(activites => {
                 model.listOfActivity = activites;
                 $scope.$apply();
             });
@@ -305,7 +305,11 @@ angular.module('MetronicApp').controller('activityAttendanceController',
                     },
                     Event_Name:function(){
                         return model.listOfActivity[model.activity].name;
-                    }
+                    },selectedEvent:function(){
+						return model.listOfActivity[model.activity];
+					}
+					
+					
 
                 }
             });
@@ -334,7 +338,7 @@ angular.module('MetronicApp').controller('activityAttendanceController',
     });
 
 
-angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, studentExcuseService, $moment, $scope, $uibModalInstance,Event_Name, selectedStudent,selectedDate, schoolId, $log) {
+angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, studentExcuseService, $moment, $scope, $uibModalInstance,Event_Name, selectedStudent,selectedDate,selectedEvent, schoolId, $log) {
     var currentTime = $moment().format('h:mm A');
     var currentDate = $moment(selectedDate).format('MM/DD/YYYY');
 
@@ -352,6 +356,22 @@ angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, s
     };
 
     $scope.ExcuseRequest = function () {
+		    var Departure_time = $moment($scope.ExcuseObj.Departure_time,'h:mm A').format('HH:mm');
+            var Return_time = $moment($scope.ExcuseObj.Return_time,'h:mm A').format('HH:mm');
+          
+            if($moment(Return_time,'HH:mm').isBefore($moment(Departure_time,'HH:mm'))){
+                toastr.error('وقت العوده اقل من وقت الذهاب');
+                return;
+            }
+			console.log('selectedEvent.Begining_Time');
+			console.log(selectedEvent.Begining_Time);
+			console.log(selectedEvent.Ending_Time);
+			
+			if((($moment(Departure_time,'HH:mm').isBefore( $moment(selectedEvent.Begining_Time,'HH:mm'))) ||  ($moment(selectedEvent.Ending_Time,'HH:mm').isBefore($moment(Return_time,'HH:mm')))) ) {
+                toastr.error('وقت الاستئذان خارج وقت الدوام');
+                return;
+			}
+			
         studentExcuseService.sendStudentExcuseRequest($scope.ExcuseObj,Event_Name, function (result) {
             console.log($scope.ExcuseObj);
             if (result.success) {

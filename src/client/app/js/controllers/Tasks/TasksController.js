@@ -46,6 +46,7 @@ angular.module('MetronicApp').controller('AddTaskController',
     $scope.model = model;
     model.taskObj.CurrentDate = CurrentDate;
     model.taskObj.Issued_Date = CurrentDate;
+    model.taskObj.Issued_By = userId;
     model.taskObj.id = 0;
 
         model.getTask();
@@ -317,10 +318,12 @@ angular.module('MetronicApp').controller('TaskMembersController',
         }
 
 
+		
         function savesubTask(){
 
             if (Object.keys(model.subTaskObj).length) {
                 model.subTaskObj.Task_id = parseInt(model.taskId);
+				console.log(model.subTaskObj);
                 subTaskService.saveSubTaskData(model.subTaskObj, function (response) {
                      console.log(model.subTaskObj.Member_Emp_id);
                      console.log(model.member_id);
@@ -371,6 +374,7 @@ angular.module('MetronicApp').controller('ManageSubTaskController',
 
         var model = {
             tasks:[],
+			userType:userType,
             taskId:taskId,
             mainTask:[],
             viewStudentsTask:viewStudentsTask,
@@ -573,7 +577,7 @@ angular.module('MetronicApp').controller('addTaskStudentsController',
                         model.selected[full.student_id] = false;
                         return '<input type="checkbox" ng-model="model.selected[' + data.student_id + ']" ng-click="model.toggleOne(date.selected)">';
                     }),
-                DTColumnBuilder.newColumn('Name').withTitle('اسم الطالب')
+                DTColumnBuilder.newColumn('name').withTitle('اسم الطالب')
 
             ],
             dtInstance: {},

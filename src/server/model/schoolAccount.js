@@ -188,7 +188,17 @@ var schoolAccountMethods = {
                 callback(response);
             }
         );
-    }
+    },
+	
+	countSchoolsAccounts:function(req,res,callback){
+		var response = {};
+		 con.query('select count(*) as accounts from sys_school_account where accountStatus = \'مفعل\' ',function(err,result){
+                if(err)
+                    throw err
+                response.count = result[0].accounts;
+                callback(response);
+            });
+	}
 };
 
 

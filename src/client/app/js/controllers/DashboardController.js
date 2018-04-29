@@ -1,8 +1,10 @@
 angular.module('MetronicApp')
-    .controller('DashboardController', function (CommonService,$rootScope, $scope, $http, $timeout, localStorageService, $window, manageAppSettingsService) {
+    .controller('DashboardController', function (CommonService,$rootScope, $scope, $http, $timeout, localStorageService, $window, manageSchoolAccountService,manageSchoolService) {
         var model = {
             loggedUser: '',
-            calender: []
+            calender: [],
+			countSchools:0,
+			countSchoolsAccount : 0
         };
         $scope.model = model;
 
@@ -17,11 +19,17 @@ angular.module('MetronicApp')
                     var current_school_data = LoggedUserData[0].schoolData;
                     CommonService.checkPage(schoolId);
                 }
-
-
-
+				
             model.loggedUser = LoggedUserData[0].LoginName
         }
+		
+		manageSchoolAccountService.countSchoolsAccounts(function(result){
+			model.countSchoolsAccount = result.count;
+		});
+		
+		manageSchoolService.countSchools(function(result){
+			model.countSchools = result.count;
+		});
 
 
         $scope.$on('$viewContentLoaded', function () {

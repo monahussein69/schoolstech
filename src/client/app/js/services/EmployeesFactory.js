@@ -27,9 +27,9 @@ angular.module('MetronicApp').factory('manageEmployeeService', function ($http, 
 
     };
 
-    fac.getActivityByEmployeeId = function (employeeId,date) {
+    fac.getActivityByEmployeeId = function (employeeId,schoolId,date) {
         return new Promise(function (resolve, reject) {
-            $http.post("http://138.197.175.116:3000/getActivityByEmployeeId",{'employeeId':employeeId,'date':date}).success(function (response) {
+            $http.post("http://138.197.175.116:3000/getActivityByEmployeeId",{'employeeId':employeeId,'date':date,'schoolId':schoolId}).success(function (response) {
                 console.log(response);
                 resolve(response);
             });

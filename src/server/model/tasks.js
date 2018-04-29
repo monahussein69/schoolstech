@@ -34,6 +34,9 @@ var taskMethods = {
                     sequelizeConfig.tasksTable.find({where: {id: taskObj.id}}).then(function (task) {
                        if(task){
                            var current_superVisor = task.Suppervisor_Emp_id;
+						   
+						   delete taskObj.Issued_Date;
+                           delete taskObj.Issued_By;
                            task.updateAttributes(taskObj).then(function () {
                                response.success = true;
                                response.msg = 'تم الحفظ بنجاح';

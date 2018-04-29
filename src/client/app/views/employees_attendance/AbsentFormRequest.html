@@ -1,4 +1,4 @@
-<form>
+<form ng-model="absentForm" method="post" ng-submit="AbsentRequest()" name="absentForm">
     <div class="modal-header">
         <h3 class="modal-title">الغياب بعذر </h3>
     </div>
@@ -16,7 +16,18 @@
         <div class="form-group row">
             <label class="col-sm-2 control-label"> ايام الغياب </label>
             <div class="col-sm-6">
-                <input type="text" name="name" class="form-control" ng-model="AbsentObj.No_Of_Days" ng-change="absentEndDay()" /> </div>
+                <input type="text" name="name" class="form-control" ng-model="AbsentObj.No_Of_Days" ng-change="absentEndDay()" required /> </div>
+        </div>
+		
+		<div class="form-group row">
+            <label class="col-sm-2 control-label"><span style="color:red;font-family: sans-serif !important;"> * </span> نوع الغياب </label>
+            <div class="col-sm-6">
+                <select class="form-control" ng-model="AbsentObj.absentType" required>
+				 <option value="">اختر نوع العذر</option>
+				 <option value="غياب بعذر">غياب بعذر</option>
+				 <option value="غياب بدون عذر">غياب بدون عذر</option>
+				</select>
+			   </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 control-label"> اسباب الغياب </label>
@@ -26,7 +37,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" type="button" ng-click="AbsentRequest()">تأكيد</button>
+        <button class="btn btn-primary" type="submit" ng-disabled="absentForm.$invalid">تأكيد</button>
         <button class="btn btn-default" type="button" ng-click="cancel()">الغاء</button>
     </div>
 </form>

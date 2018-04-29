@@ -66,7 +66,8 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
             config:config,
             employees : [],
             config_step : config_step,
-
+			success : '',
+			error:'',
             options: DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                 manageEmployeeService.getAllEmployees(schoolId).then(function (employees) {
@@ -251,9 +252,13 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
                 }).then(function (resp) { //upload function returns a promise
                     console.log('res:'+resp.data);
                     if (resp.data.status) { //validate success
-                        toastr.success(resp.data.msg);
+                        //toastr.success(resp.data.msg);
+                        model.success = resp.data.msg;
+						$scope.$apply();
                     } else {
-                        toastr.error(resp.data.msg);
+                        //toastr.error(resp.data.msg);
+						model.error = resp.data.msg;
+						$scope.$apply();
                     }
                 }, function (resp) { //catch error
                     toastr.error('Error status: ' + resp.status);

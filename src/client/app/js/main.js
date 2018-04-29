@@ -275,6 +275,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             'js/services/manageAppSettingsFactory.js',
                             '../assets/pages/scripts/dashboard.min.js',
                             'js/controllers/DashboardController.js',
+							'js/services/SchoolAccountFactory.js',
                         ]
                     });
                 }]
@@ -518,7 +519,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
         })
         .state('Master.calenderSettings', {
             url: "/calenderSettings",
-            templateUrl: "views/settings/calenderSettings.html",
+            templateUrl: "views/settings/CalenderSettings.html",
             data: {pageTitle: 'المدارس'},
             controller: "calenderSettingsController",
             resolve: {
@@ -952,7 +953,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                         insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
                         files: [
                             '../assets/global/plugins/datatables/datatables.min.css',
-                            '../assets/global/pl0ugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
                             '../assets/global/plugins/datatables/datatables.all.min.js',
                             '../assets/global/plugins/clockface/css/clockface.css',
                             '../assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css',
