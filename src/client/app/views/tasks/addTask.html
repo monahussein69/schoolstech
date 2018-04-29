@@ -89,7 +89,7 @@
                         <div class="col-sm-6">
                             <select name="Task_InOut_Type" class="form-control" ng-model="model.taskObj.Task_InOut_Type">
                                 <option value=""> اختر نوع المهمه</option>
-								 <option value="داخل المدرسه"> داخل المدرسه</option>
+                                <option value="داخل المدرسه"> داخل المدرسه</option>
                                 <option value="خارج المدرسه"> خارج المدرسه </option>
                             </select>
                         </div>
@@ -123,28 +123,28 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                    <div class="form-group row">
-                        <label class="col-sm-2 control-label"> حالة المهمه : </label>
-                        <div class="col-sm-6">
-                            <select name="Task_Staus" class="form-control" ng-model="model.taskObj.Task_Staus" ng-options="status.Id as status.Name for status in model.taskStatus">
-                                <option value=""> اختر حالة المهمه</option>
-                            </select>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"> حالة المهمه : </label>
+                            <div class="col-sm-6">
+                                <select name="Task_Staus" class="form-control" ng-model="model.taskObj.Task_Staus" ng-options="status.Id as status.Name for status in model.taskStatus">
+                                    <option value=""> اختر حالة المهمه</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 control-label"> وصف المهمه : </label>
-                        <div class="col-sm-6">
-                            <div class="col-sm-12" simditor ng-model="model.taskObj.Task_Description" style="padding:0px "></div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"> وصف المهمه : </label>
+                            <div class="col-sm-6">
+                                <div class="col-sm-12" simditor ng-model="model.taskObj.Task_Description" style="padding:0px "></div>
+                            </div>
                         </div>
-                    </div>
                 </fieldset>
                 <button class="btn btn-primary" type="submit" ng-disabled="addtaskForm.$invalid">حفظ</button>
                 <a class="btn btn-primary" ng-disabled="model.added == 0" ng-hide="model.taskObj.buildTaskMember == 1" ui-sref="Master.addTaskMember({taskId:{{model.taskObj.id}}})">تشكيل فريق العمل</a>
                 <button class="btn btn-default">الغاء</button>
+                </div>
             </div>
-        </div>
     </form>
-</div>
-<script>
-    ComponentsDateTimePickers.init(); // init todo page
-</script>
+    </div>
+    <script>
+        ComponentsDateTimePickers.init(); // init todo page
+    </script>

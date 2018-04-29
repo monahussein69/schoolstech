@@ -51,11 +51,9 @@ var attScheduleMethods = {
 
 
             for (var Day = 0; Day < Day_Begining.length; Day++) {
-                if (Day_Begining[Day]) {
-                    var queue_Begining_time = moment(queue_Begining, "h:mm A").format('HH:mm');
-                    console.log('queue_Begining_time');
-                    console.log(queue_Begining_time);
-                    var Ending_Time = moment(queue_Begining_time, 'HH:mm').add(queue_Begining_Duration, 'm').format('HH:mm');
+                if (Day_Begining[Day]){
+                    var queue_Begining_time = moment(queue_Begining, "h:mm A").format('YYYY-MM-DD HH:mm:ss');
+                    var Ending_Time = moment(queue_Begining_time, 'YYYY-MM-DD HH:mm:ss').add(queue_Begining_Duration, 'm').format('YYYY-MM-DD HH:mm:ss');
                     activityObj.SCHEDULE_Id = profile_id;
                     activityObj.Day = Day_Begining[Day];
                     activityObj.eventtype = 'طابور';
@@ -75,10 +73,10 @@ var attScheduleMethods = {
                         var rest_count = 0;
                         var breaks = 0;
                         if (i == 1) {
-                            var queue_Begining_time = moment(queue_Begining, "h:mm A").format('HH:mm');
-                            lecture_Begining_time = moment(queue_Begining_time, 'HH:mm').add(queue_Begining_Duration, 'm').format('HH:mm');
+                            var queue_Begining_time = moment(queue_Begining, "h:mm A").format('YYYY-MM-DD HH:mm:ss');
+                            lecture_Begining_time = moment(queue_Begining_time, 'YYYY-MM-DD HH:mm:ss').add(queue_Begining_Duration, 'm').format('YYYY-MM-DD HH:mm:ss');
                             first_lecture_time = lecture_Begining_time;
-                            lecture_end_time = moment(lecture_Begining_time, 'HH:mm').add(Lecture_Duration, 'm').format('HH:mm');
+                            lecture_end_time = moment(lecture_Begining_time, 'YYYY-MM-DD HH:mm:ss').add(Lecture_Duration, 'm').format('YYYY-MM-DD HH:mm:ss');
                         } else {
 
                             if (i >= (First_Break_Order + 1) && First_Break) {
@@ -102,8 +100,8 @@ var attScheduleMethods = {
                             }
 
                             lecture_Begining_time = ((i - 1) * (Lecture_Duration + Lecture_Rest_Duration)) - (rest_count * Lecture_Rest_Duration) + breaks;
-                            lecture_Begining_time = moment(first_lecture_time, 'HH:mm').add(lecture_Begining_time, 'm').format('HH:mm');
-                            lecture_end_time = moment(lecture_Begining_time, 'HH:mm').add(Lecture_Duration, 'm').format('HH:mm');
+                            lecture_Begining_time = moment(first_lecture_time, 'YYYY-MM-DD HH:mm:ss').add(lecture_Begining_time, 'm').format('YYYY-MM-DD HH:mm:ss');
+                            lecture_end_time = moment(lecture_Begining_time, 'YYYY-MM-DD HH:mm:ss').add(Lecture_Duration, 'm').format('YYYY-MM-DD HH:mm:ss');
 
                         }
 
@@ -122,7 +120,7 @@ var attScheduleMethods = {
                         if (First_Break) {
                             if (First_Break_Order == i) {
                                 break_Begining_time = lecture_end_time;
-                                break_end_time = moment(lecture_end_time, 'HH:mm').add(First_Break_Duration, 'm').format('HH:mm');
+                                break_end_time = moment(lecture_end_time, 'YYYY-MM-DD HH:mm:ss').add(First_Break_Duration, 'm').format('YYYY-MM-DD HH:mm:ss');
 
                                 activityObj.SCHEDULE_Id = profile_id;
                                 activityObj.Day = Day_Begining[Day];
@@ -142,7 +140,7 @@ var attScheduleMethods = {
                         if (Second_Break) {
                             if (Second_Break_Order == i) {
                                 break_Begining_time = lecture_end_time;
-                                break_end_time = moment(lecture_end_time, 'HH:mm').add(Second_Break_Duration, 'm').format('HH:mm');
+                                break_end_time = moment(lecture_end_time, 'YYYY-MM-DD HH:mm:ss').add(Second_Break_Duration, 'm').format('YYYY-MM-DD HH:mm:ss');
 
                                 activityObj.SCHEDULE_Id = profile_id;
                                 activityObj.Day = Day_Begining[Day];
@@ -161,7 +159,7 @@ var attScheduleMethods = {
 
                         if (Pray_Break_Order == i) {
                             break_Begining_time = lecture_end_time;
-                            break_end_time = moment(lecture_end_time, 'HH:mm').add(Pray_Break_Duration, 'm').format('HH:mm');
+                            break_end_time = moment(lecture_end_time, 'YYYY-MM-DD HH:mm:ss').add(Pray_Break_Duration, 'm').format('YYYY-MM-DD HH:mm:ss');
 
                             activityObj.SCHEDULE_Id = profile_id;
                             activityObj.Day = Day_Begining[Day];
@@ -181,7 +179,7 @@ var attScheduleMethods = {
                                 if (Activity_Day[att_day] == Day_Begining[Day]) {
                                     if (Activity_Period_Order == i) {
                                         break_Begining_time = lecture_end_time;
-                                        break_end_time = moment(lecture_end_time, 'HH:mm').add(Activity_Period_Duration, 'm').format('HH:mm');
+                                        break_end_time = moment(lecture_end_time, 'YYYY-MM-DD HH:mm:ss').add(Activity_Period_Duration, 'm').format('YYYY-MM-DD HH:mm:ss');
                                         activityObj.SCHEDULE_Id = profile_id;
                                         activityObj.Day = Day_Begining[Day];
                                         activityObj.eventtype = 'نشاط';
@@ -216,7 +214,7 @@ var attScheduleMethods = {
 
     getAttSchedule: function (req, res, callback) {
         var profileId = req.params.profileId;
-        var query = con.query('select *, TIME_FORMAT(Begining_Time, "%h:%i %p") as Begining_Time_formated, TIME_FORMAT(Ending_Time, "%h:%i %p") as Ending_Time_formated  from sch_att_schedule where SCHEDULE_Id = ? order by Day_no,Begining_TimeStamp asc', [profileId], function (err, result) {
+        var query = con.query('select *, TIME_FORMAT(Begining_Time, "%h:%i %p") as Begining_Time_formated, TIME_FORMAT(Ending_Time, "%h:%i %p") as Ending_Time_formated  from sch_att_schedule where SCHEDULE_Id = ? order by Day_no,Begining_Time asc', [profileId], function (err, result) {
             console.log(query.sql);
             if (err)
                     throw err
@@ -245,14 +243,19 @@ var attScheduleMethods = {
         var activityObj = req.body.activityObj;
         var response = {};
 		var current_date = moment().format('MM-DD-YYYY');
+		var begining_date = moment().format('MM-DD-YYYY');
 		var current_date_time1 = current_date + ' '+activityObj.Begining_Time;
 		var current_date_time2 = current_date + ' '+activityObj.Ending_Time;
 		var Begining_timestamp = moment(current_date_time1).format('MM-DD-YYYY HH:mm');
 		var ending_timestamp =  moment(current_date_time2).format('MM-DD-YYYY HH:mm');
-	
-		
 
-        var query = con.query('insert into sch_att_schedule (SCHEDULE_Id,Day,eventtype,event_Nam,Begining_Time,Ending_Time,Day_no,Begining_TimeStamp,Ending_TimeStamp) values (?,?,?,?,?,?,?,?,?) ',
+		/*console.log(moment(current_date_time1).hours());
+        if(moment(current_date_time1).hours() >= 0 && moment(current_date_time1).hours() <= 12){
+            current_date = moment(current_date, "MM-DD-YYYY").add(1, 'days');
+        }*/
+
+
+        var query = con.query('insert into sch_att_schedule (SCHEDULE_Id,Day,eventtype,event_Nam,Begining_Time,Ending_Time,Day_no) values (?,?,?,?,?,?,?) ',
             [   activityObj.SCHEDULE_Id,
                 activityObj.Day,
                 activityObj.eventtype ,
@@ -260,8 +263,7 @@ var attScheduleMethods = {
                 activityObj.Begining_Time,
                 activityObj.Ending_Time ,
                 activityObj.Day_no,
-				moment(Begining_timestamp).unix(),
-				moment(ending_timestamp).unix()
+
 			], function (err, result) {
 				console.log(query.sql);
                 if (err)
@@ -314,6 +316,10 @@ var attScheduleMethods = {
     }
 
 
+
+
 };
+
+
 
 module.exports = attScheduleMethods;

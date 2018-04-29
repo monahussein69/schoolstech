@@ -18,16 +18,16 @@
             <div class="col-sm-6">
                 <input type="text" name="name" class="form-control" ng-model="AbsentObj.No_Of_Days" ng-change="absentEndDay()" required /> </div>
         </div>
-		
-		<div class="form-group row">
-            <label class="col-sm-2 control-label"><span style="color:red;font-family: sans-serif !important;"> * </span> نوع الغياب </label>
+        <div class="form-group row">
+            <label class="col-sm-2 control-label">
+                <span style="color:red;font-family: sans-serif !important;"> * </span> نوع الغياب </label>
             <div class="col-sm-6">
                 <select class="form-control" ng-model="AbsentObj.absentType" required>
-				 <option value="">اختر نوع العذر</option>
-				 <option value="غياب بعذر">غياب بعذر</option>
-				 <option value="غياب بدون عذر">غياب بدون عذر</option>
-				</select>
-			   </div>
+                    <option value="">اختر نوع العذر</option>
+                    <option value="غياب بعذر">غياب بعذر</option>
+                    <option value="غياب بدون عذر">غياب بدون عذر</option>
+                </select>
+            </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 control-label"> اسباب الغياب </label>
