@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('schooltech', 'root', 'salimquta', {
-    host: '138.197.175.116',
+    host: 'localhost',
     dialect: 'mysql',
     operatorsAliases: false,
     pool: {
