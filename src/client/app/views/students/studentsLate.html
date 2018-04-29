@@ -42,7 +42,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-2 control-label"> الفعاليه </label>
                                     <div class="col-sm-6">
-                                        <select name="activity" class="form-control" ng-model="model.selectedActivity" >
+                                        <select name="activity" class="form-control" ng-model="model.selectedActivity">
                                             <option selected disabled value="">اختر الفعالية </option>
                                             <option ng-repeat="activity in model.activityList track by $index" value="{{activity.name}}">{{activity.name}} </option>
                                         </select>

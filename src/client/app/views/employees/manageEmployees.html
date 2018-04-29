@@ -78,16 +78,14 @@
                         </div>
                     </div>
                 </div>
-				
-				<div class="alert alert-success" ng-if="model.success != ''">
-					<button class="close" data-close="alert"></button>
-					<span>{{model.success}}</span>
-				</div>
-				<div class="alert alert-danger" ng-if="model.error != ''">
-					<button class="close" data-close="alert"></button>
-					<span>{{model.error}}</span>
-				</div>
-				
+                <div class="alert alert-success" ng-if="model.success != ''">
+                    <button class="close" data-close="alert"></button>
+                    <span>{{model.success}}</span>
+                </div>
+                <div class="alert alert-danger" ng-if="model.error != ''">
+                    <button class="close" data-close="alert"></button>
+                    <span>{{model.error}}</span>
+                </div>
                 <table datatable="" class="table table-striped table-bordered table-hover table-checkable order-column" dt-options="model.options" dt-columns="model.columns" dt-instance="model.dtInstance" class="row-border hover"></table>
             </div>
         </div>
