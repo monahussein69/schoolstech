@@ -4,7 +4,7 @@ angular.module('MetronicApp').factory('employeesAbsentService', function ($http)
 
 
     fac.sendAbsentRequest = function(AbsentObj,callback) {
-        $http.post("http://138.197.175.116:3000/sendAbsentRequest", {
+        $http.post("http://localhost:3000/sendAbsentRequest", {
             'AbsentObj': AbsentObj
         }).success(function (response) {
             callback(response);

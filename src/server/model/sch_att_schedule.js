@@ -65,10 +65,10 @@ var attScheduleMethods = {
                     activityObj.Ending_Time = Ending_Time;
                     activityObj.Day_no = days.indexOf(Day_Begining[Day]);
                     req.body.activityObj = activityObj;
-					var Ending_TimeSeconds = moment.duration(moment(Ending_Time, 'HH:mm:ss').format('HH:mm:ss')).asSeconds();
-                        queue_ending_time = moment(queue_ending_time, "HH:mm").add(Ending_TimeSeconds,'seconds');
-						
-                    console.log(activityObj);
+                    queue_ending_time = moment(queue_ending_time, "HH:mm").add(queue_Begining_Duration, 'm');
+
+                    console.log('queue_ending_time');
+                    console.log(queue_ending_time);
                     attScheduleMethods.addAttSchedule(req, res, function (result) {
                     });
 
@@ -121,8 +121,9 @@ var attScheduleMethods = {
                         activityObj.Ending_Time = lecture_end_time;
                         activityObj.Day_no = days.indexOf(Day_Begining[Day]);
                         req.body.activityObj = activityObj;
-						var Ending_TimeSeconds = moment.duration(moment(lecture_end_time, 'HH:mm:ss').format('HH:mm:ss')).asSeconds();
-                        queue_ending_time = moment(queue_ending_time, "HH:mm").add(Ending_TimeSeconds,'seconds');
+                        queue_ending_time = moment(queue_ending_time, "HH:mm").add(Lecture_Duration, 'm');
+                        console.log('queue_ending_time');
+                        console.log(queue_ending_time);
 						
                         attScheduleMethods.addAttSchedule(req, res, function (result) {
                         });
@@ -141,8 +142,8 @@ var attScheduleMethods = {
                                 activityObj.Day_no = days.indexOf(Day_Begining[Day]);
                                 req.body.activityObj = activityObj;
 								
-								var Ending_TimeSeconds = moment.duration(moment(break_end_time, 'HH:mm:ss').format('HH:mm:ss')).asSeconds();
-                               queue_ending_time = moment(queue_ending_time, "HH:mm").add(Ending_TimeSeconds,'seconds');
+								var Ending_TimeSeconds = moment.duration(moment(break_end_time).format('HH:mm:ss')).asSeconds();
+                               queue_ending_time = moment(queue_ending_time, "HH:mm").add(First_Break_Duration, 'm');
 
                                 attScheduleMethods.addAttSchedule(req, res, function (result) {
                                 });
@@ -163,8 +164,7 @@ var attScheduleMethods = {
                                 activityObj.Ending_Time = break_end_time;
                                 activityObj.Day_no = days.indexOf(Day_Begining[Day]);
                                 req.body.activityObj = activityObj;
-								var Ending_TimeSeconds = moment.duration(moment(break_end_time, 'HH:mm:ss').format('HH:mm:ss')).asSeconds();
-                               queue_ending_time = moment(queue_ending_time, "HH:mm").add(Ending_TimeSeconds,'seconds');
+                                queue_ending_time = moment(queue_ending_time, "HH:mm").add(Second_Break_Duration, 'm');
 							   
                                 attScheduleMethods.addAttSchedule(req, res, function (result) {
                                 });
@@ -183,8 +183,7 @@ var attScheduleMethods = {
                             activityObj.event_Nam = 'الصلاه';
                             activityObj.Begining_Time = break_Begining_time;
                             activityObj.Ending_Time = break_end_time;
-							var Ending_TimeSeconds = moment.duration(moment(break_end_time, 'HH:mm:ss').format('HH:mm:ss')).asSeconds();
-                            queue_ending_time = moment(queue_ending_time, "HH:mm").add(Ending_TimeSeconds,'seconds');
+                            queue_ending_time = moment(queue_ending_time, "HH:mm").add(Pray_Break_Duration, 'm');
 					
                             activityObj.Day_no = days.indexOf(Day_Begining[Day]);
                             req.body.activityObj = activityObj;
@@ -206,8 +205,8 @@ var attScheduleMethods = {
                                         activityObj.Begining_Time = break_Begining_time;
                                         activityObj.Ending_Time = break_end_time;
                                         activityObj.Day_no = days.indexOf(Day_Begining[Day]);
-										var Ending_TimeSeconds = moment.duration(moment(break_end_time, 'HH:mm:ss').format('HH:mm:ss')).asSeconds();
-                            queue_ending_time = moment(queue_ending_time, "HH:mm").add(Ending_TimeSeconds,'seconds');
+										var Ending_TimeSeconds = moment.duration(moment(break_end_time).format('HH:mm:ss')).asSeconds();
+                                        queue_ending_time = moment(queue_ending_time, "HH:mm").add(Activity_Period_Duration, 'm');
                                         
 										req.body.activityObj = activityObj;
                                         attScheduleMethods.addAttSchedule(req, res, function (result) {

@@ -23,7 +23,7 @@ For more information about the core jquery library, visit: http://keith-wood.nam
 # How to test it
 
 1. Make sure that nodejs is installed.<br>
-2. Clone the repository then run "node server.js" and you can check it then on http://138.197.175.116:8080/
+2. Clone the repository then run "node server.js" and you can check it then on http://localhost:8080/
 3. You'll find different implementations of both calendar and filter. Feel free to contact me if you need any support.
 <br> 
 <br>
