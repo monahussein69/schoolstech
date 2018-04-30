@@ -103,11 +103,9 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
 
             var current_date = $moment(model.attendance_day).format('MM-DD-YYYY');
             var late = false;
-            console.log('data');
-            console.log(data.late_min);
+  
             if(data.late_min && data.late_min != 0){
                 late = true;
-                console.log('in if');
             }
             return ''+
                 '<button class="btn btn-primary color-grey attendance_'+data.main_employee_id+'" ng-click="confirmTimeIn('+data.main_employee_id+',$event)" ng-class="{\'color-green\': (0 =='+data.is_absent+') && !('+late+') , \'color-orange\':  ('+late+') && (0 =='+data.is_absent+') }"> حاضر</button>\n'+
@@ -602,6 +600,7 @@ angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, e
     ExcuseObj.Return_time = currentTime;
     ExcuseObj.Start_Date = currentDate;
     ExcuseObj.End_Date = currentDate;
+    ExcuseObj.Event_Name = 'طابور';
     $scope.ExcuseObj = ExcuseObj;
 
 
@@ -619,8 +618,15 @@ angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, e
                 toastr.error('وقت العوده اقل من وقت الذهاب');
                 return;
             }
+			
+			var startDate = $moment(result[0].Begining_Time).format('YYYY-MM-DD');
+			var endDate = $moment(result[1].Ending_Time).format('YYYY-MM-DD');
+			console.log(startDate);
+			console.log(endDate);
+			console.log($moment(startDate+' '+Departure_time,'YYYY-MM-DD HH:mm'));
+			console.log($moment(endDate+' '+Return_time,'YYYY-MM-DD HH:mm'));
 
-            if((($moment(Departure_time,'HH:mm').isBefore( $moment(result[0].Begining_Time,'HH:mm'))) ||  ($moment(result[1].Ending_Time,'HH:mm').isBefore($moment(Return_time,'HH:mm')))) ) {
+            if((($moment(startDate+' '+Departure_time,'YYYY-MM-DD HH:mm').isBefore( $moment(result[0].Begining_Time,'YYYY-MM-DD HH:mm'))) ||  ($moment(result[1].Ending_Time,'YYYY-MM-DD HH:mm').isBefore($moment(startDate+' '+Return_time,'YYYY-MM-DD HH:mm')))) ) {
                 toastr.error('وقت الاستئذان خارج وقت الدوام');
                 return;
             }else{
