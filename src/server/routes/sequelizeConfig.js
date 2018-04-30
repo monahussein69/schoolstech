@@ -258,6 +258,20 @@ const sequelizeConfig = {
         MinLength: Sequelize.INTEGER,
         MaxAnount: Sequelize.INTEGER,
         Notes: Sequelize.STRING,
-    })
+    }), empabscentTable:sequelize.define('SCH_ATT_EMPABSCENT', {
+        id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        Calender_id: Sequelize.INTEGER,
+        School_id: Sequelize.INTEGER,
+        Emp_id: Sequelize.INTEGER,
+        Abscent_Status: Sequelize.INTEGER,
+        AbscentType: Sequelize.INTEGER,
+        ExcuseType: Sequelize.INTEGER,
+        Excuse_Reasons: Sequelize.STRING,
+        Total_Absaence_Days: Sequelize.INTEGER,
+        Continue_Absaence_Days: Sequelize.INTEGER,
+        TakenAction_id: Sequelize.INTEGER,
+        Notes: Sequelize.STRING,
+    }),
+
 }
 module.exports = sequelizeConfig;

@@ -150,7 +150,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
                             var attendanceObj = {};
                             attendanceObj.school_id = model.schoolId;
                             attendanceObj.employee_id = employees[key].main_employee_id;
-                            attendanceObj.Event_Name = 'طابور';
+                            attendanceObj.Event_Name = 'بدايه الدوام';
                             attendanceObj.time_in = $moment().format('H:m');
                             attendanceObj.attendance_day = model.attendance_day;
                             attendanceObj.is_absent = 1;
@@ -423,7 +423,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             var attendanceObj = {};
             attendanceObj.school_id = model.schoolId;
             attendanceObj.employee_id = emp_id;
-            attendanceObj.Event_Name = 'طابور';
+            attendanceObj.Event_Name = 'بدايه الدوام';
             attendanceObj.time_in = $moment().format('H:m');
             attendanceObj.attendance_day = model.attendance_day;
             attendanceObj.is_absent = 1;
@@ -492,7 +492,7 @@ angular.module('MetronicApp').controller('DialogInstCtrl', function (userId,toas
         attendanceObj.time_in = $scope.late_min_modified;
         attendanceObj.school_id = schoolId;
         attendanceObj.employee_id = selectedEmployee;
-        attendanceObj.Event_Name = 'طابور';
+        attendanceObj.Event_Name = 'بدايه الدوام';
         attendanceObj.is_absent = 0;
         attendanceObj.attendance_day = selectedDate;
         attendanceObj.entered_by = userId;
@@ -528,7 +528,7 @@ angular.module('MetronicApp').controller('confirmLateMinCtrl', function (toastr,
         attendanceObj.time_in = $scope.late_min_modified;
         attendanceObj.school_id = schoolId;
         attendanceObj.employee_id = selectedEmployee;
-        attendanceObj.Event_Name = 'طابور';
+        attendanceObj.Event_Name = 'بدايه الدوام';
         attendanceObj.is_absent = 0;
         attendanceObj.attendance_day = selectedDate;
 
@@ -600,7 +600,7 @@ angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, e
     ExcuseObj.Return_time = currentTime;
     ExcuseObj.Start_Date = currentDate;
     ExcuseObj.End_Date = currentDate;
-    ExcuseObj.Event_Name = 'طابور';
+    ExcuseObj.Event_Name = 'بدايه الدوام';
     $scope.ExcuseObj = ExcuseObj;
 
 
@@ -620,13 +620,15 @@ angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, e
             }
 			
 			var startDate = $moment(result[0].Begining_Time).format('YYYY-MM-DD');
-			var endDate = $moment(result[1].Ending_Time).format('YYYY-MM-DD');
-			console.log(startDate);
+			var endDate = $moment(result[0].Ending_Time).format('YYYY-MM-DD');
+			var startTime = $moment(result[0].Begining_Time).format('HH:mm');
+			var endTime = $moment(result[0].Ending_Time).format('HH:mm');
+			console.log(result[0].Begining_Time);
 			console.log(endDate);
 			console.log($moment(startDate+' '+Departure_time,'YYYY-MM-DD HH:mm'));
 			console.log($moment(endDate+' '+Return_time,'YYYY-MM-DD HH:mm'));
 
-            if((($moment(startDate+' '+Departure_time,'YYYY-MM-DD HH:mm').isBefore( $moment(result[0].Begining_Time,'YYYY-MM-DD HH:mm'))) ||  ($moment(result[1].Ending_Time,'YYYY-MM-DD HH:mm').isBefore($moment(startDate+' '+Return_time,'YYYY-MM-DD HH:mm')))) ) {
+            if((($moment(startDate+' '+Departure_time,'YYYY-MM-DD HH:mm').isBefore( $moment(startDate+' '+startTime,'YYYY-MM-DD HH:mm'))) ||  ($moment(endDate+' '+endTime,'YYYY-MM-DD HH:mm').isBefore($moment(startDate+' '+Return_time,'YYYY-MM-DD HH:mm')))) ) {
                 toastr.error('وقت الاستئذان خارج وقت الدوام');
                 return;
             }else{

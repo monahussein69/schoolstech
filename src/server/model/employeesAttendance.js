@@ -51,7 +51,7 @@ var employeesAttendanceMethods = {
                         ' left join sch_att_empatt '+
                         ' on (sch_att_empatt.Calender_id = ? and sch_str_employees.id = sch_att_empatt.employee_id and sch_acd_lectures.name = sch_att_empatt.Event_Name)'+
                        
-                        'where sch_acd_lectures.name = ? and (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) and sch_str_employees.school_id = ?  and sch_str_employees.id not in (select employee_id from sch_att_empatt where Calender_id = ? and school_id = ? and Event_Name = "طابور" and is_absent = 1) group by main_employee_id  order by sch_str_employees.name asc', [calendarId,lecture_name,currentDay,currentDay1,schoolId,calendarId,schoolId], function (err, result) {
+                        'where sch_acd_lectures.name = ? and (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) and sch_str_employees.school_id = ?  and sch_str_employees.id not in (select employee_id from sch_att_empatt where Calender_id = ? and school_id = ? and Event_Name = "بدايه الدوام" and is_absent = 1) group by main_employee_id  order by sch_str_employees.name asc', [calendarId,lecture_name,currentDay,currentDay1,schoolId,calendarId,schoolId], function (err, result) {
                             console.log(query.sql);
                             if (err)
                                 throw err
@@ -78,7 +78,7 @@ var employeesAttendanceMethods = {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
                 var schoolId = req.params.schoolId;
-                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,TIME_FORMAT(sch_att_empatt.time_in, "%h:%i %p") as time_in_formmated from sch_str_employees left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ? and sch_att_empatt.Event_Name = \'طابور\') where sch_str_employees.school_id = ?  group by main_employee_id order by sch_str_employees.name asc', [calendarId, schoolId], function (err, result) {
+                var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,TIME_FORMAT(sch_att_empatt.time_in, "%h:%i %p") as time_in_formmated from sch_str_employees left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ? and sch_att_empatt.Event_Name = \'بدايه الدوام\') where sch_str_employees.school_id = ?  group by main_employee_id order by sch_str_employees.name asc', [calendarId, schoolId], function (err, result) {
                         console.log('query');
                         console.log(query.sql);
                         if (err)
@@ -107,7 +107,7 @@ var employeesAttendanceMethods = {
                 var calendarId = calendarObj.Id;
                 var schoolId = req.body.schoolId;
                 var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,TIME_FORMAT(sch_att_empatt.time_in, "%h:%i %p") as time_in_formmated from sch_str_employees ' +
-                    'left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ? and sch_att_empatt.Event_Name = \'طابور\') where sch_str_employees.school_id = ?  group by main_employee_id order by sch_str_employees.name ASC', [calendarId, schoolId], function (err, result) {
+                    'left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ? and sch_att_empatt.Event_Name = \'بدايه الدوام\') where sch_str_employees.school_id = ?  group by main_employee_id order by sch_str_employees.name ASC', [calendarId, schoolId], function (err, result) {
                         console.log(query.sql);
                         if (err)
                             throw err
@@ -374,8 +374,8 @@ var employeesAttendanceMethods = {
                     if (Object.keys(result).length) {
                         var schoolProfile = result[0];
                         req.body.Day = calendarObj.Day;
-                        req.body.eventtype = 'طابور';
-                        req.body.eventname = 'طابور';
+                        req.body.eventtype = 'بدايه الدوام';
+                        req.body.eventname = 'بدايه الدوام';
                         req.body.SCHEDULE_Id = schoolProfile.Id;
                         attScheduleMethods.getAttScheduleByEventNameAndDay(req, res, function (result) {
                             console.log('result ', result);
@@ -591,7 +591,7 @@ var employeesAttendanceMethods = {
                         req.body.SCHEDULE_Id = schoolProfile.Id;
                         attScheduleMethods.getAttScheduleByEventNameAndDay(req, res, function (result) {
 
-                            if (Object.keys(result).length) {
+                            if (Object.keys(result).length){
                                 attendanceObj.Event_type_id = result[0].Id;
                                  if(attendanceObj.is_absent == 2){
                                     var ending_time = moment(attendanceObj.Ending_Time,"h:mm A", 'HH:mm').format('HH:mm');
@@ -599,7 +599,6 @@ var employeesAttendanceMethods = {
                                     var current_time = attendanceObj.time_out;
                                     var current_time = moment(current_time,"h:mm A", 'HH:mm').format('HH:mm');
                                      attendanceObj.time_out = current_time;
-
                                     //attendanceObj.time_in = current_time;
                                      console.log('ending_time');
                                      console.log(ending_time);
@@ -669,8 +668,6 @@ var employeesAttendanceMethods = {
         var attendanceObj = req.body.attendanceObj;
         var response = {};
 
-
-
         console.log('attendanceObj in total');
         console.log(attendanceObj);
         if(attendanceObj.is_absent == 1){
@@ -684,13 +681,11 @@ var employeesAttendanceMethods = {
 
         sequelizeConfig.employeeAttandaceTable.find({where: {Calender_id: attendanceObj.Calender_id,employee_id:attendanceObj.employee_id,Event_Name:attendanceObj.Event_Name}}).then(function (attendance) {
             console.log(attendance);
-            if (attendance) {
+            if (attendance){
                 delete attendanceObj.entery_date;
                 delete attendanceObj.entered_by;
                 var ms = 0;
                 var total_min = '00:00';
-
-
                 if(attendanceObj.is_absent == 2){
                     var late_min = '00:00';
                     attendanceObj.is_absent = 0;
