@@ -32,7 +32,6 @@ angular.module('MetronicApp').controller('employeeAttendanceLateRecordController
             columns: [
                 DTColumnBuilder.newColumn('Day').withTitle(' اليوم'),
                 DTColumnBuilder.newColumn('Date').withTitle(' التاريخ'),
-                DTColumnBuilder.newColumn('eventtype').withTitle('نوع النشاط'),
                 DTColumnBuilder.newColumn('Event_Name').withTitle(' النشاط'),
                 DTColumnBuilder.newColumn('time_in').withTitle(' الساعه'),
                 DTColumnBuilder.newColumn('late_min').withTitle(' عدد الدقائق'),

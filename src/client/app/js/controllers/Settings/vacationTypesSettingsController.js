@@ -50,6 +50,12 @@ angular.module('MetronicApp').controller('vacationTypesSettingsController',
         function saveVacationType() {
             if (Object.keys(model.VacationType).length) {
 
+
+                if(parseInt(model.VacationType.MinLength) > parseInt(model.VacationType.MaxAnount)){
+                    toastr.error('اقل قيمه اعلى من اعلى قيمه');
+                    return;
+                }
+
                 manageVacationTypesService.saveVacationTypeData(model.VacationType, function (response) {
 
                     if (response.success) {

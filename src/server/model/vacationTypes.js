@@ -47,4 +47,4 @@ var VacationTypesMethods = {
     },
 }
 
-module.exports = taskStatusMethods;
+module.exports = VacationTypesMethods;

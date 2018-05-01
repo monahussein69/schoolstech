@@ -258,6 +258,14 @@ const sequelizeConfig = {
         MinLength: Sequelize.INTEGER,
         MaxAnount: Sequelize.INTEGER,
         Notes: Sequelize.STRING,
+    }),RequestsTypeTable:sequelize.define('APP_DEF_RequestsType', {
+        Id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        Name: Sequelize.STRING,
+        Description: Sequelize.STRING,
+    }),ExcuseTypeTable:sequelize.define('APP_DEF_ExcuseType', {
+        Id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        Name: Sequelize.STRING,
+        Description: Sequelize.STRING,
     }), empabscentTable:sequelize.define('SCH_ATT_EMPABSCENT', {
         id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
         Calender_id: Sequelize.INTEGER,
