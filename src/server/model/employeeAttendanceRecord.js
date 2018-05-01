@@ -22,8 +22,9 @@ var employeeAttendanceRecordMethods = {
     getEmployeeAbsentRecord: function (req, res, callback) {
         var schoolId = req.params.schoolId;
         var employeeId = req.params.employeeId;
-        var query = con.query('SELECT *,start.Day as Start_Day,end.Day as End_Day FROM `sch_att_empvacation` join app_def_calender as start on start.Date = sch_att_empvacation.Start_Date ' +
-            'join app_def_calender as end on end.Date = sch_att_empvacation.End_Date where School_id = ? and Emp_id = ?', [schoolId,employeeId], function (err, result) {
+        var query = con.query('SELECT *,app_def_excusetype.Name as excusetype_name,sch_att_empatt.on_vacation FROM sch_att_empvacation left join app_def_excusetype on sch_att_empvacation.ExcuseType = app_def_excusetype.Id '+
+        ' join sch_att_empatt on (sch_att_empatt.Calender_id = sch_att_empvacation.Calender_id and sch_att_empatt.employee_id = sch_att_empvacation.Emp_id)'+
+        ' where sch_att_empvacation.School_id = ? and Emp_id = ? group by sch_att_empatt.Calender_id', [schoolId,employeeId], function (err, result) {
             console.log(query.sql);
             if (err)
                     throw err

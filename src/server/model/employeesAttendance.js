@@ -755,18 +755,20 @@ var employeesAttendanceMethods = {
         let employee_id = attendanceData.employee_id;
         var current_date = attendanceData.attendance_day;
         employeesVacationMethods.getLastEmployeeVaction(employee_id, function (response) {
-            console.log("response : ", response);
-            attendanceData.absentData = response[0];
-            var vacationEndDate = moment(response[0].End_Date).format("MM/DD/YYYY");
-            // var VacationEndDateplus = moment(VacationEndDate, "MM-DD-YYYY").add(1, 'day').format("MM-DD-YYYY");
-            console.log('current_date : ', current_date);
-            console.log('VacationEndDate : ', vacationEndDate);
-            // console.log('VacationEndDateplus : ',VacationEndDateplus);
+            if (Object.keys(response).length) {
+                console.log("response : ", response);
+                attendanceData.absentData = response[0];
+                var vacationEndDate = moment(response[0].End_Date).format("MM/DD/YYYY");
+                // var VacationEndDateplus = moment(VacationEndDate, "MM-DD-YYYY").add(1, 'day').format("MM-DD-YYYY");
+                console.log('current_date : ', current_date);
+                console.log('VacationEndDate : ', vacationEndDate);
+                // console.log('VacationEndDateplus : ',VacationEndDateplus);
 
-            if (current_date === vacationEndDate) {
-                attendanceData.actionType = 'مساءله غياب';
-                console.log("attendanceData : ", attendanceData);
-                takenActionsMethods.sendActionToEmp(attendanceData);
+                if (current_date === vacationEndDate) {
+                    attendanceData.actionType = 'مساءله غياب';
+                    console.log("attendanceData : ", attendanceData);
+                    takenActionsMethods.sendActionToEmp(attendanceData);
+                }
             }
         });
     },

@@ -219,6 +219,8 @@ var studentAttendanceMethods = {
 
                 }
                 attendanceObj.Total_min = total_min;
+
+                console.log(attendanceObj);
                 attendance.updateAttributes(attendanceObj).then(function () {
                     response.success = true;
                     if (attendanceObj.is_absent == 0)

@@ -1,5 +1,5 @@
 angular.module('MetronicApp').controller('studentExecuseRecordsController',
-    function (DTOptionsBuilder, DTColumnBuilder,$q,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,studentRecordsService) {
+    function ($compile,DTOptionsBuilder, DTColumnBuilder,$q,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,studentRecordsService) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -30,12 +30,11 @@ angular.module('MetronicApp').controller('studentExecuseRecordsController',
                 return defer.promise
             }),
             columns: [
-                DTColumnBuilder.newColumn('Start_Day').withTitle(' البدايه / اليوم'),
-                DTColumnBuilder.newColumn('Start_Date').withTitle(' البدايه / التاريخ'),
+                DTColumnBuilder.newColumn(null).withTitle('اليوم').notSortable()
+                    .renderWith(actionsHtml),
                 DTColumnBuilder.newColumn('Departure_time').withTitle(' وقت الخروج'),
-                DTColumnBuilder.newColumn('End_Day').withTitle('النهايه / اليوم'),
                 DTColumnBuilder.newColumn('Return_time').withTitle('وقت العوده'),
-                DTColumnBuilder.newColumn('End_Date').withTitle(' النهايه /تاريخ'),
+                DTColumnBuilder.newColumn('Event_Name').withTitle('النشاط'),
             ],
             dtInstance: {},
         };
@@ -43,6 +42,27 @@ angular.module('MetronicApp').controller('studentExecuseRecordsController',
 
         $scope.model = model;
 
+        function createdRow(row, data, dataIndex) {
+            // Recompiling so we can bind Angular directive to the DT
+            $compile(angular.element(row).contents())($scope);
+        }
+
+        function actionsHtml(data, type, full, meta) {
+
+            var weekday = new Array(7);
+            weekday[0] =  "الاحد";
+            weekday[1] = "الاثنين";
+            weekday[2] = "الثلاثاء";
+            weekday[3] = "الاربعاء";
+            weekday[4] = "الخميس";
+            weekday[5] = "الجمعه";
+            weekday[6] = "السبت";
+
+            var day_number = new Date(data.Start_Date);
+            var day = weekday[day_number.getDay()];
+
+            return day;
+        }
 
 
 
@@ -121,7 +141,7 @@ angular.module('MetronicApp').controller('studentLateRecordsController',
 
 
    angular.module('MetronicApp').controller('studentAbsentRecordsController',
-    function (DTOptionsBuilder, DTColumnBuilder,$q,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,studentRecordsService) {
+    function ($compile,DTOptionsBuilder, DTColumnBuilder,$q,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,studentRecordsService) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -150,10 +170,14 @@ angular.module('MetronicApp').controller('studentLateRecordsController',
                 });
 
                 return defer.promise
-            }),
+            }).withOption('createdRow', createdRow),
             columns: [
                 DTColumnBuilder.newColumn('Day').withTitle(' البدايه / اليوم'),
                 DTColumnBuilder.newColumn('Date').withTitle(' البدايه / التاريخ'),
+                DTColumnBuilder.newColumn('Event_Name').withTitle(' النشاط'),
+                DTColumnBuilder.newColumn(null).withTitle('نوع الغياب').notSortable()
+                    .renderWith(actionsHtml)
+
             ],
             dtInstance: {},
         };
@@ -162,6 +186,21 @@ angular.module('MetronicApp').controller('studentLateRecordsController',
         $scope.model = model;
 
 
+        function createdRow(row, data, dataIndex) {
+            // Recompiling so we can bind Angular directive to the DT
+            $compile(angular.element(row).contents())($scope);
+        }
+
+        function actionsHtml(data, type, full, meta) {
+
+            if(data.on_vacation ) {
+               return  '<span>غائب بعذر </span>';
+            }else {
+                return '<span>غائب بدون عذر</span>';
+            }
+
+            return '';
+        }
 
 
 

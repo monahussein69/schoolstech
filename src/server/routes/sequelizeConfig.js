@@ -178,6 +178,7 @@ const sequelizeConfig = {
     Study_status: Sequelize.STRING,
     Entered_by: Sequelize.INTEGER,
     entery_date: Sequelize.STRING,
+        absent_reasons:Sequelize.STRING,
  }),
     actionsTable: sequelize.define('app_def_actions', {
         Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},

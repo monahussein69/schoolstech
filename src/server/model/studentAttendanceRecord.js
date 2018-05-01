@@ -36,11 +36,12 @@ var studentAttendanceRecordMethods = {
 
     getStudentExcuseRecord: function (req, res, callback) {
         var schoolId = req.params.schoolId;
-        var employeeId = req.params.employeeId;
-        var query = con.query('SELECT sch_att_stdexcuse.*,start.Day as Start_Day,end.Day as End_Day FROM `sch_att_stdexcuse` '+
-            ' join app_def_calender as start on start.Date = sch_att_stdexcuse.Start_Date join app_def_calender as end on end.Date = sch_att_stdexcuse.End_Date ' +
-            'where School_id = ? and Student_id = ?', [schoolId,studentId], function (err, result) {
-                if (err)
+        var studentId = req.params.studentId;
+        var query = con.query('select sch_att_stdatt.Event_Name,sch_att_stdexcuse.* from sch_att_stdatt '+
+        ' join sch_att_stdexcuse on sch_att_stdatt.Calender_id = sch_att_stdexcuse.Calender_id'+
+        ' where sch_att_stdatt.school_id = ? and sch_att_stdatt.Student_id = ? and is_excused = 1', [schoolId,studentId], function (err, result) {
+            console.log(query.sql);
+            if (err)
                     throw err
                 callback(result);
             }

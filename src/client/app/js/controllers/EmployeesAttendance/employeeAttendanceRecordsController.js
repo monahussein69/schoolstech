@@ -58,7 +58,7 @@ angular.module('MetronicApp').controller('employeeAttendanceLateRecordController
     });
 
 angular.module('MetronicApp').controller('employeeAttendanceAbsentRecordController',
-    function (DTOptionsBuilder, DTColumnBuilder,$q,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceRecordsService) {
+    function ($compile,DTOptionsBuilder, DTColumnBuilder,$q,$stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter,employeesAttendanceRecordsService) {
 
         var schoolId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -89,17 +89,53 @@ angular.module('MetronicApp').controller('employeeAttendanceAbsentRecordControll
                 return defer.promise
             }),
             columns: [
-                DTColumnBuilder.newColumn('Start_Day').withTitle(' البدايه / اليوم'),
-                DTColumnBuilder.newColumn('Start_Date').withTitle(' البدايه / التاريخ'),
-                DTColumnBuilder.newColumn('End_Day').withTitle('النهايه / اليوم'),
-                DTColumnBuilder.newColumn('End_Date').withTitle(' النهايه /تاريخ'),
-                DTColumnBuilder.newColumn('VactionType').withTitle(' نوع الغياب'),
+                DTColumnBuilder.newColumn(null).withTitle('اليوم').notSortable()
+                    .renderWith(actionsHtml),
+                DTColumnBuilder.newColumn('Start_Date').withTitle('التاريخ'),
+                DTColumnBuilder.newColumn('excusetype_name').withTitle(' نوع العذر'),
+                DTColumnBuilder.newColumn(null).withTitle('نوع الغياب').notSortable()
+                    .renderWith(VacationTypeHtml),
+                DTColumnBuilder.newColumn('No_Of_Days').withTitle('  عدد ايام الغياب'),
             ],
             dtInstance: {},
         };
 
 
         $scope.model = model;
+
+        function createdRow(row, data, dataIndex) {
+            // Recompiling so we can bind Angular directive to the DT
+            $compile(angular.element(row).contents())($scope);
+        }
+
+        function actionsHtml(data, type, full, meta) {
+
+            var weekday = new Array(7);
+            weekday[0] =  "الاحد";
+            weekday[1] = "الاثنين";
+            weekday[2] = "الثلاثاء";
+            weekday[3] = "الاربعاء";
+            weekday[4] = "الخميس";
+            weekday[5] = "الجمعه";
+            weekday[6] = "السبت";
+
+            var day_number = new Date(data.Start_Date);
+            var day = weekday[day_number.getDay()];
+
+            return day;
+        }
+
+        function VacationTypeHtml(data, type, full, meta) {
+            console.log(data.on_vacation);
+         if(data.on_vacation){
+             console.log('in if');
+             return '<span>غياب بعذر</span>';
+         }else{
+             console.log('not in if');
+             return '<span>غياب بدون عذر</span>';
+         }
+
+        }
 
 
 

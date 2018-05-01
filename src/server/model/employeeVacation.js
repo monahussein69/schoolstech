@@ -67,26 +67,40 @@ var employeesVacationMethods = {
     },
     setVactionIntoEmpAttendence:function(req, res, callback) {
        
-	   var on_vacation = 0;
-	   if(req.body.AbsentObj.absentType == 'غياب بعذر'){
-		   on_vacation = 1;
-	   }
+
 	   
 	   var data = {
             school_id: req.body.AbsentObj.school_id,
             employee_id: req.body.AbsentObj.Emp_id,
             is_absent: 1,
-            on_vacation: on_vacation,
+            on_vacation: 1,
             working_status: 0,
-            Event_Name:'طابور'
+            Event_Name:'بدايه الدوام',
+           time_in:'',
+           late_min:'',
+           Total_min:''
         };
+
         appSettingsMethods.getCalenderByDate(req, res, function (calendar) {
-            if (Object.keys(calendar).length) {
-                console.log("calender id : ", calendar);
+            if (Object.keys(calendar).length){
                 data.Calender_id = calendar[0].Id;
-                sequelizeConfig.employeeAttandaceTable.create(data).then(employeeAttendece => {
-                    callback(employeeAttendece);
-                });
+                sequelizeConfig.employeeAttandaceTable.find({
+                    where: {
+                        employee_id: req.body.AbsentObj.Emp_id,
+                        Calender_id: req.body.AbsentObj.Calender_id,
+                        Event_Name:'بدايه الدوام'
+                    }
+                }).then(function (employeeAttendence) {
+                    // Check if record exists in db
+                    if (employeeAttendence) {
+                        employeeAttendence.updateAttributes(data).then(function () {
+                        })
+                    }else{
+                        sequelizeConfig.employeeAttandaceTable.create(data).then(employeeAttendece => {
+                            callback(employeeAttendece);
+                        });
+                    }
+                })
             }
 
         });

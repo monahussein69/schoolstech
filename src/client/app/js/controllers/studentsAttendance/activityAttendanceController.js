@@ -72,7 +72,8 @@ angular.module('MetronicApp').controller('activityAttendanceController',
             employeeList: [],
             selectedEmployee: 0,
             getActivityByEmployeeId: getActivityByEmployeeId,
-            getAttendanceBasedDate:getAttendanceBasedDate
+            getAttendanceBasedDate:getAttendanceBasedDate,
+            recordExcuse:recordExcuse
         };
 
         function getAttendanceBasedDate(){
@@ -105,7 +106,8 @@ angular.module('MetronicApp').controller('activityAttendanceController',
                 '<button class="btn btn-primary color-grey" ng-click="model.recordAttendance(' + data.main_student_id + ',$event,\'متأخر\')" ng-class="{\'color-orange\': (0 ==' + data.is_absent + ') && !(\''+data.late_min+'\' == \'\') }"> متأخر</button>\n'+
                 '<button class="btn btn-danger" ng-class="{\'color-grey\':!' + data.is_absent + '}" ng-click="model.recordAttendance(' + data.main_student_id + ',$event,\'غياب\')">غائب</button>' +
                 '<button class="btn btn-warning" ng-class="{\'color-grey\':(\''+data.short_min+'\' == \'\') || (\''+data.short_min+'\' == \'null\')}" ng-click="model.recordAttendance('+data.main_student_id+',$event,\'خروج مبكر\')">خروج مبكر</button>'+
-                '<button ng-disabled = "' + data.is_absent + ' != 0" class="btn btn-primary excuse" ng-class="{\'color-grey\':!(' + data.is_excused + ')}" ng-click="model.ExcuseRequest(' + data.main_student_id + ',$event)">استئذان</button> '
+                '<button ng-disabled = "' + data.is_absent + ' != 0" class="btn btn-primary excuse" ng-class="{\'color-grey\':!(' + data.is_excused + ')}" ng-click="model.ExcuseRequest(' + data.main_student_id + ',$event)">استئذان</button> '+
+                '<button class="btn btn-primary color-grey" ng-click="model.recordExcuse('+data.main_student_id+')" ng-show="'+data.is_absent+' == 1">تسجيل اعذار الغياب</button>'
                 ;
         }
 
@@ -195,6 +197,44 @@ angular.module('MetronicApp').controller('activityAttendanceController',
         $scope.model = model;
 
 
+        function recordExcuse(student_id){
+
+            var dialogInst = $uibModal.open({
+                templateUrl: 'views/students_attendance/recordExcuse.html',
+                controller: 'recordExcusePopupCtrl',
+                size: 'md',
+                resolve: {
+                    selectedStudent: function () {
+                        return student_id;
+                    },
+                    schoolId: function () {
+                        return model.schoolId;
+                    },
+                    selectedActivity: function () {
+                        return model.listOfActivity[model.activity];
+                    },
+                    selected_date: function () {
+                        return model.attendance_day;
+                    }
+                }
+            });
+            dialogInst.result.then(function (result) {
+
+                if (result.success) {
+                    model.getAllStudentsByActivity();
+                }
+
+                //$scope.usrs.push(newusr);
+                //$scope.usr = {name: '', job: '', age: '', sal: '', addr:''};
+                console.log('open');
+            }, function () {
+                console.log('close');
+                //$log.info('Modal dismissed at: ' + new Date());
+            });
+
+        }
+
+
         function recordShortAttendance(student_id) {
 
             var dialogInst = $uibModal.open({
@@ -255,7 +295,8 @@ angular.module('MetronicApp').controller('activityAttendanceController',
                 recordShortAttendance(student_id);
             } else {
             if (type == 'حضور') {
-                attendanceObj.time_in = model.listOfActivity[model.activity].Begining_Time;
+
+                attendanceObj.time_in =  $moment(model.listOfActivity[model.activity].Begining_Time).format('HH:mm');
             }
 
             if (type == 'حضور' || type == 'متأخر') {
@@ -363,11 +404,16 @@ angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, s
                 toastr.error('وقت العوده اقل من وقت الذهاب');
                 return;
             }
-			console.log('selectedEvent.Begining_Time');
-			console.log(selectedEvent.Begining_Time);
-			console.log(selectedEvent.Ending_Time);
+
+
+        var startTime = $moment(selectedEvent.Begining_Time).format('HH:mm');
+        var endTime = $moment(selectedEvent.Ending_Time).format('HH:mm');
+
+        console.log('selectedEvent.Begining_Time');
+        console.log(startTime);
+        console.log(endTime);
 			
-			if((($moment(Departure_time,'HH:mm').isBefore( $moment(selectedEvent.Begining_Time,'HH:mm'))) ||  ($moment(selectedEvent.Ending_Time,'HH:mm').isBefore($moment(Return_time,'HH:mm')))) ) {
+			if((($moment(Departure_time,'HH:mm').isBefore( $moment(startTime,'HH:mm'))) ||  ($moment(endTime,'HH:mm').isBefore($moment(Return_time,'HH:mm')))) ) {
                 toastr.error('وقت الاستئذان خارج وقت الدوام');
                 return;
 			}
@@ -443,6 +489,69 @@ angular.module('MetronicApp').controller('shortAttendacePopupCtrl', function (lo
 
 
 
+        studentsAttendanceService.setStudentAttendance(activityAttendance, function (result) {
+            if (result.success) {
+                toastr.success(result.msg);
+            } else {
+                toastr.error(result.msg);
+            }
+            $uibModalInstance.close(result);
+        });
+    }
+});
+
+angular.module('MetronicApp').controller('recordExcusePopupCtrl', function (localStorageService,toastr, studentsAttendanceService, $moment, $scope, $uibModalInstance, selectedStudent,selectedActivity, schoolId,selected_date, $log) {
+
+    /*var index = -1;
+
+     getActivityByDayAndSchoolId.some(function(obj, i) {
+        return obj.event_Nam === selectedActivity ? index = i : false;
+    });
+    index = index.toString();
+    console.log(index);*/
+
+    var entryDate = $moment().format('YYYY-MM-DD- hh:mm');
+    var userObject = localStorageService.get('UserObject');
+    var userId = 0;
+    if(userObject) {
+        var userId = userObject[0].id;
+    }
+
+    var model = {
+        selectedStudent: selectedStudent,
+        currentTime: $moment().format('h:mm A'),
+        onCancel: onCancel,
+        absent_reasons:'',
+        RecordAbsentReason: RecordAbsentReason,
+        activity: selectedActivity,
+        userId:userId,
+        entryDate:entryDate
+    };
+    $scope.model = model;
+
+
+    function onCancel() {
+        $uibModalInstance.dismiss('cancel');
+    }
+
+    function RecordAbsentReason() {
+
+        let activityAttendance = {
+            school_id: schoolId,
+            Student_id: selectedStudent,
+            Event_Name: selectedActivity.event_Nam,
+            attendance_day : selected_date,
+            absent_reasons:model.absent_reasons,
+            is_absent:1,
+            time_in : selectedActivity.Ending_Time,
+            on_vacation:1
+
+        }
+
+
+
+
+        console.log(activityAttendance);
         studentsAttendanceService.setStudentAttendance(activityAttendance, function (result) {
             if (result.success) {
                 toastr.success(result.msg);

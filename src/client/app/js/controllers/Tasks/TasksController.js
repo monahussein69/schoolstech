@@ -577,7 +577,7 @@ angular.module('MetronicApp').controller('addTaskStudentsController',
                         model.selected[full.student_id] = false;
                         return '<input type="checkbox" ng-model="model.selected[' + data.student_id + ']" ng-click="model.toggleOne(date.selected)">';
                     }),
-                DTColumnBuilder.newColumn('name').withTitle('اسم الطالب')
+                DTColumnBuilder.newColumn('Name').withTitle('اسم الطالب')
 
             ],
             dtInstance: {},

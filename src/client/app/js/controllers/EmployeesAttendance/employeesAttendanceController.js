@@ -109,7 +109,7 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
             }
             return ''+
                 '<button class="btn btn-primary color-grey attendance_'+data.main_employee_id+'" ng-click="confirmTimeIn('+data.main_employee_id+',$event)" ng-class="{\'color-green\': (0 =='+data.is_absent+') && !('+late+') , \'color-orange\':  ('+late+') && (0 =='+data.is_absent+') }"> حاضر</button>\n'+
-                '<button class="btn btn-danger absent_'+data.main_employee_id+'" ng-class="{\'color-grey\':!('+data.is_absent+') && !('+data.on_vacation+' == 1)}" ng-click="model.recordAttendance('+data.main_employee_id+',$event,\'غياب\')">غائب</button>'+
+                '<button class="btn btn-danger absent_'+data.main_employee_id+'" ng-class="{\'color-grey\':!(('+data.is_absent+' == 1) && (('+data.on_vacation+' == 0) || ('+data.on_vacation+' == null) ))}" ng-click="model.recordAttendance('+data.main_employee_id+',$event,\'غياب\')">غائب</button>'+
                 '<button ng-disabled = "'+data.is_absent+' != 0" class="btn btn-primary excuse" ng-class="{\'color-grey\':!('+data.is_excused+' == 1)}" ng-click="model.ExcuseRequest('+data.main_employee_id+',$event)">استئذان</button> '+
                 '<button class="btn btn-warning" ng-class="{\'color-grey\':!('+data.on_vacation+' == 1)}" ng-click="model.AbsentRequest('+data.main_employee_id+',$event,\'غياب بعذر\')">غياب بعذر</button>'
                 ;
@@ -385,8 +385,9 @@ angular.module('MetronicApp').controller('employeesAttendanceController',
 
                 if (result.success) {
                     model.getAttendanceBasedDate();
-                    angular.element($event.target).removeClass('color-grey');
-                    angular.element($event.target).parent().children('.excuse').attr('disabled', true);
+                    console.log('testttttttttt');
+                    //angular.element($event.target).removeClass('color-grey');
+                    //angular.element($event.target).parent().children('.excuse').attr('disabled', true);
                 }
             }, function () {
                 console.log('close');
@@ -649,7 +650,7 @@ angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, e
 });
 
 
-angular.module('MetronicApp').controller('AbsentDialogCtrl', function (toastr, employeesAbsentService, $moment, $scope, $uibModalInstance, selectedEmployee, schoolId, $log, selectedDate) {
+angular.module('MetronicApp').controller('AbsentDialogCtrl', function (manageExcuseTypeService,toastr, employeesAbsentService, $moment, $scope, $uibModalInstance, selectedEmployee, schoolId, $log, selectedDate) {
     var currentTime = $moment().format('h:mm A');
     var currentDate = selectedDate;
 
@@ -666,6 +667,13 @@ angular.module('MetronicApp').controller('AbsentDialogCtrl', function (toastr, e
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
+
+    manageExcuseTypeService.getAllExcuseTypes().then(function (result) {
+        console.log(result);
+        $scope.excuseTypes = result;
+        $scope.$apply();
+    });
+
 
     $scope.absentDays = function () {
         var start = $moment(AbsentObj.Start_Date);
