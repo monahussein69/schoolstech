@@ -281,8 +281,6 @@ const sequelizeConfig = {
         TakenAction_id: Sequelize.INTEGER,
         Notes: Sequelize.STRING,
     }),
-
-    }),
     requestsTable: sequelize.define('sch_sys_requests', {
         id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
         school_id: Sequelize.INTEGER,
