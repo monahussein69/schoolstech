@@ -911,6 +911,46 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                 }]
             }
         })
+        .state('Master.requests', {
+            url: "/requests",
+            templateUrl: "views/requests/requests.html",
+            data: {pageTitle: 'الطلبات'},
+            controller: "RequestsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/requests/RequestsController.js',
+                            'js/services/RequestsService.js'
+                        ]
+                    });
+                }]
+            }
+        })
+        .state('Master.ManageRequests', {
+            url: "/ManageRequests",
+            templateUrl: "views/requests/editRequests.html",
+            data: {pageTitle: 'ادارة الطلبات'},
+            controller: "ManageRequestsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/requests/RequestsController.js',
+                            'js/services/RequestsService.js'
+                        ]
+                    });
+                }]
+            }
+        })
 
         .state('Master.studentsDegrees', {
             url: "/studentsDegrees",

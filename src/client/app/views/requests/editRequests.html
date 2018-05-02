@@ -1,0 +1,69 @@
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a ui-sref="dashboard">الصفحه الرئيسيه</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a ui-sref="Master.appSettings">بيانات الطلبات</a>
+        </li>
+    </ul>
+</div>
+<h3 class="page-title">بيانات الطلبات </h3>
+<div>
+    <form method="post" ng-submit="model.saveRequest()" name="requestForm" ng-model="requestForm" enctype="multipart/form-data">
+        <div class="alert alert-success" ng-if="model.success != null">
+            <button class="close" data-close="alert"></button>
+            <span>{{model.success}}</span>
+        </div>
+        <div class="alert alert-danger" ng-if="model.error != null">
+            <button class="close" data-close="alert"></button>
+            <span>{{model.error}}</span>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <fieldset>
+                    <legend>بيانات الطلب :</legend>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">نوع الطلب</label>
+                        <div class="col-sm-6">
+                            <select class="form-control" name="request_type" ng-model="model.requestObj.request_type">
+                                <option value=""> اختر نوع الطلب</option>
+                                <option ng-repeat="types in model.requestsTypes track by $index" key="{{types.Id}}" value="{{types.Id}}"> {{types.Name}} </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">السبب</label>
+                        <div class="col-sm-6">
+                            <textarea type="text" name="reason" class="form-control" ng-model="model.requestObj.reason"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-show="model.requestObj.request_type == 1">
+                        <label class="col-sm-2 control-label">بداية الاجازة</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="Start_Date" calendarType="ummalqura" language="ar" date-format="YYYY-MM-DD" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.requestObj.Start_Date | kdate: '' : 'ar' : 'ummalqura'}}"
+                                ng-model="model.requestObj.Start_Date" />
+                            <b>{{model.requestObj.Start_Date | kdate: '' : 'ar' : 'Gregorian'}}</b>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-show="model.requestObj.request_type == 1">
+                        <label class="col-sm-2 control-label">نهاية الاجازة</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="End_Date" calendarType="ummalqura" language="ar" date-format="YYYY-MM-DD" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.requestObj.End_Date | kdate: '' : 'ar' : 'ummalqura'}}"
+                                ng-model="model.requestObj.End_Date" ng-change="model.vacationsDays()" />
+                            <b>{{model.requestObj.End_Date | kdate: '' : 'ar' : 'Gregorian'}}</b>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-show="model.requestObj.request_type == 1">
+                        <label class="col-sm-2 control-label"> ايام الغياب </label>
+                        <div class="col-sm-6">
+                            <input type="text" name="name" class="form-control" ng-model="model.requestObj.No_Of_Days" ng-change="model.vacationsDays()" /> </div>
+                    </div>
+                </fieldset>
+                <button class="btn btn-primary" type="submit" ng-disabled="requestForm.$invalid">حفظ</button>
+                <button class="btn btn-danger">الغاء</button>
+            </div>
+        </div>
+    </form>
+</div>

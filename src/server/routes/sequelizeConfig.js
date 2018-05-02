@@ -199,7 +199,7 @@ const sequelizeConfig = {
         ACTION_body: Sequelize.STRING,
         issue_date: Sequelize.STRING,
         action_reply: Sequelize.STRING,
-    })
+    }),
     employeeExcuseTable:sequelize.define('sch_att_empexcuse', {
         id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
         Calender_id: Sequelize.INTEGER,
@@ -250,6 +250,23 @@ const sequelizeConfig = {
         summer_term_end_date: Sequelize.INTEGER,
         active_term: Sequelize.STRING,
         marketing: Sequelize.STRING,
+    }),
+    requestsTable: sequelize.define('sch_sys_requests', {
+        id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+        school_id: Sequelize.INTEGER,
+        request_type: Sequelize.INTEGER,
+        reason: Sequelize.TEXT,
+        created_at: Sequelize.STRING,
+        created_by: Sequelize.STRING,
+        priority: Sequelize.INTEGER,
+        is_cost: Sequelize.INTEGER,
+        is_done: Sequelize.INTEGER,
+        status: Sequelize.STRING,
+        last_update: Sequelize.STRING,
+        last_update_By: Sequelize.INTEGER,
+        Start_Date: Sequelize.STRING,
+        End_Date: Sequelize.STRING,
+        No_Of_Days: Sequelize.INTEGER
     })
 }
 module.exports = sequelizeConfig;
