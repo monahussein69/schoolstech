@@ -254,11 +254,11 @@ angular.module('MetronicApp').controller('ManageEmployeesController',
                     if (resp.data.status) { //validate success
                         //toastr.success(resp.data.msg);
                         model.success = resp.data.msg;
-						$scope.$apply();
+						//$scope.$apply();
                     } else {
                         //toastr.error(resp.data.msg);
 						model.error = resp.data.msg;
-						$scope.$apply();
+						//$scope.$apply();
                     }
                 }, function (resp) { //catch error
                     toastr.error('Error status: ' + resp.status);

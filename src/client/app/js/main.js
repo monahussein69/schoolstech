@@ -251,6 +251,29 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                 }]
             }
         })
+        .state('forgetPassword', {
+            url: "/forgetPassword",
+            templateUrl: "views/forgetPassword.html",
+            data: {pageTitle: 'نسيان كلمه المرور'},
+            controller: "forgetPasswordController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+
+                            '../assets/global/plugins/jquery-validation/js/jquery.validate.min.js',
+                            '../assets/global/plugins/jquery-validation/js/additional-methods.min.js',
+                            '../assets/pages/css/login-rtl.min.css',
+                            '../assets/pages/scripts/login.min.js',
+                            'js/services/EmployeesFactory.js',
+                            'js/controllers/LoginController.js',
+                        ]
+                    });
+                }]
+            }
+        })
         .state('Master', {
             abstract: true,
             templateUrl: 'master.html'

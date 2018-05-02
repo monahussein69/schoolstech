@@ -90,6 +90,13 @@ router.post('/login', function (req, res, next) {
 
 });
 
+router.post('/resetPasswprd', function (req, res, next) {
+    loginMethod.resetUserPassword(req, res, function (result) {
+        res.send(result);
+    });
+
+});
+
 router.post('/saveSchoolData', function (req, res, next) {
     schoolMethods.saveSchool(req, res, function (result) {
         res.send(result);
