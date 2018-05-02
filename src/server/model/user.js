@@ -3,6 +3,8 @@ var employeeMethods = require('../model/employee.js');
 var schoolMethods = require('../model/school.js');
 var randomstring = require("randomstring");
 var bcrypt = require('bcrypt');
+var fs = require("fs");
+var util = require('util');
 const saltRounds = 10;
 
 var userMethods = {
@@ -12,6 +14,7 @@ var userMethods = {
         var response = {};
         if (userData.loginName) {
             con.query("select * from sys_users where loginName = ?", [userData.loginName], function (err, result) {
+                try{
                 if (err)
                     throw err;
 
@@ -29,6 +32,7 @@ var userMethods = {
                             userData.isLeader,
                             user_id
                         ], function (err, result) {
+                     try{
                             if (err)
                                 throw err
                             if (result.affectedRows) {
@@ -43,6 +47,12 @@ var userMethods = {
 
                             callback(response);
 
+                        }catch(ex){
+                        var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                        log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                        callback(ex);
+                    }
+
                         }
                     );
                 } else {
@@ -55,7 +65,8 @@ var userMethods = {
                             userData.PasswordHash,
                             userData.is_active,
                             userData.isLeader,], function (err, result) {
-                            if (err)
+                        try{
+                        if (err)
                                 throw err
                             if (result.affectedRows) {
                                 response.success = true;
@@ -66,8 +77,20 @@ var userMethods = {
                                 response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
                             }
                             callback(response);
+
+                        }catch(ex){
+                        var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                        log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                        callback(ex);
+                    }
                         }
                     );
+                }
+
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
                 }
             });
         }
@@ -148,11 +171,13 @@ var userMethods = {
             var empId = req.body.empId;
             req.params.empId = empId
             employeeMethods.getEmployee(req, res, function (result) {
+                try{
                 if (Object.keys(result).length) {
 
                     if( result[0].userId){
                         var user_id = result[0].userId;
                         con.query("update sys_users set is_active = 0 where id = ?", [user_id], function (err, result) {
+                         try{
                             if(err)
                                 throw err;
                             if(result.affectedRows){
@@ -160,6 +185,12 @@ var userMethods = {
                                 response.msg = 'تم الغاء تفعيل المستخدم بنجاح';
 
                             }
+
+                        }catch(ex){
+                            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                            callback(ex);
+                        }
                             callback(response);
                         });
                     }else{
@@ -173,11 +204,20 @@ var userMethods = {
                     callback(response);
                 }
 
+            }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
+
+
+
             });
 
         }else if(type == 'school'){
             var schoolId = req.body.schoolId;
                         con.query("update sys_users set is_active = 0 where schoolId = ?", [schoolId], function (err, result) {
+             try{
                             if(err)
                                 throw err;
                             if(result.affectedRows){
@@ -185,6 +225,12 @@ var userMethods = {
                                 response.msg = 'تم الغاء تفعيل المستخدم بنجاح';
 
                             }
+
+                        }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
                             callback(response);
                         });
 

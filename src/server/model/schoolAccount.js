@@ -4,6 +4,8 @@ var schoolMethods = require('../model/school.js');
 var randomstring = require("randomstring");
 var bcrypt = require('bcrypt');
 const saltRounds = 10;
+var fs = require("fs");
+var util = require('util');
 
 var schoolAccountMethods = {
     saveSchoolAccount: function(req,res,callback) {
@@ -13,7 +15,8 @@ var schoolAccountMethods = {
 
      if(schoolAccountData.schoolId){
        con.query("select * from sys_school_account where schoolId = ?",[schoolAccountData.schoolId],function(err,result){
-         if(err)
+         try{
+           if(err)
           throw err;
          if (Object.keys(result).length){
             AccountStatus = result[0].accountStatus;
@@ -33,6 +36,7 @@ var schoolAccountMethods = {
             schoolAccountData.contactMailBox,
             schoolAccountData.schoolId 
            ],function(err,result){
+              try{
             if(err)
              throw err
             if(result.affectedRows){
@@ -78,6 +82,12 @@ var schoolAccountMethods = {
             } 
 			
 			callback(response);
+
+              }catch(ex){
+                 var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                 log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                 callback(ex);
+             }
 			
            } 
           );
@@ -99,6 +109,7 @@ var schoolAccountMethods = {
                      schoolAccountData.expirationType,
                      schoolAccountData.expirationDuration,
                  ],function(err,result){
+                 try{
                      if(err)
                          throw err
                      if(result.affectedRows){
@@ -154,9 +165,22 @@ var schoolAccountMethods = {
                          response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
                      }
                      callback(response);
+
+                 }catch(ex){
+                 var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                 log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                 callback(ex);
+             }
                  }
+
              );
-		 } 
+		 }
+
+       }catch(ex){
+             var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+             log_file_err.write(util.format('Caught exception: '+err) + '\n');
+             callback(ex);
+         }
        });
      }
 
@@ -165,10 +189,17 @@ var schoolAccountMethods = {
     getSchoolAccount: function(req,res,callback) {
         var schoolId = req.params.schoolId;
         con.query('select * from sys_school_account where schoolId = ?',[schoolId],function(err,result){
+         try{
                 if(err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -176,6 +207,7 @@ var schoolAccountMethods = {
         var schoolId = req.params.schoolId;
         var response = {};
         con.query('delete from sys_school_account where schoolId = ?',[schoolId],function(err,result){
+         try{
                 if(err)
                     throw err
                 if(result.affectedRows){
@@ -186,6 +218,12 @@ var schoolAccountMethods = {
                     response.msg = 'خطأ, الرجاء المحاوله مره اخرى';
                 }
                 callback(response);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -193,11 +231,18 @@ var schoolAccountMethods = {
 	countSchoolsAccounts:function(req,res,callback){
 		var response = {};
 		 con.query('select count(*) as accounts from sys_school_account where accountStatus = \'مفعل\' ',function(err,result){
+         try{
                 if(err)
                     throw err
                 response.count = result[0].accounts;
                 callback(response);
-            });
+
+         }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
+		 });
 	}
 };
 

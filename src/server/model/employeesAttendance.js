@@ -6,6 +6,8 @@ var attScheduleMethods = require('../model/sch_att_schedule.js');
 var employeesVacationMethods = require('../model/employeeVacation.js');
 var takenActionsMethods = require('../model/takenActions.js');
 var sequelizeConfig = require('../routes/sequelizeConfig.js');
+var fs = require("fs");
+var util = require('util');
 
 var employeesAttendanceMethods = {
 
@@ -15,7 +17,7 @@ var employeesAttendanceMethods = {
         var current_date = moment(req.body.date).format('MM-DD-YYYY');
         req.body.date = current_date;
         var lecture_name = req.body.lecture_name;
-        var breaks = ['طابور', 'صلاه', 'فسحه (1)', 'فسحه (2)'];
+        var breaks = ['طابور', 'صلاه', 'فسحه (1)', 'فسحه (2)','بدايه الدوام'];
 
         var response = [];
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
@@ -37,11 +39,17 @@ var employeesAttendanceMethods = {
                 }
 
                 if (breaks.indexOf(lecture_name) > -1) {
-                    var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,TIME_FORMAT(sch_att_empatt.time_in, "%h:%i %p") as time_in_formmated left join sch_att_empatt  on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Event_Name = ? and sch_att_empatt.Calender_id = ?)  where (sch_att_empatt.Event_Name = ? or sch_att_empatt.Event_Name IS NULL ) and sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL)  and sch_str_employees.id not in (select employee_id from sch_att_empatt where Calender_id = ? and school_id = ? and Event_Name = "طابور" and is_absent = 1) group by main_employee_id order by sch_str_employees.name asc', [lecture_name,calendarId, lecture_name, schoolId, calendarId,calendarId], function (err, result) {
+                    var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,TIME_FORMAT(sch_att_empatt.time_in, "%h:%i %p") as time_in_formmated from sch_str_employees left join sch_att_empatt  on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Event_Name = ? and sch_att_empatt.Calender_id = ?)  where (sch_att_empatt.Event_Name = ? or sch_att_empatt.Event_Name IS NULL ) and sch_str_employees.school_id = ? and (sch_att_empatt.Calender_id = ? or sch_att_empatt.Calender_id IS NULL)  and sch_str_employees.id not in (select employee_id from sch_att_empatt where Calender_id = ? and school_id = ? and Event_Name = "بدايه الدوام" and is_absent = 1) group by main_employee_id order by sch_str_employees.name asc', [lecture_name,calendarId, lecture_name, schoolId, calendarId,calendarId,schoolId], function (err, result) {
                             console.log(query.sql);
+                     try{
                             if (err)
                                 throw err
                             callback(result);
+                    }catch(ex){
+                        var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                        log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                        callback(ex);
+                    }
                         }
                     );
                 }else{
@@ -53,9 +61,16 @@ var employeesAttendanceMethods = {
                        
                         'where sch_acd_lectures.name = ? and (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) and sch_str_employees.school_id = ?  and sch_str_employees.id not in (select employee_id from sch_att_empatt where Calender_id = ? and school_id = ? and Event_Name = "بدايه الدوام" and is_absent = 1) group by main_employee_id  order by sch_str_employees.name asc', [calendarId,lecture_name,currentDay,currentDay1,schoolId,calendarId,schoolId], function (err, result) {
                             console.log(query.sql);
+                     try{
                             if (err)
                                 throw err
                             callback(result);
+
+                    }catch(ex){
+                        var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                        log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                        callback(ex);
+                    }
                         }
                     );
                 }
@@ -81,9 +96,16 @@ var employeesAttendanceMethods = {
                 var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,TIME_FORMAT(sch_att_empatt.time_in, "%h:%i %p") as time_in_formmated from sch_str_employees left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ? and sch_att_empatt.Event_Name = \'بدايه الدوام\') where sch_str_employees.school_id = ?  group by main_employee_id order by sch_str_employees.name asc', [calendarId, schoolId], function (err, result) {
                         console.log('query');
                         console.log(query.sql);
+                 try{
                         if (err)
                             throw err
                         callback(result);
+
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
                     }
                 );
             } else {
@@ -109,9 +131,16 @@ var employeesAttendanceMethods = {
                 var query = con.query('select sch_str_employees.id as main_employee_id,sch_str_employees.name ,sch_att_empatt.*,TIME_FORMAT(sch_att_empatt.time_in, "%h:%i %p") as time_in_formmated from sch_str_employees ' +
                     'left join sch_att_empatt on (sch_str_employees.id = sch_att_empatt.employee_id and sch_att_empatt.Calender_id = ? and sch_att_empatt.Event_Name = \'بدايه الدوام\') where sch_str_employees.school_id = ?  group by main_employee_id order by sch_str_employees.name ASC', [calendarId, schoolId], function (err, result) {
                         console.log(query.sql);
+                 try{
                         if (err)
                             throw err
                         callback(result);
+
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
                     }
                 );
             } else {
@@ -125,9 +154,16 @@ var employeesAttendanceMethods = {
         var schoolId = req.body.schoolId;
         var calenderId = req.body.calenderId;
         con.query('SELECT id FROM sch_str_employees where school_id = ? and id not in (select employee_id from sch_att_empatt where school_id = ? and Calender_id = ? )', [schoolId, schoolId, calenderId], function (err, result) {
+         try{
                 if (err)
                     throw err
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
 
@@ -146,12 +182,16 @@ var employeesAttendanceMethods = {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
                 var query = con.query('select * from closing_att_buttons where calendarId = ? and schoolId = ?', [calendarId, schoolId], function (err, result) {
+                 try{
                     if (err)
                         throw err;
-                    console.log('close button');
-                    console.log(query.sql);
-                    console.log(result);
+
                     callback(result);
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
                 });
             } else {
                 callback([]);
@@ -192,6 +232,8 @@ var employeesAttendanceMethods = {
 
                     ], function (err, result) {
 
+                    try{
+
                         console.log(query.sql);
                         if (err)
                             throw err
@@ -207,6 +249,12 @@ var employeesAttendanceMethods = {
                             callback(response);
                         }
 
+                    }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
+
                     }
                 );
 
@@ -216,6 +264,7 @@ var employeesAttendanceMethods = {
                 var query = con.query('insert into closing_att_buttons set ? ',
                     [closingObj], function (err, result) {
                         console.log(query.sql);
+                 try{
                         if (err)
                             throw err
 
@@ -229,6 +278,12 @@ var employeesAttendanceMethods = {
                             response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
                             callback(response);
                         }
+
+                    }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
 
                     }
                 );
@@ -244,6 +299,7 @@ var employeesAttendanceMethods = {
         req.body.date = current_date;
         var response = {};
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
+            try{
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 req.body.calenderId = calendarObj.Id;
@@ -260,6 +316,7 @@ var employeesAttendanceMethods = {
                 req.body.closing_type = closing_type;
 
                 employeesAttendanceMethods.saveClosingStatus(req, res, function (result) {
+                 try{
                     if (result.success) {
                         response.success = true;
                         response.msg = 'تم اغلاق الدوام بنجاح';
@@ -269,6 +326,11 @@ var employeesAttendanceMethods = {
                         response.msg = 'خطأ الرجاء المحاوله مره اخرى';
                         callback(response);
                     }
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
                 });
 
             } else {
@@ -277,6 +339,12 @@ var employeesAttendanceMethods = {
                 callback(response);
 
             }
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
         });
 
     },
@@ -289,6 +357,7 @@ var employeesAttendanceMethods = {
         req.body.date = current_date;
         var response = {};
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
+            try{
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 req.body.calenderId = calendarObj.Id;
@@ -306,11 +375,13 @@ var employeesAttendanceMethods = {
                     // callback(result);
                 });
                 employeesAttendanceMethods.getAllEmployeesNotAttendance(req, res, function (employees) {
+                   try{
                     if (Object.keys(employees).length) {
                         req.body.event_name = 'طابور';
                         req.body.schoolId = schoolId;
                         req.body.day = calendarObj.Day;
                         workingSettingsMethods.getEventByName(req, res, function (result) {
+                         try{
                             if (Object.keys(result).length) {
                                 employees.forEach(function (row) {
                                     var attendanceObj = {};
@@ -335,6 +406,12 @@ var employeesAttendanceMethods = {
                                 response.msg = 'الفعاليه غير موجوده';
                                 callback(response);
                             }
+
+                        }catch(ex){
+                            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                            callback(ex);
+                        }
                         });
 
                     } else {
@@ -342,6 +419,12 @@ var employeesAttendanceMethods = {
                         response.msg = 'تم اغلاق الدوام بنجاح';
                         callback(response);
                     }
+
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
                 });
             } else {
                 response.success = false;
@@ -349,6 +432,12 @@ var employeesAttendanceMethods = {
                 callback(response);
 
             }
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
         });
 
     },
@@ -365,12 +454,15 @@ var employeesAttendanceMethods = {
         req.body.date = current_date;
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
 
+            try{
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 attendanceObj.Calender_id = calendarObj.Id;
 
 
                 workingSettingsMethods.getActiveAttSchedule(req, res, function (result) {
+
+                    try{
                     if (Object.keys(result).length) {
                         var schoolProfile = result[0];
                         req.body.Day = calendarObj.Day;
@@ -379,6 +471,7 @@ var employeesAttendanceMethods = {
                         req.body.SCHEDULE_Id = schoolProfile.Id;
                         attScheduleMethods.getAttScheduleByEventNameAndDay(req, res, function (result) {
                             console.log('result ', result);
+                            try{
                             if (Object.keys(result).length) {
                                 attendanceObj.Event_type_id = result[0].Id;
                                 if (!( attendanceObj.late_min)) {
@@ -435,6 +528,12 @@ var employeesAttendanceMethods = {
                                 response.msg = 'لا يوجد فعاليه';
                                 callback(response);
                             }
+
+                        }catch(ex){
+                            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                            callback(ex);
+                        }
                         });
 
 
@@ -443,6 +542,14 @@ var employeesAttendanceMethods = {
                         response.msg = 'لا يوجد حساب مفعل الرجاء التفعيل';
                         callback(response);
                     }
+
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
+
+
 
 
                 });
@@ -454,6 +561,12 @@ var employeesAttendanceMethods = {
                 callback(response);
 
             }
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
 
         });
 
@@ -469,6 +582,7 @@ var employeesAttendanceMethods = {
         }
 
         con.query('select * from sch_att_empatt where Calender_id = ? and employee_id = ? and Event_Name = ?',[attendanceObj.Calender_id,attendanceObj.employee_id,attendanceObj.Event_Name], function (err, result1) {
+            try{
             if(err)
                 throw err;
 
@@ -504,6 +618,8 @@ var employeesAttendanceMethods = {
                         attendanceObj.Event_Name,
                     ], function (err, result) {
 
+                    try{
+
                         console.log(query.sql);
                         if (err)
                             throw err
@@ -525,6 +641,12 @@ var employeesAttendanceMethods = {
                             callback(response);
                         }
 
+                    }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
+
                     }
                 );
 
@@ -545,6 +667,8 @@ var employeesAttendanceMethods = {
                         attendanceObj.late_min,
                         attendanceObj.is_absent ,
                     ], function (err, result) {
+
+                    try{
                         if (err)
                             throw err
 
@@ -562,9 +686,21 @@ var employeesAttendanceMethods = {
                             callback(response);
                         }
 
+                    }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
+
                     }
                 );
             }
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
         });
     },
 
@@ -579,6 +715,8 @@ var employeesAttendanceMethods = {
 
         //req.body.date = '03-18-2018';
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
+
+            try{
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 attendanceObj.Calender_id = calendarObj.Id;
@@ -660,6 +798,14 @@ var employeesAttendanceMethods = {
                 response.msg = 'اليوم ليس موجود';
                 callback(response);
             }
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
+
+
         });
     },
 

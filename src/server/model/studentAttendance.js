@@ -4,7 +4,8 @@ var workingSettingsMethods = require('../model/schedualProfile.js');
 var appSettingsMethods = require('../model/appSettings.js');
 var attScheduleMethods = require('../model/sch_att_schedule.js');
 var sequelizeConfig = require('../routes/sequelizeConfig.js');
-
+var fs = require("fs");
+var util = require('util');
 
 var studentAttendanceMethods = {
 
@@ -22,6 +23,7 @@ var studentAttendanceMethods = {
         var breaks = [  'طابور','صلاه', 'فسحه (1)' ,'فسحه (2)'];
         var response = [];
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
+            try{
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 var calendarId = calendarObj.Id;
@@ -57,9 +59,16 @@ var studentAttendanceMethods = {
                         ' where sch_acd_lecturestables.School_Id = ?  ' + condition + ' '+
                         '  group by sch_str_student.student_id order by sch_str_student.name asc', [lecture_name,calendarId,schoolId], function (err, result) {
                             console.log(query.sql);
+                     try{
                             if (err)
                                 throw err
                             callback(result);
+
+                    }catch(ex){
+                        var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                        log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                        callback(ex);
+                    }
                         }
                     );
 
@@ -77,9 +86,16 @@ var studentAttendanceMethods = {
                         ' and sch_acd_lecturestables.Teacher_Id = ? and sch_acd_lectures.name = ?  ' + condition + ' '+
                         '  group by sch_str_student.student_id order by sch_str_student.name asc', [calendarId,schoolId,currentDay,currentDay1,teacherId,lecture_name], function (err, result) {
                             console.log(query.sql);
+                     try{
                             if (err)
                                 throw err
                             callback(result);
+
+                    }catch(ex){
+                        var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                        log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                        callback(ex);
+                    }
                         }
                     );
                 }
@@ -88,6 +104,12 @@ var studentAttendanceMethods = {
             }else{
                 callback(response);
             }
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
         });
 
     },
@@ -101,10 +123,12 @@ var studentAttendanceMethods = {
         var current_date = moment(attendanceObj.attendance_day).format('MM-DD-YYYY');
         req.body.date = current_date;
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
+            try{
             if (Object.keys(result).length) {
                 var calendarObj = result[0];
                 attendanceObj.Calender_id = calendarObj.Id;
                 workingSettingsMethods.getActiveAttSchedule(req, res, function (result) {
+                    try{
                     if (Object.keys(result).length) {
                         var schoolProfile = result[0];
                         req.body.Day = calendarObj.Day;
@@ -170,6 +194,12 @@ var studentAttendanceMethods = {
                         response.msg = 'لا يوجد حساب مفعل الرجاء التفعيل';
                         callback(response);
                     }
+
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
                 });
 
             } else {
@@ -177,6 +207,12 @@ var studentAttendanceMethods = {
                 response.msg = 'اليوم ليس موجود';
                 callback(response);
             }
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
         });
     },
 

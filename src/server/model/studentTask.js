@@ -1,7 +1,8 @@
 var con = require('../routes/dbConfig.js');
 var sequelizeConfig = require('../routes/sequelizeConfig.js');
 var appSettingsMethods = require('../model/appSettings.js');
-
+var fs = require("fs");
+var util = require('util');
 var studentTaskMethods = {
 
 
@@ -53,7 +54,14 @@ var studentTaskMethods = {
     getAllStudentTask:function(req,res,callback){
         var subTaskId = req.params.subTaskId;
         con.query('select sch_att_studenttasks.*,sch_str_student.Name as student_name from sch_att_studenttasks join sch_str_student on sch_str_student.student_id = sch_att_studenttasks.Student_Id  where SubTask_Id = ?',[subTaskId],function(err,result){
+         try{
             callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
         });
     },
 

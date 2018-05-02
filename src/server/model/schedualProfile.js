@@ -2,6 +2,8 @@ var con = require('../routes/dbConfig.js');
 var jobTitleMethods = require('../model/jobTitle.js');
 var subJobTitleMethods = require('../model/subJobTitle.js');
 var Excel = require('exceljs');
+var fs = require("fs");
+var util = require('util');
 
 var workingSettingsMethods = {
     saveWorkingSettingsData: function (req, res, callback) {
@@ -9,6 +11,7 @@ var workingSettingsMethods = {
         var response = {};
         if (workingSettingsData.Id) {
             con.query("select * from sch_att_scheduleprofile where Id = ?", [workingSettingsData.Id], function (err, result) {
+             try{
                 if (err)
                     throw err;
                 if (Object.keys(result).length) {
@@ -69,10 +72,16 @@ var workingSettingsMethods = {
                     response.msg = 'لا يمكن العثور على الاعدادات الرجاء المحاوله مره اخرى';
                     callback(response);
                 }
+
+            }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
             });
         } else {
             con.query("select * from sch_att_scheduleprofile where Profile_Name = ?", [workingSettingsData.Profile_Name], function (err, result) {
-
+              try{
                 if (err)
                     throw err;
                 if (Object.keys(result).length) {
@@ -107,6 +116,7 @@ var workingSettingsMethods = {
                         workingSettingsData.Activity_Period_Order,
                         workingSettingsData.Activity_Period_Duration,
                         workingSettingsData.Profile_Active_status], function (err, result) {
+                     try{
                             if (err)
                                 throw err
                             if (result.affectedRows) {
@@ -125,9 +135,21 @@ var workingSettingsMethods = {
                                 callback(response);
                             }
 
+                    }catch(ex){
+                        var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                        log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                        callback(ex);
+                    }
+
                         }
                     );
                 }
+
+            }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
             });
 
         }
@@ -137,10 +159,17 @@ var workingSettingsMethods = {
     getSettingProfile: function (req, res, callback) {
         var profileId = req.params.profileId;
         con.query('select * from sch_att_scheduleprofile where Id = ?', [profileId], function (err, result) {
+         try{
                 if (err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -150,6 +179,7 @@ var workingSettingsMethods = {
         var schoolId = req.params.schoolId;
         var response = {};
         con.query('delete from sch_att_scheduleprofile where Id = ?', [profileId], function (err, result) {
+         try{
                 if (err)
                     throw err
                 if (result.affectedRows) {
@@ -167,6 +197,12 @@ var workingSettingsMethods = {
                     callback(response);
                 }
 
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
+
             }
         );
     },
@@ -174,10 +210,17 @@ var workingSettingsMethods = {
     getAllSettingsProfiles: function (req, res, callback) {
         var schoolId = req.params.schoolId;
         con.query('select * from sch_att_scheduleprofile where SchoolId = ?',[schoolId], function (err, result) {
+         try{
                 if (err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -185,10 +228,17 @@ var workingSettingsMethods = {
     getActiveAttSchedule: function (req, res, callback) {
         var schoolId = req.params.SchoolId;
         con.query('select * from sch_att_scheduleprofile where SchoolId = ? and Profile_Active_status = 1', [schoolId], function (err, result) {
+         try{
                 if (err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -202,10 +252,17 @@ var workingSettingsMethods = {
             'where SchoolId = ? and Profile_Active_status = 1 ' +
             'and sch_att_schedule.eventtype = ? '+
             'and sch_att_schedule.Day = ? ', [schoolId,event_name,day], function (err, result) {
+         try{
                 if (err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -215,10 +272,16 @@ var workingSettingsMethods = {
         var schoolId = req.body.schoolId;
         var query = con.query('SELECT * FROM sch_att_schedule JOIN sch_att_scheduleprofile ON sch_att_scheduleprofile.Id = sch_att_schedule.SCHEDULE_Id WHERE sch_att_scheduleprofile.SchoolId = ? AND sch_att_scheduleprofile.Profile_Active_status = 1 AND sch_att_schedule.Day = ? order by  TIME_FORMAT(sch_att_schedule.Begining_Time, "%h:%i %p") asc', [schoolId , currentDay], function (err, result) {
             console.log(query.sql);
+         try{
             if (err)
                     throw err
                 callback(result);
-            }
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
+         }
         );
     },
     getArabicDay: function (dayNo) {

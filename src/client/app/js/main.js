@@ -1154,6 +1154,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/bower_components/moment/moment.js',
                             'js/services/taskStatusFactory.js',
                             'js/services/EmployeesFactory.js',
+                            'js/services/employeesAttendanceFactory.js',
                             'js/services/taskFactory.js',
                             'js/services/subTaskFactory.js',
 

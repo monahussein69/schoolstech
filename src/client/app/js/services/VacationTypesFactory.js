@@ -5,14 +5,14 @@ angular.module('MetronicApp').factory('manageVacationTypesService', function ($h
     };
 
     fac.getVacationType = function (VacationTypeId,callback) {
-        $http.get("http://localhost:3000/getVacationType/"+VacationTypeId, {
+        $http.get("http://138.197.175.116:3000/getVacationType/"+VacationTypeId, {
         }).success(function (response) {
             callback(response);
         });
     };
 
     fac.saveVacationTypeData = function (VacationType, callback) {
-        $http.post("http://localhost:3000/saveVacationTypeData",{'vacationTypeData':VacationType}).success(function (response) {
+        $http.post("http://138.197.175.116:3000/saveVacationTypeData",{'vacationTypeData':VacationType}).success(function (response) {
             callback(response);
         });
 
@@ -22,7 +22,7 @@ angular.module('MetronicApp').factory('manageVacationTypesService', function ($h
     fac.getAllVacationTypes = function(callback){
 
         return new Promise(function (resolve, reject) {
-            $http.get("http://localhost:3000/getAllVacationTypes").success(function (response) {
+            $http.get("http://138.197.175.116:3000/getAllVacationTypes").success(function (response) {
                 resolve(response);
             });
         });

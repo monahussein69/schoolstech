@@ -1,6 +1,8 @@
 var con = require('../routes/dbConfig.js');
 var workingSettingsMethods = require('../model/schedualProfile.js');
 var moment = require('moment');
+var fs = require("fs");
+var util = require('util');
 
 var attScheduleMethods = {
     saveActivityData: function (req, res, callback) {
@@ -268,10 +270,17 @@ var attScheduleMethods = {
         var profileId = req.params.profileId;
         var query = con.query('select *, TIME_FORMAT(Begining_Time, "%h:%i %p") as Begining_Time_formated, TIME_FORMAT(Ending_Time, "%h:%i %p") as Ending_Time_formated  from sch_att_schedule where SCHEDULE_Id = ? order by Day_no,Begining_Time asc', [profileId], function (err, result) {
             console.log(query.sql);
+         try{
             if (err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -283,10 +292,17 @@ var attScheduleMethods = {
 
         var query =con.query('select * from sch_att_schedule where Day = ? and event_Nam = ? and SCHEDULE_Id = ? ', [Day,eventname,SCHEDULE_Id], function (err, result) {
                console.log(query.sql);
+         try{
                 if (err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -317,7 +333,8 @@ var attScheduleMethods = {
                 activityObj.Day_no,
 
 			], function (err, result) {
-                if (err)
+            try{
+            if (err)
                     throw err
 
                 if (result.affectedRows) {
@@ -330,6 +347,12 @@ var attScheduleMethods = {
                     callback(response);
                 }
 
+            }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
+
             }
         );
     },
@@ -337,6 +360,7 @@ var attScheduleMethods = {
         var profileId = req.params.profileId;
         var response = {};
         con.query('delete from sch_att_schedule where SCHEDULE_Id = ?', [profileId], function (err, result) {
+         try{
                 if (err)
                     throw err
                 if (result.affectedRows) {
@@ -347,6 +371,12 @@ var attScheduleMethods = {
                     response.msg = 'خطأ, الرجاء المحاوله مره اخرى';
                 }
                 callback(response);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -360,12 +390,17 @@ var attScheduleMethods = {
         var query = con.query("select sch_att_schedule.* from sch_att_schedule JOIN sch_att_scheduleprofile ON sch_att_scheduleprofile.Id = sch_att_schedule.SCHEDULE_Id where sch_att_scheduleprofile.SchoolId = ? AND sch_att_scheduleprofile.Profile_Active_status = 1 AND sch_att_schedule.Day = ? and sch_att_schedule.event_Nam = 'بدايه الدوام'",
             [schoolId,currentDay], function (err, result) {
 
-            console.log(query.sql);
-            console.log(result);
+            try{
                 if (err)
                     throw err
 
                 callback(result);
+
+            }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             });
     }
 

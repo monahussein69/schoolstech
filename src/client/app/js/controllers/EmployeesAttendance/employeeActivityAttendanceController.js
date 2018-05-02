@@ -39,8 +39,6 @@ angular.module('MetronicApp').controller('employeeActivityAttendanceController',
             options:DTOptionsBuilder.fromFnPromise(function () {
                 var defer = $q.defer();
                 defer.resolve(model.emp_atts);
-
-
                 return defer.promise
             }).withOption('createdRow', createdRow).withOption('paging', false)
             //.withOption('headerCallback', function(header) {

@@ -5,14 +5,14 @@ angular.module('MetronicApp').factory('manageExcuseTypeService', function ($http
     };
 
     fac.getExcuseType = function (ExcuseTypeId,callback) {
-        $http.get("http://localhost:3000/getExcuseType/"+ExcuseTypeId, {
+        $http.get("http://138.197.175.116:3000/getExcuseType/"+ExcuseTypeId, {
         }).success(function (response) {
             callback(response);
         });
     };
 
     fac.saveExcuseTypeData = function (ExcuseType, callback) {
-        $http.post("http://localhost:3000/saveExcuseTypeData",{'ExcuseTypeData':ExcuseType}).success(function (response) {
+        $http.post("http://138.197.175.116:3000/saveExcuseTypeData",{'ExcuseTypeData':ExcuseType}).success(function (response) {
             callback(response);
         });
 
@@ -22,7 +22,7 @@ angular.module('MetronicApp').factory('manageExcuseTypeService', function ($http
     fac.getAllExcuseTypes = function(callback){
 
         return new Promise(function (resolve, reject) {
-            $http.get("http://localhost:3000/getAllExcuseTypes").success(function (response) {
+            $http.get("http://138.197.175.116:3000/getAllExcuseTypes").success(function (response) {
                 resolve(response);
             });
         });
