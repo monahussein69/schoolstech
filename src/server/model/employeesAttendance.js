@@ -704,6 +704,10 @@ var employeesAttendanceMethods = {
         });
     },
 
+    updateEmployeeTotalLate: function (attendanceObj) {
+        sequelizeConfig.employeeAttandaceTable.update();
+    },
+
     setEmployeeActivityAttendance: function (req, res, callback) {
         var attendanceObj = req.body.attendanceObj;
         req.params.SchoolId = attendanceObj.school_id;

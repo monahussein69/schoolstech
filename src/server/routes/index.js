@@ -27,6 +27,7 @@ var takenActionsMethods = require('../model/takenActions');
 var VacationTypesMethods = require('../model/vacationTypes.js');
 var RequestsTypeMethods = require('../model/RequestsType.js');
 var ExcuseTypeMethods = require('../model/ExcuseTypes.js');
+var requestsMethods = require('../model/requests');
 
 var fireBaseConn= require('../routes/fireBaseConfig.js');
 var app = express();
@@ -745,25 +746,52 @@ router.post('/doAction', function (req, res, next) {
     });
 });
 router.get('/countUnreadNotifications/:user_id', function (req, res, next) {
-    fireBaseConn.countUnreadNotifications(req,res,function (result) {
+    fireBaseConn.countUnreadNotifications(req, res, function (result) {
         res.send(result);
     });
 });
 
 router.get('/getUserNotifications/:user_id', function (req, res, next) {
-    fireBaseConn.getUserNotifications(req,res,function (result) {
+    fireBaseConn.getUserNotifications(req, res, function (result) {
         res.send(result);
     });
 });
 
 router.post('/sendNotification', function (req, res, next) {
-    fireBaseConn.sendNotification(req,res,function (result) {
+    fireBaseConn.sendNotification(req, res, function (result) {
         res.send(result);
     });
 });
 
 router.post('/getStartEndAttendance', function (req, res, next) {
     attScheduleMethods.getStartEndAttendance(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/saveRequestData', function (req, res, next) {
+    requestsMethods.saveRequestData(req, res, function (result) {
+        res.send(result);
+    });
+});
+router.post('/changeStatusForRequests', function (req, res, next) {
+    requestsMethods.changeStatusForRequests(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getEmployeeRequests/:employee_id', function (req, res, next) {
+    requestsMethods.getEmployeeRequests(req, res, function (result) {
+        res.send(result);
+    });
+});
+router.get('/getSchoolRequests/:school_id', function (req, res, next) {
+    requestsMethods.getSchoolRequests(req, res, function (result) {
+        res.send(result);
+    });
+});
+router.get('/getRequestsTypes', function (req, res, next) {
+    requestsMethods.getRequestsTypes(req, res, function (result) {
         res.send(result);
     });
 });

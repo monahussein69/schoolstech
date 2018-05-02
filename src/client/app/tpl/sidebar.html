@@ -54,6 +54,12 @@
                 <span class="title">الشؤون المدرسية</span>
             </a>
         </li>
+        <li class="start nav-item" ng-show="model.userType == 2 || model.userType == 3">
+            <a ui-sref="Master.requests">
+                <i class="icon-home"></i>
+                <span class="title">الطلبات</span>
+            </a>
+        </li>
         <li class="nav-item" ng-show="model.userType == 2 || model.userType == 3">
             <a href="#" class="nav-link nav-toggle">
                 <i class="icon-graduation"></i>
