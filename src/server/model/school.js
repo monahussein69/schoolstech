@@ -3,7 +3,8 @@ var jobTitleMethods = require('../model/jobTitle.js');
 const sequelizeConfig = require('../routes/sequelizeConfig');
 var Excel = require('exceljs');
 var underscore = require('underscore/underscore.js');
-
+var fs = require("fs");
+var util = require('util');
 
 
 var schoolMethods = {
@@ -12,6 +13,7 @@ var schoolMethods = {
             var response = {};
             if (schoolData.schoolId) {
                 con.query("select * from sch_school where id = ?", [schoolData.schoolId], function (err, result) {
+                 try{
                     if (!schoolData.config_steps) {
                         schoolData.config_steps = result[0].config_steps;
                     }
@@ -59,9 +61,16 @@ var schoolMethods = {
                         response.msg = 'لا يمكن العثور على المدرسه , الرجاء المحاوله مره اخري';
                         callback(response);
                     }
+
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
                 });
             } else {
                 con.query("select * from sch_school where schoolNum = ?", [schoolData.schoolNum], function (err, result) {
+                  try{
                     console.log('here');
                     console.log(result);
                     if (err)
@@ -89,6 +98,7 @@ var schoolMethods = {
                                 schoolData.foundationYear,
                                 schoolData.schoolNum
                             ], function (err, result) {
+                         try{
                                 if (err)
                                     throw err
                                 if (result.affectedRows) {
@@ -100,9 +110,20 @@ var schoolMethods = {
                                     response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
                                 }
                                 callback(response);
-                            }
+                            }catch(ex){
+                            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                            callback(ex);
+                        }
+                         }
                         );
                     }
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
+
                 });
 
             }
@@ -121,6 +142,7 @@ var schoolMethods = {
                     " JOIN sch_acd_lectures ON sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO" +
                     " where sch_acd_lecturestables.School_Id = ? ORDER BY sch_acd_lectures.id ASC ", [schoolId], function (err, result) {
                     console.log('query : ', query.sql);
+                 try{
                     if (err)
                         throw err;
                     if (result.length) {
@@ -129,6 +151,12 @@ var schoolMethods = {
                     } else {
                         resolve(0);
                     }
+
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
                 });
             });
         },
@@ -138,6 +166,8 @@ var schoolMethods = {
                 [req.body.logoFile,
                     req.body.id
                 ], function (err, result) {
+
+                try{
                     var response = {};
                     if (err)
                         throw err
@@ -148,6 +178,12 @@ var schoolMethods = {
                         response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
                     }
                     callback(response);
+
+                }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
                 }
             );
         }
@@ -161,6 +197,7 @@ var schoolMethods = {
             var response = {};
             schoolsData.foreach(function (schoolData) {
                 con.query("select * from sch_school where schoolNum = ?", [schoolData.schoolNum], function (err, result) {
+                 try{
                     if (err)
                         throw err;
                     if (!Object.keys(result).length) {
@@ -187,6 +224,12 @@ var schoolMethods = {
                             }
                         );
                     }
+
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
                 });
 
 
@@ -201,10 +244,17 @@ var schoolMethods = {
         getSchool: function (req, res, callback) {
             var schoolId = req.params.schoolId;
             con.query('select * from sch_school where id = ?', [schoolId], function (err, result) {
+             try{
                     if (err)
                         throw err
 
                     callback(result);
+
+            }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
                 }
             );
         }
@@ -214,6 +264,7 @@ var schoolMethods = {
             var schoolId = req.params.schoolId;
             var response = {};
             con.query('delete from sch_school where id = ?', [schoolId], function (err, result) {
+             try{
                     if (err)
                         throw err
                     if (result.affectedRows) {
@@ -224,6 +275,12 @@ var schoolMethods = {
                         response.msg = 'خطأ, الرجاء المحاوله مره اخرى';
                     }
                     callback(response);
+
+            }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
                 }
             );
         }
@@ -435,10 +492,17 @@ var schoolMethods = {
         getSchools: function (req, res, callback) {
             var schoolId = req.params.schoolId;
             con.query('select * from sch_school', function (err, result) {
+             try{
                     if (err)
                         throw err
 
                     callback(result);
+
+            }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
                 }
             );
         }
@@ -448,6 +512,7 @@ var schoolMethods = {
             var response = {};
             if (schoolData.id) {
                 con.query("select * from sch_school where id = ?", [schoolData.id], function (err, result) {
+                    try{
                     if (err)
                         throw err;
                     if (Object.keys(result).length) {
@@ -456,6 +521,7 @@ var schoolMethods = {
                                 schoolData.id
                             ]
                             , function (err, result) {
+                            try{
                                 if (err)
                                     throw err
                                 if (result.affectedRows) {
@@ -469,6 +535,12 @@ var schoolMethods = {
 
                                 callback(response);
 
+                            }catch(ex){
+                            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                            callback(ex);
+                        }
+
                             }
                         );
                     } else {
@@ -476,6 +548,12 @@ var schoolMethods = {
                         response.msg = 'لا يمكن العثور على الموظف الرجاء المحاوله مره اخرى';
                         callback(response);
                     }
+
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
                 });
             }
         },
@@ -483,10 +561,17 @@ var schoolMethods = {
 		countSchools:function(req,res,callback){
 		var response = {};
 		 con.query('select count(*) as schools from sch_school ',function(err,result){
+             try{
                 if(err)
                     throw err
                 response.count = result[0].schools;
                 callback(response);
+
+         }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
             });
 	   }
     }

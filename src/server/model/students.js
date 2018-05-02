@@ -1,6 +1,7 @@
 var con = require('../routes/dbConfig.js');
 const sequelizeConfig = require('../routes/sequelizeConfig');
-
+var fs = require("fs");
+var util = require('util');
 var Excel = require('exceljs');
 
 
@@ -10,6 +11,7 @@ var studentsMethods = {
         var response = {};
         if (studentData.studentId) {
             con.query("select * from sch_str_student where id = ?", [studentData.studentId], function (err, result) {
+                try{
                 if (err)
                     throw err;
                 if (Object.keys(result).length) {
@@ -20,6 +22,7 @@ var studentsMethods = {
                         "Lastupdate_Date=?,Home_No=?," +
                         "where student_id = ?",
                         [studentData], function (err, result) {
+                        try{
                             if (err)
                                 throw err
                             if (result.affectedRows) {
@@ -33,6 +36,12 @@ var studentsMethods = {
 
                             callback(response);
 
+                        }catch(ex){
+                        var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                        log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                        callback(ex);
+                    }
+
                         }
                     );
                 } else {
@@ -40,9 +49,16 @@ var studentsMethods = {
                     response.msg = 'لا يمكن العثور على الطالب , الرجاء المحاوله مره اخري';
                     callback(response);
                 }
+            }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
+
             });
         } else {
             con.query("select * from sch_str_student where Identity_No = ?", [studentData.Identity_No], function (err, result) {
+             try{
                 if (err)
                     throw err;
                 if (Object.keys(result).length) {
@@ -69,6 +85,12 @@ var studentsMethods = {
                         }
                     );
                 }
+
+            }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
             });
         }
     },
@@ -80,11 +102,18 @@ var studentsMethods = {
             ' WHERE sch_acd_lecturestables.Lecture_NO = ? AND sch_acd_lecturestables.Day = ? GROUP BY sch_str_student.student_id',
             [activityId , currentDay]
             , function (err, result) {
+         try{
                 console.log(query.sql);
                 if (err)
                     throw err
             console.log(result);
                 callback(result);
+
+            }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -261,10 +290,17 @@ var studentsMethods = {
     getAllStudents: function (req, res, callback) {
         var schoolId = req.params.schoolId;
         con.query('SELECT * FROM sch_str_student where School_Id = ?', [schoolId], function (err, result) {
+         try{
                 if (err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -274,10 +310,17 @@ var studentsMethods = {
         var group = req.params.group+'%';
         var query = con.query("SELECT * FROM sch_str_student where School_Id = ? and Academic_No like ?", [schoolId,group], function (err, result) {
             console.log(query.sql);
+         try{
             if (err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },

@@ -20,10 +20,14 @@ var employeesVacationMethods = {
                 AbsentObj.Calender_id = calendarObj.Id;
 				var absentType = AbsentObj.absentType;
 				delete  AbsentObj.absentType;
+                AbsentObj.Start_Date = moment(AbsentObj.Start_Date).format('MM-DD-YYYY');
+                AbsentObj.End_Date = moment(AbsentObj.End_Date).format('MM-DD-YYYY');
+
                 console.log("AbsentObj : ", AbsentObj);
                 var query = con.query('insert into sch_att_empvacation set ?',
                     [AbsentObj], function (err, result) {
                         console.log(query.sql);
+                    try{
                         if (err)
                             throw err
 
@@ -47,6 +51,12 @@ var employeesVacationMethods = {
                             callback(response);
                         }
 
+                    }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
+
                     }
                 );
 
@@ -60,33 +70,53 @@ var employeesVacationMethods = {
     },
     getLastEmployeeVaction: function (emp_id, callback) {
         var query = con.query('select * from sch_att_empvacation where Emp_id = ? order by id desc limit 1', [emp_id], function (err, result) {
+         try{
             if (err)
                 throw err
             callback(result);
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
         });
     },
     setVactionIntoEmpAttendence:function(req, res, callback) {
        
-	   var on_vacation = 0;
-	   if(req.body.AbsentObj.absentType == 'غياب بعذر'){
-		   on_vacation = 1;
-	   }
+
 	   
 	   var data = {
             school_id: req.body.AbsentObj.school_id,
             employee_id: req.body.AbsentObj.Emp_id,
             is_absent: 1,
-            on_vacation: on_vacation,
+            on_vacation: 1,
             working_status: 0,
-            Event_Name:'طابور'
+            Event_Name:'بدايه الدوام',
+           time_in:'',
+           late_min:'',
+           Total_min:''
         };
+
         appSettingsMethods.getCalenderByDate(req, res, function (calendar) {
-            if (Object.keys(calendar).length) {
-                console.log("calender id : ", calendar);
+            if (Object.keys(calendar).length){
                 data.Calender_id = calendar[0].Id;
-                sequelizeConfig.employeeAttandaceTable.create(data).then(employeeAttendece => {
-                    callback(employeeAttendece);
-                });
+                sequelizeConfig.employeeAttandaceTable.find({
+                    where: {
+                        employee_id: req.body.AbsentObj.Emp_id,
+                        Calender_id: req.body.AbsentObj.Calender_id,
+                        Event_Name:'بدايه الدوام'
+                    }
+                }).then(function (employeeAttendence) {
+                    // Check if record exists in db
+                    if (employeeAttendence) {
+                        employeeAttendence.updateAttributes(data).then(function () {
+                        })
+                    }else{
+                        sequelizeConfig.employeeAttandaceTable.create(data).then(employeeAttendece => {
+                            callback(employeeAttendece);
+                        });
+                    }
+                })
             }
 
         });

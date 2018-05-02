@@ -24,7 +24,9 @@
                                 <div class="form-group row">
                                     <label class="col-sm-2 control-label">اليوم</label>
                                     <div class="col-sm-6">
-                                        <input type="text" name="name" class="form-control date-picker" ng-model="model.attendance_day" ng-change="model.getAttendanceBasedDate()" /> </div>
+                                        <input  calendarType="ummalqura" language="ar" date-format="YYYY-MM-dd" showOnFocus="true" kdatepicker type="text" name="name" class="form-control is-calendarPicker" ng-model="model.attendance_day" ng-change="model.getAttendanceBasedDate()" />
+                                        <b>{{model.attendance_day | kdate: '' : 'ar' : 'Gregorian'}}</b>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-12">

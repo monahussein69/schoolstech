@@ -3,6 +3,8 @@ var sequelizeConfig = require('../routes/sequelizeConfig.js');
 var fireBaseConn = require('../routes/fireBaseConfig.js');
 var appSettingsMethods = require('../model/appSettings.js');
 var moment = require('moment');
+var fs = require("fs");
+var util = require('util');
 
 var taskMethods = {
 
@@ -10,7 +12,14 @@ var taskMethods = {
         var taskId = req.params.taskId;
 
         con.query('select sch_att_tasks.*,app_def_calender.Date as CurrentDate  from sch_att_tasks join app_def_calender on app_def_calender.Id = sch_att_tasks.Calender_id where sch_att_tasks.id = ?',[taskId],function(err,result){
+         try{
             callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
         });
 
         /*sequelizeConfig.tasksTable.find({where: {id: taskId}}).then(function (task) {
@@ -21,6 +30,8 @@ var taskMethods = {
     saveTaskData: function(req,res,callback) {
 
         var taskObj = req.body.taskObj;
+        taskObj.Start_Date = moment(taskObj.Start_Date).format('MM-DD-YYYY');
+        taskObj.End_Date = moment(taskObj.End_Date).format('MM-DD-YYYY');
         var current_date = moment(taskObj.CurrentDate).format('MM-DD-YYYY');
         req.body.date = current_date;
         delete taskObj.current_date;
@@ -109,16 +120,29 @@ var taskMethods = {
     getAllTasks:function(req,res,callback){
         var schoolId = req.params.schoolId;
         var query = con.query('select sch_att_tasks.*,sch_str_employees.name as supervisor_name,app_def_taskstatus.Name as status_name from sch_att_tasks join sch_str_employees on sch_str_employees.id = sch_att_tasks.Suppervisor_Emp_id join app_def_taskstatus on app_def_taskstatus.Id = sch_att_tasks.Task_Staus where sch_att_tasks.school_id = ?',[schoolId],function(err,result){
+         try{
             console.log(query.sql);
             callback(result);
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
         });
     },
     getTaskByEmpId:function(req,res,callback){
         var empId = req.body.empId;
         var query = con.query('select sch_att_tasks.*,sch_str_employees.name as supervisor_name,app_def_taskstatus.Name as status_name from sch_att_tasks join sch_str_employees on sch_str_employees.id = sch_att_tasks.Suppervisor_Emp_id join app_def_taskstatus on app_def_taskstatus.Id = sch_att_tasks.Task_Staus where Suppervisor_Emp_id =?',[empId],function(err,result){
+         try{
             console.log(result);
             console.log('result');
             callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
         });
     }
 };

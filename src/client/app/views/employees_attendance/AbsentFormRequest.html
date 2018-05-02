@@ -6,12 +6,16 @@
         <div class="form-group row">
             <label class="col-sm-2 control-label">تاريخ بدايه الغياب </label>
             <div class="col-sm-6">
-                <input type="text" name="name" class="form-control date-picker" ng-model="AbsentObj.Start_Date" /> </div>
+                <input type="text" calendarType="ummalqura" language="ar" date-format="YYYY-MM-dd" showOnFocus="true" kdatepicker  class="form-control is-calendarPicker" ng-model="AbsentObj.Start_Date" />
+                <b>{{AbsentObj.Start_Date | kdate: '' : 'ar' : 'Gregorian'}}</b>
+            </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 control-label"> تاريخ نهايه الغياب </label>
             <div class="col-sm-6">
-                <input type="text" name="name" class="form-control date-picker" ng-model="AbsentObj.End_Date" ng-change="absentDays()" /> </div>
+                <input type="text" name="name" calendarType="ummalqura" language="ar" date-format="YYYY-MM-dd" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" ng-model="AbsentObj.End_Date" ng-change="absentDays()" />
+                <b>{{AbsentObj.End_Date | kdate: '' : 'ar' : 'Gregorian'}}</b>
+            </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 control-label"> ايام الغياب </label>
@@ -20,12 +24,10 @@
         </div>
         <div class="form-group row">
             <label class="col-sm-2 control-label">
-                <span style="color:red;font-family: sans-serif !important;"> * </span> نوع الغياب </label>
+                <span style="color:red;font-family: sans-serif !important;"> * </span> نوع العذر </label>
             <div class="col-sm-6">
-                <select class="form-control" ng-model="AbsentObj.absentType" required>
-                    <option value="">اختر نوع العذر</option>
-                    <option value="غياب بعذر">غياب بعذر</option>
-                    <option value="غياب بدون عذر">غياب بدون عذر</option>
+                <select class="form-control" ng-model="AbsentObj.ExcuseType" required ng-options="excuseType.Id as excuseType.Name for excuseType in excuseTypes">
+
                 </select>
             </div>
         </div>

@@ -178,6 +178,7 @@ const sequelizeConfig = {
     Study_status: Sequelize.STRING,
     Entered_by: Sequelize.INTEGER,
     entery_date: Sequelize.STRING,
+        absent_reasons:Sequelize.STRING,
  }),
     actionsTable: sequelize.define('app_def_actions', {
         Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
@@ -258,6 +259,28 @@ const sequelizeConfig = {
         MinLength: Sequelize.INTEGER,
         MaxAnount: Sequelize.INTEGER,
         Notes: Sequelize.STRING,
-    })
+    }),RequestsTypeTable:sequelize.define('APP_DEF_RequestsType', {
+        Id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        Name: Sequelize.STRING,
+        Description: Sequelize.STRING,
+    }),ExcuseTypeTable:sequelize.define('APP_DEF_ExcuseType', {
+        Id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        Name: Sequelize.STRING,
+        Description: Sequelize.STRING,
+    }), empabscentTable:sequelize.define('SCH_ATT_EMPABSCENT', {
+        id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
+        Calender_id: Sequelize.INTEGER,
+        School_id: Sequelize.INTEGER,
+        Emp_id: Sequelize.INTEGER,
+        Abscent_Status: Sequelize.INTEGER,
+        AbscentType: Sequelize.INTEGER,
+        ExcuseType: Sequelize.INTEGER,
+        Excuse_Reasons: Sequelize.STRING,
+        Total_Absaence_Days: Sequelize.INTEGER,
+        Continue_Absaence_Days: Sequelize.INTEGER,
+        TakenAction_id: Sequelize.INTEGER,
+        Notes: Sequelize.STRING,
+    }),
+
 }
 module.exports = sequelizeConfig;

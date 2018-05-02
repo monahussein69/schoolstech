@@ -1,0 +1,24 @@
+<form>
+    <div class="modal-header">
+        <h3 class="modal-title">احتساب الموظف غياب</h3>
+    </div>
+    <div class="modal-body">
+        <p>هل تريد احتساب الموظف غياب ؟ </p>
+        <div class="form-group row">
+            <label class="col-sm-12 control-label"> في حاله كانت الاجابه نعم الرجاء تحديد الفعالية </label>
+            <div class="col-sm-6">
+                <select name="activity" class="form-control" ng-model="activity">
+                    <option selected disabled value="">اختر الفعالية </option>
+                    <option ng-repeat="activity in listOfActivity track by $index" value="{{activity.event_Nam}}">{{activity.event_Nam}} </option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="onSave()">نعم</button>
+        <button class="btn btn-default" type="button" ng-click="onCancel()">لا</button>
+    </div>
+</form>

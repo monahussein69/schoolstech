@@ -16,6 +16,7 @@ var employeeAttendanceRecordMethods = require('../model/employeeAttendanceRecord
 var employeesExcuseMethods = require('../model/employeesExcuse.js');
 var employeesVacationMethods = require('../model/employeeVacation.js');
 var studentAttendanceMethods = require('../model/studentAttendance.js');
+var studentAttendanceRecordMethods = require('../model/studentAttendanceRecord.js');
 var studentExcuseMethods = require('../model/studentExcuse.js');
 var taskMethods = require('../model/tasks.js');
 var subTaskMethods = require('../model/subTask.js');
@@ -23,6 +24,9 @@ var taskStatusMethods = require('../model/taskStatus.js');
 var studentTaskMethods = require('../model/studentTask.js');
 var studentGroupsMethods = require('../model/studentGroups.js');
 var takenActionsMethods = require('../model/takenActions');
+var VacationTypesMethods = require('../model/vacationTypes.js');
+var RequestsTypeMethods = require('../model/RequestsType.js');
+var ExcuseTypeMethods = require('../model/ExcuseTypes.js');
 
 var fireBaseConn= require('../routes/fireBaseConfig.js');
 var app = express();
@@ -126,6 +130,62 @@ router.get('/getAllTaskStatus', function (req, res, next) {
 
 router.post('/saveTaskStatusData', function (req, res, next) {
     taskStatusMethods.saveTaskStatusData(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+
+router.get('/getVacationType/:typeId', function (req, res, next) {
+    VacationTypesMethods.getVacationType(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllVacationTypes', function (req, res, next) {
+    VacationTypesMethods.getAllVacationTypes(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/saveVacationTypeData', function (req, res, next) {
+    VacationTypesMethods.saveVacationTypeData(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+
+router.get('/getRequestType/:typeId', function (req, res, next) {
+    RequestsTypeMethods.getRequestType(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllRequestsType', function (req, res, next) {
+    RequestsTypeMethods.getAllRequestsType(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/saveRequestTypeData', function (req, res, next) {
+    RequestsTypeMethods.saveRequestTypeData(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getExcuseType/:typeId', function (req, res, next) {
+    ExcuseTypeMethods.getExcuseType(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getAllExcuseTypes', function (req, res, next) {
+    ExcuseTypeMethods.getAllExcuseTypes(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.post('/saveExcuseTypeData', function (req, res, next) {
+    ExcuseTypeMethods.saveExcuseTypeData(req, res, function (result) {
         res.send(result);
     });
 });
@@ -570,7 +630,19 @@ router.get('/getEmployeeExcuseRecord/:schoolId/:employeeId', function (req, res,
 });
 
 router.get('/getStudentExcuseRecord/:schoolId/:studentId', function (req, res, next) {
-    employeeAttendanceRecordMethods.getStudentExcuseRecord(req, res, function (result) {
+    studentAttendanceRecordMethods.getStudentExcuseRecord(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getStudentAbsentRecord/:schoolId/:studentId', function (req, res, next) {
+    studentAttendanceRecordMethods.getStudentAbsentRecord(req, res, function (result) {
+        res.send(result);
+    });
+});
+
+router.get('/getStudentLateRecord/:schoolId/:studentId', function (req, res, next) {
+    studentAttendanceRecordMethods.getStudentLateRecord(req, res, function (result) {
         res.send(result);
     });
 });

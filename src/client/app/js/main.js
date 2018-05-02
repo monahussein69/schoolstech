@@ -635,6 +635,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             'js/services/employeesAttendanceFactory.js',
                             'js/services/employeesExcuseFactory.js',
                             'js/services/employeesAbsentFactory.js',
+                            'js/services/ExcuseTypesFactory.js',
                             'js/services/WorkingSettingsFactory.js',
                             'js/services/EmployeesFactory.js',
                             '../assets/bower_components/moment/moment.js',
@@ -816,8 +817,54 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
                             '../assets/global/plugins/datatables/datatables.all.min.js',
                             '../assets/pages/scripts/table-datatables-managed.min.js',
-                            'js/controllers/students/studentExecuseRecordsController.js',
-                            'js/services/studentExcuseFactory.js',
+                            'js/controllers/students/studentRecordsController.js',
+                            'js/services/studentRecordsFactory.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.studentLateRecord', {
+            url: "/studentLateRecord/:studentId",
+            templateUrl: "views/students/LateRecord.html",
+            data: {pageTitle: 'سجل الدوام الرسمي'},
+            controller: "studentLateRecordsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/students/studentRecordsController.js',
+                            'js/services/studentRecordsFactory.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.studentAbsentRecord', {
+            url: "/studentAbsentRecord/:studentId",
+            templateUrl: "views/students/AbsentRecord.html",
+            data: {pageTitle: 'سجل الدوام الرسمي'},
+            controller: "studentAbsentRecordsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                            'js/controllers/students/studentRecordsController.js',
+                            'js/services/studentRecordsFactory.js',
                         ]
                     });
                 }]
@@ -1107,6 +1154,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/bower_components/moment/moment.js',
                             'js/services/taskStatusFactory.js',
                             'js/services/EmployeesFactory.js',
+                            'js/services/employeesAttendanceFactory.js',
                             'js/services/taskFactory.js',
                             'js/services/subTaskFactory.js',
 
@@ -1205,6 +1253,75 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                         files: [
                             'js/controllers/Settings/taskStatusSettingsController.js',
                             'js/services/taskStatusFactory.js',
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.manageVacationTypes', {
+            url: "/manageVacationTypes",
+            templateUrl: "views/settings/VacationType.html",
+            data: {pageTitle: ' اداره انواع الاجازات'},
+            controller: "vacationTypesSettingsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/Settings/vacationTypesSettingsController.js',
+                            'js/services/VacationTypesFactory.js',
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.manageRequestsType', {
+            url: "/manageRequestsType",
+            templateUrl: "views/settings/RequestsType.html",
+            data: {pageTitle: ' اداره انواع الاجازات'},
+            controller: "RequestsTypeSettingsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/Settings/RequestsTypeSettingsController.js',
+                            'js/services/RequestsTypeFactory.js',
+                            '../assets/global/plugins/datatables/datatables.min.css',
+                            '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
+                            '../assets/global/plugins/datatables/datatables.all.min.js',
+                            '../assets/pages/scripts/table-datatables-managed.min.js',
+                        ]
+                    });
+                }]
+            }
+        })
+
+        .state('Master.manageExcuseType', {
+            url: "/manageExcuseType",
+            templateUrl: "views/settings/ExcuseTypes.html",
+            data: {pageTitle: ' اداره انواع الاعذار'},
+            controller: "ExcuseTypesSettingsController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/Settings/ExcuseTypesSettingsController.js',
+                            'js/services/ExcuseTypesFactory.js',
                             '../assets/global/plugins/datatables/datatables.min.css',
                             '../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap-rtl.css',
                             '../assets/global/plugins/datatables/datatables.all.min.js',

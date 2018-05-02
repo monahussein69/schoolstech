@@ -1,6 +1,8 @@
 var con = require('../routes/dbConfig.js');
 var workingSettingsMethods = require('../model/schedualProfile.js');
 var moment = require('moment');
+var fs = require("fs");
+var util = require('util');
 
 var attScheduleMethods = {
     saveActivityData: function (req, res, callback) {
@@ -65,10 +67,12 @@ var attScheduleMethods = {
                     activityObj.Ending_Time = Ending_Time;
                     activityObj.Day_no = days.indexOf(Day_Begining[Day]);
                     req.body.activityObj = activityObj;
-					var Ending_TimeSeconds = moment.duration(moment(Ending_Time, 'HH:mm:ss').format('HH:mm:ss')).asSeconds();
-                        queue_ending_time = moment(queue_ending_time, "HH:mm").add(Ending_TimeSeconds,'seconds');
-						
-                    console.log(activityObj);
+                    //queue_ending_time = moment(queue_Begining_time, "HH:mm").add(queue_Begining_Duration, 'm');
+                    queue_ending_time = Ending_Time;
+
+                    console.log('queue_ending_time');
+                    console.log(queue_ending_time);
+                    console.log(queue_Begining_Duration);
                     attScheduleMethods.addAttSchedule(req, res, function (result) {
                     });
 
@@ -121,9 +125,8 @@ var attScheduleMethods = {
                         activityObj.Ending_Time = lecture_end_time;
                         activityObj.Day_no = days.indexOf(Day_Begining[Day]);
                         req.body.activityObj = activityObj;
-						var Ending_TimeSeconds = moment.duration(moment(lecture_end_time, 'HH:mm:ss').format('HH:mm:ss')).asSeconds();
-                        queue_ending_time = moment(queue_ending_time, "HH:mm").add(Ending_TimeSeconds,'seconds');
-						
+                        var queue_ending_time = moment(queue_ending_time).format("HH:mm");
+                        queue_ending_time = moment(queue_ending_time, "HH:mm").add(Lecture_Duration, 'm');
                         attScheduleMethods.addAttSchedule(req, res, function (result) {
                         });
 
@@ -140,9 +143,12 @@ var attScheduleMethods = {
                                 activityObj.Ending_Time = break_end_time;
                                 activityObj.Day_no = days.indexOf(Day_Begining[Day]);
                                 req.body.activityObj = activityObj;
-								
-								var Ending_TimeSeconds = moment.duration(moment(break_end_time, 'HH:mm:ss').format('HH:mm:ss')).asSeconds();
-                               queue_ending_time = moment(queue_ending_time, "HH:mm").add(Ending_TimeSeconds,'seconds');
+                                var queue_ending_time = moment(queue_ending_time).format("HH:mm");
+                               queue_ending_time = moment(queue_ending_time, "HH:mm").add(First_Break_Duration, 'm');
+
+                                console.log('فسحه');
+                                console.log(First_Break_Duration);
+                                console.log(queue_ending_time);
 
                                 attScheduleMethods.addAttSchedule(req, res, function (result) {
                                 });
@@ -154,7 +160,6 @@ var attScheduleMethods = {
                             if (Second_Break_Order == i) {
                                 break_Begining_time = lecture_end_time;
                                 break_end_time = moment(lecture_end_time, 'YYYY-MM-DD HH:mm:ss').add(Second_Break_Duration, 'm').format('YYYY-MM-DD HH:mm:ss');
-
                                 activityObj.SCHEDULE_Id = profile_id;
                                 activityObj.Day = Day_Begining[Day];
                                 activityObj.eventtype = 'فسحه';
@@ -163,8 +168,12 @@ var attScheduleMethods = {
                                 activityObj.Ending_Time = break_end_time;
                                 activityObj.Day_no = days.indexOf(Day_Begining[Day]);
                                 req.body.activityObj = activityObj;
-								var Ending_TimeSeconds = moment.duration(moment(break_end_time, 'HH:mm:ss').format('HH:mm:ss')).asSeconds();
-                               queue_ending_time = moment(queue_ending_time, "HH:mm").add(Ending_TimeSeconds,'seconds');
+                                var queue_ending_time = moment(queue_ending_time).format("HH:mm");
+                                queue_ending_time = moment(queue_ending_time, "HH:mm").add(Second_Break_Duration, 'm');
+
+                                console.log('فسحه');
+                                console.log(Second_Break_Duration);
+                                console.log(queue_ending_time);
 							   
                                 attScheduleMethods.addAttSchedule(req, res, function (result) {
                                 });
@@ -183,8 +192,12 @@ var attScheduleMethods = {
                             activityObj.event_Nam = 'الصلاه';
                             activityObj.Begining_Time = break_Begining_time;
                             activityObj.Ending_Time = break_end_time;
-							var Ending_TimeSeconds = moment.duration(moment(break_end_time, 'HH:mm:ss').format('HH:mm:ss')).asSeconds();
-                            queue_ending_time = moment(queue_ending_time, "HH:mm").add(Ending_TimeSeconds,'seconds');
+                            var queue_ending_time = moment(queue_ending_time).format("HH:mm");
+                            queue_ending_time = moment(queue_ending_time, "HH:mm").add(Pray_Break_Duration, 'm');
+
+                            console.log('فسحه');
+                            console.log(Pray_Break_Duration);
+                            console.log(queue_ending_time);
 					
                             activityObj.Day_no = days.indexOf(Day_Begining[Day]);
                             req.body.activityObj = activityObj;
@@ -206,9 +219,11 @@ var attScheduleMethods = {
                                         activityObj.Begining_Time = break_Begining_time;
                                         activityObj.Ending_Time = break_end_time;
                                         activityObj.Day_no = days.indexOf(Day_Begining[Day]);
-										var Ending_TimeSeconds = moment.duration(moment(break_end_time, 'HH:mm:ss').format('HH:mm:ss')).asSeconds();
-                            queue_ending_time = moment(queue_ending_time, "HH:mm").add(Ending_TimeSeconds,'seconds');
-                                        
+                                        var queue_ending_time = moment(queue_ending_time).format("HH:mm");
+                                        queue_ending_time = moment(queue_ending_time, "HH:mm").add(Activity_Period_Duration, 'm');
+                                        console.log('activity');
+                                        console.log(Activity_Period_Duration);
+                                        console.log(queue_ending_time);
 										req.body.activityObj = activityObj;
                                         attScheduleMethods.addAttSchedule(req, res, function (result) {
                                         });
@@ -229,8 +244,6 @@ var attScheduleMethods = {
 					
 					var queue_Begining_time = moment(queue_Begining, "h:mm A").format('YYYY-MM-DD HH:mm:ss');
                     var Ending_Time = moment(queue_ending_time, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
-					console.log('queue_ending_time');
-					console.log(queue_ending_time);
                     activityObj.SCHEDULE_Id = profile_id;
                     activityObj.Day = Day_Begining[Day];
                     activityObj.eventtype = 'بدايه الدوام';
@@ -257,10 +270,17 @@ var attScheduleMethods = {
         var profileId = req.params.profileId;
         var query = con.query('select *, TIME_FORMAT(Begining_Time, "%h:%i %p") as Begining_Time_formated, TIME_FORMAT(Ending_Time, "%h:%i %p") as Ending_Time_formated  from sch_att_schedule where SCHEDULE_Id = ? order by Day_no,Begining_Time asc', [profileId], function (err, result) {
             console.log(query.sql);
+         try{
             if (err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -272,10 +292,17 @@ var attScheduleMethods = {
 
         var query =con.query('select * from sch_att_schedule where Day = ? and event_Nam = ? and SCHEDULE_Id = ? ', [Day,eventname,SCHEDULE_Id], function (err, result) {
                console.log(query.sql);
+         try{
                 if (err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -306,7 +333,8 @@ var attScheduleMethods = {
                 activityObj.Day_no,
 
 			], function (err, result) {
-                if (err)
+            try{
+            if (err)
                     throw err
 
                 if (result.affectedRows) {
@@ -319,6 +347,12 @@ var attScheduleMethods = {
                     callback(response);
                 }
 
+            }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
+
             }
         );
     },
@@ -326,6 +360,7 @@ var attScheduleMethods = {
         var profileId = req.params.profileId;
         var response = {};
         con.query('delete from sch_att_schedule where SCHEDULE_Id = ?', [profileId], function (err, result) {
+         try{
                 if (err)
                     throw err
                 if (result.affectedRows) {
@@ -336,6 +371,12 @@ var attScheduleMethods = {
                     response.msg = 'خطأ, الرجاء المحاوله مره اخرى';
                 }
                 callback(response);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -344,14 +385,22 @@ var attScheduleMethods = {
         var schoolId = req.body.schoolId;
         var currentDay = workingSettingsMethods.getArabicDay(new Date(req.body.date).getDay());
 
-        con.query('SELECT * FROM sch_att_schedule WHERE Id = (SELECT sch_att_schedule.Id FROM sch_att_schedule JOIN sch_att_scheduleprofile ON sch_att_scheduleprofile.Id = sch_att_schedule.SCHEDULE_Id WHERE sch_att_scheduleprofile.SchoolId = ? AND sch_att_scheduleprofile.Profile_Active_status = 1 AND sch_att_schedule.Day = ? order by  Begining_Time asc limit 1) ' +
-            ' UNION ' +
-            'SELECT * FROM sch_att_schedule WHERE Id = (SELECT sch_att_schedule.Id FROM sch_att_schedule JOIN sch_att_scheduleprofile ON sch_att_scheduleprofile.Id = sch_att_schedule.SCHEDULE_Id WHERE sch_att_scheduleprofile.SchoolId = ? AND sch_att_scheduleprofile.Profile_Active_status = 1 AND sch_att_schedule.Day = ? order by  Begining_Time desc limit 1)',
-            [schoolId,currentDay,schoolId,currentDay], function (err, result) {
+
+
+        var query = con.query("select sch_att_schedule.* from sch_att_schedule JOIN sch_att_scheduleprofile ON sch_att_scheduleprofile.Id = sch_att_schedule.SCHEDULE_Id where sch_att_scheduleprofile.SchoolId = ? AND sch_att_scheduleprofile.Profile_Active_status = 1 AND sch_att_schedule.Day = ? and sch_att_schedule.event_Nam = 'بدايه الدوام'",
+            [schoolId,currentDay], function (err, result) {
+
+            try{
                 if (err)
                     throw err
 
                 callback(result);
+
+            }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             });
     }
 

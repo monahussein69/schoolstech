@@ -3,7 +3,8 @@ var moment = require('moment');
 var appSettingsMethods = require('../model/appSettings.js');
 var studentAttendanceMethods = require('../model/studentAttendance.js');
 var sequelizeConfig = require('../routes/sequelizeConfig.js');
-
+var fs = require("fs");
+var util = require('util');
 
 
 var studentExcuseMethods = {
@@ -76,9 +77,16 @@ var studentExcuseMethods = {
             ' join app_def_calender as start on start.Date = sch_att_stdexcuse.Start_Date join app_def_calender as end on end.Date = sch_att_stdexcuse.End_Date ' +
             'where School_id = ? and Student_id = ?', [schoolId,studentId], function (err, result) {
                 console.log(query.sql);
+         try{
                 if (err)
                     throw err
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },

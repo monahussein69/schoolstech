@@ -4,6 +4,9 @@ var moment = require('moment');
 let actionsMethods = require('./actions');
 let employee = require('./employee');
 let employeesVacationMethods = require('./employeeVacation');
+var fs = require("fs");
+var util = require('util');
+
 var takenActionsMethods = {
 
     getTakenAction: function (req, res, callback) {
@@ -134,20 +137,41 @@ var takenActionsMethods = {
     getAllTakenAction: function (req, res, callback) {
         var schoolId = req.params.schoolId;
         con.query('select  sch_att_takenaction.*,sch_str_employees.name as employee_name,app_def_actions.action_name as action_name from sch_att_takenaction join sch_str_employees on sch_str_employees.id = sch_att_takenaction.Emp_id join app_def_actions on app_def_actions.Id = sch_att_takenaction.ACTION_id where sch_att_takenaction.School_id = ?', [schoolId], function (err, result) {
+         try{
             callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
         });
     },
     getTakenActionByEmpId: function (req, res, callback) {
         var empId = req.body.empId;
         con.query('select  sch_att_takenaction.*,sch_str_employees.name as employee_name,app_def_actions.action_name as action_name from sch_att_takenaction join sch_str_employees on sch_str_employees.id = sch_att_takenaction.Emp_id join app_def_actions on app_def_actions.Id = sch_att_takenaction.ACTION_id where sch_att_takenaction.Emp_id = ?', [empId], function (err, result) {
+         try{
             callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
         });
     },
     getEmployeeActions: function (req, res, callback) {
         employee.getEmployeeByUserId(req, res, function (employee) {
             console.log(employee[0].id);
             sequelizeConfig.takenActionsTable.query("SELECT * , app_def_actions.action_name FROM sch_att_takenaction JOIN app_def_actions ON sch_att_takenaction.ACTION_id = app_def_actions,Id WHERE sch_att_takenaction.Id = " + employee[0].id).then(actions => {
+             try{
                 callback(actions);
+
+            }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
             });
         });
 
@@ -155,8 +179,15 @@ var takenActionsMethods = {
 
     getSchoolActions: function (req, res, callback) {
         let sql = con.query("SELECT * , app_def_actions.action_name FROM sch_att_takenaction JOIN app_def_actions ON sch_att_takenaction.ACTION_id = app_def_actions.Id WHERE sch_att_takenaction.School_id = ?", [req.params.schoolId], function (err, result) {
+         try{
             console.log(result);
             callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
         });
         console.log(sql.sql);
     },
@@ -164,7 +195,14 @@ var takenActionsMethods = {
         var empId = req.body.empId;
         var actionType = req.body.actionType;
         con.query('select  sch_att_takenaction.*,sch_str_employees.name as employee_name,app_def_actions.action_name as action_name from sch_att_takenaction join sch_str_employees on sch_str_employees.id = sch_att_takenaction.Emp_id join app_def_actions on app_def_actions.Id = sch_att_takenaction.ACTION_id where sch_att_takenaction.Emp_id = ? and sch_att_takenaction.ACTION_id = ?', [empId, actionType], function (err, result) {
+         try{
             callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
         });
     },
     sendActionToEmp: function (attendanceData, callback) {

@@ -257,7 +257,7 @@ angular.module('MetronicApp').controller('ManageTaskController',
 
 
 angular.module('MetronicApp').controller('TaskMembersController',
-    function (CommonService,manageTaskStatusService,manageEmployeeService,$stateParams,$rootScope, $scope, $http, $window,subTaskService, localStorageService,toastr) {
+    function ($uibModal,CommonService,manageTaskStatusService,manageEmployeeService,$stateParams,$rootScope, $scope, $http, $window,subTaskService, localStorageService,toastr) {
 
         var taskId = $stateParams.taskId;
         var schoolId = 0;
@@ -280,7 +280,10 @@ angular.module('MetronicApp').controller('TaskMembersController',
             savesubTask:savesubTask,
             getsubTask:getsubTask,
             taskId:taskId,
-            taskStatus:[]
+            taskStatus:[],
+            save:save,
+            setEmployeeAbsent:setEmployeeAbsent,
+            schoolId:schoolId
         }
 
         $scope.model = model;
@@ -318,33 +321,70 @@ angular.module('MetronicApp').controller('TaskMembersController',
         }
 
 
+        function save(){
+            model.subTaskObj.Task_id = parseInt(model.taskId);
+            subTaskService.saveSubTaskData(model.subTaskObj, function (response) {
+
+                if (response.success) {
+
+                    $window.location.href = '#/subTasks/' + model.taskId;
+                    toastr.success(response.msg);
+
+                } else {
+                    toastr.error(response.msg);
+                }
+            });
+        }
+
+
 		
         function savesubTask(){
 
             if (Object.keys(model.subTaskObj).length) {
-                model.subTaskObj.Task_id = parseInt(model.taskId);
-				console.log(model.subTaskObj);
-                subTaskService.saveSubTaskData(model.subTaskObj, function (response) {
-                     console.log(model.subTaskObj.Member_Emp_id);
-                     console.log(model.member_id);
-                    if (response.success) {
-                        if(response.added || (response.updated && (model.subTaskObj.Member_Emp_id != model.member_id) )){
-                           // CommonService.sendNotification('تمت اضافه مهمه لك',model.subTaskObj.Member_Emp_id);
-                        }
-                        if(response.updated && (model.subTaskObj.Member_Emp_id != model.member_id)){
-                            //CommonService.sendNotification('تم الغاءك من مهمه',model.member_id);
-                        }
-
-                        $window.location.href = '#/subTasks/'+model.taskId;
-                        toastr.success(response.msg);
-
-
-                    } else {
-                        toastr.error(response.msg);
-                    }
-                });
-
+                if((model.subTaskObj.Member_Emp_id != model.member_id)){
+                    model.setEmployeeAbsent();
+                }else {
+                  model.save();
+                }
             }
+        }
+
+
+        function setEmployeeAbsent(employee_id){
+
+            model.subTaskObj.Task_id = parseInt(model.taskId);
+            subTaskService.saveSubTaskData(model.subTaskObj, function (response) {
+
+                if (response.success) {
+
+                    var dialogInst = $uibModal.open({
+                        templateUrl: 'views/tasks/setEmployeeAbsent.html',
+                        controller: 'DialogInstCtrl',
+                        size: 'md',
+                        resolve: {
+                            selectedTask: function () {
+                                return model.subTaskObj;
+                            },
+                            selectedSchoolId: function () {
+                                return model.schoolId;
+                            },
+
+                        }
+                    });
+                    dialogInst.result.then(function (newusr) {
+                        $window.location.href = '#/subTasks/' + model.taskId;
+                        toastr.success(response.msg);
+                    }, function () {
+                        $window.location.href = '#/subTasks/' + model.taskId;
+                        toastr.success(response.msg);
+                    });
+
+                } else {
+                    toastr.error(response.msg);
+                }
+            });
+
+
         }
 
 
@@ -357,6 +397,53 @@ angular.module('MetronicApp').controller('TaskMembersController',
             $rootScope.settings.layout.pageSidebarClosed = false;
         });
     });
+
+
+angular.module('MetronicApp').controller('DialogInstCtrl', function (toastr, employeesAttendanceService, $moment, $scope, $uibModalInstance, selectedTask,selectedSchoolId,$log) {
+
+
+    $scope.onCancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+    employeesAttendanceService.getActivityByDayAndSchoolId(selectedSchoolId, $moment(selectedTask.Start_Date, "MM/DD/YYYY").format("MM-DD-YYYY"), function (data) {
+        $scope.listOfActivity = data;
+
+    });
+
+    $scope.onSave = function () {
+
+        if(!$scope.activity){
+            toastr.error('الرجاء تحديد الفعاليه');
+            return;
+        }
+
+        var startDate = $moment(selectedTask.Start_Date, "MM/DD/YYYY");
+        var endDate = $moment(selectedTask.End_Date, "MM/DD/YYYY");
+
+        var result = endDate.diff(startDate, 'days');
+
+
+
+
+
+        for(var i = 0 ; i<= result ; i++) {
+            var attendanceObj = {};
+            var attendance_day = $moment(selectedTask.Start_Date, "MM/DD/YYYY").add(i, 'days').format("MM-DD-YYYY");
+            attendanceObj.time_in = '';
+            attendanceObj.school_id = selectedSchoolId;
+            attendanceObj.employee_id = selectedTask.Member_Emp_id;
+            attendanceObj.Event_Name = $scope.activity;
+            attendanceObj.is_absent = 1;
+            attendanceObj.attendance_day = attendance_day;
+
+            employeesAttendanceService.setEmployeeAttendance(attendanceObj, function (result) {
+                $uibModalInstance.close(result);
+            });
+        }
+    }
+});
+
 
 
 angular.module('MetronicApp').controller('ManageSubTaskController',
@@ -577,7 +664,7 @@ angular.module('MetronicApp').controller('addTaskStudentsController',
                         model.selected[full.student_id] = false;
                         return '<input type="checkbox" ng-model="model.selected[' + data.student_id + ']" ng-click="model.toggleOne(date.selected)">';
                     }),
-                DTColumnBuilder.newColumn('name').withTitle('اسم الطالب')
+                DTColumnBuilder.newColumn('Name').withTitle('اسم الطالب')
 
             ],
             dtInstance: {},

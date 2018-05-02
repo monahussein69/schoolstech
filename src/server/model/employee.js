@@ -7,6 +7,8 @@ var Excel = require('exceljs');
 const saltRounds = 10;
 var randomstring = require("randomstring");
 var bcrypt = require('bcrypt');
+var fs = require("fs");
+var util = require('util');
 
 var employeeMethods = {
     saveEmployee: function (req, res, callback) {
@@ -14,6 +16,7 @@ var employeeMethods = {
         var response = {};
         if (empData.id) {
             con.query("select * from sch_str_employees where id = ?", [empData.id], function (err, result) {
+             try{
                 if (err)
                     throw err;
                 if (Object.keys(result).length) {
@@ -51,6 +54,7 @@ var employeeMethods = {
                             empData.id
                         ]
                         , function (err, result) {
+                           try{
                             if (err)
                                 throw err
                             console.log(result);
@@ -65,6 +69,12 @@ var employeeMethods = {
 
                             callback(response);
 
+                        }catch(ex){
+                        var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                        log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                        callback(ex);
+                    }
+
                         }
                     );
                 } else {
@@ -72,11 +82,15 @@ var employeeMethods = {
                     response.msg = 'لا يمكن العثور على الموظف الرجاء المحاوله مره اخرى';
                     callback(response);
                 }
+            }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
             });
         } else {
             con.query("select sch_str_employees.id,job_title.name as job_title_name from sch_str_employees join job_title on sch_str_employees.jobtitle_id = job_title.id where job_no = ?", [empData.job_no], function (err, result) {
-                console.log('here');
-                console.log(result);
+                try{
                 if (err)
                     throw err;
                 if (Object.keys(result).length) {
@@ -174,6 +188,12 @@ var employeeMethods = {
                         }
                     );
                 }
+
+            }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
             });
 
         }
@@ -185,6 +205,7 @@ var employeeMethods = {
         var response = {};
         if (empData.id) {
             con.query("select * from sch_str_employees where id = ?", [empData.id], function (err, result) {
+             try{
                 if (err)
                     throw err;
                 if (Object.keys(result).length) {
@@ -213,6 +234,12 @@ var employeeMethods = {
                     response.msg = 'لا يمكن العثور على الموظف الرجاء المحاوله مره اخرى';
                     callback(response);
                 }
+
+            }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
             });
         }
 
@@ -221,10 +248,17 @@ var employeeMethods = {
     getEmployee: function (req, res, callback) {
         var empId = req.params.empId;
         con.query('select * from sch_str_employees where id = ?', [empId], function (err, result) {
+         try{
                 if (err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -235,10 +269,17 @@ var employeeMethods = {
             'join sch_school on sch_str_employees.school_id = sch_school.id' +
             ' join job_title on sch_str_employees.jobtitle_id = job_title.id' +
             ' where sch_str_employees.id = ?', [employee_id], function (err, result) {
+               try{
                 if (err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -246,10 +287,17 @@ var employeeMethods = {
     getEmployeeByUserId: function (req, res, callback) {
         var userId = req.params.userId;
         con.query('select * from sch_str_employees where userId = ?', [userId], function (err, result) {
+         try{
                 if (err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -258,6 +306,7 @@ var employeeMethods = {
         var empId = req.params.empId;
         var response = {};
         con.query('delete from sch_str_employees where id = ?', [empId], function (err, result) {
+         try{
                 if (err)
                     throw err
                 if (result.affectedRows) {
@@ -268,14 +317,17 @@ var employeeMethods = {
                     response.msg = 'خطأ, الرجاء المحاوله مره اخرى';
                 }
                 callback(response);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
     UploadExcel: function (req, res, callback) {
         try {
-
-
-
             //
             console.log('File Name : ', req.body.filename);
             var workbook = new Excel.Workbook();
@@ -540,18 +592,31 @@ var employeeMethods = {
         con.query('select sch_str_employees.*,sys_users.is_active,job_title.name as job_title_name from sch_str_employees ' +
             'left join sys_users on sch_str_employees.userId = sys_users.id  left join job_title on sch_str_employees.jobtitle_id = job_title.id' +
             ' where school_id = ? order by sch_str_employees.name ASC', [schoolId], function (err, result) {
-                if (err)
+         try{
+            if (err)
                     throw err
                 callback(result);
-            }
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
+        }
         );
     },
     getAllTeachers: function (req, res, callback) {
         var schoolId = req.params.schoolId;
         con.query('select sch_str_employees.*,sys_users.is_active,job_title.name as job_title_name from sch_str_employees left join sys_users on sch_str_employees.userId = sys_users.id  left join job_title on sch_str_employees.jobtitle_id = job_title.id  where school_id = ? AND job_title.name = "معلم" order by sch_str_employees.name asc', [schoolId], function (err, result) {
+         try{
                 if (err)
                     throw err
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -566,10 +631,17 @@ var employeeMethods = {
             con.query('select sch_str_employees.*,sys_users.is_active from sch_str_employees ' +
                 'inner join job_title on sch_str_employees.jobtitle_id = job_title.id ' +
                 'inner join sys_users on sch_str_employees.userId = sys_users.id where school_id = ? and job_title.name =? and sys_users.isLeader = 1', [schoolId, job_title], function (err, result) {
+             try{
                     if (err)
                         throw err
 
                     callback(result);
+
+            }catch(ex){
+                var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                callback(ex);
+            }
                 }
             );
         } else {
@@ -580,20 +652,34 @@ var employeeMethods = {
                     'inner join sub_job_title on sch_str_employees.subjobtitle_id = sub_job_title.id ' +
                     'left join sys_users on sch_str_employees.userId = sys_users.id where school_id = ? and job_title.name =? and sub_job_title.name = ?', [schoolId, job_title, sub_job_title], function (err, result) {
                         console.log(query.sql);
+                    try{
                         if (err)
                             throw err
 
                         callback(result);
+
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
                     }
                 );
             } else {
                 con.query('select sch_str_employees.*,sys_users.is_active from sch_str_employees ' +
                     'inner join job_title on sch_str_employees.jobtitle_id = job_title.id ' +
                     'left join sys_users on sch_str_employees.userId = sys_users.id where school_id = ? and job_title.name =?', [schoolId, job_title], function (err, result) {
+                 try{
                         if (err)
                             throw err
 
                         callback(result);
+
+                }catch(ex){
+                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                    callback(ex);
+                }
                     }
                 );
             }
@@ -609,10 +695,17 @@ var employeeMethods = {
             'join sch_str_employees on sch_acd_lecturestables.Teacher_Id = sch_str_employees.id ' +
             'where sch_acd_lectures.name = ? and sch_acd_lecturestables.Day = ? and sch_acd_lecturestables.School_Id = ?', [lecture_name, currentDay, schoolId], function (err, result) {
 
+            try{
                 if (err)
                     throw err
 
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -633,9 +726,16 @@ var employeeMethods = {
         var schoolId = req.body.schoolId;
         var query = con.query('SELECT * FROM sch_acd_lectures JOIN sch_acd_lecturestables ON sch_acd_lectures.id = sch_acd_lecturestables.Lecture_NO  join sch_att_schedule on sch_att_schedule.event_Nam = sch_acd_lectures.name join sch_att_scheduleprofile on sch_att_schedule.SCHEDULE_Id = sch_att_scheduleprofile.Id  WHERE sch_acd_lecturestables.Teacher_Id = ? AND (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?)  AND (sch_att_schedule.Day = ? OR sch_att_schedule.Day = ?) and sch_att_scheduleprofile.Profile_Active_status = 1 and sch_att_scheduleprofile.SchoolId = ? group by sch_acd_lectures.name order by sch_acd_lectures.id asc', [employeeId, currentDay,currentDay1, currentDay,currentDay1,schoolId], function (err, result) {
                 console.log(query.sql);
+         try{
                 if (err)
                     throw err
                 callback(result);
+
+        }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -657,6 +757,7 @@ var employeeMethods = {
                 req.body.id
             ], function (err, result) {
                 var response = {};
+         try{
                 if (err)
                     throw err
                 if (result.affectedRows) {
@@ -666,6 +767,12 @@ var employeeMethods = {
                     response.msg = 'خطأ , الرجاء المحاوله مره اخرى';
                 }
                 callback(response);
+
+            }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
             }
         );
     },
@@ -681,6 +788,7 @@ var employeeMethods = {
                     if (Object.keys(result).length) {
                         var job_title_id = result[0].id;
                         con.query("update sch_str_employees set jobtitle_id =? where id = ?", [job_title_id, agents.schoolLeader], function (err, result) {
+                         try{
                             if (err)
                                 throw err;
                             if (result.affectedRows) {
@@ -722,6 +830,12 @@ var employeeMethods = {
                                 reject(success);
                             }
 
+                        }catch(ex){
+                            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                            callback(ex);
+                        }
+
                         });
                     }
                 });
@@ -743,6 +857,7 @@ var employeeMethods = {
                             if (Object.keys(result).length) {
                                 var sub_job_title_id = result[0].id;
                                 var query = con.query("update sch_str_employees set jobtitle_id =?,subjobtitle_id = ? where id = ?", [job_title_id, sub_job_title_id, agents.studentAgent], function (err, result) {
+                                 try{
                                     if (err)
                                         throw err;
                                     if (result.affectedRows) {
@@ -752,6 +867,12 @@ var employeeMethods = {
                                         success = 0;
                                         reject(success);
                                     }
+
+                                }catch(ex){
+                                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                                    callback(ex);
+                                }
                                 });
                             }
 
@@ -778,6 +899,7 @@ var employeeMethods = {
                             if (Object.keys(result).length) {
                                 var sub_job_title_id = result[0].id;
                                 con.query("update sch_str_employees set jobtitle_id =?,subjobtitle_id = ? where id = ?", [job_title_id, sub_job_title_id, agents.educationAgent], function (err, result) {
+                                 try{
                                     if (err)
                                         throw err;
                                     if (result.affectedRows) {
@@ -787,6 +909,11 @@ var employeeMethods = {
                                         success = 0;
                                         reject(success);
                                     }
+                                }catch(ex){
+                                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                                    callback(ex);
+                                }
                                 });
                             }
 
@@ -813,6 +940,7 @@ var employeeMethods = {
                             if (Object.keys(result).length) {
                                 var sub_job_title_id = result[0].id;
                                 con.query("update sch_str_employees set jobtitle_id =?,subjobtitle_id = ? where id = ?", [job_title_id, sub_job_title_id, agents.schoolAgent], function (err, result) {
+                                 try{
                                     if (err)
                                         throw err;
                                     if (result.affectedRows) {
@@ -822,8 +950,16 @@ var employeeMethods = {
                                         success = 0;
                                         reject(success);
                                     }
+
+                                }catch(ex){
+                                    var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+                                    log_file_err.write(util.format('Caught exception: '+err) + '\n');
+                                    callback(ex);
+                                }
                                 });
                             }
+
+
 
                         });
 
@@ -861,6 +997,7 @@ var employeeMethods = {
             [
                 userData.schoolId
             ], function (err, result) {
+            try{
                 if (err)
                     throw err
                 if (result) {
@@ -929,6 +1066,12 @@ var employeeMethods = {
                 }
 
                 callback(response);
+
+            }catch(ex){
+            var log_file_err=fs.createWriteStream(__dirname + '/error.log',{flags:'a'});
+            log_file_err.write(util.format('Caught exception: '+err) + '\n');
+            callback(ex);
+        }
 
             }
         );

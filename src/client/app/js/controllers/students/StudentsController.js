@@ -79,6 +79,14 @@ angular.module('MetronicApp').controller('StudentsController',
                 '<a ui-sref="Master.studentExcuseRecord({studentId:{{'+data.student_id+'}}})">'+
                 '<i class="fa fa-bars"></i>&nbsp; سجل الاستئذان </a>'+
                 '</li>'+
+                '<li>'+
+                '<a ui-sref="Master.studentAbsentRecord({studentId:{{'+data.student_id+'}}})">'+
+                '<i class="fa fa-bars"></i>&nbsp; سجل الغياب </a>'+
+                '</li>'+
+                '<li>'+
+                '<a ui-sref="Master.studentLateRecord({studentId:{{'+data.student_id+'}}})">'+
+                '<i class="fa fa-bars"></i>&nbsp; سجل التأخير </a>'+
+                '</li>'+
                 '</ul>'+
                 '</div>';
 
