@@ -22,6 +22,8 @@ var MetronicApp = angular.module("MetronicApp", [
 ]);
 
 
+
+
 MetronicApp.config(function (localStorageServiceProvider) {
     localStorageServiceProvider
         .setPrefix('MetronicApp')
@@ -60,6 +62,7 @@ MetronicApp.factory('settings', ['$rootScope', function ($rootScope) {
         assetsPath: '../assets',
         globalPath: '../assets/global',
         layoutPath: '../assets/layouts/layout',
+		
     };
 
     $rootScope.settings = settings;
@@ -1753,8 +1756,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
 
 }]);
 
+MetronicApp.value('angularMomentConfig', {
+    timezone: 'Asia/Gaza' // e.g. 'Europe/London'
+});
+
 /* Init global settings and run the app */
-MetronicApp.run(["$rootScope", "settings", "$state", function ($rootScope, settings, $state) {
+MetronicApp.run(["$rootScope", "settings", "$state","$moment", function ($rootScope, settings, $state,$moment) {
     $rootScope.$state = $state; // state to be accessed from view
     $rootScope.$settings = settings; // state to be accessed from view
+	
 }]);

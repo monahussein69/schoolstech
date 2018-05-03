@@ -628,7 +628,10 @@ angular.module('MetronicApp').controller('ExcuseDialogCtrl', function (toastr, e
 			console.log(endDate);
 			console.log($moment(startDate+' '+Departure_time,'YYYY-MM-DD HH:mm'));
 			console.log($moment(endDate+' '+Return_time,'YYYY-MM-DD HH:mm'));
+			console.log($moment(startDate+' '+startTime,'YYYY-MM-DD HH:mm'));
+			console.log($moment(endDate+' '+endTime,'YYYY-MM-DD HH:mm'));
 
+			
             if((($moment(startDate+' '+Departure_time,'YYYY-MM-DD HH:mm').isBefore( $moment(startDate+' '+startTime,'YYYY-MM-DD HH:mm'))) ||  ($moment(endDate+' '+endTime,'YYYY-MM-DD HH:mm').isBefore($moment(startDate+' '+Return_time,'YYYY-MM-DD HH:mm')))) ) {
                 toastr.error('وقت الاستئذان خارج وقت الدوام');
                 return;

@@ -53,9 +53,9 @@
                                 <div class="form-group row">
                                     <label class="col-sm-4 control-label" style="padding: 0px"> التاريخ : </label>
                                     <div class="col-sm-8" style="padding: 0px">
-                                        <input calendarType="ummalqura" language="ar" date-format="YYYY-MM-dd" showOnFocus="true" kdatepicker type="text" name="CurrentDate" class="form-control is-calendarPicker" ng-model="model.taskObj.CurrentDate" placeholder="{{model.taskObj.CurrentDate | kdate: '' : 'ar' : 'ummalqura'}}" ng-change="model.getDay()" />
+                                        <input calendarType="ummalqura" language="ar" date-format="YYYY-MM-dd" showOnFocus="true" kdatepicker type="text" name="CurrentDate" class="form-control is-calendarPicker" ng-model="model.taskObj.CurrentDate" placeholder="{{model.taskObj.CurrentDate | kdate: '' : 'ar' : 'ummalqura'}}"
+                                            ng-change="model.getDay()" />
                                         <b>{{model.taskObj.CurrentDate | kdate: '' : 'ar' : 'Gregorian'}}</b>
-
                                     </div>
                                 </div>
                             </div>
@@ -109,7 +109,8 @@
                         <div class="col-sm-6">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <input type="text" calendarType="ummalqura" language="ar" date-format="YYYY-MM-dd" showOnFocus="true" kdatepicker name="Start_Date" class="form-control is-calendarPicker" placeholder="{{model.taskObj.Start_Date | kdate: '' : 'ar' : 'ummalqura'}}" ng-model="model.taskObj.Start_Date" placeholder="تاريخ البدايه" />
+                                    <input type="text" calendarType="ummalqura" language="ar" date-format="YYYY-MM-dd" showOnFocus="true" kdatepicker name="Start_Date" class="form-control is-calendarPicker" placeholder="{{model.taskObj.Start_Date | kdate: '' : 'ar' : 'ummalqura'}}"
+                                        ng-model="model.taskObj.Start_Date" placeholder="تاريخ البدايه" />
                                     <b>{{model.taskObj.Start_Date | kdate: '' : 'ar' : 'Gregorian'}}</b>
                                 </div>
                                 <div class="col-md-6">
@@ -121,7 +122,8 @@
                         <div class="col-sm-6 col-sm-offset-2">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <input type="text" name="End_Date" calendarType="ummalqura" language="ar" date-format="YYYY-MM-dd" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.taskObj.End_Date | kdate: '' : 'ar' : 'ummalqura'}}" ng-model="model.taskObj.End_Date" placeholder="تاريخ النهايه" />
+                                    <input type="text" name="End_Date" calendarType="ummalqura" language="ar" date-format="YYYY-MM-dd" showOnFocus="true" kdatepicker class="form-control is-calendarPicker" placeholder="{{model.taskObj.End_Date | kdate: '' : 'ar' : 'ummalqura'}}"
+                                        ng-model="model.taskObj.End_Date" placeholder="تاريخ النهايه" />
                                     <b>{{model.taskObj.End_Date | kdate: '' : 'ar' : 'Gregorian'}}</b>
                                 </div>
                                 <div class="col-md-6">

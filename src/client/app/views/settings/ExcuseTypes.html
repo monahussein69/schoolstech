@@ -28,14 +28,14 @@
                 <div class="table-toolbar">
                     <div class="row">
                         <div class="col-md-6">
-                            <form  name="ExcuseTypeSettingsForm" ng-model="ExcuseTypeSettingsForm" ng-submit="model.saveExcuseType()">
+                            <form name="ExcuseTypeSettingsForm" ng-model="ExcuseTypeSettingsForm" ng-submit="model.saveExcuseType()">
                                 <div class="form-group mb-2">
-                                    <label> الاسم  : </label>
+                                    <label> الاسم : </label>
                                     <input type="text" class="form-control" ng-model="model.ExcuseType.Name" required> </div>
-
                                 <div class="form-group mb-2">
                                     <label> الوصف : </label>
-                                    <textarea  class="form-control" ng-model="model.ExcuseType.Description" ></textarea> </div>
+                                    <textarea class="form-control" ng-model="model.ExcuseType.Description"></textarea>
+                                </div>
                                 <button type="submit" class="btn btn-primary mb-2" ng-disabled="ExcuseTypeSettingsForm.$invalid">حفظ</button>
                             </form>
                         </div>

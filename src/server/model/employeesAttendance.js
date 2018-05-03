@@ -356,6 +356,7 @@ var employeesAttendanceMethods = {
         var current_date = moment(req.body.date).format('MM-DD-YYYY');
         req.body.date = current_date;
         var response = {};
+        var results = [];
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             try{
             if (Object.keys(result).length) {
@@ -377,30 +378,49 @@ var employeesAttendanceMethods = {
                 employeesAttendanceMethods.getAllEmployeesNotAttendance(req, res, function (employees) {
                    try{
                     if (Object.keys(employees).length) {
-                        req.body.event_name = 'طابور';
+                        req.body.event_name = 'بدايه الدوام';
                         req.body.schoolId = schoolId;
                         req.body.day = calendarObj.Day;
+                        var requests = [];
                         workingSettingsMethods.getEventByName(req, res, function (result) {
                          try{
                             if (Object.keys(result).length) {
-                                employees.forEach(function (row) {
-                                    var attendanceObj = {};
-                                    attendanceObj.employee_id = row.id;
-                                    attendanceObj.Calender_id = calendarObj.Id;
-                                    attendanceObj.school_id = schoolId;
-                                    attendanceObj.Event_Name = 'طابور';
-                                    attendanceObj.Event_type_id = result[0].Id;
-                                    attendanceObj.is_absent = 1;
-                                    req.body.attendanceObj = attendanceObj;
-                                    employeesAttendanceMethods.addEmployeeAttendance(req, res, function (result) {
-                                        // callback(result);
+                                requests =  Object.keys(employees).map(function (key, item) {
+                                    return new Promise(function (resolve) {
+                                        var attendanceObj = {};
+                                        attendanceObj.employee_id = employees[key].id;
+                                        attendanceObj.Calender_id = calendarObj.Id;
+                                        attendanceObj.school_id = schoolId;
+                                        attendanceObj.Event_Name = 'بدايه الدوام';
+                                        attendanceObj.Event_type_id = result[0].Id;
+                                        attendanceObj.is_absent = 1;
+                                        attendanceObj.attendance_day = current_date;
+                                        req.body.attendanceObj = attendanceObj;
+                                        employeesAttendanceMethods.setEmployeeAttendance(req, res, function (result) {
+                                            if (result.success) {
+                                                results.push(1);
+                                            }
+                                            resolve(result);
+                                        });
                                     });
 
 
                                 });
-                                response.success = true;
-                                response.msg = 'تم اغلاق الدوام بنجاح';
-                                callback(response);
+
+                                Promise.all(requests).then(function (result) {
+                                    if (results.includes(1)) {
+                                        response.success = true;
+                                        response.msg = 'تم اغلاق الدوام بنجاح';
+                                        callback(response);
+                                    }else{
+                                        response.success = false;
+                                        response.msg = 'خطأ';
+                                        callback(response);
+                                    }
+                                    //callback(response);
+                                });
+
+
                             } else {
                                 response.success = false;
                                 response.msg = 'الفعاليه غير موجوده';
@@ -702,10 +722,6 @@ var employeesAttendanceMethods = {
             callback(ex);
         }
         });
-    },
-
-    updateEmployeeTotalLate: function (attendanceObj) {
-        sequelizeConfig.employeeAttandaceTable.update();
     },
 
     setEmployeeActivityAttendance: function (req, res, callback) {

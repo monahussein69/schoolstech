@@ -28,11 +28,10 @@
                 <div class="table-toolbar">
                     <div class="row">
                         <div class="col-md-6">
-                            <form  name="VacationTypeSettingsForm" ng-model="VacationTypeSettingsForm" ng-submit="model.saveVacationType()">
+                            <form name="VacationTypeSettingsForm" ng-model="VacationTypeSettingsForm" ng-submit="model.saveVacationType()">
                                 <div class="form-group mb-2">
                                     <label> الاسم بالانجليزي : </label>
                                     <input type="text" class="form-control" ng-model="model.VacationType.Name_E" required> </div>
-
                                 <div class="form-group mb-2">
                                     <label> الاسم بالعربي : </label>
                                     <input type="text" class="form-control" ng-model="model.VacationType.Name_A" required> </div>
@@ -42,10 +41,10 @@
                                 <div class="form-group mb-2">
                                     <label> اقل قيمه : </label>
                                     <input type="text" class="form-control" ng-model="model.VacationType.MinLength" required> </div>
-
                                 <div class="form-group mb-2">
                                     <label> ملاحظات : </label>
-                                    <textarea  class="form-control" ng-model="model.VacationType.Notes" ></textarea> </div>
+                                    <textarea class="form-control" ng-model="model.VacationType.Notes"></textarea>
+                                </div>
                                 <button type="submit" class="btn btn-primary mb-2" ng-disabled="VacationTypeSettingsForm.$invalid">حفظ</button>
                             </form>
                         </div>

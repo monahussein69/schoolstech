@@ -2,6 +2,8 @@ var con = require('../routes/dbConfig.js');
 var sequelizeConfig = require('../routes/sequelizeConfig.js');
 var moment = require('moment');
 var appSettingsMethods = require('../model/appSettings.js');
+var fs = require("fs");
+var util = require('util');
 
 var employeesVacationMethods = {
 
