@@ -1075,7 +1075,25 @@ var employeeMethods = {
 
             }
         );
+    },
+    updateTotalLateHours: function (employee_id, totalHours, callback) {
+        con.query('update sch_str_employees set total_late_hours = ? where id = ?', [
+                totalHours,
+                employee_id
+            ]
+            , function (err, result) {
+                if (err)
+                    throw err
+                if (result.affectedRows) {
+                    callback(result);
+                } else {
+                    callback(result);
+                }
+
+            }
+        );
     }
+
 
 };
 
