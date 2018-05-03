@@ -22,6 +22,8 @@ var MetronicApp = angular.module("MetronicApp", [
 ]);
 
 
+
+
 MetronicApp.config(function (localStorageServiceProvider) {
     localStorageServiceProvider
         .setPrefix('MetronicApp')
@@ -60,6 +62,7 @@ MetronicApp.factory('settings', ['$rootScope', function ($rootScope) {
         assetsPath: '../assets',
         globalPath: '../assets/global',
         layoutPath: '../assets/layouts/layout',
+		
     };
 
     $rootScope.settings = settings;
@@ -244,6 +247,29 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                             '../assets/pages/scripts/login.min.js',
 
                             // '../assets/pages/scripts/dashboard.min.js',
+                            'js/services/EmployeesFactory.js',
+                            'js/controllers/LoginController.js',
+                        ]
+                    });
+                }]
+            }
+        })
+        .state('forgetPassword', {
+            url: "/forgetPassword",
+            templateUrl: "views/forgetPassword.html",
+            data: {pageTitle: 'نسيان كلمه المرور'},
+            controller: "forgetPasswordController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'MetronicApp',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+
+                            '../assets/global/plugins/jquery-validation/js/jquery.validate.min.js',
+                            '../assets/global/plugins/jquery-validation/js/additional-methods.min.js',
+                            '../assets/pages/css/login-rtl.min.css',
+                            '../assets/pages/scripts/login.min.js',
                             'js/services/EmployeesFactory.js',
                             'js/controllers/LoginController.js',
                         ]
@@ -1730,8 +1756,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
 
 }]);
 
+MetronicApp.value('angularMomentConfig', {
+    timezone: 'Asia/Gaza' // e.g. 'Europe/London'
+});
+
 /* Init global settings and run the app */
-MetronicApp.run(["$rootScope", "settings", "$state", function ($rootScope, settings, $state) {
+MetronicApp.run(["$rootScope", "settings", "$state","$moment", function ($rootScope, settings, $state,$moment) {
     $rootScope.$state = $state; // state to be accessed from view
     $rootScope.$settings = settings; // state to be accessed from view
+	
 }]);

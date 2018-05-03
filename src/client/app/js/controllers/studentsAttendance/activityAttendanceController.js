@@ -1,6 +1,6 @@
 angular.module('MetronicApp').controller('activityAttendanceController',
     function ($moment, $compile, DTOptionsBuilder, DTColumnBuilder, $q, $uibModal, $stateParams, $rootScope, $scope, $http, $window, localStorageService, toastr, $filter, studentsAttendanceService, manageEmployeeService) {
-
+        
         var schoolId = 0;
         var teacherId = 0;
         var userObject = localStorageService.get('UserObject');
@@ -295,8 +295,9 @@ angular.module('MetronicApp').controller('activityAttendanceController',
                 recordShortAttendance(student_id);
             } else {
             if (type == 'حضور') {
-
-                attendanceObj.time_in =  $moment(model.listOfActivity[model.activity].Begining_Time).format('HH:mm');
+                console.log(model.listOfActivity[model.activity].Begining_Time);
+                attendanceObj.time_in =  moment(model.listOfActivity[model.activity].Begining_Time).format('HH:mm');
+			    console.log( attendanceObj.time_in);
             }
 
             if (type == 'حضور' || type == 'متأخر') {

@@ -269,8 +269,94 @@ var takenActionsMethods = {
         return array[dayNo];
     },
 
+    calcuateTotalMinForActions: function (attendanceObj, callback) {
+        let query = con.query("SELECT * FROM sch_att_takenaction WHERE Emp_id = ? AND ACTION_id = ? ORDER BY id DESC LIMIT 1", [attendanceObj.employee_id, 2], function (err, result) {
+            try {
+                console.log('result : ', result);
+                console.log('query.sql : ', query.sql);
+                // if first action
+                let totalHours = moment.duration(attendanceObj.Total_min).hours();
+                if (!Object.values(result).length) {
 
-};
+                    if (totalHours >= 2 && totalHours < 6) {
+                        attendanceObj.actionType = 'تنبيه على تأخر او انصراف';
+                        takenActionsMethods.sendLateActionToEmp(attendanceObj);
+                        console.log("تنبيه علي تأخر وانصراف ");
+                    } else if (totalHours >= 7) {
+                        console.log("حسم مجموع تأخر  ");
+                        attendanceObj.actionType = 'حسم مجموع تأخر';
+                        takenActionsMethods.sendLateActionToEmp(attendanceObj);
+                    }
+                }
+                // if have actions before
+                else {
+                    console.log("هناك تأخيرات سابقة ");
+                }
+                employee.updateTotalLateHours(attendanceObj.employee_id, attendanceObj.Total_min, function (result) {
+                    if (result) {
+                        console.log("updated");
+                    }
+                });
+                callback(result);
+            } catch (ex) {
+                var log_file_err = fs.createWriteStream(__dirname + '/error.log', {flags: 'a'});
+                log_file_err.write(util.format('Caught exception: ' + err) + '\n');
+                callback(ex);
+            }
+        });
+    },
+    sendLateActionToEmp: function (attendanceData, callback) {
+        console.log('attendace Data : ', attendanceData);
+        let req = {
+            params: {},
+            body: {}
+        };
+        let res = {};
+        actionsMethods.getActionByName(attendanceData.actionType, function (data) {
+            if (data.action_body) {
+                employee.getEmployeeForActions(attendanceData.employee_id, function (employeeData) {
+                    data.action_body = data.action_body.replace(/{teacher_name}/g, employeeData[0].name);
+                    data.action_body = data.action_body.replace(/{major_name}/g, (employeeData[0].major) ? employeeData[0].major : "-");
+                    data.action_body = data.action_body.replace(/{level}/g, (employeeData[0].educational_level) ? employeeData[0].educational_level : "-");
+                    data.action_body = data.action_body.replace(/{job_num}/g, (employeeData[0].job_no) ? employeeData[0].job_no : '-');
+                    data.action_body = data.action_body.replace(/{positon}/g, (employeeData[0].job_name) ? employeeData[0].job_name : '-');
+                    data.action_body = data.action_body.replace(/{Date}/g, attendanceData.attendance_day);
+                    data.action_body = data.action_body.replace(/{Day}/g, takenActionsMethods.getArabicDay(moment(attendanceData.attendance_day).day()));
+                    data.action_body = data.action_body.replace(/{start_work_late_hour}/g, attendanceData.time_in);
+                    data.action_body = data.action_body.replace(/{execuse_start}/g, '-');
+                    data.action_body = data.action_body.replace(/{execuse_end}/g, '-');
+                    data.action_body = data.action_body.replace(/{leave_hour}/g, '-');
+                    data.action_body = data.action_body.replace(/{school_name}/g, employeeData[0].school_name);
+                    req.body.job_title = 'قائد مدرسة الحالي';
+                    req.body.schoolId = attendanceData.school_id;
+                    console.log('action_body : ', data.action_body);
+                    employee.getEmployeesBasedJob(req, res, function (leaderData) {
+                        data.action_body = data.action_body.replace(/{leader_name}/g, leaderData[0].name);
+                        data.action_body = data.action_body.replace(/{leader_signature}/g, ' ');
+                        data.action_body = data.action_body.replace(/{Date}/g, attendanceData.End_Date);
+                        console.log('action_body : ', data.action_body);
+                        let takenActionData = {
+                            Calender_id: attendanceData.Calender_id,
+                            School_id: attendanceData.school_id,
+                            ACTION_id: data.Id,
+                            Emp_id: attendanceData.Emp_id,
+                            ACTION_Status: 'معلق',
+                            TAKEN_BY: leaderData[0].name,
+                            ACTION_body: data.action_body,
+                            issue_date: moment().format("YYYY-MM-DD"),
+                        };
+                        takenActionsMethods.newTakenAction(takenActionData, function (response) {
+                            console.log("status : ", response);
+                        });
+                    });
+                })
+
+            }
+
+        });
+        console.log("yes it's time to send Action");
+    }
+}
 
 
 module.exports = takenActionsMethods;

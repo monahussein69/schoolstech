@@ -28,14 +28,14 @@
                 <div class="table-toolbar">
                     <div class="row">
                         <div class="col-md-6">
-                            <form  name="RequestsTypeSettingsForm" ng-model="RequestsTypeSettingsForm" ng-submit="model.saveRequestType()">
+                            <form name="RequestsTypeSettingsForm" ng-model="RequestsTypeSettingsForm" ng-submit="model.saveRequestType()">
                                 <div class="form-group mb-2">
-                                    <label> الاسم  : </label>
+                                    <label> الاسم : </label>
                                     <input type="text" class="form-control" ng-model="model.RequestType.Name" required> </div>
-
                                 <div class="form-group mb-2">
                                     <label> الوصف : </label>
-                                    <textarea  class="form-control" ng-model="model.RequestType.Description" ></textarea> </div>
+                                    <textarea class="form-control" ng-model="model.RequestType.Description"></textarea>
+                                </div>
                                 <button type="submit" class="btn btn-primary mb-2" ng-disabled="RequestsTypeSettingsForm.$invalid">حفظ</button>
                             </form>
                         </div>

@@ -58,7 +58,7 @@ var employeesAttendanceMethods = {
                         'join sch_acd_lectures on sch_acd_lecturestables.Lecture_NO = sch_acd_lectures.id '+
                         ' left join sch_att_empatt '+
                         ' on (sch_att_empatt.Calender_id = ? and sch_str_employees.id = sch_att_empatt.employee_id and sch_acd_lectures.name = sch_att_empatt.Event_Name)'+
-                       
+
                         'where sch_acd_lectures.name = ? and (sch_acd_lecturestables.Day = ? OR sch_acd_lecturestables.Day = ?) and sch_str_employees.school_id = ?  and sch_str_employees.id not in (select employee_id from sch_att_empatt where Calender_id = ? and school_id = ? and Event_Name = "بدايه الدوام" and is_absent = 1) group by main_employee_id  order by sch_str_employees.name asc', [calendarId,lecture_name,currentDay,currentDay1,schoolId,calendarId,schoolId], function (err, result) {
                             console.log(query.sql);
                      try{
@@ -356,6 +356,7 @@ var employeesAttendanceMethods = {
         var current_date = moment(req.body.date).format('MM-DD-YYYY');
         req.body.date = current_date;
         var response = {};
+        var results = [];
         appSettingsMethods.getCalenderByDate(req, res, function (result) {
             try{
             if (Object.keys(result).length) {
@@ -377,30 +378,49 @@ var employeesAttendanceMethods = {
                 employeesAttendanceMethods.getAllEmployeesNotAttendance(req, res, function (employees) {
                    try{
                     if (Object.keys(employees).length) {
-                        req.body.event_name = 'طابور';
+                        req.body.event_name = 'بدايه الدوام';
                         req.body.schoolId = schoolId;
                         req.body.day = calendarObj.Day;
+                        var requests = [];
                         workingSettingsMethods.getEventByName(req, res, function (result) {
                          try{
                             if (Object.keys(result).length) {
-                                employees.forEach(function (row) {
-                                    var attendanceObj = {};
-                                    attendanceObj.employee_id = row.id;
-                                    attendanceObj.Calender_id = calendarObj.Id;
-                                    attendanceObj.school_id = schoolId;
-                                    attendanceObj.Event_Name = 'طابور';
-                                    attendanceObj.Event_type_id = result[0].Id;
-                                    attendanceObj.is_absent = 1;
-                                    req.body.attendanceObj = attendanceObj;
-                                    employeesAttendanceMethods.addEmployeeAttendance(req, res, function (result) {
-                                        // callback(result);
+                                requests =  Object.keys(employees).map(function (key, item) {
+                                    return new Promise(function (resolve) {
+                                        var attendanceObj = {};
+                                        attendanceObj.employee_id = employees[key].id;
+                                        attendanceObj.Calender_id = calendarObj.Id;
+                                        attendanceObj.school_id = schoolId;
+                                        attendanceObj.Event_Name = 'بدايه الدوام';
+                                        attendanceObj.Event_type_id = result[0].Id;
+                                        attendanceObj.is_absent = 1;
+                                        attendanceObj.attendance_day = current_date;
+                                        req.body.attendanceObj = attendanceObj;
+                                        employeesAttendanceMethods.setEmployeeAttendance(req, res, function (result) {
+                                            if (result.success) {
+                                                results.push(1);
+                                            }
+                                            resolve(result);
+                                        });
                                     });
 
 
                                 });
-                                response.success = true;
-                                response.msg = 'تم اغلاق الدوام بنجاح';
-                                callback(response);
+
+                                Promise.all(requests).then(function (result) {
+                                    if (results.includes(1)) {
+                                        response.success = true;
+                                        response.msg = 'تم اغلاق الدوام بنجاح';
+                                        callback(response);
+                                    }else{
+                                        response.success = false;
+                                        response.msg = 'خطأ';
+                                        callback(response);
+                                    }
+                                    //callback(response);
+                                });
+
+
                             } else {
                                 response.success = false;
                                 response.msg = 'الفعاليه غير موجوده';
@@ -601,6 +621,11 @@ var employeesAttendanceMethods = {
                     var d = moment.duration(ms);
                     var total_min = Math.floor(d.hours()) + moment.utc(ms).format(":mm");
                     attendanceObj.Total_min = total_min;
+                        if (attendanceObj.Total_min) {
+                            //if total min calcaute total minutes for actions
+                            console.log('calcuateTotalMinForActions');
+                            takenActionsMethods.calcuateTotalMinForActions(attendanceObj);
+                        }
                 }
 
                 var query = con.query('update sch_att_empatt set Total_min = ? ,on_vacation = ?, school_id = ?, Event_Name=?,time_in=?, late_min =?,is_absent = ?,Event_type_id = ? where Calender_id = ? and employee_id = ? and Event_Name=?',
@@ -654,6 +679,13 @@ var employeesAttendanceMethods = {
 
                 var total_min = attendanceObj.late_min;
                 attendanceObj.Total_min = total_min;
+                    if (attendanceObj.Total_min) {
+                        //if total min calcaute total minutes for actions
+                        console.log('calcuateTotalMinForActions');
+                        takenActionsMethods.calcuateTotalMinForActions(attendanceObj, function (result) {
+                            console.log('ressss : ', result);
+                        });
+                    }
                 con.query('insert into sch_att_empatt (entered_by,Total_min,on_vacation,Calender_id,school_id,employee_id,Event_Name,Event_type_id,time_in,late_min,is_absent) values (?,?,?,?,?,?,?,?,?,?,?) ',
                     [   attendanceObj.entered_by,
                        attendanceObj.Total_min,
@@ -702,10 +734,6 @@ var employeesAttendanceMethods = {
             callback(ex);
         }
         });
-    },
-
-    updateEmployeeTotalLate: function (attendanceObj) {
-        sequelizeConfig.employeeAttandaceTable.update();
     },
 
     setEmployeeActivityAttendance: function (req, res, callback) {

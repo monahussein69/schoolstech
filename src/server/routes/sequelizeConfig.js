@@ -259,11 +259,11 @@ const sequelizeConfig = {
         MinLength: Sequelize.INTEGER,
         MaxAnount: Sequelize.INTEGER,
         Notes: Sequelize.STRING,
-    }),RequestsTypeTable:sequelize.define('APP_DEF_RequestsType', {
+    }),RequestsTypeTable:sequelize.define('app_def_requeststype', {
         Id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
         Name: Sequelize.STRING,
         Description: Sequelize.STRING,
-    }),ExcuseTypeTable:sequelize.define('APP_DEF_ExcuseType', {
+    }),ExcuseTypeTable:sequelize.define('app_def_excusetype', {
         Id: {type: Sequelize.INTEGER, primaryKey: true , autoIncrement: true},
         Name: Sequelize.STRING,
         Description: Sequelize.STRING,
