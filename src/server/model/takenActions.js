@@ -163,7 +163,7 @@ var takenActionsMethods = {
     getEmployeeActions: function (req, res, callback) {
         employee.getEmployeeByUserId(req, res, function (employee) {
             console.log(employee[0].id);
-            sequelizeConfig.takenActionsTable.query("SELECT * , app_def_actions.action_name FROM sch_att_takenaction JOIN app_def_actions ON sch_att_takenaction.ACTION_id = app_def_actions,Id WHERE sch_att_takenaction.Id = " + employee[0].id).then(actions => {
+            con.query("SELECT * , app_def_actions.action_name FROM sch_att_takenaction JOIN app_def_actions ON sch_att_takenaction.ACTION_id = app_def_actions.Id WHERE sch_att_takenaction.Emp_id = ?", [employee[0].id], function (err, result) {
              try{
                 callback(actions);
 
