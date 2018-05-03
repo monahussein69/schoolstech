@@ -78,3 +78,48 @@ angular.module('MetronicApp').controller('LoginController', function($rootScope,
     // $rootScope.settings.layout.pageBodySolid = false;
     // $rootScope.settings.layout.pageSidebarClosed = false;
 });
+
+angular.module('MetronicApp').controller('forgetPasswordController', function(toastr,$rootScope, $scope , $http, $window , localStorageService,$location,manageSchoolService,manageEmployeeService) {
+    var model = {
+        email : '',
+        loginName : '',
+        resetPassword : resetPassword,
+        error : null,
+
+    };
+    $scope.model = model;
+
+    function resetPassword() {
+
+        model.error = null;
+        if ($scope.model.email && $scope.model.loginName){
+            $http.post("http://138.197.175.116:3000/resetPasswprd", {
+                'email': $scope.model.email,
+                'loginName': $scope.model.loginName
+            })
+                .then(function (response) {
+                    console.log(response);
+                    if(response.data.success) {
+                        toastr.success(response.data.msg);
+                    }else{
+                        toastr.error(response.data.msg);
+                    }
+                });
+        }else{
+            model.error = "الرجاء ادخال البريد الالكتروني و اسم المستخدم ";
+        }
+    }
+
+
+
+    // $scope.$on('$viewContentLoaded', function() {
+    //     // initialize core components
+    //     // App.initAjax();
+    // });
+
+    // set sidebar closed and body solid layout mode
+    // $rootScope.settings.layout.pageContentWhite = true;
+    // $rootScope.settings.layout.pageBodySolid = false;
+    // $rootScope.settings.layout.pageSidebarClosed = false;
+});
+

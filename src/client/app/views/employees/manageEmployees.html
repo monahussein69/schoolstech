@@ -52,8 +52,12 @@
                                         <label for="file-upload" class="btn sbold red">
                                             <i class="fa fa-cloud-upload"></i> استيراد بيانات الموظفين</label>
                                         <input type="file" ngf-select ng-model="file" name="file" ng-change="model.doUpload()" id="file-upload" style="display:none" /> </div>
+
+
                                 </div>
+
                             </div>
+
                         </div>
                         <div class="col-md-6">
                             <div class="btn-group pull-right">
@@ -76,6 +80,23 @@
                                 </ul>
                             </div>
                         </div>
+                    </div>
+                    <div class="row" style="margin-top:20px" ng-show="model.progress">
+
+                        <div class="col-md-6 mb-1">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width:{{model.progress}}%"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    {{model.progress}}%
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
                 </div>
                 <div class="alert alert-success" ng-if="model.success != ''">
