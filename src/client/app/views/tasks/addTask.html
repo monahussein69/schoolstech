@@ -148,7 +148,7 @@
                         </div>
                 </fieldset>
                 <button class="btn btn-primary" type="submit" ng-disabled="addtaskForm.$invalid">حفظ</button>
-                <a class="btn btn-primary" ng-disabled="model.added == 0" ng-hide="model.taskObj.buildTaskMember == 1" ui-sref="Master.addTaskMember({taskId:{{model.taskObj.id}}})">تشكيل فريق العمل</a>
+                <a class="btn btn-primary" ng-disabled="model.added == 0" ng-hide="model.taskObj.buildTaskMember == 1" ng-href="{{model.teamMemeberLink}}">تشكيل فريق العمل</a>
                 <button class="btn btn-default">الغاء</button>
                 </div>
             </div>

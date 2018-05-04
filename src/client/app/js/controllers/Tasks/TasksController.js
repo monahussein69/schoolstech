@@ -40,15 +40,21 @@ angular.module('MetronicApp').controller('AddTaskController',
         schoolId:schoolId,
         getTask:getTask,
         added:0,
-        taskStatus:[]
+        taskStatus:[],
+		taskId:0,
+		teamMemeberLink:'',
     }
 
     $scope.model = model;
     model.taskObj.CurrentDate = CurrentDate;
     model.taskObj.Issued_Date = CurrentDate;
     model.taskObj.Issued_By = userId;
-    model.taskObj.id = 0;
+    //model.taskObj.id = 0;
 
+	if ($stateParams.taskId) {
+		model.taskId = $stateParams.taskId;
+		model.teamMemeberLink = '#/addTaskMember/'+model.taskId;
+	}
         model.getTask();
 
     function getTask(){
@@ -108,6 +114,8 @@ angular.module('MetronicApp').controller('AddTaskController',
                     var date = model.taskObj.CurrentDate;
                     //model.taskObj = response.result;
                     model.taskObj.CurrentDate = date;
+					model.taskId = response.insertId;
+					model.teamMemeberLink = '#/addTaskMember/'+model.taskId;
                 } else {
                     toastr.error(response.msg);
                 }
@@ -188,6 +196,7 @@ angular.module('MetronicApp').controller('ManageTaskController',
                     model.tasks.splice(index, 1);
                     model.success = response.msg;
                     toastr.success(response.msg);
+					 model.dtInstance.reloadData();
                 } else {
                     model.error = response.msg;
                 }
@@ -520,6 +529,7 @@ angular.module('MetronicApp').controller('ManageSubTaskController',
                     model.tasks.splice(index, 1);
                     model.success = response.msg;
                     toastr.success(response.msg);
+					model.dtInstance.reloadData();
                 } else {
                     model.error = response.msg;
                 }

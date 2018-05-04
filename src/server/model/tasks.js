@@ -100,6 +100,7 @@ var taskMethods = {
     },
     deleteTask:function(req,res,callback){
 
+	    var response = {};
         sequelizeConfig.tasksTable.destroy({
             where: {
                id:req.params.taskId

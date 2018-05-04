@@ -1,3 +1,13 @@
 Caught exception: Error: ER_WRONG_FIELD_WITH_GROUP: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'schooltech.sch_acd_lectures.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
 Caught exception: Error: ER_WRONG_FIELD_WITH_GROUP: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'schooltech.sch_acd_lectures.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
 Caught exception: Error: ER_WRONG_FIELD_WITH_GROUP: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'schooltech.sch_acd_lectures.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+Caught exception: Error: ER_NO_SUCH_TABLE: Table 'schooltech.sch_att_takenaction' doesn't exist
+Caught exception: Error: ER_NO_SUCH_TABLE: Table 'schooltech.sch_att_takenaction' doesn't exist
+Caught exception: Error: ER_NO_SUCH_TABLE: Table 'schooltech.sch_att_takenaction' doesn't exist
+Caught exception: Error: ER_NO_SUCH_TABLE: Table 'schooltech.sch_att_takenaction' doesn't exist
+Caught exception: Error: Cannot enqueue Query after fatal error.
+Caught exception: Error: Cannot enqueue Query after fatal error.
+Caught exception: Error: Cannot enqueue Query after fatal error.
+Caught exception: Error: Cannot enqueue Query after fatal error.
+Caught exception: Error: Cannot enqueue Query after fatal error.
+Caught exception: Error: Cannot enqueue Query after fatal error.
