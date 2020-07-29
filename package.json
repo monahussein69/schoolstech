@@ -33,7 +33,7 @@
     "node-xlsx": "^0.11.2",
     "nodemailer": "^4.6.4",
     "randomstring": "^1.1.5",
-    "sequelize": "^4.35.5",
+    "sequelize": "^5.15.1",
     "serve-favicon": "~2.4.5",
     "underscore": "^1.8.3",
     "utf8": "^3.0.0",
