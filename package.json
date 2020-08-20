@@ -11,7 +11,7 @@
     "angular-multiselect": "^1.2.0",
     "angular-wizard": "^1.1.1",
     "async": "^2.6.0",
-    "bcrypt": "^1.0.3",
+    "bcrypt": "^5.0.0",
     "body-parser": "~1.18.2",
     "browser-sync": "^2.23.6",
     "checklist-model": "^0.11.0",
